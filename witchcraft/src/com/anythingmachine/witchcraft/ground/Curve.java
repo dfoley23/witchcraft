@@ -1,5 +1,7 @@
 package com.anythingmachine.witchcraft.ground;
 
+import java.util.ArrayList;
+
 import com.anythingmachine.gdxwrapper.PolygonRegionWrap;
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.gdxwrapper.PolygonSpriteWrap;
@@ -21,6 +23,7 @@ public class Curve {
 	private int zLayer;
 	private GroundType type;
 	private PolygonSpriteWrap sprite;
+	private ArrayList<PolygonSpriteWrap> sprites;
 	//private Body body;
 	
 	public Curve( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, 
@@ -100,8 +103,8 @@ public class Curve {
 		Vector4 T3 = new Vector4();
 		Vector4 TintM = new Vector4();
 		Vector2 point = new Vector2();
-		float[] polyPoints = new float[(res+6)*2];
-		Vector2[] bodyPoints = new Vector2[res+3];
+		float[] polyPoints = new float[((res)*2)+6];
+//		Vector2[] bodyPoints = new Vector2[res+3];
 		int index = 0;
 		
 		for(int r=0; r<=res; ++r){
@@ -133,7 +136,7 @@ public class Curve {
 			index += 2;
 			
 			//save the points for the box2d body
-			bodyPoints[r] = new Vector2( point.x, point.y );
+//			bodyPoints[r] = new Vector2( point.x, point.y );
 		}
 		
 		////add the final points that completes the base of the polygon
@@ -141,14 +144,15 @@ public class Curve {
 		polyPoints[index+1] = Util.offScreenGround;
 		polyPoints[index+2] = p1.x;
 		polyPoints[index+3] = Util.offScreenGround;
-		bodyPoints[res+1] = new Vector2( p2.x, Util.offScreenGround );
-		bodyPoints[res+2] = new Vector2( p1.x, Util.offScreenGround );
+//		bodyPoints[res+1] = new Vector2( p2.x, Util.offScreenGround );
+//		bodyPoints[res+2] = new Vector2( p1.x, Util.offScreenGround );
 		
 		//create the polygon sprite
 		Texture desertTexture = new Texture(Gdx.files.internal("data/desertTexture.png")); 
 		desertTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		PolygonRegionWrap polyReg = new PolygonRegionWrap(new TextureRegion(desertTexture), polyPoints );
 		sprite = new PolygonSpriteWrap(polyReg);
+		sprite.setOrigin(p1.x, p1.y);
 		
 
 		//create the body

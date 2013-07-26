@@ -87,7 +87,7 @@ public class WitchCraft implements ApplicationListener {
 					new Vector2(Util.cps[i]-240, Util.cps[i+1]-250),
 					new Vector2(Util.cps[i+2]-240, Util.cps[i+3]-250),
 					new Vector2(Util.cps[i+4]-240, Util.cps[i+5]-250),
-					new Vector2(Util.cps[i+6]-240, Util.cps[i+7]-250), 50, -1, GroundType.GRASS);
+					new Vector2(Util.cps[i+6]-240, Util.cps[i+7]-250), 7, -1, GroundType.GRASS);
 		}
 
 		player = new Player( world, ground );	

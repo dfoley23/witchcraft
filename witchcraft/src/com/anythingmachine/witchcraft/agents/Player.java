@@ -122,30 +122,30 @@ public class Player extends Agent {
 			facingLeft = false;
 			skel.setFlipX(facingLeft);
 			if ( inAir ) {
-				float alpha = 1 - animationDuration / jump.getDuration( );
-				walk.mix( skel, animationDuration, false, alpha );
-				animationDuration = walk.getDuration( ) * alpha;
-			} else {
-				walk.apply(skel, totalTime, true);
-				animationDuration = walk.getDuration();
+//				float alpha = 1 - animationDuration / jump.getDuration( );
+//				walk.mix( skel, animationDuration, false, alpha );
+//				animationDuration = walk.getDuration( ) * alpha;
+			} else if( playerState != PlayerState.WALKING )
+			{
+				//walk.apply(skel, totalTime, true);
+				animationDuration = totalTime + walk.getDuration();
+				playerState = PlayerState.WALKING;
 			}
-			playerState = PlayerState.WALKING;
-			timeLeft = animationDuration;
 		} else if (moveLeft) {
 			body.applyLinearImpulse(new Vector2(-0.05f, 0.0f),
 					body.getWorldCenter());
 			facingLeft = true;
 			skel.setFlipX(facingLeft);
 			if ( inAir ) {
-				float alpha = 1 - animationDuration / jump.getDuration( );
-				walk.mix( skel, animationDuration, false, alpha );
-				animationDuration = walk.getDuration( ) * alpha;
-			} else {
-				walk.apply(skel, totalTime, true);
-				animationDuration = walk.getDuration();
+//				float alpha = 1 - animationDuration / jump.getDuration( );
+//				walk.mix( skel, animationDuration, false, alpha );
+//				animationDuration = walk.getDuration( ) * alpha;
+			} else if( playerState != PlayerState.WALKING )
+			{
+				// walk.apply(skel, totalTime, true);
+				animationDuration = totalTime + walk.getDuration();
+				playerState = PlayerState.WALKING;
 			}
-			playerState = PlayerState.WALKING;
-			timeLeft = animationDuration;
 		}
 		
 		Vector2 pos = body.getPosition().mul(Util.PIXELS_PER_METER).sub(0.0f, 32f);
@@ -176,14 +176,15 @@ public class Player extends Agent {
 			body.applyLinearImpulse(new Vector2(0.0f, 3f),
 					body.getWorldCenter());
 			inAir = true;
-			if ( moveLeft || moveRight ) {
-				float alpha = 1 - animationDuration / walk.getDuration( );
-				jump.mix( skel, animationDuration, false, alpha );
-				animationDuration = jump.getDuration( ) * alpha;
-				playerState = PlayerState.WALKJUMP;
-			} else {
-				jump.apply(skel, 0, true);
-				animationDuration = jump.getDuration();
+//			if ( moveLeft || moveRight ) {
+//				float alpha = 1 - animationDuration / walk.getDuration( );
+//				jump.mix( skel, animationDuration, false, alpha );
+//				animationDuration = jump.getDuration( ) * alpha;
+//				playerState = PlayerState.WALKJUMP;
+//			} else 
+			{
+				//jump.apply(skel, totalTime, true);
+				//animationDuration = jump.getDuration();
 				playerState = PlayerState.JUMPING;
 			}
 			timeLeft = animationDuration;
@@ -191,20 +192,21 @@ public class Player extends Agent {
 			doJump = false;
 			inAir = false;
 		}
-		 timeLeft -= dT;
 		switch(playerState){
 		case WALKING:
-			if ( timeLeft > 0 ) {
+			if ( (totalTime-dT) <= animationDuration  ) {
 				walk.apply(skel, totalTime, true);
 			} else {
-				walk.apply(skel, animationDuration, false);
+				walk.apply(skel, animationDuration, true);
+				//walk.mix(skel, totalTime, false, 0);
+				//playerState = PlayerState.IDLE;
 			}
 			break;
 		case JUMPING:
-			if ( timeLeft > 0 ) {
-				jump.apply(skel, jump.getDuration(), true);
+			if ( jump.getDuration() > 0 ) {
+				jump.apply(skel, totalTime, true);
 			} else {
-				jump.apply(skel, animationDuration, false);
+				jump.apply(skel, totalTime, false);
 			}
 			break;
 		case WALKJUMP:
@@ -254,7 +256,7 @@ public class Player extends Agent {
 
 		BodyDef jumperBodyDef = new BodyDef();
 		jumperBodyDef.type = BodyDef.BodyType.DynamicBody;
-		jumperBodyDef.position.set(1.0f, 3.0f);
+		jumperBodyDef.position.set(3.0f, 3.0f);
 
 		body = world.createBody(jumperBodyDef);
 
@@ -282,6 +284,7 @@ public class Player extends Agent {
 		jumperFixtureDef.friction = 5.0f;
 
 		body.createFixture(jumperFixtureDef);
+		body.setLinearDamping(5);
 		jumperShape.dispose();
 	}
 }

@@ -33,7 +33,7 @@ public class Util {
 			0.5f, -0.5f, 0.0f, 0.0f, 
 			};
 	
-	public static final float offScreenGround = -20.f;
+	public static final float offScreenGround = 0f;
 	
 	public static final int[] cps = {
 		150,425,
