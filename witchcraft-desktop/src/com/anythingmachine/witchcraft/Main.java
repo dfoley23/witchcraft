@@ -8,8 +8,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "witchcraft";
 		cfg.useGL20 = false;
-		cfg.width = 1280;
-		cfg.height = 720;
+		cfg.width = 1366;
+		cfg.height = 768;
 		
 		new LwjglApplication(new WitchCraft(), cfg);
 	}

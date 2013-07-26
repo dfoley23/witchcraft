@@ -125,6 +125,7 @@ public class Player extends Agent {
 			if ( !inAir && playerState != PlayerState.WALKING )
 			{
 				totalTime = 0;
+		        skel.setToBindPose(); 
 				playerState = PlayerState.WALKING;
 				animation = walk;
 			}
@@ -136,6 +137,7 @@ public class Player extends Agent {
 			if( !inAir && playerState != PlayerState.WALKING )
 			{
 				totalTime = 0;
+		        skel.setToBindPose(); 
 				playerState = PlayerState.WALKING;
 				animation = walk;
 			}
@@ -166,8 +168,8 @@ public class Player extends Agent {
 		 * As before, impulse is applied to the center of the jumper.
 		 */
 		if (doJump && (Math.abs(body.getLinearVelocity().y) < 1e-9 || onGround)) {
-			inAir = true;
 			if (playerState != PlayerState.JUMPING) {
+		        skel.setToBindPose(); 
 				playerState = PlayerState.JUMPING;
 				animation = jump;
 				totalTime = 0;
@@ -178,19 +180,24 @@ public class Player extends Agent {
 		}
 
 
+        Bone root = skel.getRootBone();
+        root.setX(getPosPixels().x - 16f);
+        root.setY(getPosPixels().y - 32f);
 		if ( animation != null ) {
-			if ( totalTime > animation.getDuration() && !moveLeft && !moveRight) {
+			if ( totalTime > animation.getDuration() && !inAir && !moveLeft && !moveRight) {
 				totalTime = 0;
 				playerState = PlayerState.IDLE;
 				animation = null;
 		        skel.setToBindPose(); 
-		        Bone root = skel.getRootBone();
+		        root = skel.getRootBone();
 		        root.setX(getPosPixels().x - 16f);
 		        root.setY(getPosPixels().y - 32f);
 			} else { 
-		        Bone root = skel.getRootBone();
-		        root.setX(getPosPixels().x - 16f);
-		        root.setY(getPosPixels().y - 32f);
+				if ( animation.equals(jump) && totalTime > .25f && totalTime < .27f && onGround) {
+					System.out.println(totalTime);
+					body.applyLinearImpulse(new Vector2(0.0f, 5f),
+							body.getWorldCenter());
+				}
 				animation.apply(skel, totalTime, true);
 			}
 		}
@@ -258,7 +265,7 @@ public class Player extends Agent {
 		jumperFixtureDef.friction = 5.0f;
 
 		body.createFixture(jumperFixtureDef);
-		body.setLinearDamping(5);
+		body.setLinearDamping(3);
 		jumperShape.dispose();
 	}
 }

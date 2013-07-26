@@ -224,26 +224,26 @@ public class TiledMapHelper {
 		 * try to push them out.
 		 */
 
-		EdgeShape mapBounds = new EdgeShape();
-		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(getWidth()
-				/ pixelsPerMeter, 0.0f));
-		groundBody.createFixture(mapBounds, 0);
-
-		mapBounds.set(new Vector2(0.0f, getHeight() / pixelsPerMeter),
-				new Vector2(getWidth() / pixelsPerMeter, getHeight()
-						/ pixelsPerMeter));
-		groundBody.createFixture(mapBounds, 0);
-
-		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0.0f,
-				getHeight() / pixelsPerMeter));
-		groundBody.createFixture(mapBounds, 0);
-
-		mapBounds.set(new Vector2(getWidth() / pixelsPerMeter, 0.0f),
-				new Vector2(getWidth() / pixelsPerMeter, getHeight()
-						/ pixelsPerMeter));
-		groundBody.createFixture(mapBounds, 0);
-
-		mapBounds.dispose();
+//		EdgeShape mapBounds = new EdgeShape();
+//		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(getWidth()
+//				/ pixelsPerMeter, 0.0f));
+//		groundBody.createFixture(mapBounds, 0);
+//
+//		mapBounds.set(new Vector2(0.0f, getHeight() / pixelsPerMeter),
+//				new Vector2(getWidth() / pixelsPerMeter, getHeight()
+//						/ pixelsPerMeter));
+//		groundBody.createFixture(mapBounds, 0);
+//
+//		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0.0f,
+//				getHeight() / pixelsPerMeter));
+//		groundBody.createFixture(mapBounds, 0);
+//
+//		mapBounds.set(new Vector2(getWidth() / pixelsPerMeter, 0.0f),
+//				new Vector2(getWidth() / pixelsPerMeter, getHeight()
+//						/ pixelsPerMeter));
+//		groundBody.createFixture(mapBounds, 0);
+//
+//		mapBounds.dispose();
 	}
 
 	/**
