@@ -106,7 +106,7 @@ public class WitchCraft implements ApplicationListener {
 	@Override
 	public void render() {
 		long now = System.nanoTime();
-		float dT = Gdx.app.getGraphics().getDeltaTime();
+		float dT = Gdx.graphics.getDeltaTime();
 		world.step(dT, 3, 3);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -145,6 +145,7 @@ public class WitchCraft implements ApplicationListener {
 		
 		polygonBatch.end();
 
+		spriteBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
 		spriteBatch.begin();
 
 		player.draw(spriteBatch);

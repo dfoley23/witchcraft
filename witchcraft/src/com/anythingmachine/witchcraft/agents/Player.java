@@ -25,12 +25,11 @@ public class Player extends Agent {
 	private Skeleton skel;
 	private Animation jump;
 	private Animation walk;
+	private Animation animation;
 	private float totalTime = 0f;
-	private float animationDuration;
-	private float timeLeft = 0f;
 	private PlayerState playerState;
 	public enum PlayerState { 
-		IDLE, WALKING, JUMPING, WALKJUMP, 
+		IDLE, WALKING, JUMPING
 	}
 	
 	public Player( World world, Ground ground ) {
@@ -50,19 +49,21 @@ public class Player extends Agent {
 
         walk = sb.readAnimation(
                 Gdx.files.internal("data/spine/spineboy-walk.anim"), sd);
-
+        animation = null;
         skel = new com.esotericsoftware.spine.Skeleton(sd);
         skel.setToBindPose();
         Bone root = skel.getRootBone();
-        root.setX(100);
-        root.setY(100);
+        root.setX(getPosPixels().x - 16f);
+        root.setY(getPosPixels().y - 8f);
         root.setScaleX(1f);
         root.setScaleY(1f);
         skel.updateWorldTransform();
 	}
 	
 	public void update( float dT ) {
-		totalTime += dT;
+		float delta = Gdx.graphics.getDeltaTime();
+		
+		totalTime += delta;
 		/**
 		 * Detect requested motion.
 		 */
@@ -121,30 +122,22 @@ public class Player extends Agent {
 					body.getWorldCenter());
 			facingLeft = false;
 			skel.setFlipX(facingLeft);
-			if ( inAir ) {
-//				float alpha = 1 - animationDuration / jump.getDuration( );
-//				walk.mix( skel, animationDuration, false, alpha );
-//				animationDuration = walk.getDuration( ) * alpha;
-			} else if( playerState != PlayerState.WALKING )
+			if ( !inAir && playerState != PlayerState.WALKING )
 			{
-				//walk.apply(skel, totalTime, true);
-				animationDuration = totalTime + walk.getDuration();
+				totalTime = 0;
 				playerState = PlayerState.WALKING;
+				animation = walk;
 			}
 		} else if (moveLeft) {
 			body.applyLinearImpulse(new Vector2(-0.05f, 0.0f),
 					body.getWorldCenter());
 			facingLeft = true;
 			skel.setFlipX(facingLeft);
-			if ( inAir ) {
-//				float alpha = 1 - animationDuration / jump.getDuration( );
-//				walk.mix( skel, animationDuration, false, alpha );
-//				animationDuration = walk.getDuration( ) * alpha;
-			} else if( playerState != PlayerState.WALKING )
+			if( !inAir && playerState != PlayerState.WALKING )
 			{
-				// walk.apply(skel, totalTime, true);
-				animationDuration = totalTime + walk.getDuration();
+				totalTime = 0;
 				playerState = PlayerState.WALKING;
+				animation = walk;
 			}
 		}
 		
@@ -173,61 +166,39 @@ public class Player extends Agent {
 		 * As before, impulse is applied to the center of the jumper.
 		 */
 		if (doJump && (Math.abs(body.getLinearVelocity().y) < 1e-9 || onGround)) {
-			body.applyLinearImpulse(new Vector2(0.0f, 3f),
-					body.getWorldCenter());
 			inAir = true;
-//			if ( moveLeft || moveRight ) {
-//				float alpha = 1 - animationDuration / walk.getDuration( );
-//				jump.mix( skel, animationDuration, false, alpha );
-//				animationDuration = jump.getDuration( ) * alpha;
-//				playerState = PlayerState.WALKJUMP;
-//			} else 
-			{
-				//jump.apply(skel, totalTime, true);
-				//animationDuration = jump.getDuration();
+			if (playerState != PlayerState.JUMPING) {
 				playerState = PlayerState.JUMPING;
+				animation = jump;
+				totalTime = 0;
 			}
-			timeLeft = animationDuration;
 		} else {
 			doJump = false;
 			inAir = false;
 		}
-		switch(playerState){
-		case WALKING:
-			if ( (totalTime-dT) <= animationDuration  ) {
-				walk.apply(skel, totalTime, true);
-			} else {
-				walk.apply(skel, animationDuration, true);
-				//walk.mix(skel, totalTime, false, 0);
-				//playerState = PlayerState.IDLE;
+
+
+		if ( animation != null ) {
+			if ( totalTime > animation.getDuration() && !moveLeft && !moveRight) {
+				totalTime = 0;
+				playerState = PlayerState.IDLE;
+				animation = null;
+		        skel.setToBindPose(); 
+		        Bone root = skel.getRootBone();
+		        root.setX(getPosPixels().x - 16f);
+		        root.setY(getPosPixels().y - 32f);
+			} else { 
+		        Bone root = skel.getRootBone();
+		        root.setX(getPosPixels().x - 16f);
+		        root.setY(getPosPixels().y - 32f);
+				animation.apply(skel, totalTime, true);
 			}
-			break;
-		case JUMPING:
-			if ( jump.getDuration() > 0 ) {
-				jump.apply(skel, totalTime, true);
-			} else {
-				jump.apply(skel, totalTime, false);
-			}
-			break;
-		case WALKJUMP:
-			break;
-		default:
-			break;
 		}
-		//walk.apply(skel, totalTime, false);
         skel.updateWorldTransform();
-        skel.update(dT);
+        skel.update(delta);
 	}
 	
 	public void draw( SpriteBatch batch ) {
-		/*sprite.setPosition(
-				Util.PIXELS_PER_METER * body.getPosition().x
-						- sprite.getWidth() / 2,
-				Util.PIXELS_PER_METER * body.getPosition().y
-						- sprite.getHeight() / 2);
-		sprite.draw(batch);*/
-        skel.findBone("root").setX((Util.PIXELS_PER_METER * body.getPosition().x) - 16f);
-        skel.findBone("root").setY((Util.PIXELS_PER_METER * body.getPosition().y) - 32f);
         skel.draw(batch);
 	}
 	
@@ -235,6 +206,9 @@ public class Player extends Agent {
 		return body.getPosition().sub(0, (32f)*(1.f / Util.PIXELS_PER_METER));
 	}
 	
+	public Vector2 getPosPixels() {
+		return body.getPosition().mul(Util.PIXELS_PER_METER);
+	}
 	public int getCurSegment() {
 		return curGroundSegment;
 	}
