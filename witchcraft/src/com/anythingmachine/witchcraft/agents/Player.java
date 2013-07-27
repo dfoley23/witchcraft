@@ -25,6 +25,7 @@ public class Player extends Agent {
 	private Skeleton skel;
 	private Animation jump;
 	private Animation walk;
+	private Animation idle;
 	private Animation animation;
 	private float totalTime = 0f;
 	private PlayerState playerState;
@@ -39,24 +40,28 @@ public class Player extends Agent {
 		this.curGroundSegment = 0;
 		curCurve = ground.getCurve(curGroundSegment);
 		
-		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("data/spine/spineboy.atlas"));
+		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("data/spine/player.atlas"));
         SkeletonBinary sb = new SkeletonBinary(atlas);
         SkeletonData sd = sb.readSkeletonData(Gdx.files
-                .internal("data/spine/spineboy.skel"));
+                .internal("data/spine/player.skel"));
 
         jump = sb.readAnimation(
-                Gdx.files.internal("data/spine/spineboy-jump.anim"), sd);
+                Gdx.files.internal("data/spine/player-jump.anim"), sd);
 
         walk = sb.readAnimation(
-                Gdx.files.internal("data/spine/spineboy-walk.anim"), sd);
-        animation = null;
+                Gdx.files.internal("data/spine/player-walk.anim"), sd);
+
+        idle = sb.readAnimation(
+                Gdx.files.internal("data/spine/player-idle.anim"), sd);
+        animation = idle;
         skel = new com.esotericsoftware.spine.Skeleton(sd);
+        skel.setSkin("player");
         skel.setToBindPose();
         Bone root = skel.getRootBone();
-        root.setX(getPosPixels().x - 16f);
+        root.setX(getPosPixels().x - 8f);
         root.setY(getPosPixels().y - 8f);
-        root.setScaleX(1f);
-        root.setScaleY(1f);
+        root.setScaleX(0.5f);
+        root.setScaleY(0.5f);
         skel.updateWorldTransform();
 	}
 	
@@ -126,6 +131,9 @@ public class Player extends Agent {
 			{
 				totalTime = 0;
 		        skel.setToBindPose(); 
+		        Bone root = skel.getRootBone();
+		        root.setScaleX(0.5f);
+		        root.setScaleY(0.5f);
 				playerState = PlayerState.WALKING;
 				animation = walk;
 			}
@@ -138,6 +146,9 @@ public class Player extends Agent {
 			{
 				totalTime = 0;
 		        skel.setToBindPose(); 
+		        Bone root = skel.getRootBone();
+		        root.setScaleX(0.5f);
+		        root.setScaleY(0.5f);
 				playerState = PlayerState.WALKING;
 				animation = walk;
 			}
@@ -170,6 +181,9 @@ public class Player extends Agent {
 		if (doJump && (Math.abs(body.getLinearVelocity().y) < 1e-9 || onGround)) {
 			if (playerState != PlayerState.JUMPING) {
 		        skel.setToBindPose(); 
+		        Bone root = skel.getRootBone();
+		        root.setScaleX(0.5f);
+		        root.setScaleY(0.5f);
 				playerState = PlayerState.JUMPING;
 				animation = jump;
 				totalTime = 0;
@@ -181,26 +195,26 @@ public class Player extends Agent {
 
 
         Bone root = skel.getRootBone();
-        root.setX(getPosPixels().x - 16f);
+        root.setX(getPosPixels().x - 8f);
         root.setY(getPosPixels().y - 32f);
-		if ( animation != null ) {
+		//if ( animation != null ) {
 			if ( totalTime > animation.getDuration() && !inAir && !moveLeft && !moveRight) {
 				totalTime = 0;
 				playerState = PlayerState.IDLE;
-				animation = null;
+				animation = idle;
 		        skel.setToBindPose(); 
-		        root = skel.getRootBone();
-		        root.setX(getPosPixels().x - 16f);
+		        root.setX(getPosPixels().x - 8f);
 		        root.setY(getPosPixels().y - 32f);
+		        root.setScaleX(0.5f);
+		        root.setScaleY(0.5f);
 			} else { 
 				if ( animation.equals(jump) && totalTime > .25f && totalTime < .27f && onGround) {
-					System.out.println(totalTime);
 					body.applyLinearImpulse(new Vector2(0.0f, 5f),
 							body.getWorldCenter());
 				}
 				animation.apply(skel, totalTime, true);
 			}
-		}
+		//}
         skel.updateWorldTransform();
         skel.update(delta);
 	}

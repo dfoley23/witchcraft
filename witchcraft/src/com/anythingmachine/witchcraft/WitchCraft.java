@@ -9,6 +9,7 @@ import com.anythingmachine.witchcraft.tiledMaps.TiledMapHelper;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -134,10 +135,11 @@ public class WitchCraft implements ApplicationListener {
 //			tiledMapHelper.getCamera().position.y = tiledMapHelper.getHeight();
 //		}
 
+
 		tiledMapHelper.getCamera().update();
+
 		tiledMapHelper.render();
-
-
+		
 		polygonBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
 		polygonBatch.begin();
 		
@@ -145,6 +147,7 @@ public class WitchCraft implements ApplicationListener {
 		
 		polygonBatch.end();
 
+		
 		spriteBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
 		spriteBatch.begin();
 
