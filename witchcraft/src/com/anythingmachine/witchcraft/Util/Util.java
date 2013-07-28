@@ -5,13 +5,12 @@ package com.anythingmachine.witchcraft.Util;
 public class Util {
 
 	public static final float PIXELS_PER_METER = 60.0f;
-	public static final float BOX_TO_PIXEL = 256f;
-	public static final float PIXEL_TO_BOX = 1 / BOX_TO_PIXEL;
+	public static final float PIXEL_TO_BOX = 1 / PIXELS_PER_METER;
 	public static final float DEG_TO_RAD = 0.0174532925199432957f;
 	public static final float RAD_TO_DEG = 57.295779513082320876f;
 	public static final float PI = 3.141592653589793f;
 	public static final float TWO_PI = 2 * PI;
-	public static final float HALF_PI = PI / 2;
+	public static final float HALF_PI = PI / 2.f;
 	public static final float FOURTH_PI = PI / 4;
 	public static final float MIN_VALUE = 0x0.000002P-126f; // 1.4e-45f
 
@@ -20,6 +19,7 @@ public class Util {
 	 */
 	public static final short CATEGORY_PLAYER = 0x0002;
 	public static final short CATEGORY_SUBPLAYER = 0x0004;
+	public static final short CATEGORY_CAPE = 0x0008;
 	public static final short CATEGORY_PLATFORMS = 0x0010;
 	public static final short CATEGROY_HAZARD = 0x0100;
 	public static final short CATEGORY_IGNORE = 0x1000;
@@ -34,6 +34,8 @@ public class Util {
 			};
 	
 	public static final float offScreenGround = 0f;
+	
+	public static final int curveLength = 80;
 	
 	public static final int[] cps = {
 		150,425,

@@ -2,7 +2,7 @@ package com.anythingmachine.witchcraft;
 
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.agents.Player;
+import com.anythingmachine.witchcraft.agents.player.Player;
 import com.anythingmachine.witchcraft.ground.Ground;
 import com.anythingmachine.witchcraft.ground.Ground.GroundType;
 import com.anythingmachine.witchcraft.tiledMaps.TiledMapHelper;
@@ -88,7 +88,7 @@ public class WitchCraft implements ApplicationListener {
 					new Vector2(Util.cps[i]-240, Util.cps[i+1]-250),
 					new Vector2(Util.cps[i+2]-240, Util.cps[i+3]-250),
 					new Vector2(Util.cps[i+4]-240, Util.cps[i+5]-250),
-					new Vector2(Util.cps[i+6]-240, Util.cps[i+7]-250), 7, -1, GroundType.GRASS);
+					new Vector2(Util.cps[i+6]-240, Util.cps[i+7]-250), 7, -1, GroundType.DESERT);
 		}
 
 		player = new Player( world, ground );	
@@ -115,19 +115,20 @@ public class WitchCraft implements ApplicationListener {
 
 		player.update(dT);
 
-		tiledMapHelper.getCamera().position.x = Util.PIXELS_PER_METER
+		float xGrid = tiledMapHelper.getCamera().position.x = Util.PIXELS_PER_METER
 				* player.getPosMeters().x;
-
-		if (tiledMapHelper.getCamera().position.x < Gdx.graphics.getWidth() / 2) {
+		float yGrid = tiledMapHelper.getCamera().position.y;
+		
+		if (xGrid < Gdx.graphics.getWidth() / 2) {
 			tiledMapHelper.getCamera().position.x = Gdx.graphics.getWidth() / 2;
 		}
-		if (tiledMapHelper.getCamera().position.x >= tiledMapHelper.getWidth()
+		if (xGrid >= tiledMapHelper.getWidth()
 				- Gdx.graphics.getWidth() / 2) {
 			tiledMapHelper.getCamera().position.x = tiledMapHelper.getWidth()
 					- Gdx.graphics.getWidth() / 2;
 		}
 
-		if (tiledMapHelper.getCamera().position.y < Gdx.graphics.getHeight() / 2) {
+		if (yGrid < Gdx.graphics.getHeight() / 2) {
 			tiledMapHelper.getCamera().position.y = Gdx.graphics.getHeight();
 		}
 //		if (tiledMapHelper.getCamera().position.y >= tiledMapHelper.getHeight()
@@ -135,22 +136,29 @@ public class WitchCraft implements ApplicationListener {
 //			tiledMapHelper.getCamera().position.y = tiledMapHelper.getHeight();
 //		}
 
+		int camWorldSize = (int)(Gdx.graphics.getWidth() * tiledMapHelper.getCamera().zoom);
 
 		tiledMapHelper.getCamera().update();
 
 		tiledMapHelper.render();
+
 		
 		polygonBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
 		polygonBatch.begin();
 		
-		ground.draw(polygonBatch);
-		
+		ground.draw(polygonBatch, 
+				(int)(xGrid-(Gdx.graphics.getWidth()/2.f))/Util.curveLength, 
+				camWorldSize / Util.curveLength );
+
 		polygonBatch.end();
 
-		
 		spriteBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
 		spriteBatch.begin();
-
+		
+		ground.drawGroundElems(spriteBatch, 
+				(int)(xGrid-(Gdx.graphics.getWidth()/2.f))/Util.curveLength,
+				camWorldSize / Util.curveLength );
+		
 		player.draw(spriteBatch);
 
 		spriteBatch.end();
@@ -158,10 +166,10 @@ public class WitchCraft implements ApplicationListener {
 		 * Draw this last, so we can see the collision boundaries on top of the
 		 * sprites and map.
 		 */
-		debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
-				Util.PIXELS_PER_METER,
-				Util.PIXELS_PER_METER,
-				Util.PIXELS_PER_METER));
+//		debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
+//				Util.PIXELS_PER_METER,
+//				Util.PIXELS_PER_METER,
+//				Util.PIXELS_PER_METER));
 
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS

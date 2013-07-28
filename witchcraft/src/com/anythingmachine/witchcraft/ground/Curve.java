@@ -1,16 +1,20 @@
 package com.anythingmachine.witchcraft.ground;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.anythingmachine.gdxwrapper.PolygonRegionWrap;
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.gdxwrapper.PolygonSpriteWrap;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Vector4;
+import com.anythingmachine.witchcraft.ground.Ground.GroundElemType;
 import com.anythingmachine.witchcraft.ground.Ground.GroundType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -21,9 +25,8 @@ public class Curve {
 	private Vector2 p2;
 	private Vector2 p3;
 	private int zLayer;
-	private GroundType type;
 	private PolygonSpriteWrap sprite;
-	private ArrayList<PolygonSpriteWrap> sprites;
+	private ArrayList<GroundElem> groundElems;
 	//private Body body;
 	
 	public Curve( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, 
@@ -32,9 +35,20 @@ public class Curve {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.p3 = p3;
-		this.type = type;
 		this.zLayer = zLayer;
-		generateShape(res, world);
+		groundElems = new ArrayList<GroundElem>();
+		Texture texture = new Texture(Gdx.files.internal("data/desertTexture.png")); 
+		texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		switch ( type ) {
+		case DESERT:
+			//generateRocks(res);
+			//generateGrass(res);
+			break;
+		case GRASS:
+			generateGrass(res);
+			break;
+		}
+		generateShape(res, world, texture);
 	}
 	
 	public Vector2 firstPointOnCurve() {
@@ -45,8 +59,14 @@ public class Curve {
 		return p2;
 	}
 	
-	public void draw( PolygonSpriteBatchWrap batch) {
+	public void draw( PolygonSpriteBatchWrap batch ) {
 		sprite.draw(batch);
+	}
+	
+	public void drawGroundElems( SpriteBatch batch ) {
+		for( GroundElem g: groundElems ) {
+			g.draw(batch);
+		}
 	}
 	
 	/**
@@ -95,7 +115,7 @@ public class Curve {
 	 * and the bottom segment closing the polygon 
 	 * @param res
 	 */
-	private void generateShape( int res, World world ) {
+	private void generateShape( int res, World world, Texture texture ) {
 		Vector4 T = new Vector4();
 		Vector4 T0 = new Vector4();
 		Vector4 T1 = new Vector4();
@@ -148,9 +168,7 @@ public class Curve {
 //		bodyPoints[res+2] = new Vector2( p1.x, Util.offScreenGround );
 		
 		//create the polygon sprite
-		Texture desertTexture = new Texture(Gdx.files.internal("data/desertTexture.png")); 
-		desertTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		PolygonRegionWrap polyReg = new PolygonRegionWrap(new TextureRegion(desertTexture), polyPoints );
+		PolygonRegionWrap polyReg = new PolygonRegionWrap(new TextureRegion(texture), polyPoints );
 		sprite = new PolygonSpriteWrap(polyReg);
 		sprite.setOrigin(p1.x, p1.y);
 		
@@ -164,5 +182,117 @@ public class Curve {
 //		//Make a list of points for the ground.
 //		shape.set(bodyPoints);
 //		body.createFixture(shape, 1.f);
+	}
+	
+	private void generateRocks(int res){
+		float diff = p2.x - p1.x;
+		float inc = diff / (float)res;
+		float dX = p1.x;
+		Random rand = new Random();
+		for( int i=0; i< res; i++ ) {
+			Vector2 point = findPointOnHCurve(dX);
+			float xNoise = rand.nextInt(10);
+			float yNoise = -6;//rand.nextInt(40) * -1;
+			Vector2 pos = new Vector2(point.x+xNoise, point.y+yNoise);
+			float size = Math.max(rand.nextFloat(), 0.2f) * 0.01f;
+			float degree = 0;//(float)rand.nextInt(360);
+			Color color = Color.DARK_GRAY;
+			switch(rand.nextInt(4)){
+			case 0:
+				break;
+			case 1:
+				//color = new Color(104.f/255.f, 56.f/255.f, 15.f/255.f, 1f);
+				break;
+			case 2:
+				//color = new Color(104.f/255.f, 19.f/255.f, 4.f/255.f, 1f);
+				break;
+			case 3:
+				//color = new Color(103.f/255.f, 15.f/255.f, 1.f/255.f, 1f);
+				break;
+			default:
+				break;
+			}
+			this.groundElems.add(new GroundElem(pos,size,degree,color, GroundElemType.ROCK));
+			point = findPointOnHCurve(dX);
+			xNoise = 0;//rand.nextInt(10);
+			yNoise = -6;
+			pos = new Vector2(point.x+xNoise, point.y+yNoise);
+			size = Math.max(rand.nextFloat(), 0.2f) * 0.01f;
+			degree = 0;//(float)rand.nextInt(360);
+			color = Color.DARK_GRAY;
+			switch(rand.nextInt(4)){
+			case 0:
+				break;
+			case 1:
+				//color = new Color(204.f/255.f, 136.f/255.f, 85.f/255.f, 1f);
+				break;
+			case 2:
+				//color = new Color(204.f/255.f, 119.f/255.f, 34.f/255.f, 1f);
+				break;
+			case 3:
+				//color = new Color(153.f/255.f, 85.f/255.f, 17.f/255.f, 1f);
+				break;
+			default:
+				break;
+			}
+			this.groundElems.add(new GroundElem(pos,size,degree,color, GroundElemType.ROCK));
+			dX += inc;
+		}
+	}
+	
+	private void generateGrass(int res){
+		float diff = p2.x - p1.x;
+		float inc = diff / (float)res;
+		float dX = p1.x;
+		Random rand = new Random();
+		for( int i=0; i< res; i++ ) {
+			Vector2 point = findPointOnHCurve(dX);
+			float xNoise = rand.nextInt(10);
+			float yNoise = -3;//rand.nextInt(40) * -1;
+			Vector2 pos = new Vector2(point.x+xNoise, point.y+yNoise);
+			float size = Math.max(rand.nextFloat(), 0.2f) * 0.03f;
+			float degree = 0;//(float)rand.nextInt(360);
+			Color color = Color.WHITE;
+			switch(rand.nextInt(4)){
+			case 0:
+				break;
+			case 1:
+				//color = new Color(104.f/255.f, 56.f/255.f, 15.f/255.f, 1f);
+				break;
+			case 2:
+				//color = new Color(104.f/255.f, 19.f/255.f, 4.f/255.f, 1f);
+				break;
+			case 3:
+				//color = new Color(103.f/255.f, 15.f/255.f, 1.f/255.f, 1f);
+				break;
+			default:
+				break;
+			}
+			this.groundElems.add(new GroundElem(pos,size,degree,color, GroundElemType.GRASS));
+			point = findPointOnHCurve(dX);
+			xNoise = rand.nextInt(10);
+			yNoise = -3;//rand.nextInt(40) * -1;
+			pos = new Vector2(point.x+xNoise, point.y+yNoise);
+			size = Math.max(rand.nextFloat(), 0.2f) * 0.05f;
+			degree = 0;//(float)rand.nextInt(360);
+			color = Color.WHITE;
+			switch(rand.nextInt(4)){
+			case 0:
+				break;
+			case 1:
+				//color = new Color(104.f/255.f, 56.f/255.f, 15.f/255.f, 1f);
+				break;
+			case 2:
+				//color = new Color(104.f/255.f, 19.f/255.f, 4.f/255.f, 1f);
+				break;
+			case 3:
+				//color = new Color(103.f/255.f, 15.f/255.f, 1.f/255.f, 1f);
+				break;
+			default:
+				break;
+			}
+			this.groundElems.add(new GroundElem(pos,size,degree,color, GroundElemType.GRASS));
+			dX += inc;
+		}
 	}
 }

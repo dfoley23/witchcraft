@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.ground;
 import java.util.ArrayList;
 
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -13,15 +14,31 @@ public class Ground {
 	public enum GroundType {
 		VERYGREEN, DEADGRASS, GRASS, DESERT, MUD, OLDBRICK, NICEBRICK 
 	}
+
+	public enum GroundElemType { 
+		ROCK, GRASS, BRICK
+	}
 	
 	public Ground(World world){
 		this.world = world;
 		curves = new ArrayList<Curve>();
 	}
 	
-	public void draw( PolygonSpriteBatchWrap batch ) {
-		for ( Curve c: curves ) {
-			c.draw(batch);
+	public void draw( PolygonSpriteBatchWrap batch, int startCurve, int numCurves ) {
+		startCurve = Math.max( startCurve, 0);		
+		int endCurve = startCurve + numCurves+2;
+		endCurve = Math.min(endCurve, curves.size());
+		for ( int i=startCurve; i< endCurve; i++ ) {
+			curves.get(i).draw(batch);
+		}
+	}
+	
+	public void drawGroundElems( SpriteBatch batch, int startCurve, int numCurves ) {
+		startCurve = Math.max( startCurve, 0);		
+		int endCurve = startCurve + numCurves+1;
+		endCurve = Math.min(endCurve, curves.size());
+		for ( int i=startCurve; i< endCurve; i++ ) {
+			curves.get(i).drawGroundElems(batch);
 		}
 	}
 	
