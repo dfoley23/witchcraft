@@ -15,7 +15,7 @@ public class Cape {
 	
 	public Cape(Vector2 pinPos, World world, int length, float dY) {
 		linkParts = new ArrayList< Link >( );
-		pin = new Link( world, pinPos, new Texture(Gdx.files.internal("data/cape0Tex.png")));
+		pin = new Link( world, pinPos, new Texture(Gdx.files.internal("data/capePinTex.png")));
 		pin.setBodyType(BodyType.KinematicBody);
 
 		createCape(length, world, dY);
@@ -40,7 +40,9 @@ public class Cape {
 	
 	public void flipPinSprite() {
 		pin.flipSprite();
-		linkParts.get(0).flipSprite();
+		for ( Link l: linkParts ) {
+			l.flipSprite();
+		}
 	}
 	
 	private void createCape( int length, World world, float dY ) {

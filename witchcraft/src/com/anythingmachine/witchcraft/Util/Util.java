@@ -20,8 +20,7 @@ public class Util {
 	public static final short CATEGORY_PLAYER = 0x0002;
 	public static final short CATEGORY_SUBPLAYER = 0x0004;
 	public static final short CATEGORY_CAPE = 0x0008;
-	public static final short CATEGORY_PLATFORMS = 0x0010;
-	public static final short CATEGROY_HAZARD = 0x0100;
+	public static final short CATEGORY_TILES= 0x0010;
 	public static final short CATEGORY_IGNORE = 0x1000;
 	public static final short CATEGORY_NOTHING = 0x0000;
 	public static final short CATEGORY_EVERYTHING = -1;

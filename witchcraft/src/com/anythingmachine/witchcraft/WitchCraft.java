@@ -1,5 +1,10 @@
 package com.anythingmachine.witchcraft;
 
+import java.awt.Color;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.player.Player;
@@ -9,7 +14,6 @@ import com.anythingmachine.witchcraft.tiledMaps.TiledMapHelper;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -27,6 +31,10 @@ public class WitchCraft implements ApplicationListener {
 	private SpriteBatch spriteBatch;
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
+	private float xGrid;
+	private int camWorldSize;
+	private Calendar cal;
+	private float dawnDuskProgress = 0;
 	
 	/**
 	 * The screen's width and height. This may not match that computed by
@@ -53,6 +61,9 @@ public class WitchCraft implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Date date = new Date();
+		cal = GregorianCalendar.getInstance();
+		cal.setTime(date);
 		/**
 		 * If the viewport's size is not yet known, determine it here.
 		 */
@@ -111,20 +122,20 @@ public class WitchCraft implements ApplicationListener {
 		world.step(dT, 3, 3);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glClearColor(0f, 0.0f, 0.0f, 0);
+		Color c = getTimeOfDay();
+		Gdx.gl.glClearColor(c.getRed()*0.0035f, c.getGreen()*0.0035f, c.getBlue(), c.getAlpha());
 
 		player.update(dT);
 
-		float xGrid = tiledMapHelper.getCamera().position.x = Util.PIXELS_PER_METER
+		xGrid = tiledMapHelper.getCamera().position.x = Util.PIXELS_PER_METER
 				* player.getPosMeters().x;
 		float yGrid = tiledMapHelper.getCamera().position.y;
 		
 		if (xGrid < Gdx.graphics.getWidth() / 2) {
-			tiledMapHelper.getCamera().position.x = Gdx.graphics.getWidth() / 2;
-		}
-		if (xGrid >= tiledMapHelper.getWidth()
+			xGrid = tiledMapHelper.getCamera().position.x = Gdx.graphics.getWidth() / 2;
+		} else if (xGrid >= tiledMapHelper.getWidth()
 				- Gdx.graphics.getWidth() / 2) {
-			tiledMapHelper.getCamera().position.x = tiledMapHelper.getWidth()
+			xGrid = tiledMapHelper.getCamera().position.x = tiledMapHelper.getWidth()
 					- Gdx.graphics.getWidth() / 2;
 		}
 
@@ -136,12 +147,11 @@ public class WitchCraft implements ApplicationListener {
 //			tiledMapHelper.getCamera().position.y = tiledMapHelper.getHeight();
 //		}
 
-		int camWorldSize = (int)(Gdx.graphics.getWidth() * tiledMapHelper.getCamera().zoom);
+		camWorldSize = (int)(Gdx.graphics.getWidth() * tiledMapHelper.getCamera().zoom);
 
 		tiledMapHelper.getCamera().update();
-
-		tiledMapHelper.render();
-
+		
+		tiledMapHelper.render(this);
 		
 		polygonBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
 		polygonBatch.begin();
@@ -151,17 +161,7 @@ public class WitchCraft implements ApplicationListener {
 				camWorldSize / Util.curveLength );
 
 		polygonBatch.end();
-
-		spriteBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
-		spriteBatch.begin();
 		
-		ground.drawGroundElems(spriteBatch, 
-				(int)(xGrid-(Gdx.graphics.getWidth()/2.f))/Util.curveLength,
-				camWorldSize / Util.curveLength );
-		
-		player.draw(spriteBatch);
-
-		spriteBatch.end();
 		/**
 		 * Draw this last, so we can see the collision boundaries on top of the
 		 * sprites and map.
@@ -182,6 +182,44 @@ public class WitchCraft implements ApplicationListener {
 		lastRender = now;
 	}
 
+	public Color getTimeOfDay() {
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		if ( hour >= 20 || hour < 5) {
+			return Color.DARK_GRAY;
+		} else if ( hour >= 6 && hour < 19 ) {
+			return Color.WHITE;
+		} else {
+			if( hour < 6 ){
+				int min = cal.get(Calendar.MINUTE);				
+				if( min == 0 ) {
+					dawnDuskProgress = 0.25f;
+				} else {
+					dawnDuskProgress = ((float)min/60.f * .75f) + 0.25f;
+				}
+				return new Color(dawnDuskProgress,dawnDuskProgress,dawnDuskProgress);
+			} else {
+				int min = cal.get(Calendar.MINUTE);
+				if( min == 0 ) {
+					dawnDuskProgress = 1f;
+				} else {
+					dawnDuskProgress = ((1f-(float)min/60.f) * .75f) + 0.25f;
+				}
+				return new Color(dawnDuskProgress,dawnDuskProgress,dawnDuskProgress);
+			}
+		}
+	}
+	
+	public void drawPlayerLayer() {	
+		spriteBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
+		spriteBatch.begin();
+		ground.drawGroundElems(spriteBatch, 
+				(int)(xGrid-(Gdx.graphics.getWidth()/2.f))/Util.curveLength,
+				camWorldSize / Util.curveLength );
+		
+		player.draw(spriteBatch);
+		spriteBatch.end();
+	}
+	
 	@Override
 	public void resize(int width, int height) {
 	}

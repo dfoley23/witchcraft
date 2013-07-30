@@ -3,9 +3,29 @@
  <tileset firstgid="1" name="main" tilewidth="32" tileheight="32">
   <image source="level.png" width="32" height="64"/>
  </tileset>
- <layer name="Tile Layer 1" width="60" height="15">
+ <layer name="background2" width="60" height="15">
   <data encoding="base64" compression="zlib">
-   eJztz7EJAAAIA0HJ/kOLvQ5g8geCRZqvQjotv7ahCR3nil56ndBLr5O03pHWC3zQZaUAcQ==
+   eJztzzEKAEAIA0HJ/x9texxYaKVJBkLqjTB1+J4dnilQ762eBRpj0Oll6J70Xm6e9l5tVus1s50SdSQApQ==
+  </data>
+ </layer>
+ <layer name="background3" width="60" height="15">
+  <data encoding="base64" compression="zlib">
+   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
+  </data>
+ </layer>
+ <layer name="background4" width="60" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUUAswQTEx4rjUDiUw6l/c4qP+HXpg1L+4xUf9O/TASPPvKBgFo4B8AADR7gBh
+  </data>
+ </layer>
+ <layer name="playerLayer" width="60" height="15">
+  <data encoding="base64" compression="zlib">
+   eJztz0EKADAIA0H9/6d7zykFKQ3ugAh7S9VbPfx/14OXYPvem64tAXv9ri0Be/2uLQF7/a4twba9AOYcYasAmQ==
+  </data>
+ </layer>
+ <layer name="foreground" width="60" height="15">
+  <data encoding="base64" compression="zlib">
+   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
   </data>
  </layer>
 </map>

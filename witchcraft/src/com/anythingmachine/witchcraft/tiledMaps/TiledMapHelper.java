@@ -30,11 +30,12 @@ package com.anythingmachine.witchcraft.tiledMaps;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.anythingmachine.gdxwrapper.TileMapRenderer;
+import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
-import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
@@ -45,19 +46,19 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class TiledMapHelper {
-	private static final int[] layersList = { 0 };
+	private int[] layersList;
 
 	/**
 	 * Renders the part of the map that should be visible to the user.
 	 */
-	public void render() {
+	public void render(WitchCraft main) {
 		tileMapRenderer.getProjectionMatrix().set(camera.combined);
 
 		Vector3 tmp = new Vector3();
 		tmp.set(0, 0, 0);
 		camera.unproject(tmp);
 
-		tileMapRenderer.render((int) tmp.x, (int) tmp.y,
+		tileMapRenderer.render(main, (int) tmp.x, (int) tmp.y,
 				Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), layersList);
 	}
 
@@ -119,6 +120,12 @@ public class TiledMapHelper {
 		tileAtlas = new TileAtlas(map, packFileDirectory);
 
 		tileMapRenderer = new TileMapRenderer(map, tileAtlas, 16, 16);
+
+		int size = tileMapRenderer.getMap().layers.size();
+		layersList = new int[size];
+		for (int i = 0; i < size; i++) {
+			layersList[i] = i;
+		}
 	}
 
 	/**
@@ -188,7 +195,7 @@ public class TiledMapHelper {
 
 		for (int y = 0; y < getMap().height; y++) {
 			for (int x = 0; x < getMap().width; x++) {
-				int tileType = getMap().layers.get(0).tiles[(getMap().height - 1)
+				int tileType = getMap().layers.get(3).tiles[(getMap().height - 1)
 						- y][x];
 
 				for (int n = 0; n < tileCollisionJoints.get(
@@ -210,11 +217,16 @@ public class TiledMapHelper {
 		Body groundBody = world.createBody(groundBodyDef);
 		for (LineSegment lineSegment : collisionLineSegments) {
 			EdgeShape environmentShape = new EdgeShape();
-			
-			environmentShape.set(
-					lineSegment.start().mul(1 / pixelsPerMeter), lineSegment
-							.end().mul(1 / pixelsPerMeter));
+
+			environmentShape.set(lineSegment.start().mul(1 / pixelsPerMeter),
+					lineSegment.end().mul(1 / pixelsPerMeter));
 			groundBody.createFixture(environmentShape, 0);
+//			for( Fixture fix: groundBody.getFixtureList() ) {
+//				Filter filter = new Filter();
+//				filter.categoryBits = Util.CATEGORY_TILES;
+//				filter.maskBits = ~Util.CATEGORY_CAPE;
+//				fix.setFilterData(filter);
+//			}
 			environmentShape.dispose();
 		}
 
@@ -224,26 +236,26 @@ public class TiledMapHelper {
 		 * try to push them out.
 		 */
 
-//		EdgeShape mapBounds = new EdgeShape();
-//		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(getWidth()
-//				/ pixelsPerMeter, 0.0f));
-//		groundBody.createFixture(mapBounds, 0);
-//
-//		mapBounds.set(new Vector2(0.0f, getHeight() / pixelsPerMeter),
-//				new Vector2(getWidth() / pixelsPerMeter, getHeight()
-//						/ pixelsPerMeter));
-//		groundBody.createFixture(mapBounds, 0);
-//
-//		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0.0f,
-//				getHeight() / pixelsPerMeter));
-//		groundBody.createFixture(mapBounds, 0);
-//
-//		mapBounds.set(new Vector2(getWidth() / pixelsPerMeter, 0.0f),
-//				new Vector2(getWidth() / pixelsPerMeter, getHeight()
-//						/ pixelsPerMeter));
-//		groundBody.createFixture(mapBounds, 0);
-//
-//		mapBounds.dispose();
+		// EdgeShape mapBounds = new EdgeShape();
+		// mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(getWidth()
+		// / pixelsPerMeter, 0.0f));
+		// groundBody.createFixture(mapBounds, 0);
+		//
+		// mapBounds.set(new Vector2(0.0f, getHeight() / pixelsPerMeter),
+		// new Vector2(getWidth() / pixelsPerMeter, getHeight()
+		// / pixelsPerMeter));
+		// groundBody.createFixture(mapBounds, 0);
+		//
+		// mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0.0f,
+		// getHeight() / pixelsPerMeter));
+		// groundBody.createFixture(mapBounds, 0);
+		//
+		// mapBounds.set(new Vector2(getWidth() / pixelsPerMeter, 0.0f),
+		// new Vector2(getWidth() / pixelsPerMeter, getHeight()
+		// / pixelsPerMeter));
+		// groundBody.createFixture(mapBounds, 0);
+		//
+		// mapBounds.dispose();
 	}
 
 	/**
@@ -294,7 +306,7 @@ public class TiledMapHelper {
 	public void prepareCamera(int screenWidth, int screenHeight) {
 		camera = new OrthographicCamera(screenWidth, screenHeight);
 
-		camera.position.set(screenWidth/2.0f, screenHeight/2.0f, 0);
+		camera.position.set(screenWidth / 2.0f, screenHeight / 2.0f, 0);
 	}
 
 	/**
