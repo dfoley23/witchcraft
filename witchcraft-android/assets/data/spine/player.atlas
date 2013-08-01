@@ -2,128 +2,128 @@ player.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+hood
+  rotate: false
+  xy: 134, 2
+  size: 67, 94
+  orig: 67, 94
+  offset: 0, 0
+  index: -1
+broom
+  rotate: false
+  xy: 2, 2
+  size: 66, 240
+  orig: 66, 240
+  offset: 0, 0
+  index: -1
 left-lower-leg
   rotate: false
-  xy: 38, 93
+  xy: 106, 244
   size: 33, 70
   orig: 33, 70
   offset: 0, 0
   index: -1
 right-shoulder
   rotate: false
-  xy: 140, 41
+  xy: 2, 394
   size: 39, 45
   orig: 39, 45
   offset: 0, 0
   index: -1
 head
   rotate: false
-  xy: 146, 93
-  size: 67, 94
-  orig: 67, 94
+  xy: 100, 2
+  size: 32, 54
+  orig: 32, 54
   offset: 0, 0
   index: -1
 torso
   rotate: false
-  xy: 2, 189
+  xy: 79, 394
   size: 68, 96
   orig: 68, 96
   offset: 0, 0
   index: -1
 right-foot
   rotate: false
-  xy: 99, 2
+  xy: 96, 316
   size: 63, 33
   orig: 63, 33
   offset: 0, 0
   index: -1
 left-foot
   rotate: false
-  xy: 32, 2
+  xy: 2, 244
   size: 65, 31
   orig: 65, 31
   offset: 0, 0
   index: -1
 closedEyes
   rotate: false
-  xy: 2, 2
+  xy: 70, 2
   size: 28, 9
   orig: 28, 9
   offset: 0, 0
   index: -1
-neck
-  rotate: false
-  xy: 39, 41
-  size: 35, 41
-  orig: 35, 41
-  offset: 0, 0
-  index: -1
 right-upper-leg
   rotate: false
-  xy: 2, 93
+  xy: 43, 394
   size: 34, 63
   orig: 34, 63
   offset: 0, 0
   index: -1
 left-shoulder
   rotate: false
-  xy: 181, 41
+  xy: 141, 244
   size: 28, 46
   orig: 28, 46
   offset: 0, 0
   index: -1
 left-arm
   rotate: false
-  xy: 164, 2
+  xy: 203, 2
   size: 37, 35
   orig: 37, 35
   offset: 0, 0
   index: -1
 left-hand
   rotate: false
-  xy: 2, 41
+  xy: 69, 244
   size: 35, 40
   orig: 35, 40
   offset: 0, 0
   index: -1
-fullimg
-  rotate: false
-  xy: 72, 189
-  size: 148, 294
-  orig: 148, 294
-  offset: 0, 0
-  index: -1
 right-arm
   rotate: false
-  xy: 211, 41
+  xy: 66, 316
   size: 28, 50
   orig: 28, 50
   offset: 0, 0
   index: -1
 right-lower-leg
   rotate: false
-  xy: 108, 93
+  xy: 199, 316
   size: 36, 76
   orig: 36, 76
   offset: 0, 0
   index: -1
 pelvis
   rotate: false
-  xy: 76, 41
+  xy: 2, 316
   size: 62, 43
   orig: 62, 43
   offset: 0, 0
   index: -1
 left-upper-leg
   rotate: false
-  xy: 73, 93
+  xy: 171, 244
   size: 33, 70
   orig: 33, 70
   offset: 0, 0
   index: -1
 right-hand
   rotate: false
-  xy: 203, 2
+  xy: 161, 316
   size: 36, 37
   orig: 36, 37
   offset: 0, 0

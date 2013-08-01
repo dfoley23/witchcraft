@@ -29,7 +29,7 @@ public class Link {
 //		revoluteJointDef.bodyB = body;
 		revoluteJointDef.initialize( link.body, body,
 				new Vector2( body.getPosition().x, body.getPosition().y 
-						+ (sprite.getHeight()/4.f)*Util.PIXEL_TO_BOX) );
+						+ (sprite.getHeight()/2.f)*Util.PIXEL_TO_BOX) );
 //		revoluteJointDef.enableMotor = false;
 //		revoluteJointDef.collideConnected = false;	
 //		revoluteJointDef.referenceAngle = 0f;
@@ -72,20 +72,20 @@ public class Link {
 		bodyDef.position.set( pos.mul(Util.PIXEL_TO_BOX) );
 		bodyDef.type = BodyType.DynamicBody;
 		//bodyDef.allowSleep = false;
-		bodyDef.gravityScale = 0.25f;
+		//bodyDef.gravityScale = 1f;
 		CircleShape shape = new CircleShape( );
-		shape.setRadius(((width/4f))*Util.PIXEL_TO_BOX);
+		shape.setRadius(((width/2.0f))*Util.PIXEL_TO_BOX);
 		FixtureDef fixtureDef = new FixtureDef( );
-		fixtureDef.density = 0.001f;
-		fixtureDef.restitution = 0f;
+		fixtureDef.density = 0.05f;
+		//fixtureDef.restitution = 0f;
 		fixtureDef.shape = shape;
 		//fixtureDef.friction = 0.95f;
 		fixtureDef.isSensor = true;
 		//fixtureDef.filter.categoryBits = Util.CATEGORY_CAPE;
 		//fixtureDef.filter.maskBits = Util.CATEGORY_CAPE;
 		body = world.createBody( bodyDef );
-		body.setLinearDamping(4f);
-		body.setAngularDamping(4f);
+		body.setLinearDamping(1f);
+		body.setAngularDamping(1f);
 		body.createFixture( fixtureDef );
 	}
 }

@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
 import com.anythingmachine.witchcraft.ground.Ground;
 import com.anythingmachine.witchcraft.ground.Ground.GroundType;
@@ -26,6 +27,7 @@ public class WitchCraft implements ApplicationListener {
 	private TiledMapHelper tiledMapHelper;
 	private Texture overallTexture;
 	private Player player;
+	private NonPlayer npc1;
 	private Ground ground;
 	private PolygonSpriteBatchWrap polygonBatch;
 	private SpriteBatch spriteBatch;
@@ -103,6 +105,7 @@ public class WitchCraft implements ApplicationListener {
 		}
 
 		player = new Player( world, ground );	
+		npc1 = new NonPlayer( world, ground );
 		tiledMapHelper.loadCollisions("data/collisions.txt", world,
 				Util.PIXELS_PER_METER);
 
@@ -123,9 +126,10 @@ public class WitchCraft implements ApplicationListener {
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Color c = getTimeOfDay();
-		Gdx.gl.glClearColor(c.getRed()*0.0035f, c.getGreen()*0.0035f, c.getBlue(), c.getAlpha());
+		Gdx.gl.glClearColor(Math.min(c.getRed(), 0.1f), Math.min(c.getGreen(), 0.1f), Math.min(c.getBlue(), 0.5f), c.getAlpha());
 
 		player.update(dT);
+		npc1.update(dT);
 
 		xGrid = tiledMapHelper.getCamera().position.x = Util.PIXELS_PER_METER
 				* player.getPosMeters().x;
@@ -166,10 +170,10 @@ public class WitchCraft implements ApplicationListener {
 		 * Draw this last, so we can see the collision boundaries on top of the
 		 * sprites and map.
 		 */
-//		debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
-//				Util.PIXELS_PER_METER,
-//				Util.PIXELS_PER_METER,
-//				Util.PIXELS_PER_METER));
+		debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
+				Util.PIXELS_PER_METER,
+				Util.PIXELS_PER_METER,
+				Util.PIXELS_PER_METER));
 
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS
@@ -217,6 +221,7 @@ public class WitchCraft implements ApplicationListener {
 				camWorldSize / Util.curveLength );
 		
 		player.draw(spriteBatch);
+		npc1.draw(spriteBatch);
 		spriteBatch.end();
 	}
 	

@@ -46,8 +46,8 @@ public class Cape {
 	}
 	
 	private void createCape( int length, World world, float dY ) {
-		Vector2 pos = pin.getPositionPixels().sub(0f, dY);
 		Texture texture = new Texture(Gdx.files.internal("data/cape0Tex.png"));
+		Vector2 pos = pin.getPositionPixels().sub(0f, texture.getHeight()/2.f);
 		Link pastLink = pin;
 		for( int i=0; i<length; i++ ) {
 			if( i==1 || i == length -1 ) 
@@ -56,7 +56,7 @@ public class Cape {
 			l.createLinkJoint(pastLink, world);
 			linkParts.add(l);
 			pastLink = l;
-			pos.y -= dY;
+			pos.y -= texture.getHeight()/2.f;
 		}
 	}
 	

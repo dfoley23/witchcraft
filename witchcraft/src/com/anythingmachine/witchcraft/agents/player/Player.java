@@ -39,7 +39,6 @@ public class Player extends Agent {
 	
 	public Player( World world, Ground ground ) {
 		createBody( world );
-		cape = new Cape( body.getPosition().mul(Util.PIXELS_PER_METER).add(0f, 54f), world, 3, 17);
 		playerState = PlayerState.IDLE;
 		this.ground = ground;
 		this.curGroundSegment = 0;
@@ -70,13 +69,30 @@ public class Player extends Agent {
         skel.updateWorldTransform();
 
         neck = skel.findBone("neck");
-        
+
+		cape = new Cape(new Vector2(neck.getWorldX()+2, neck.getWorldY()-30), world, 3, 17);
 	}
 	
 	public void update( float dT ) {
 		float delta = Gdx.graphics.getDeltaTime();
 		
-		totalTime += delta;
+		Vector2 pos = body.getPosition().mul(Util.PIXELS_PER_METER).sub(0.0f, 32f);
+		if ( pos.x > curCurve.lastPointOnCurve().x) {
+			curGroundSegment++;
+			curCurve = ground.getCurve(curGroundSegment);
+		} else if ( pos.x < curCurve.firstPointOnCurve().x ) {
+			curGroundSegment--;
+			curCurve = ground.getCurve(curGroundSegment);
+		}
+		boolean onGround = false;
+		Vector2 groundPoint = ground.findPointOnCurve(curGroundSegment, pos.x);
+		if ( pos.y < groundPoint.y ) {
+			correctHeight(groundPoint.y);
+			onGround = true;
+		}
+
+		if( onGround || playerState != PlayerState.JUMPING || totalTime < 0.95f  ) 
+			totalTime += delta;
 		
 		/**
 		 * Detect requested motion.
@@ -138,7 +154,7 @@ public class Player extends Agent {
 				cape.flipPinSprite();
 			facingLeft = false;
 			skel.setFlipX(facingLeft);
-			if ( !inAir && playerState != PlayerState.WALKING )
+			if ( !doJump && playerState != PlayerState.WALKING )
 			{
 				totalTime = 0;
 		        skel.setToBindPose(); 
@@ -155,7 +171,7 @@ public class Player extends Agent {
 				cape.flipPinSprite();
 			facingLeft = true;
 			skel.setFlipX(facingLeft);
-			if( !inAir && playerState != PlayerState.WALKING )
+			if( !doJump && playerState != PlayerState.WALKING )
 			{
 				totalTime = 0;
 		        skel.setToBindPose(); 
@@ -167,21 +183,6 @@ public class Player extends Agent {
 			}
 		}
 		
-		Vector2 pos = body.getPosition().mul(Util.PIXELS_PER_METER).sub(0.0f, 32f);
-		if ( pos.x > curCurve.lastPointOnCurve().x) {
-			curGroundSegment++;
-			curCurve = ground.getCurve(curGroundSegment);
-		} else if ( pos.x < curCurve.firstPointOnCurve().x ) {
-			curGroundSegment--;
-			curCurve = ground.getCurve(curGroundSegment);
-		}
-		boolean onGround = false;
-		Vector2 groundPoint = ground.findPointOnCurve(curGroundSegment, pos.x);
-		if ( pos.y < groundPoint.y ) {
-			correctHeight(groundPoint.y);
-			onGround = true;
-		}
-
 		/**
 		 * The jumper dude can only jump while on the ground. There are better
 		 * ways to detect ground contact, but for our purposes it is sufficient
@@ -191,7 +192,10 @@ public class Player extends Agent {
 		 * 
 		 * As before, impulse is applied to the center of the jumper.
 		 */
-		if (doJump && (Math.abs(body.getLinearVelocity().y) < 1e-9 || onGround)) {
+		if (doJump ) {//&& (Math.abs(body.getLinearVelocity().y) < 1e-9 || onGround)) {
+			body.setGravityScale(0.5f);
+			body.applyLinearImpulse(new Vector2(0.0f,0.2f),
+					body.getWorldCenter());
 			if (playerState != PlayerState.JUMPING) {
 		        skel.setToBindPose(); 
 		        Bone root = skel.getRootBone();
@@ -200,8 +204,11 @@ public class Player extends Agent {
 				playerState = PlayerState.JUMPING;
 				animation = jump;
 				totalTime = 0;
+			} else {
+				
 			}
 		} else {
+			body.setGravityScale(1f);
 			doJump = false;
 			inAir = false;
 		}
@@ -211,7 +218,7 @@ public class Player extends Agent {
         root.setX(getPosPixels().x - 8f);
         root.setY(getPosPixels().y - 32f);
 		//if ( animation != null ) {
-			if ( totalTime > animation.getDuration() && !inAir && !moveLeft && !moveRight) {
+			if ( totalTime > animation.getDuration() && !moveLeft && !moveRight) {
 				totalTime = 0;
 				playerState = PlayerState.IDLE;
 				animation = idle;
@@ -220,13 +227,9 @@ public class Player extends Agent {
 		        root.setY(getPosPixels().y - 32f);
 		        root.setScaleX(0.5f);
 		        root.setScaleY(0.5f);
-			} else { 
-				if ( animation.equals(jump) && totalTime > .25f && totalTime < .27f && onGround) {
-					body.applyLinearImpulse(new Vector2(0.0f, 5f),
-							body.getWorldCenter());
-				}
+			} else if( onGround || playerState != PlayerState.JUMPING || totalTime < 0.95f ) {
 				animation.apply(skel, totalTime, true);
-			}
+			} 
 		//}
         skel.updateWorldTransform();
         skel.update(delta);

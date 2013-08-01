@@ -1,0 +1,102 @@
+knight.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+knight_xcf-upperRightLeg
+  rotate: false
+  xy: 117, 265
+  size: 35, 79
+  orig: 35, 79
+  offset: 0, 0
+  index: -1
+knight_xcf-rightfoot
+  rotate: false
+  xy: 70, 78
+  size: 37, 19
+  orig: 37, 19
+  offset: 0, 0
+  index: -1
+knight_xcf-upperRightArm
+  rotate: false
+  xy: 85, 265
+  size: 30, 67
+  orig: 30, 67
+  offset: 0, 0
+  index: -1
+knight_xcf-pelvis
+  rotate: false
+  xy: 2, 78
+  size: 66, 57
+  orig: 66, 57
+  offset: 0, 0
+  index: -1
+knight_xcf-upperLeftArm
+  rotate: false
+  xy: 2, 265
+  size: 41, 69
+  orig: 41, 69
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerRightArm
+  rotate: false
+  xy: 172, 2
+  size: 25, 65
+  orig: 25, 65
+  offset: 0, 0
+  index: -1
+knight_xcf-upperLeftLeg
+  rotate: false
+  xy: 45, 265
+  size: 38, 78
+  orig: 38, 78
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerLeftArm
+  rotate: false
+  xy: 101, 2
+  size: 38, 67
+  orig: 38, 67
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerLeftLeg
+  rotate: false
+  xy: 141, 2
+  size: 29, 62
+  orig: 29, 62
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerRightLeg
+  rotate: false
+  xy: 199, 2
+  size: 27, 74
+  orig: 27, 74
+  offset: 0, 0
+  index: -1
+knight_xcf-head
+  rotate: false
+  xy: 2, 2
+  size: 52, 49
+  orig: 52, 49
+  offset: 0, 0
+  index: -1
+knight_xcf-sword
+  rotate: false
+  xy: 2, 137
+  size: 154, 126
+  orig: 154, 126
+  offset: 0, 0
+  index: -1
+knight_xcf-torso
+  rotate: false
+  xy: 158, 137
+  size: 68, 67
+  orig: 68, 67
+  offset: 0, 0
+  index: -1
+knight_xcf-leftFoot
+  rotate: false
+  xy: 56, 2
+  size: 43, 15
+  orig: 43, 15
+  offset: 0, 0
+  index: -1
