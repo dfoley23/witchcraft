@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
+import com.anythingmachine.witchcraft.LuaEngine.LoadScript;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -31,12 +33,14 @@ public class WitchCraft implements ApplicationListener {
 	private Ground ground;
 	private PolygonSpriteBatchWrap polygonBatch;
 	private SpriteBatch spriteBatch;
+	private ShapeRenderer shapeRenderer;
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
 	private float xGrid;
 	private int camWorldSize;
 	private Calendar cal;
 	private float dawnDuskProgress = 0;
+	private LoadScript script;
 	
 	/**
 	 * The screen's width and height. This may not match that computed by
@@ -88,7 +92,9 @@ public class WitchCraft implements ApplicationListener {
 
 		spriteBatch = new SpriteBatch();
 		polygonBatch = new PolygonSpriteBatchWrap();
+		shapeRenderer = new ShapeRenderer();
 
+		script = new LoadScript("helloworld.lua");
 		/**
 		 * You can set the world's gravity in its constructor. Here, the gravity
 		 * is negative in the y direction (as in, pulling things down).
@@ -126,8 +132,8 @@ public class WitchCraft implements ApplicationListener {
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Color c = getTimeOfDay();
-		Gdx.gl.glClearColor(Math.min(c.getRed(), 0.1f), Math.min(c.getGreen(), 0.1f), Math.min(c.getBlue(), 0.5f), c.getAlpha());
-
+		Gdx.gl.glClearColor((float)c.getRed()/255f, (float)c.getGreen()/255f, (float)c.getBlue()/255f, 1f);
+        
 		player.update(dT);
 		npc1.update(dT);
 
@@ -157,23 +163,14 @@ public class WitchCraft implements ApplicationListener {
 		
 		tiledMapHelper.render(this);
 		
-		polygonBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
-		polygonBatch.begin();
-		
-		ground.draw(polygonBatch, 
-				(int)(xGrid-(Gdx.graphics.getWidth()/2.f))/Util.curveLength, 
-				camWorldSize / Util.curveLength );
-
-		polygonBatch.end();
-		
 		/**
 		 * Draw this last, so we can see the collision boundaries on top of the
 		 * sprites and map.
 		 */
-		debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
-				Util.PIXELS_PER_METER,
-				Util.PIXELS_PER_METER,
-				Util.PIXELS_PER_METER));
+//		debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
+//				Util.PIXELS_PER_METER,
+//				Util.PIXELS_PER_METER,
+//				Util.PIXELS_PER_METER));
 
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS
@@ -191,14 +188,14 @@ public class WitchCraft implements ApplicationListener {
 		if ( hour >= 20 || hour < 5) {
 			return Color.DARK_GRAY;
 		} else if ( hour >= 6 && hour < 19 ) {
-			return Color.WHITE;
+			return Color.LIGHT_GRAY;
 		} else {
 			if( hour < 6 ){
 				int min = cal.get(Calendar.MINUTE);				
 				if( min == 0 ) {
 					dawnDuskProgress = 0.25f;
 				} else {
-					dawnDuskProgress = ((float)min/60.f * .75f) + 0.25f;
+					dawnDuskProgress = ((float)min/60.f * .5f);
 				}
 				return new Color(dawnDuskProgress,dawnDuskProgress,dawnDuskProgress);
 			} else {
@@ -206,14 +203,23 @@ public class WitchCraft implements ApplicationListener {
 				if( min == 0 ) {
 					dawnDuskProgress = 1f;
 				} else {
-					dawnDuskProgress = ((1f-(float)min/60.f) * .75f) + 0.25f;
+					dawnDuskProgress = ((1f-(float)min/60.f) * .5f);
 				}
 				return new Color(dawnDuskProgress,dawnDuskProgress,dawnDuskProgress);
 			}
 		}
 	}
 	
-	public void drawPlayerLayer() {	
+	public void drawPlayerLayer() {			
+		polygonBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
+		polygonBatch.begin();
+		
+		ground.draw(polygonBatch, 
+				(int)(xGrid-(Gdx.graphics.getWidth()/2.f))/Util.curveLength, 
+				camWorldSize / Util.curveLength );
+
+		polygonBatch.end();
+		
 		spriteBatch.setProjectionMatrix(tiledMapHelper.getCamera().combined);
 		spriteBatch.begin();
 		ground.drawGroundElems(spriteBatch, 
@@ -223,6 +229,11 @@ public class WitchCraft implements ApplicationListener {
 		player.draw(spriteBatch);
 		npc1.draw(spriteBatch);
 		spriteBatch.end();
+		
+//		shapeRenderer.setProjectionMatrix(tiledMapHelper.getCamera().combined);
+//				
+//		player.drawCape(shapeRenderer);		
+
 	}
 	
 	@Override

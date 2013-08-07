@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -34,7 +35,7 @@ public class Player extends Agent {
 	private PlayerState playerState;
 	private Bone neck;
 	public enum PlayerState { 
-		IDLE, WALKING, JUMPING
+		IDLE, WALKING, JUMPING, FLYING, LANDING,
 	}
 	
 	public Player( World world, Ground ground ) {
@@ -75,6 +76,8 @@ public class Player extends Agent {
 	
 	public void update( float dT ) {
 		float delta = Gdx.graphics.getDeltaTime();
+
+		totalTime += delta;
 		
 		Vector2 pos = body.getPosition().mul(Util.PIXELS_PER_METER).sub(0.0f, 32f);
 		if ( pos.x > curCurve.lastPointOnCurve().x) {
@@ -89,17 +92,10 @@ public class Player extends Agent {
 		if ( pos.y < groundPoint.y ) {
 			correctHeight(groundPoint.y);
 			onGround = true;
+			if( playerState == PlayerState.FLYING )
+				playerState = PlayerState.LANDING;
 		}
-
-		if( onGround || playerState != PlayerState.JUMPING || totalTime < 0.95f  ) 
-			totalTime += delta;
 		
-		/**
-		 * Detect requested motion.
-		 */
-		if ( Gdx.input.isKeyPressed(Input.Keys.P))
-			Gdx.app.log("players position in pixels", "" + body.getPosition().mul(Util.PIXELS_PER_METER));
-			
 		boolean moveLeft = false;
 		boolean moveRight = false;
 		boolean doJump = false;
@@ -148,13 +144,18 @@ public class Player extends Agent {
 		 * The impulses are applied to the center of the jumper.
 		 */
 		if (moveRight) {
-			body.applyLinearImpulse(new Vector2(0.05f, 0.0f),
-					body.getWorldCenter());
+			if( !onGround ) {
+				body.applyLinearImpulse(new Vector2(0.15f, 0.0f),
+						body.getWorldCenter());
+			} else {
+				body.applyLinearImpulse(new Vector2(0.05f, 0.0f),
+						body.getWorldCenter());				
+			}
 			if( facingLeft ) 
 				cape.flipPinSprite();
 			facingLeft = false;
 			skel.setFlipX(facingLeft);
-			if ( !doJump && playerState != PlayerState.WALKING )
+			if ( onGround && !doJump && playerState != PlayerState.WALKING )
 			{
 				totalTime = 0;
 		        skel.setToBindPose(); 
@@ -165,13 +166,18 @@ public class Player extends Agent {
 				animation = walk;
 			}
 		} else if (moveLeft) {
-			body.applyLinearImpulse(new Vector2(-0.05f, 0.0f),
-					body.getWorldCenter());
+			if( !onGround ) {
+				body.applyLinearImpulse(new Vector2(-0.15f, 0.0f),
+						body.getWorldCenter());
+			} else {
+				body.applyLinearImpulse(new Vector2(-0.05f, 0.0f),
+						body.getWorldCenter());				
+			}
 			if( !facingLeft ) 
 				cape.flipPinSprite();
 			facingLeft = true;
 			skel.setFlipX(facingLeft);
-			if( !doJump && playerState != PlayerState.WALKING )
+			if( onGround && !doJump && playerState != PlayerState.WALKING )
 			{
 				totalTime = 0;
 		        skel.setToBindPose(); 
@@ -182,7 +188,6 @@ public class Player extends Agent {
 				animation = walk;
 			}
 		}
-		
 		/**
 		 * The jumper dude can only jump while on the ground. There are better
 		 * ways to detect ground contact, but for our purposes it is sufficient
@@ -196,7 +201,7 @@ public class Player extends Agent {
 			body.setGravityScale(0.5f);
 			body.applyLinearImpulse(new Vector2(0.0f,0.2f),
 					body.getWorldCenter());
-			if (playerState != PlayerState.JUMPING) {
+			if (onGround && playerState != PlayerState.JUMPING) {
 		        skel.setToBindPose(); 
 		        Bone root = skel.getRootBone();
 		        root.setScaleX(0.5f);
@@ -204,11 +209,9 @@ public class Player extends Agent {
 				playerState = PlayerState.JUMPING;
 				animation = jump;
 				totalTime = 0;
-			} else {
-				
-			}
+			} 
 		} else {
-			body.setGravityScale(1f);
+			//body.setGravityScale(1f);
 			doJump = false;
 			inAir = false;
 		}
@@ -217,7 +220,7 @@ public class Player extends Agent {
         Bone root = skel.getRootBone();
         root.setX(getPosPixels().x - 8f);
         root.setY(getPosPixels().y - 32f);
-		//if ( animation != null ) {
+		if ( playerState != PlayerState.FLYING ) {
 			if ( totalTime > animation.getDuration() && !moveLeft && !moveRight) {
 				totalTime = 0;
 				playerState = PlayerState.IDLE;
@@ -227,22 +230,39 @@ public class Player extends Agent {
 		        root.setY(getPosPixels().y - 32f);
 		        root.setScaleX(0.5f);
 		        root.setScaleY(0.5f);
+				cape.setGravityScale(1f);
 			} else if( onGround || playerState != PlayerState.JUMPING || totalTime < 0.95f ) {
 				animation.apply(skel, totalTime, true);
-			} 
-		//}
+			} else {
+				playerState = PlayerState.FLYING;
+//				if(!cape.isCapeRotated()) 
+//					cape.rotateCape(neck.getRotation()*Util.RAD_TO_DEG);
+			}
+		}
         skel.updateWorldTransform();
         skel.update(delta);
         if ( facingLeft ) {
-        	cape.movePinTowardsPos(neck.getWorldX()+2, neck.getWorldY()-30);
+        	if ( !onGround ) {
+            	cape.movePinTowardsPos(neck.getWorldX()+6, neck.getWorldY()-17);
+            } else {
+            	cape.movePinTowardsPos(neck.getWorldX()+2, neck.getWorldY()-30);
+            }
 		} else {
-        	cape.movePinTowardsPos(neck.getWorldX()-15, neck.getWorldY()-30);	
+			if ( !onGround ) {
+				cape.movePinTowardsPos(neck.getWorldX()-16, neck.getWorldY()-17);
+			} else {
+				cape.movePinTowardsPos(neck.getWorldX()-15, neck.getWorldY()-30);
+			}
         }
 	}
 	
 	public void draw( SpriteBatch batch ) {
         skel.draw(batch);
         cape.draw(batch);
+	}
+	
+	public void drawCape( ShapeRenderer renderer ) {
+		cape.drawShape(renderer);
 	}
 	
 	public Vector2 getPosMeters() {

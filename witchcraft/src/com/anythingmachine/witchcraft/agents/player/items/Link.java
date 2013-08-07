@@ -14,16 +14,21 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
 public class Link {
+	public Link parent;
 	public Body body;
-	private Sprite sprite;
+	public Sprite sprite;
+	private boolean isRotated = false;
 
 	public Link( World world, Vector2 pos, Texture texture ) {
 		sprite = new Sprite( texture );
 		constructBody( pos.cpy(), world, sprite.getWidth()/2.f, sprite.getHeight()/2.f );
 		sprite.setScale(1.5f);
+		parent = null;
 	}
 
 	public void createLinkJoint( Link link, World world ) {
+		parent = link;
+		sprite.setScale(1f);
 		RevoluteJointDef revoluteJointDef = new RevoluteJointDef( );
 //		revoluteJointDef.bodyA = link.body;
 //		revoluteJointDef.bodyB = body;
@@ -37,6 +42,7 @@ public class Link {
 //		revoluteJointDef.upperAngle = -Util.PI/6.f;
 //		revoluteJointDef.lowerAngle = Util.PI/6.f;
 		world.createJoint( revoluteJointDef );
+		sprite.setScale(1.5f);
 	}
 	
 	public void updatePos( Vector2 pos ) {
@@ -52,18 +58,28 @@ public class Link {
 	}
 	
 	public Vector2 getPositionPixels( ) {
-		return body.getPosition().mul(Util.PIXELS_PER_METER);
+		return body.getPosition().cpy().mul(Util.PIXELS_PER_METER);
 	}
 	
 	public void flipSprite() {
 		sprite.flip(true, false);
 	}
 	
+	public void rotateSprite(float degree ) {
+		sprite.rotate(degree);
+		isRotated = !isRotated;
+	}
+	
+	public void setGravityScale(float scale ) {
+		body.setGravityScale(scale);
+	}
+	
 	public void draw( SpriteBatch batch ) {
 		Vector2 pos =  body.getPosition().mul(Util.PIXELS_PER_METER)
 				.sub(sprite.getWidth()/4.f, sprite.getHeight()/4.f);
 		this.sprite.setPosition( pos.x, pos.y );
-		this.sprite.setRotation( Util.RAD_TO_DEG * body.getAngle( ) );
+		if( !isRotated )
+			this.sprite.setRotation( Util.RAD_TO_DEG * body.getAngle( ) );
 		this.sprite.draw( batch );
 	}
 
@@ -71,7 +87,7 @@ public class Link {
 		BodyDef bodyDef = new BodyDef( );
 		bodyDef.position.set( pos.mul(Util.PIXEL_TO_BOX) );
 		bodyDef.type = BodyType.DynamicBody;
-		//bodyDef.allowSleep = false;
+		bodyDef.allowSleep = false;
 		//bodyDef.gravityScale = 1f;
 		CircleShape shape = new CircleShape( );
 		shape.setRadius(((width/2.0f))*Util.PIXEL_TO_BOX);
