@@ -1,11 +1,11 @@
 package com.anythingmachine.witchcraft.agents;
 
+import java.util.ArrayList;
+
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.player.Player.PlayerState;
-import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.anythingmachine.witchcraft.ground.Ground;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -31,10 +31,18 @@ public class NonPlayer extends Agent {
 	private float totalTime = 0f;
 	private PlayerState playerState;
 	
-	public NonPlayer( World world, Ground ground ) {
-		createBody( world );
+	public NonPlayer( String name, Vector2 pos, World world, Ground ground ) {
+		createBody( world, pos );
 		playerState = PlayerState.IDLE;
 		this.ground = ground;
+		this.curGroundSegment = 0;
+		ArrayList<Vector2> points = ground.getCurveBeginPoints();
+		for(int i=0; i< points.size(); i++) {
+			if( pos.x > points.get(i).x ) {
+				this.curGroundSegment = i;
+			}
+		}
+			
 		this.curGroundSegment = 7;
 		curCurve = ground.getCurve(curGroundSegment);
 		
@@ -51,10 +59,11 @@ public class NonPlayer extends Agent {
         animation = idle;
         skel = new com.esotericsoftware.spine.Skeleton(sd);
 
+       	skel.setSkin(name);
         skel.setToBindPose();
         Bone root = skel.getRootBone();
-        root.setX(getPosPixels().x - 8f);
-        root.setY(getPosPixels().y - 8f);
+        root.setX(getPosPixels().x);
+        root.setY(getPosPixels().y - 64f);
         root.setScaleX(0.6f);
         root.setScaleY(0.7f);
         skel.updateWorldTransform();
@@ -84,16 +93,16 @@ public class NonPlayer extends Agent {
 
 
         Bone root = skel.getRootBone();
-        root.setX(getPosPixels().x - 8f);
-        root.setY(getPosPixels().y - 32f);
+        root.setX(getPosPixels().x);
+        root.setY(getPosPixels().y - 64f);
 		//if ( animation != null ) {
 			if ( totalTime > animation.getDuration() ) {//&& !inAir && !moveLeft && !moveRight) {
 				totalTime = 0;
 				playerState = PlayerState.IDLE;
 				animation = idle;
 		        skel.setToBindPose(); 
-		        root.setX(getPosPixels().x - 8f);
-		        root.setY(getPosPixels().y - 32f);
+		        root.setX(getPosPixels().x);
+		        root.setY(getPosPixels().y - 64f);
 		        root.setScaleX(0.6f);
 		        root.setScaleY(0.7f);
 			} else { 
@@ -133,11 +142,11 @@ public class NonPlayer extends Agent {
 		this.curGroundSegment++;
 	}
 	
-	private void createBody( World world ) {
+	private void createBody( World world, Vector2 pos ) {
 
 		BodyDef jumperBodyDef = new BodyDef();
 		jumperBodyDef.type = BodyDef.BodyType.DynamicBody;
-		jumperBodyDef.position.set(14.0f, 3.0f);
+		jumperBodyDef.position.set(pos.x, pos.y);
 
 		body = world.createBody(jumperBodyDef);
 

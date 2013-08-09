@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.witchcraft.LuaEngine.LoadScript;
 import com.anythingmachine.witchcraft.Util.Util;
+import static com.anythingmachine.witchcraft.Util.Util.DEV_MODE;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
 import com.anythingmachine.witchcraft.ground.Ground;
@@ -30,6 +31,7 @@ public class WitchCraft implements ApplicationListener {
 	private Texture overallTexture;
 	private Player player;
 	private NonPlayer npc1;
+	private NonPlayer npc2;
 	private Ground ground;
 	private PolygonSpriteBatchWrap polygonBatch;
 	private SpriteBatch spriteBatch;
@@ -111,7 +113,8 @@ public class WitchCraft implements ApplicationListener {
 		}
 
 		player = new Player( world, ground );	
-		npc1 = new NonPlayer( world, ground );
+		npc1 = new NonPlayer( "knight2", new Vector2(14.0f, 3.0f), world, ground );
+		npc2 = new NonPlayer( "knight1",new Vector2(10.0f, 3.0f), world, ground );
 		tiledMapHelper.loadCollisions("data/collisions.txt", world,
 				Util.PIXELS_PER_METER);
 
@@ -136,6 +139,7 @@ public class WitchCraft implements ApplicationListener {
         
 		player.update(dT);
 		npc1.update(dT);
+		npc2.update(dT);
 
 		xGrid = tiledMapHelper.getCamera().position.x = Util.PIXELS_PER_METER
 				* player.getPosMeters().x;
@@ -225,13 +229,16 @@ public class WitchCraft implements ApplicationListener {
 		ground.drawGroundElems(spriteBatch, 
 				(int)(xGrid-(Gdx.graphics.getWidth()/2.f))/Util.curveLength,
 				camWorldSize / Util.curveLength );
+		if( DEV_MODE ) {		
+			shapeRenderer.setProjectionMatrix(tiledMapHelper.getCamera().combined);
+			ground.drawDebugCurve(shapeRenderer);
+		}
 		
 		player.draw(spriteBatch);
+		npc2.draw(spriteBatch);
 		npc1.draw(spriteBatch);
 		spriteBatch.end();
-		
-//		shapeRenderer.setProjectionMatrix(tiledMapHelper.getCamera().combined);
-//				
+		//				
 //		player.drawCape(shapeRenderer);		
 
 	}

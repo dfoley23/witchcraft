@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -33,6 +35,14 @@ public class Ground {
 		}
 	}
 	
+	public ArrayList<Vector2> getCurveBeginPoints() {
+		ArrayList<Vector2> points = new ArrayList<Vector2>();
+		for(Curve c: curves) {
+			points.add(c.firstPointOnCurve());
+		}
+		return points;
+	}
+	
 	public void drawGroundElems( SpriteBatch batch, int startCurve, int numCurves ) {
 		startCurve = Math.max( startCurve, 0);		
 		int endCurve = startCurve + numCurves+1;
@@ -40,6 +50,15 @@ public class Ground {
 		for ( int i=startCurve; i< endCurve; i++ ) {
 			curves.get(i).drawGroundElems(batch);
 		}
+	}
+	
+	public void drawDebugCurve(ShapeRenderer renderer) {
+		renderer.begin(ShapeType.Line);
+		for( Curve c: curves ) {
+			renderer.line(c.firstPointOnCurve().x, c.firstPointOnCurve().y,
+					c.firstPointOnCurve().x, c.firstPointOnCurve().y+150);
+		}
+		renderer.end();
 	}
 	
 	public Vector2 findPointOnCurve( int index, float dX ) {

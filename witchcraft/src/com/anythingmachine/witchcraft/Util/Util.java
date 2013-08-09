@@ -4,6 +4,8 @@ package com.anythingmachine.witchcraft.Util;
 
 public class Util {
 
+	public static final boolean DEV_MODE = false;
+	
 	public static final float PIXELS_PER_METER = 60.0f;
 	public static final float PIXEL_TO_BOX = 1 / PIXELS_PER_METER;
 	public static final float DEG_TO_RAD = 0.0174532925199432957f;
