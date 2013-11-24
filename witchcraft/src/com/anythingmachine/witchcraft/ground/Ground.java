@@ -10,8 +10,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Ground {
-	ArrayList<Curve> curves;
-	World world;
+	private ArrayList<Curve> curves;
+	private World world;
+	private int numCurves = 0;
 	
 	public enum GroundType {
 		VERYGREEN, DEADGRASS, GRASS, DESERT, MUD, OLDBRICK, NICEBRICK 
@@ -65,14 +66,21 @@ public class Ground {
 		return curves.get(index).findPointOnHCurve(dX);
 	}
 	
+	public int getNumCurves() {
+		return numCurves;
+	}
+	
 	public Curve getCurve( int index ) {
 		return curves.get(index);
 	}
+	
 	public void addCurve( Curve curve ) {
 		curves.add( curve );
+		numCurves = curves.size()-1;
 	}
 	
 	public void createCurve( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, int res, int zLayer, GroundType type) {
 		curves.add(new Curve(p0, p1, p2, p3, res, zLayer, type, world));
+		numCurves = curves.size()-1;
 	}
 }

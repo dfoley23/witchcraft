@@ -1,4 +1,4 @@
-package com.anythingmachine.witchcraft.AIEngine;
+package com.anythingmachine.aiengine;
 
 public class Goal {
 	public String name;

@@ -1,9 +1,14 @@
 package com.anythingmachine.witchcraft.agents;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+import com.anythingmachine.aiengine.Action;
+import com.anythingmachine.aiengine.Goal;
+import com.anythingmachine.aiengine.State;
+import com.anythingmachine.aiengine.UtilityAI;
+import com.anythingmachine.aiengine.UtilityAI.AIState;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.agents.player.Player.PlayerState;
 import com.anythingmachine.witchcraft.ground.Ground;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,11 +34,14 @@ public class NonPlayer extends Agent {
 	private Animation idle;
 	private Animation animation;
 	private float totalTime = 0f;
-	private PlayerState playerState;
+	private State playerState;
+	private UtilityAI behavior;
+	private float aiChoiceTime = 0.f;
+	private AIState state = AIState.IDLE;
 	
 	public NonPlayer( String name, Vector2 pos, World world, Ground ground ) {
 		createBody( world, pos );
-		playerState = PlayerState.IDLE;
+		playerState = State.IDLE;
 		this.ground = ground;
 		this.curGroundSegment = 0;
 		ArrayList<Vector2> points = ground.getCurveBeginPoints();
@@ -68,11 +76,101 @@ public class NonPlayer extends Agent {
         root.setScaleY(0.7f);
         skel.updateWorldTransform();
         skel.setFlipX(true);
+        
+        Random rand = new Random();
+        //ai goals and actions
+        behavior = new UtilityAI();
+        behavior.addGoal(new Goal("Eat", rand.nextInt(5)+1));
+        behavior.addGoal(new Goal("Sleep", rand.nextInt(5)+1));
+        behavior.addGoal(new Goal("Hunt", rand.nextInt(20)+7));
+        Action action = new Action("eatBread", AIState.IDLE);
+        action.addAction(-5f, "Eat" );
+        action.addAction(1f, "Sleep" );
+        action.addAction(3f, "Hunt" );
+        behavior.addAction(action);
+        action = new Action("eatMeat",AIState.IDLE);
+        action.addAction(-7f, "Eat" );
+        action.addAction(2f, "Sleep" );
+        action.addAction(3f, "Hunt" );
+        behavior.addAction(action);
+        action = new Action("sleepInHouse",AIState.IDLE);
+        action.addAction(3f, "Eat" );
+        action.addAction(-7f, "Sleep" );
+        action.addAction(5f, "Hunt" );
+        behavior.addAction(action);
+        action = new Action("sleepInBed",AIState.IDLE);
+        action.addAction(3f, "Eat" );
+        action.addAction(-6f, "Sleep" );
+        action.addAction(5f, "Hunt" );
+        behavior.addAction(action);
+        action = new Action("standIdle",AIState.IDLE);
+        action.addAction(2f, "Eat" );
+        action.addAction(1f, "Sleep" );
+        action.addAction(-5f, "Hunt" );
+        behavior.addAction(action);
+        action = new Action("walkLeft",AIState.WALKINGLEFT);
+        action.addAction(2f, "Eat" );
+        action.addAction(1f, "Sleep" );
+        action.addAction(-8f, "Hunt" );
+        behavior.addAction(action);
+        action = new Action("walkRight",AIState.WALKINGRIGHT);
+        action.addAction(2f, "Eat" );
+        action.addAction(1f, "Sleep" );
+        action.addAction(-4f, "Hunt" );
+        behavior.addAction(action);
 	}
 	
 	public void update( float dT ) {
 		float delta = Gdx.graphics.getDeltaTime();
-		
+
+
+        Bone root = skel.getRootBone();
+        
+		aiChoiceTime += dT;
+		if( aiChoiceTime > 7 ) {
+			AIState old = state;
+			state = behavior.ChooseAction();
+			aiChoiceTime = 0;
+			switch(state) {
+			case WALKINGLEFT:
+				animation = walk;
+				facingLeft = true;
+				if( old != AIState.WALKINGLEFT) {
+					totalTime = 0;
+					skel.setToBindPose(); 
+					root.setX(getPosPixels().x);
+					root.setY(getPosPixels().y - 64f);
+					root.setScaleX(0.6f);
+					root.setScaleY(0.7f);
+				}
+				break;
+			case WALKINGRIGHT:
+				animation = walk;
+				facingLeft = false;
+				if( old != AIState.WALKINGRIGHT) {
+					totalTime = 0;
+			        skel.setToBindPose(); 
+			        root.setX(getPosPixels().x);
+			        root.setY(getPosPixels().y - 64f);
+			        root.setScaleX(0.6f);
+			        root.setScaleY(0.7f);
+					}
+				break;
+			case IDLE:
+				animation = idle;
+				if( old != AIState.IDLE) {
+					totalTime = 0;
+			        skel.setToBindPose(); 
+			        root.setX(getPosPixels().x);
+			        root.setY(getPosPixels().y - 64f);
+			        root.setScaleX(0.6f);
+			        root.setScaleY(0.7f);
+					}
+				break;
+			default:
+				break;
+			}
+		}
 		totalTime += delta;
 		
 				
@@ -91,21 +189,18 @@ public class NonPlayer extends Agent {
 			onGround = true;
 		}
 
-
-        Bone root = skel.getRootBone();
         root.setX(getPosPixels().x);
         root.setY(getPosPixels().y - 64f);
 		//if ( animation != null ) {
-			if ( totalTime > animation.getDuration() ) {//&& !inAir && !moveLeft && !moveRight) {
-				totalTime = 0;
-				playerState = PlayerState.IDLE;
-				animation = idle;
-		        skel.setToBindPose(); 
-		        root.setX(getPosPixels().x);
-		        root.setY(getPosPixels().y - 64f);
-		        root.setScaleX(0.6f);
-		        root.setScaleY(0.7f);
-			} else { 
+//			if ( totalTime > animation.getDuration() ) {//&& !inAir && !moveLeft && !moveRight) {
+//				totalTime = 0;
+//		        skel.setToBindPose(); 
+//		        root.setX(getPosPixels().x);
+//		        root.setY(getPosPixels().y - 64f);
+//		        root.setScaleX(0.6f);
+//		        root.setScaleY(0.7f);
+//			} else 
+			{ 
 				animation.apply(skel, totalTime, true);
 			}
 		//}

@@ -1,18 +1,37 @@
 
 package com.esotericsoftware.spine.attachments;
 
-import com.esotericsoftware.spine.Attachment;
-import com.esotericsoftware.spine.Bone;
-import com.esotericsoftware.spine.Slot;
-
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y4;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.esotericsoftware.spine.Attachment;
+import com.esotericsoftware.spine.Bone;
+import com.esotericsoftware.spine.Slot;
 
 /** Attachment that displays a texture region. */
 public class RegionAttachment extends Attachment {
@@ -20,6 +39,7 @@ public class RegionAttachment extends Attachment {
 	private float x, y, scaleX, scaleY, rotation, width, height;
 	private final float[] vertices = new float[20];
 	private final float[] offset = new float[8];
+	public Body body;
 
 	public RegionAttachment (String name) {
 		super(name);

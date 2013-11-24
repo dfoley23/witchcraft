@@ -10,5 +10,10 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx.jar" sourcepath="libs/gdx-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar" sourcepath="libs/tween-engine-api-sources.jar"/>
 	<classpathentry kind="lib" path="libs/spine-libgdx-1.0.18.jar" sourcepath="/home/dennis/Documents/spine/runtimes/spine-libgdx/src/com/esotericsoftware/spine"/>
+	<classpathentry kind="lib" path="/home/dennis/Desktop/lwjgl-2.9.0/jar/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/dennis/Desktop/lwjgl-2.9.0/native/linux"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

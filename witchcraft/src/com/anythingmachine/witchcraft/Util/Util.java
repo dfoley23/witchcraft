@@ -1,8 +1,91 @@
 package com.anythingmachine.witchcraft.Util;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.lwjgl.opengl.GL20;
+
+import com.badlogic.gdx.math.Vector3;
+
 
 
 public class Util {
+
+	
+	private Util() {
+		throw new AssertionError();
+	}
+
+	public static short[] triangulateRect(short w, short h, short offset) {
+		short[] indices = new short[(w-1)*(h-1)*6];
+		for (short i = 0; i < (h-1); i++) {
+			for (short j = 0; j < (w-1); j++) {
+				indices[(i*(w-1)*6)+(j*6)] = (short) (((i*w)+(j)));//*offset);
+				indices[(i*(w-1)*6)+(j*6)+1] = (short) (((i*w)+(j)+w));//*offset);
+				indices[(i*(w-1)*6)+(j*6)+2] = (short) (((i*w)+(j)+w+1));//*offset);
+
+				indices[(i*(w-1)*6)+(j*6)+3] = (short) (((i*w)+(j)));//*offset));
+				indices[(i*(w-1)*6)+(j*6)+4] = (short) (((i*w)+(j)+w+1));//*offset);
+				indices[(i*(w-1)*6)+(j*6)+5] = (short) (((i*w)+(j)+1));//*offset);
+			}
+		}
+		return indices;
+	}
+
+	public static float dot(Vector3 v, Vector3 u) {
+		return v.x * u.x + v.y * u.y + v.z * u.z;
+	}
+
+	public static Vector3 addVecs(Vector3 v, Vector3 u) {
+		return new Vector3(v.x + u.x, v.y + u.y, v.z + u.z);
+	}
+
+	public static Vector3 subVecs(Vector3 v, Vector3 u) {
+		return new Vector3(v.x - u.x, v.y - u.y, v.z - u.z);
+	}
+
+	public static Vector3 addVec(Vector3 v, float s) {
+		return new Vector3(v.x + s, v.y + s, v.z + s);
+	}
+
+	public static Vector3 sclVec(Vector3 v, float s) {
+		return new Vector3(v.x * s, v.y * s, v.z * s);
+	}
+
+	public static int loadShader(String filename, int type) {
+		StringBuilder shaderSource = new StringBuilder();
+		int shaderID = 0;
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(filename));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				shaderSource.append(line).append("\n");
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.err.println("Could not read file.");
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+		shaderID = GL20.glCreateShader(type);
+		GL20.glShaderSource(shaderID, shaderSource);
+		GL20.glCompileShader(shaderID);
+
+		return shaderID;
+	}
+	
+	public static int readShaderString(String file, int type) {
+		int shaderID = 0;
+
+		shaderID = GL20.glCreateShader(type);
+		GL20.glShaderSource(shaderID, file);
+		GL20.glCompileShader(shaderID);
+		System.out.println(GL20.glGetShaderInfoLog(shaderID, 255));
+		return shaderID;
+	}
 
 	public static final boolean DEV_MODE = false;
 	
@@ -135,4 +218,5 @@ public class Util {
 /*		*/
 	
 	public static final int VERTEX_SIZE = 2 + 1 + 2;
+	
 }

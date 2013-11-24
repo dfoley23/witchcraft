@@ -1,21 +1,21 @@
-Goal = {name = "", insistence}
-
-function Goal.getDiscontentment(self, newValue)
-   self.insistence = newValue * newValue
-end
-
-function eatBread ()
-   
-end
-
-function sleep()
-
-end
-
-function patrol()
-
-end
-
-function report()
-
-end
+eatBread_Eat = "-5"
+eatBread_Sleep = "1"
+eatBread_Hunt = "3"
+eatMeat_Eat = "-7"
+eatMeat_Sleep = "2"
+eatMeat_Hunt = "3"
+sleepInHouse_Sleep = "-7"
+sleepInHouse_Hunt = "5"
+sleepInHouse_Eat = "3"
+sleepInBed_Sleep = "-6"
+sleepInBed_Hunt = "5"
+sleepInBed_Eat = "3"
+standIdle_Hunt = "-4"
+standIdle_Sleep = "1"
+standIdle_Eat = "1"
+walkLeft_Hunt = "-6"
+walkLeft_Sleep = "1"
+walkLeft_Eat = "2"
+walkRight_Hunt = "-2"
+walkRight_Sleep = "1"
+walkRight_Eat = "2"
