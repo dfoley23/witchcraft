@@ -1,20 +1,24 @@
 package com.anythingmachine.physicsEngine;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import java.util.ArrayList;
+
+import com.anythingmachine.witchcraft.Entity;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-public class Particle {
+public class Particle extends Entity implements PhysicsComponent {
 	protected Vector3 pos;
 	protected Vector3 vel;
 	protected boolean stable;
+	protected Vector3 externalForce;
 	
 	public Particle(Vector3 pos) {
 		//this.pos = pos;
 		this.pos = new Vector3( pos.x, pos.y, pos.z );
 		this.vel = new Vector3(0, 0, 0);
 		this.stable = true;
+		this.externalForce = new Vector3( 0, 0, 0);
+
 	}
 	
 	public Particle(Vector3 pos, Vector3 vel) {
@@ -22,28 +26,48 @@ public class Particle {
 		this.vel = vel.cpy();
 	}
 	
+	public ArrayList<Particle> getParticles(){
+		ArrayList<Particle> list = new ArrayList<Particle>();
+		list.add(this);
+		return list;
+	}
+
 	public void draw() {
 		
 	}
 	
-	public void draw(ShapeRenderer batch) {
-		batch.setColor(Color.RED);
-		batch.begin(ShapeType.Point);
-		batch.point(pos.x, pos.y, pos.z);
-		batch.end();
-	}
-
 	public Vector3 getPos() {
 		return pos;
+	}
+	
+	public Vector2 getPos2D() {
+		return new Vector2(pos.x, pos.y);
 	}
 	
 	public Vector3 getVel() {
 		return vel;
 	}
-	
-	public void addForce(Vector3 force) {
-		
+
+	public Vector2 getVel2D() {
+		return new Vector2(vel.x, vel.y);
 	}
+
+	public void setPos(float x, float y, float z) {
+		this.pos.set(x, y, z);
+	}
+
+	public void addPos(float x, float y) {
+		this.pos.add(x, y, 0);
+	}
+
+	public void apply2DImpulse(float x, float y) {
+		this.externalForce.set(x, y, 0);	
+	}
+
+	public void applyImpulse(Vector3 force) {
+		this.externalForce = force;	
+	}
+
 	public Vector3 accel(Particle p, float t) {
 		return new Vector3(0, 0, 0);
 	}

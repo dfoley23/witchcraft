@@ -3,14 +3,10 @@ package com.anythingmachine.physicsEngine;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Vector3;
 
-public class KinematicParticle extends Particle {
-	private float gravityVal;
+public class DynamicParticle extends Particle {
 	
-	public KinematicParticle (Vector3 pos, float gravityval) {
+	public DynamicParticle (Vector3 pos) {
 		super(pos);		
-		this.gravityVal = gravityval;
-		this.externalForce.y = gravityval;
-		this.stable = false;
 	}
 	
 	@Override
@@ -45,6 +41,6 @@ public class KinematicParticle extends Particle {
 	@Override
 	public void integrateVel(Vector3 dvdp, float dt) {
 		this.vel.add(Util.sclVec(dvdp, dt));		
-		externalForce = new Vector3(0, gravityVal, 0);
+		externalForce = new Vector3(0, 0, 0);
 	}
 }

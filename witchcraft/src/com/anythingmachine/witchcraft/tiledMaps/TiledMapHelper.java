@@ -32,6 +32,7 @@ import java.util.HashMap;
 
 import com.anythingmachine.gdxwrapper.TileMapRenderer;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -43,6 +44,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class TiledMapHelper {
@@ -211,22 +213,29 @@ public class TiledMapHelper {
 				}
 			}
 		}
-
-		BodyDef groundBodyDef = new BodyDef();
-		groundBodyDef.type = BodyDef.BodyType.StaticBody;
-		Body groundBody = world.createBody(groundBodyDef);
 		for (LineSegment lineSegment : collisionLineSegments) {
+			BodyDef groundBodyDef = new BodyDef();
+			groundBodyDef.type = BodyDef.BodyType.StaticBody;
+			groundBodyDef.position.set(0, 0);
+			Body groundBody = WitchCraft.world.createBody(groundBodyDef);
+			groundBody.setUserData(new Platform(lineSegment.start(),
+					lineSegment.end()));
+
 			EdgeShape environmentShape = new EdgeShape();
 
 			environmentShape.set(lineSegment.start().mul(1 / pixelsPerMeter),
 					lineSegment.end().mul(1 / pixelsPerMeter));
-			groundBody.createFixture(environmentShape, 0);
-//			for( Fixture fix: groundBody.getFixtureList() ) {
-//				Filter filter = new Filter();
-//				filter.categoryBits = Util.CATEGORY_TILES;
-//				filter.maskBits = ~Util.CATEGORY_CAPE;
-//				fix.setFilterData(filter);
-//			}
+			FixtureDef fixture = new FixtureDef();
+			fixture.shape = environmentShape;
+			fixture.isSensor = true;
+			fixture.density = 0;
+			groundBody.createFixture(fixture);
+			// for( Fixture fix: groundBody.getFixtureList() ) {
+			// Filter filter = new Filter();
+			// filter.categoryBits = Util.CATEGORY_TILES;
+			// filter.maskBits = ~Util.CATEGORY_CAPE;
+			// fix.setFilterData(filter);
+			// }
 			environmentShape.dispose();
 		}
 
@@ -379,7 +388,7 @@ public class TiledMapHelper {
 			double slope2 = Math.atan2(lineSegment.end.y - lineSegment.start.y,
 					lineSegment.end.x - lineSegment.start.x);
 
-			if (Math.abs(slope1 - slope2) > 1e-9) {
+			if (Math.abs(slope1 - slope2) > 0.1) {
 				return false;
 			}
 
@@ -402,9 +411,7 @@ public class TiledMapHelper {
 				return true;
 			} else if (start.dst(lineSegment.end) <= Math.sqrt(2) + 1e-9) {
 				start.set(lineSegment.start);
-				return true;
 			}
-
 			return false;
 		}
 

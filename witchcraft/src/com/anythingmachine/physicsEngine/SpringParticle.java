@@ -10,13 +10,11 @@ import com.badlogic.gdx.math.Vector3;
 
 public class SpringParticle extends Particle {
 	private ArrayList<Spring> springs;
-	private Vector3 externalForce;
 	
 	public SpringParticle (Vector3 pos) {
 		super(pos);		
 		springs = new ArrayList<Spring>();
 		this.stable = false;
-		this.externalForce = new Vector3( 0, 0, 0);
 	}
 	
 	@Override
@@ -25,25 +23,10 @@ public class SpringParticle extends Particle {
 	}
 
 	@Override
-	public void addForce(Vector3 force ) {
+	public void applyImpulse(Vector3 force ) {
 		this.externalForce = force;
 	}
 
-	@Override
-	public void draw(ShapeRenderer batch) {
-		batch.setColor(Color.RED);
-		batch.begin(ShapeType.Point);
-		batch.point(pos.x, pos.y, pos.z);
-		batch.end();
-		batch.setColor(Color.GREEN);
-		batch.begin(ShapeType.Line);
-		for(Spring s: springs) {
-			Particle p = s.getOther();
-			batch.line(pos.x, pos.y, pos.z, p.pos.x, p.pos.y, p.pos.z);
-		}
-		batch.end();
-	}
-	
 	public void addSpring(Particle p, float restLength, float k, float damper) {
 		springs.add(new Spring(p, restLength, k, damper));
 	}

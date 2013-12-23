@@ -15,16 +15,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Cloth implements PhysicsComponent {
 	private ArrayList<Particle> links;
-//	private int pid;
-//	private int vboid;
-//	private int indiid;
 	private int offset;
 	private short[] indices;
-//	private FloatBuffer vbo1;
-//	private ShortBuffer ibuffer;
-//	private int matloc;
-//	private int posLoc;
-//	private int normLoc;
 	private int indicount;
 	private float[] verts;
 	private Mesh mesh;
@@ -33,20 +25,9 @@ public class Cloth implements PhysicsComponent {
 	public Cloth(int w, int h) {
 		links = new ArrayList<Particle>();
 		offset = 6;
-//		initShaders();
 		shader = new ShaderProgram(this.vertexShader, this.fragShader);
 		indices = Util.triangulateRect((short) w, (short) h, (short) offset);
 		indicount = indices.length;
-//		ibuffer = BufferUtils.newShortBuffer(indices.length);
-//		ibuffer.put(indices);
-//		ibuffer.flip();
-//		indiid = GL15.glGenBuffers();
-//		vboid = GL15.glGenBuffers();
-//		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiid);
-//		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, ibuffer,
-//				GL15.GL_STATIC_DRAW);
-//		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-//		
 		verts = new float[w * h * indicount];	  
 		mesh = new Mesh( false, verts.length, indicount, 
 			    new VertexAttribute( Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ),
@@ -60,16 +41,10 @@ public class Cloth implements PhysicsComponent {
 
 	public void addForce(Vector3 force) {
 		for(Particle p: links) {
-			p.addForce(force);
+			p.applyImpulse(force);
 		}
 	}
 	public void draw(Matrix4 cam) {
-//		vbo1.clear();
-//		vbo1.put(verts);
-//		vbo1.flip();
-//		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboid);
-//		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vbo1, GL15.GL_DYNAMIC_DRAW);
-
 		mesh.setVertices(verts);
 		
 		updateVertsByIndex();
@@ -78,42 +53,10 @@ public class Cloth implements PhysicsComponent {
 		shader.setUniformMatrix("u_proj", cam);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
-		//GL20.glUseProgram(pid);
-
-//		FloatBuffer modelview = BufferUtils.newFloatBuffer(16);
-//		modelview.put(cam.val);
-//		modelview.flip();
-//		GL20.glUniformMatrix4(matloc, false, modelview);
-//
-//		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboid);
-//
-//		GL20.glEnableVertexAttribArray(posLoc);
-//		GL20.glEnableVertexAttribArray(normLoc);
-//		GL20.glVertexAttribPointer(posLoc, 3, GL11.GL_FLOAT, false, 24, 0);
-//		GL20.glVertexAttribPointer(normLoc, 3, GL11.GL_FLOAT, false, 24, 24);
-//
-//		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiid);
-//		GL11.glDrawElements(GL11.GL_TRIANGLES, indicount,
-//				GL11.GL_UNSIGNED_SHORT, 0);
-//		
-//		// Put everything back to default (deselect)
-//		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-//		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-//		GL20.glDisableVertexAttribArray(posLoc);
-//		GL20.glDisableVertexAttribArray(normLoc);
-//		GL20.glUseProgram(0);
-
-	}
-
-	public void draw(ShapeRenderer batch) {
-		for (Particle p : links) {
-			p.draw(batch);
-		}
 	}
 
 	public void addLink(Particle p) {
 		links.add(p);
-//		vbo1 = BufferUtils.newFloatBuffer(verts.length);
 	}
 
 	public ArrayList<Particle> getParticles() {
@@ -160,19 +103,6 @@ public class Cloth implements PhysicsComponent {
 			verts[(indices[i + 2] * offset) + 5] += normal.z;
 		}
 	}
-
-//	private void initShaders() {
-//		int vs = Util.readShaderString(vertexShader, GL20.GL_VERTEX_SHADER);
-//		int fs = Util.readShaderString(fragShader, GL20.GL_FRAGMENT_SHADER);
-//		pid = GL20.glCreateProgram();
-//		GL20.glAttachShader(pid, vs);
-//		GL20.glAttachShader(pid, fs);
-//		GL20.glLinkProgram(pid);
-//		GL20.glValidateProgram(pid);
-//		matloc = GL20.glGetUniformLocation(pid, "u_proj");
-//		posLoc = GL20.glGetAttribLocation(pid, "a_position");
-//		normLoc = GL20.glGetAttribLocation(pid, "a_normal");
-//	}
 
 	private String vertexShader = "attribute vec3 a_position;\n" //
 			+ "attribute vec3 a_normal;\n" //

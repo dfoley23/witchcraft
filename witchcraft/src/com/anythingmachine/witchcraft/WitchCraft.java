@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.physicsEngine.RK4Integrator;
+import com.anythingmachine.witchcraft.CollisionEngine.MyContactListener;
 import com.anythingmachine.witchcraft.LuaEngine.LoadScript;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -32,29 +34,23 @@ public class WitchCraft implements ApplicationListener {
 	private long lastRender;
 	private TiledMapHelper tiledMapHelper;
 	private Texture overallTexture;
-	private Player player;
 	private NonPlayer npc1;
 	private NonPlayer npc2;
-	private Ground ground;
+	public static Ground ground;
+	private Box2DDebugRenderer debugRenderer;
 	private PolygonSpriteBatchWrap polygonBatch;
 	private SpriteBatch spriteBatch;
 	private ShapeRenderer shapeRenderer;
-	private World world;
-	private RK4Integrator rk4;
-	private Box2DDebugRenderer debugRenderer;
+	public static Player player;
+	public static World world;
+	public static RK4Integrator rk4;
 	private float xGrid;
 	private int camWorldSize;
 	private Calendar cal;
 	private float dawnDuskProgress = 0;
 	private LoadScript script;
-	private double currentTime;
 	private float dt = 1f/30f;
-
-	/**
-	 * The screen's width and height. This may not match that computed by
-	 * libgdx's gdx.graphics.getWidth() / getHeight() on devices that make use
-	 * of on-screen menu buttons.
-	 */
+	private MyContactListener contactListener;
 	private int screenWidth;
 	private int screenHeight;
 
@@ -78,8 +74,11 @@ public class WitchCraft implements ApplicationListener {
 		Date date = new Date();
 		cal = GregorianCalendar.getInstance();
 		cal.setTime(date);
-		currentTime = System.currentTimeMillis();
+
 		rk4 = new RK4Integrator();
+		contactListener = new MyContactListener();
+		world = new World(new Vector2(0.0f, -10.0f), false);	
+		world.setContactListener(contactListener);
 		
 		/**
 		 * If the viewport's size is not yet known, determine it here.
@@ -94,10 +93,6 @@ public class WitchCraft implements ApplicationListener {
 		tiledMapHelper.loadMap("data/world/level1/level.tmx");
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
 
-		/**
-		 * Load up the overall texture and chop it in to pieces. In this case,
-		 * piece.
-		 */
 		//overallTexture = new Texture(Gdx.files.internal("data/tileSheet.png"));
 		//overallTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
@@ -106,28 +101,17 @@ public class WitchCraft implements ApplicationListener {
 		shapeRenderer = new ShapeRenderer();
 
 		script = new LoadScript("helloworld.lua");
-		/**
-		 * You can set the world's gravity in its constructor. Here, the gravity
-		 * is negative in the y direction (as in, pulling things down).
-		 */
-		world = new World(new Vector2(0.0f, -10.0f), true);	
-
-		ground = new Ground(world);
-		for ( int i=0; i<Util.cps.length-7; i+=8) {
-			ground.createCurve(
-					new Vector2(Util.cps[i]-240, Util.cps[i+1]-250),
-					new Vector2(Util.cps[i+2]-240, Util.cps[i+3]-250),
-					new Vector2(Util.cps[i+4]-240, Util.cps[i+5]-250),
-					new Vector2(Util.cps[i+6]-240, Util.cps[i+7]-250), 7, -1, GroundType.DESERT);
-		}
-
-		player = new Player( world, ground, rk4 );	
-		npc1 = new NonPlayer( "knight2", new Vector2(14.0f, 3.0f), world, ground );
-		npc2 = new NonPlayer( "knight1",new Vector2(10.0f, 3.0f), world, ground );
-		tiledMapHelper.loadCollisions("data/collisions.txt", world,
-				Util.PIXELS_PER_METER);
 
 		debugRenderer = new Box2DDebugRenderer();
+        
+		ground = new Ground(world);
+		ground.readCurveFile("data/groundcurves.txt", -240, -250);
+		
+		player = new Player( );	
+		npc1 = new NonPlayer( "knight2", new Vector2(354.0f, 3.0f) );
+		npc2 = new NonPlayer( "knight1",new Vector2(800.0f, 3.0f) );
+		tiledMapHelper.loadCollisions("data/collisions.txt", world,
+				Util.PIXELS_PER_METER);
 
 		lastRender = System.nanoTime();
 	}
@@ -140,9 +124,10 @@ public class WitchCraft implements ApplicationListener {
 	public void render() {
 		long now = System.nanoTime();
 		float dT = Gdx.graphics.getDeltaTime();
-		rk4.step(dt);
 
-		world.step(dT, 3, 3);
+		world.step(dT, 1, 1);
+
+		rk4.step(dt);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Color c = getTimeOfDay();
@@ -152,19 +137,17 @@ public class WitchCraft implements ApplicationListener {
 		npc1.update(dT);
 		npc2.update(dT);
 
-		Vector2 playerPos = player.getPosMeters();
-		xGrid = tiledMapHelper.getCamera().position.x = Util.PIXELS_PER_METER
-				* playerPos.x;
-		float yGrid = tiledMapHelper.getCamera().position.y = Util.PIXELS_PER_METER
-				* playerPos.y;
-		
+		Vector3 playerPos = player.getPosPixels();
+		xGrid = tiledMapHelper.getCamera().position.x =playerPos.x;
+		float yGrid = tiledMapHelper.getCamera().position.y = playerPos.y;		
 		if (xGrid < Gdx.graphics.getWidth() / 2) {
 			xGrid = tiledMapHelper.getCamera().position.x = Gdx.graphics.getWidth() / 2;
-		} else if (xGrid >= tiledMapHelper.getWidth()
-				- Gdx.graphics.getWidth() / 2) {
-			xGrid = tiledMapHelper.getCamera().position.x = tiledMapHelper.getWidth()
-					- Gdx.graphics.getWidth() / 2;
-		}
+		} 
+//		else if (xGrid >= tiledMapHelper.getWidth()
+//				- Gdx.graphics.getWidth() / 2) {
+//			xGrid = tiledMapHelper.getCamera().position.x = tiledMapHelper.getWidth()
+//					- Gdx.graphics.getWidth() / 2;
+//		}
 
 		if (yGrid < Gdx.graphics.getHeight() / 2) {
 			tiledMapHelper.getCamera().position.y = Gdx.graphics.getHeight() /2;
@@ -180,15 +163,10 @@ public class WitchCraft implements ApplicationListener {
 		
 		tiledMapHelper.render(this);
 
-
-		/**
-		 * Draw this last, so we can see the collision boundaries on top of the
-		 * sprites and map.
-		 */
-//		debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
-//				Util.PIXELS_PER_METER,
-//				Util.PIXELS_PER_METER,
-//				Util.PIXELS_PER_METER));
+       debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(
+       Util.PIXELS_PER_METER,
+       Util.PIXELS_PER_METER,
+       Util.PIXELS_PER_METER));
 
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS

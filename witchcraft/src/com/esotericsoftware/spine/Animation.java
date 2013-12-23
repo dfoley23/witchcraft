@@ -25,6 +25,10 @@ public class Animation {
 		return duration;
 	}
 
+	public float getQuarterDuration() {
+		return duration/4f;
+	}
+	
 	public void setDuration (float duration) {
 		this.duration = duration;
 	}

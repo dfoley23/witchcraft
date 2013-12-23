@@ -10,7 +10,7 @@ public class UtilityAI {
 	private ArrayList<Action> actions;
 	private LoadScript script;
 	public enum AIState { 
-		WALKINGLEFT, WALKINGRIGHT, IDLE, ATTACK, FALLING, 
+		WALKINGLEFT, WALKINGRIGHT, IDLE, ATTACK, FALLING, SHOOTARROW, SWORDATTACK,
 	}
 	public UtilityAI() {
 		goals = new ArrayList<Goal>();

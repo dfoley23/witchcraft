@@ -3,6 +3,8 @@ package com.anythingmachine.witchcraft.ground;
 import java.util.ArrayList;
 
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -11,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Ground {
 	private ArrayList<Curve> curves;
-	private World world;
+	private ArrayList<Platform> elevatedSegments;
 	private int numCurves = 0;
 	
 	public enum GroundType {
@@ -23,8 +25,8 @@ public class Ground {
 	}
 	
 	public Ground(World world){
-		this.world = world;
 		curves = new ArrayList<Curve>();
+		elevatedSegments = new ArrayList<Platform>();
 	}
 	
 	public void draw( PolygonSpriteBatchWrap batch, int startCurve, int numCurves ) {
@@ -66,6 +68,14 @@ public class Ground {
 		return curves.get(index).findPointOnHCurve(dX);
 	}
 	
+	public float getElevatedSegHeight( int index ) {
+		return elevatedSegments.get(index).getHeight();
+	}
+
+	public Platform getElevatedSegment(int index) {
+		return elevatedSegments.get(index);
+	}
+	
 	public int getNumCurves() {
 		return numCurves;
 	}
@@ -80,7 +90,26 @@ public class Ground {
 	}
 	
 	public void createCurve( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, int res, int zLayer, GroundType type) {
-		curves.add(new Curve(p0, p1, p2, p3, res, zLayer, type, world));
+		curves.add(new Curve(p0, p1, p2, p3, res, zLayer, type));
 		numCurves = curves.size()-1;
+	}
+	
+	public void readCurveFile(String filename, float dx, float dy) {
+		FileHandle handle = Gdx.files.internal(filename);
+		String file = handle.readString();
+		String[] lines = file.split("\n");
+		int size = lines.length;
+		System.out.println(size);
+		for ( int i=0; i<size; i+=4) {
+			String[] points = lines[i].split(",");
+			Vector2 p0 = new Vector2(Float.parseFloat(points[0])+dx, Float.parseFloat(points[1])+dy);
+			points = lines[i+1].split(",");
+			Vector2 p1 = new Vector2(Float.parseFloat(points[0])+dx, Float.parseFloat(points[1])+dy);
+			points = lines[i+2].split(",");
+			Vector2 p2 = new Vector2(Float.parseFloat(points[0])+dx, Float.parseFloat(points[1])+dy);
+			points = lines[i+3].split(",");
+			Vector2 p3 = new Vector2(Float.parseFloat(points[0])+dx, Float.parseFloat(points[1])+dy);
+			this.createCurve(p0, p1, p2, p3, 10, -1, GroundType.DESERT);
+		}	
 	}
 }

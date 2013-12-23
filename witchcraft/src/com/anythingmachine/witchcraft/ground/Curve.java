@@ -30,7 +30,7 @@ public class Curve {
 	//private Body body;
 	
 	public Curve( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, 
-			int res, int zLayer, GroundType type, World world) {
+			int res, int zLayer, GroundType type) {
 		this.p0 = p0;
 		this.p1 = p1;
 		this.p2 = p2;
@@ -48,7 +48,7 @@ public class Curve {
 			generateGrass(res);
 			break;
 		}
-		generateShape(res, world, texture);
+		generateShape(res, texture);
 	}
 	
 	public Vector2 firstPointOnCurve() {
@@ -115,7 +115,7 @@ public class Curve {
 	 * and the bottom segment closing the polygon 
 	 * @param res
 	 */
-	private void generateShape( int res, World world, Texture texture ) {
+	private void generateShape( int res, Texture texture ) {
 		Vector4 T = new Vector4();
 		Vector4 T0 = new Vector4();
 		Vector4 T1 = new Vector4();

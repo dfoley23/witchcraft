@@ -1,14 +1,11 @@
 
 package com.esotericsoftware.spine;
 
-import com.esotericsoftware.spine.Skin.Key;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 public class Skeleton {
 	final SkeletonData data;
