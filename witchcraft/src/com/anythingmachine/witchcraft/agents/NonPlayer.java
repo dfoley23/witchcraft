@@ -28,21 +28,16 @@ import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 
 public class NonPlayer extends Agent {
-	private KinematicParticle body;
-	private boolean facingLeft;
-	private boolean inAir;
-	private State playerState;
-	private UtilityAI behavior;
-	private float aiChoiceTime = 0.f;
-	private AIState state = AIState.IDLE;
-	private boolean onGround;
-	private AnimationManager animate;
-	private Bone sword;
-	private Body swordBody;
-	private Arrow arrow;
+	protected KinematicParticle body;
+	protected boolean facingLeft;
+	protected boolean inAir;
+	protected UtilityAI behavior;
+	protected float aiChoiceTime = 0.f;
+	protected AIState state = AIState.IDLE;
+	protected boolean onGround;
+	protected AnimationManager animate;
 	
-	public NonPlayer(String name, Vector2 pos) {
-		playerState = State.IDLE;
+	public NonPlayer(String skinname, String atlasname, Vector2 pos) {
 		this.curGroundSegment = 0;
 		ArrayList<Vector2> points = WitchCraft.ground.getCurveBeginPoints();
 		for (int i = 0; i < points.size(); i++) {
@@ -58,13 +53,9 @@ public class NonPlayer extends Agent {
 						curGroundSegment, 32f).y, 0f), -50f);
 		WitchCraft.rk4.addComponent(body);
 
-		setupAnimations(name);
+		setupAnimations(skinname, atlasname);
 
 		setupAI();
-		
-		sword = animate.findBone("right hand");
-		buildSwordBody();
-		arrow = new Arrow(new Vector3(0, 0, 0),	new Vector3(0, 0, 0));
 	}
 
 	public void update(float dT) {
@@ -104,16 +95,14 @@ public class NonPlayer extends Agent {
 				animate.bindPose();
 				animate.setCurrent("sword-attack", true);
 				break;
-			case SHOOTARROW:
-				arrow.setPos(body.getPos().x, body.getPos().y+64, 0);
-				arrow.pointAtTarget(WitchCraft.player.getPosPixels(), 650);
 			default:	
-				body.setVel(50f, body.getVel().y, 0f);
-				animate.setCurrent("walk", true);
-				facingLeft = false;
-				if (old != AIState.WALKINGRIGHT) {
-					animate.bindPose();
-				}
+				handleState(state);
+//				body.setVel(50f, body.getVel().y, 0f);
+//				animate.setCurrent("walk", true);
+//				facingLeft = false;
+//				if (old != AIState.WALKINGRIGHT) {
+//					animate.bindPose();
+//				}
 				break;
 			}
 		}
@@ -147,18 +136,11 @@ public class NonPlayer extends Agent {
 		} else {
 			animate.update(delta);
 		}
-		swordBody.setTransform((sword.getWorldX())*Util.PIXEL_TO_BOX, 
-				(sword.getWorldY())*Util.PIXEL_TO_BOX, 
-				facingLeft ? -sword.getWorldRotation()*Util.DEG_TO_RAD 
-						: sword.getWorldRotation()*Util.DEG_TO_RAD);
 
 	}
 
 	public void draw(SpriteBatch batch) {
 		animate.draw(batch);
-		if ( arrow != null ) {
-			arrow.draw(batch);
-		}
 	}
 
 	public Vector3 getPosPixels() {
@@ -181,15 +163,15 @@ public class NonPlayer extends Agent {
 		this.curGroundSegment++;
 	}
 
-	private void setupAnimations(String name) {
-		TextureAtlas atlas = new TextureAtlas(
-				Gdx.files.internal("data/spine/knight.atlas"));
-
-		SkeletonBinary sb = new SkeletonBinary(atlas);
+	protected void handleState(AIState state) {
+	}
+	
+	protected void setupAnimations(String skinname, String atlasname) {
+		SkeletonBinary sb = new SkeletonBinary(WitchCraft.assetManager.getAtlas(atlasname));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/knight.skel"));
 
-		animate = new AnimationManager(name, body.getPos(), new Vector2(0.6f,
+		animate = new AnimationManager(skinname, body.getPos(), new Vector2(0.6f,
 				0.7f), true, sd);
 		animate.addAnimation(
 				"walk",
@@ -207,7 +189,7 @@ public class NonPlayer extends Agent {
 
 	}
 
-	private void setupAI() {
+	protected void setupAI() {
 		Random rand = new Random();
 		// ai goals and actions
 		behavior = new UtilityAI();
@@ -262,26 +244,4 @@ public class NonPlayer extends Agent {
 
 	}
 	
-	private void buildSwordBody() {
-		BodyDef def = new BodyDef();
-		def.type = BodyType.DynamicBody;
-		def.position
-				.set(new Vector2(this.body.getPos().x, this.body.getPos().y));
-		swordBody = WitchCraft.world.createBody(def);
-		swordBody.setBullet(true);
-		PolygonShape shape = new PolygonShape();
-//		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 150 * Util.PIXEL_TO_BOX);
-		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX,
-				new Vector2(0, 93).mul(Util.PIXEL_TO_BOX), 
-				0f);
-		FixtureDef fixture = new FixtureDef();
-		fixture.shape = shape;
-		fixture.isSensor = true;
-		fixture.density = 1f;
-		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
-		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
-		swordBody.createFixture(fixture);
-		swordBody.setUserData(this);
-		shape.dispose();
-	}
 }

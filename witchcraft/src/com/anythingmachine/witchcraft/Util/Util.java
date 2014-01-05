@@ -100,6 +100,9 @@ public class Util {
 	public static final float MIN_VALUE = 0x0.000002P-126f; // 1.4e-45f
 
 	public static final int GRAVITY = -50;
+	public static final float PLAYERWALKSPEED = 80f;
+	public static final float PLAYERRUNSPEED = 115f;
+	public static final float PLAYERFLYSPEED = 125f;
 
 	/**
 	 * Collision Categories and masks for every object that needs them
@@ -127,4 +130,5 @@ public class Util {
 	public enum EntityType {
 		PLATFORM, ENTITY, SWORD, ARROW, PLAYER, FIRE, VISION
 	}
+
 }

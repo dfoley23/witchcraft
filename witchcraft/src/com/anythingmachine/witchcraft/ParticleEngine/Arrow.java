@@ -3,12 +3,9 @@ package com.anythingmachine.witchcraft.ParticleEngine;
 import java.util.ArrayList;
 
 import com.anythingmachine.physicsEngine.Particle;
-import com.anythingmachine.physicsEngine.PhysicsComponent;
-import com.anythingmachine.witchcraft.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -28,7 +25,10 @@ public class Arrow extends Particle {
 		this.type = EntityType.ARROW;
 		buildCollisionBody();
 		WitchCraft.rk4.addComponent(this);
-		sprite = new Sprite(new Texture("data/arrow.png"));
+		sprite = WitchCraft.assetManager.
+				getAtlas("npcsheet1").createSprite("archer_xcf-aroow");
+		sprite.scale(-0.4f);
+		sprite.setOrigin(sprite.getWidth()/2f, sprite.getHeight()/2f);
 	}
 
 	public void destroy() {
@@ -70,12 +70,8 @@ public class Arrow extends Particle {
 	public void pointAtTarget(Vector3 target, float speed) {
 		Vector3 dir = new Vector3(target.x-pos.x, target.y-pos.y, 0);
 		dir.mul(1/dir.len());
-		this.vel.set(dir.x*speed, Math.max(0.15f, dir.y)*speed, 0);
-		if ( vel.x < 0 ) {
-			sprite.flip(true, false);
-		}
-		float costheta = vel.x > 0 ? Util.dot(vel, new Vector3(1, 0, 0))/vel.len()
-				: Util.dot(vel, new Vector3(-1, 0, 0))/vel.len();
+		this.vel.set(dir.x*speed, Math.max(0.125f, dir.y)*speed, 0);
+		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
 		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
 		sprite.setPosition(pos.x, pos.y);
 		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,
@@ -84,11 +80,7 @@ public class Arrow extends Particle {
 
 	public void setVel(float x, float y, float z) {
 		this.vel.set(x, y, z);
-		if ( vel.x > 0 ) {
-			sprite.flip(true, false);
-		}
-		float costheta = vel.x > 0 ? Util.dot(vel, new Vector3(1, 0, 0))/vel.len()
-				: Util.dot(vel, new Vector3(-1, 0, 0))/vel.len();
+		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
 		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
 		sprite.setPosition(pos.x, pos.y);
 		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,
@@ -123,11 +115,8 @@ public class Arrow extends Particle {
 	public void integrateVel(Vector3 dvdp, float dt) {
 		this.vel.add(Util.sclVec(dvdp, dt));		
 		externalForce = new Vector3(0, 0, 0);
-		float costheta = vel.x > 0 ? Util.dot(vel, new Vector3(1, 0, 0))/vel.len()
-				: Util.dot(vel, new Vector3(-1, 0, 0))/vel.len();
-		costheta = vel.y < 0 ? -costheta : costheta;
+		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
 		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
-		sprite.flip(costheta > 0 ? true : false, false);
 		sprite.setPosition(pos.x, pos.y);
 		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,
 				(float)Math.acos((double)costheta));

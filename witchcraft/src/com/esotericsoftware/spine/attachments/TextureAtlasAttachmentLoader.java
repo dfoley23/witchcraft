@@ -5,6 +5,7 @@ import com.esotericsoftware.spine.Attachment;
 import com.esotericsoftware.spine.AttachmentLoader;
 import com.esotericsoftware.spine.AttachmentType;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
@@ -31,9 +32,10 @@ public class TextureAtlasAttachmentLoader implements AttachmentLoader {
 
 		if (attachment instanceof RegionAttachment) {
 			AtlasRegion region = atlas.findRegion(attachment.getName());
-			if (region == null)
-				throw new RuntimeException("Region not found in atlas: " + attachment + " (" + type + " attachment: " + name + ")");
-			((RegionAttachment)attachment).setRegion(region);
+//			if (region == null)
+				//("Region not found in atlas: " + attachment + " (" + type + " attachment: " + name + ")");
+			if ( region != null)   
+				((RegionAttachment)attachment).setRegion(region);
 		}
 
 		return attachment;

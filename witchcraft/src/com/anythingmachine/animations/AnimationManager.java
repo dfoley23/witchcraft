@@ -9,6 +9,7 @@ import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.Skin;
 import com.esotericsoftware.spine.Slot;
 
 public class AnimationManager {
@@ -99,6 +100,14 @@ public class AnimationManager {
 		return totalTime > animations.get(currentAnim).getDuration();
 	}
 
+	public Skin getSkin() {
+		return 	skel.getSkin();
+	}
+	
+	public void switchSkin(String skin) {
+		skel.setSkin(skin);
+	}
+	
 	public Bone getRoot() {
 		return root;
 	}
@@ -106,6 +115,7 @@ public class AnimationManager {
 	public float getCurrentAnimTime() {
 		return animations.get(currentAnim).getDuration();
 	}
+
 	public void setPos(Vector3 pos, float dx, float dy) {
 		root.setX(pos.x + dx);
 		root.setY(pos.y + dy);

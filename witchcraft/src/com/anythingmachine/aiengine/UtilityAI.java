@@ -2,7 +2,7 @@ package com.anythingmachine.aiengine;
 
 import java.util.ArrayList;
 
-import com.anythingmachine.witchcraft.LuaEngine.LoadScript;
+import com.anythingmachine.LuaEngine.LoadScript;
 import com.badlogic.gdx.Gdx;
 
 public class UtilityAI {

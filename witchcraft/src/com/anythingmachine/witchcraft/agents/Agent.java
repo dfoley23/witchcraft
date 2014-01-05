@@ -1,6 +1,6 @@
 package com.anythingmachine.witchcraft.agents;
 
-import com.anythingmachine.witchcraft.Entity;
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.ground.Curve;
 import com.anythingmachine.witchcraft.ground.Ground;
 import com.anythingmachine.witchcraft.ground.Platform;

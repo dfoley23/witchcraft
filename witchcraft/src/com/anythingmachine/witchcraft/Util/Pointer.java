@@ -1,6 +1,6 @@
 package com.anythingmachine.witchcraft.Util;
 
-import com.anythingmachine.witchcraft.Entity;
+import com.anythingmachine.collisionEngine.Entity;
 
 public class Pointer extends Entity {
 	public int value;

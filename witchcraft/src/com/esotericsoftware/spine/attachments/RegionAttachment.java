@@ -129,7 +129,8 @@ public class RegionAttachment extends Attachment {
 	}
 
 	public void draw (SpriteBatch batch, Slot slot) {
-		if (region == null) throw new IllegalStateException("RegionAttachment is not resolved: " + this);
+		if (region != null) {
+		
 
 		Color skeletonColor = slot.getSkeleton().getColor();
 		Color slotColor = slot.getColor();
@@ -147,6 +148,7 @@ public class RegionAttachment extends Attachment {
 		updateWorldVertices(slot.getBone());
 
 		batch.draw(region.getTexture(), vertices, 0, vertices.length);
+		}
 	}
 
 	public void updateWorldVertices (Bone bone) {

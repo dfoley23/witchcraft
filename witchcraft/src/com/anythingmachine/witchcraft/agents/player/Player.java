@@ -1,14 +1,25 @@
 package com.anythingmachine.witchcraft.agents.player;
 
+import java.util.HashMap;
+
 import com.anythingmachine.aiengine.State;
 import com.anythingmachine.animations.AnimationManager;
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
-import com.anythingmachine.witchcraft.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.Agent;
+import com.anythingmachine.witchcraft.agents.player.Power.ConvertPower;
+import com.anythingmachine.witchcraft.agents.player.Power.DeathPower;
+import com.anythingmachine.witchcraft.agents.player.Power.FreezePower;
+import com.anythingmachine.witchcraft.agents.player.Power.IntangibilityPower;
+import com.anythingmachine.witchcraft.agents.player.Power.InvisiblePower;
+import com.anythingmachine.witchcraft.agents.player.Power.MindControlPower;
+import com.anythingmachine.witchcraft.agents.player.Power.Power;
+import com.anythingmachine.witchcraft.agents.player.Power.ShapeShiftCatPower;
+import com.anythingmachine.witchcraft.agents.player.Power.ShapeShiftCrowPower;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
@@ -39,7 +50,9 @@ public class Player extends Agent {
 	private AnimationManager animate;
 	private Body collisionBody;
 	private boolean hitRoof;
-	
+	private HashMap<String, Power> powers;
+	private Power power;
+
 	public Player() {
 		this.playerState = State.IDLE;
 		this.curGroundSegment = 0;
@@ -51,15 +64,16 @@ public class Player extends Agent {
 		this.input = new InputManager();
 		hitRoof = false;
 		setupInput();
-
 		setupAnimations("player");
 
 		neck = animate.findBone("neck");
 
 		cape = new Cape(3, 5);
 		buildCollisionBody();
+		setupPowers();
 
 		type = EntityType.PLAYER;
+
 	}
 
 	public void update(float dT) {
@@ -91,6 +105,12 @@ public class Player extends Agent {
 		} else if ( onElevatedSegment ){
 			body.setVel(body.getVel().x, 0, 0);
 		}
+
+		if ( input.is("UsePower") ) {
+			//power.usePower(playerState);
+			animate.switchSkin("invi");
+		}
+
 		updateSkeleton(moving, delta);
 		if (playerState.startingToFly())
 			collisionBody.setTransform(
@@ -107,7 +127,11 @@ public class Player extends Agent {
 	}
 
 	public void drawCape(Matrix4 cam) {
-		cape.draw(cam);
+		if (animate.getSkin().getName().equals("invi")) {
+			cape.draw(cam, 0.1f);
+		} else {
+			cape.draw(cam, 1f);
+		}
 	}
 
 	public Vector3 getPosPixels() {
@@ -262,10 +286,10 @@ public class Player extends Agent {
 			playerState = State.WALKING;
 		}
 		if (input.is("Right")) {
-			body.setVel(80f, body.getVel().y, 0f);
+			body.setVel(playerState.getInputSpeed(), body.getVel().y, 0f);
 			facingLeft = false;
 		} else if (input.is("Left")) {
-			body.setVel(-80f, body.getVel().y, 0f);
+			body.setVel(-playerState.getInputSpeed(), body.getVel().y, 0f);
 			facingLeft = true;
 		}
 	}
@@ -279,8 +303,19 @@ public class Player extends Agent {
 		input.addInputState("Interact", Keys.A);
 	}
 
+	private void setupPowers() {
+//		powers.put("mindcontrol", new MindControlPower());
+//		powers.put("shapecrow", new ShapeShiftCrowPower());
+//		powers.put("shapecat", new ShapeShiftCatPower());
+//		powers.put("invisible", new InvisiblePower());
+//		powers.put("intangible", new IntangibilityPower());
+//		powers.put("convert", new ConvertPower());
+//		powers.put("freeze", new FreezePower());
+//		powers.put("death", new DeathPower());
+	}
+
 	private void setupAnimations(String name) {
-		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("data/spine/player.atlas"));
+		TextureAtlas atlas = WitchCraft.assetManager.getAtlas("player");
 
 		SkeletonBinary sb = new SkeletonBinary(atlas);
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
@@ -312,7 +347,6 @@ public class Player extends Agent {
 		collisionBody.setBullet(true);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(24 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
-		;
 		FixtureDef fixture = new FixtureDef();
 		fixture.shape = shape;
 		fixture.isSensor = true;

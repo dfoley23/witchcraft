@@ -22,8 +22,8 @@ public class Cape {
 		WitchCraft.rk4.addComponent(cloth);
 	}
 	
-	public void draw( Matrix4 cam ) {
-		cloth.draw(cam);
+	public void draw( Matrix4 cam, float alpha ) {
+		cloth.draw(cam, alpha);
 	}
 	
 	public void updatePos( float x, float y, boolean flip, boolean rotate ) {
@@ -66,8 +66,8 @@ public class Cape {
 		float springK = 350f;
 		float damper = 0.75f;
 		Particle pin1 = new Particle(new Vector3(10f,  6f,  -30f));
-		Particle pin2 = new Particle(new Vector3(-15f, 4f,   -22f));
-		Particle pin3 = new Particle(new Vector3(-30f,  -12f,  -14f));
+		Particle pin2 = new Particle(new Vector3(-15f, 6f,   -22f));
+		Particle pin3 = new Particle(new Vector3(-30f,  6f,  -14f));
 		pins.add(pin1);
 		pins.add(pin2);
 		pins.add(pin3);

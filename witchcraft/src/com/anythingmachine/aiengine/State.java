@@ -3,6 +3,8 @@ package com.anythingmachine.aiengine;
 import java.util.EnumSet;
 import java.util.Set;
 
+import com.anythingmachine.witchcraft.Util.Util;
+
 public enum State {
     IDLE {
     },
@@ -47,6 +49,11 @@ public enum State {
     	public boolean startingToFly() {
     		return true;
     	}
+        @Override
+        public float getInputSpeed(){
+            return Util.PLAYERFLYSPEED;
+        }
+
     },
     LANDING {
         @Override
@@ -96,6 +103,9 @@ public enum State {
     }
     public boolean canWalk() {
     	return true;
+    }
+    public float getInputSpeed(){
+        return Util.PLAYERWALKSPEED;
     }
 }
 

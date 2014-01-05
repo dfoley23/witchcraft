@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -44,15 +44,20 @@ public class Cloth implements PhysicsComponent {
 			p.applyImpulse(force);
 		}
 	}
-	public void draw(Matrix4 cam) {
+	public void draw(Matrix4 cam, float alpha) {
 		mesh.setVertices(verts);
 		
 		updateVertsByIndex();
-
+		//Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if ( alpha < 1 ) 
+			Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
 		shader.begin();
 		shader.setUniformMatrix("u_proj", cam);
+		shader.setUniformf("alpha_val", alpha);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
+		if ( alpha < 1 )
+			Gdx.graphics.getGL20().glDisable(GL20.GL_BLEND);
 	}
 
 	public void addLink(Particle p) {
@@ -108,13 +113,14 @@ public class Cloth implements PhysicsComponent {
 			+ "attribute vec3 a_normal;\n" //
 			// + "attribute vec4 a_color;\n" //
 			+ "uniform mat4 u_proj;\n" //
+			+ "uniform float alpha_val;\n" //
 			+ "varying vec4 v_color;\n" //
 			// + "varying vec3 v_normal;\n" //
 			+ "\n" //
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   vec3 normal = normalize(a_normal);\n" //
-			+ "   vec4 c = vec4(1, 1, 1, 1);\n" //
+			+ "   vec4 c = vec4(1, 1, 1, alpha_val);\n" //
 			+ "   float LdotN = dot(vec3(0, -0.5, -0.5), normal);\n" //
 			+ "   if ( LdotN < 0 ) {\n" // 
 			+ "      LdotN = -LdotN;\n" //
