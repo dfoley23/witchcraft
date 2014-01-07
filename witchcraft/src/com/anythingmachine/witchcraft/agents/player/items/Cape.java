@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.anythingmachine.physicsEngine.Cloth;
 import com.anythingmachine.physicsEngine.Particle;
+import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.SpringParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.math.Matrix4;
@@ -14,12 +15,11 @@ public class Cape {
 	private ArrayList<Vector3> pinpos;
 	private Cloth cloth;
 	
-	public Cape(int width, int height) {
+	public Cape(int width, int height, RK4Integrator rk4) {
 		pins = new ArrayList<Particle>();
 		pinpos = new ArrayList<Vector3>();
-		cloth = new Cloth(width, height);
+		cloth = new Cloth(width, height, rk4);
 		buildCloth(cloth);
-		WitchCraft.rk4.addComponent(cloth);
 	}
 	
 	public void draw( Matrix4 cam, float alpha ) {

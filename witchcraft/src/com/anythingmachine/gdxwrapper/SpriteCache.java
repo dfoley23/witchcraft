@@ -850,7 +850,7 @@ public class SpriteCache implements Disposable {
 	public void begin () {
 		if (drawing) throw new IllegalStateException("end must be called before begin.");
 
-		if (Gdx.graphics.isGL20Available() == false) {
+		if (Gdx.graphics.isGL20Available() == false ) {
 			GL10 gl = Gdx.gl10;
 			gl.glDepthMask(false);
 			gl.glEnable(GL10.GL_TEXTURE_2D);

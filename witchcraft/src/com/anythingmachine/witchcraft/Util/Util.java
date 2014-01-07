@@ -128,7 +128,7 @@ public class Util {
 	public static final int VERTEX_SIZE = 2 + 1 + 2;
 
 	public enum EntityType {
-		PLATFORM, ENTITY, SWORD, ARROW, PLAYER, FIRE, VISION
+		PLATFORM, ENTITY, SWORD, ARROW, PLAYER, FIRE, VISION, PARTICLE,
 	}
 
 }

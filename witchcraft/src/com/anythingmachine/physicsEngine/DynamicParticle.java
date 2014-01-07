@@ -1,6 +1,7 @@
 package com.anythingmachine.physicsEngine;
 
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class DynamicParticle extends Particle {
@@ -10,7 +11,7 @@ public class DynamicParticle extends Particle {
 	}
 	
 	@Override
-	public void draw() {
+	public void draw(SpriteBatch batch) {
 		
 	}
 		

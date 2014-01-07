@@ -22,7 +22,7 @@ public class Cloth implements PhysicsComponent {
 	private Mesh mesh;
 	private ShaderProgram shader;
 	
-	public Cloth(int w, int h) {
+	public Cloth(int w, int h, RK4Integrator rk4) {
 		links = new ArrayList<Particle>();
 		offset = 6;
 		shader = new ShaderProgram(this.vertexShader, this.fragShader);
@@ -33,6 +33,7 @@ public class Cloth implements PhysicsComponent {
 			    new VertexAttribute( Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ),
 			    new VertexAttribute( Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE ) );
 		mesh.setIndices(indices);
+		rk4.addComponent(this);
 	}
 
 	public Cloth() {

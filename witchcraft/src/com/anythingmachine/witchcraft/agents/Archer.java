@@ -11,7 +11,6 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
@@ -44,9 +43,6 @@ public class Archer extends NonPlayer {
 	@Override
 	public void draw(SpriteBatch batch) {
 		super.draw(batch);
-		if ( arrow != null ) {
-			arrow.draw(batch);
-		}
 	}
 	
 	@Override

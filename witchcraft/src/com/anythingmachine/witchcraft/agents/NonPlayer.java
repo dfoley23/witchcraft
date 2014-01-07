@@ -5,25 +5,15 @@ import java.util.Random;
 
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.Goal;
-import com.anythingmachine.aiengine.State;
 import com.anythingmachine.aiengine.UtilityAI;
 import com.anythingmachine.aiengine.UtilityAI.AIState;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
-import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 
@@ -51,7 +41,7 @@ public class NonPlayer extends Agent {
 		this.body = new KinematicParticle(
 				new Vector3(pos.x, WitchCraft.ground.findPointOnCurve(
 						curGroundSegment, 32f).y, 0f), -50f);
-		WitchCraft.rk4.addComponent(body);
+		WitchCraft.rk4System.addParticle(body);
 
 		setupAnimations(skinname, atlasname);
 

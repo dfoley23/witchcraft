@@ -3,6 +3,7 @@ package com.anythingmachine.physicsEngine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -13,23 +14,30 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class TexturedBodyParticle extends TexturedParticle {
-	private Body collisionBody;
+	protected Body collisionBody;
 	
-	public TexturedBodyParticle(Vector3 pos, EntityType type ) {
-		super(pos, type);
-		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+	public TexturedBodyParticle(Vector3 pos, EntityType type, Sprite sprite, Vector3 extForce ) {
+		super(pos, type, sprite, extForce);
 		buildCollisionBody();
 	}
 	
 	@Override
 	public void draw(SpriteBatch batch) {
+		collisionBody.setTransform(getPos2D().cpy().mul(Util.PIXEL_TO_BOX),
+				collisionBody.getAngle());
 		sprite.setPosition(pos.x, pos.y);
 		sprite.setRotation(collisionBody.getAngle()*Util.RAD_TO_DEG);
 		sprite.draw(batch);
 	}
 	
 	public void destroy() {
+		super.destroy();
 		WitchCraft.world.destroyBody(collisionBody);
+	}
+
+	@Override
+	public TexturedBodyParticle copy(Vector3 pos, Vector3 ext) {		
+		return new TexturedBodyParticle(pos, this.type, new Sprite(sprite), ext);
 	}
 
 	private void buildCollisionBody(){

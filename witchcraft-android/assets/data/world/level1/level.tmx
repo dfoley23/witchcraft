@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="60" height="15" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" spacing="2">
-  <image source="level.png" width="128" height="128"/>
+  <image source="level.png" width="128" height="256"/>
  </tileset>
  <layer name="background2" width="60" height="15">
   <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
+   eJztz7EJAAAIxEB//6VtLEXshDcHGSARAAD8oOoDNTnqPl1/p1fH582v2zNwIQGn4AAi
   </data>
  </layer>
  <layer name="background3" width="60" height="15">
   <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
+   eJztz7ENADAMwzDn/6e7ZO3UrSYBHaAEALiZrcHE78+afiddv/DiAFXMABA=
   </data>
  </layer>
  <layer name="background4" width="60" height="15">
   <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
+   eJztz8EJAAAIxLBz/6X9OoGIJNABmgAA3FWj7yp+gV0NPgAADA==
   </data>
  </layer>
  <layer name="playerLayer" width="60" height="15">
   <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
+   eJztzzEKAAAIw0DB///Zyc1Zpc1B9yYCgIK8PrDMpTeHOXDpbPRqoxfAZwUabwAl
   </data>
  </layer>
  <layer name="foreground" width="60" height="15">
   <data encoding="base64" compression="zlib">
-   eJztj0sKACAIBcU+9z9yBS5ColaFxAw8XIgPRwTgHnqYrzpekXpyT3Gptj+5qHX4+7kjGt65yvr/XbxzVNcBvvjiiy++McH3b1+4RwMTOgQh
+   eJzt0T0KACAMg9FQwb/7H1iHDkUnJ6HJgxzgI4DIHzVshE1fRn2v4e7N6uw1cPWy/cvUa+DqZfq3+NSbC1uvyIsFdYoB5A==
   </data>
  </layer>
 </map>

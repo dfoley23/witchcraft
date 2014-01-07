@@ -12,6 +12,7 @@ import com.anythingmachine.assets.AssetManager;
 import com.anythingmachine.collisionEngine.MyContactListener;
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.physicsEngine.RK4Integrator;
+import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.Archer;
@@ -22,6 +23,7 @@ import com.anythingmachine.witchcraft.ground.Ground;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -46,7 +48,8 @@ public class WitchCraft implements ApplicationListener {
 	private ShapeRenderer shapeRenderer;
 	public static Player player;
 	public static World world;
-	public static RK4Integrator rk4;
+	private static RK4Integrator rk4;
+	public static ParticleSystem rk4System;
 	private float xGrid;
 	private int camWorldSize;
 	private Calendar cal;
@@ -79,6 +82,8 @@ public class WitchCraft implements ApplicationListener {
 		cal.setTime(date);
 
 		rk4 = new RK4Integrator();
+		rk4System = new ParticleSystem(rk4);
+		
 		contactListener = new MyContactListener();
 		world = new World(new Vector2(0.0f, -10.0f), false);
 		world.setContactListener(contactListener);
@@ -112,7 +117,7 @@ public class WitchCraft implements ApplicationListener {
 		ground = new Ground(world);
 		ground.readCurveFile("data/groundcurves.txt", -240, -250);
 
-		player = new Player();
+		player = new Player(rk4);
 		npc1 = new Knight("knight2", "npcsheet1", new Vector2(354.0f, 3.0f));
 		npc2 = new Knight("knight1", "npcsheet1", new Vector2(800.0f, 3.0f));
 		npc3 = new Archer("archer", "npcsheet1", new Vector2(300.0f, 3.0f));
@@ -247,9 +252,12 @@ public class WitchCraft implements ApplicationListener {
 		npc3.draw(spriteBatch);
 
 		player.draw(spriteBatch, combined);
+
+		rk4System.draw(spriteBatch);
+
 		spriteBatch.end();
 		player.drawCape(tiledMapHelper.getCamera().combined);
-
+		
 		//
 		// player.drawCape(shapeRenderer);
 
@@ -279,5 +287,10 @@ public class WitchCraft implements ApplicationListener {
 						"player",
 						new TextureAtlas(Gdx.files
 								.internal("data/spine/player.atlas")));
+		assetManager.addTexture("dust",
+				new Texture(Gdx.files.internal("data/dust.png")));
+		assetManager.addTexture("spiro",
+				new Texture(Gdx.files.internal("data/spiro.png")));
+
 	}
 }

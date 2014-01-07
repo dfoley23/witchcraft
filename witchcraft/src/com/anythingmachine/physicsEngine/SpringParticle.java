@@ -3,9 +3,7 @@ package com.anythingmachine.physicsEngine;
 import java.util.ArrayList;
 
 import com.anythingmachine.witchcraft.Util.Util;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class SpringParticle extends Particle {
@@ -18,7 +16,7 @@ public class SpringParticle extends Particle {
 	}
 	
 	@Override
-	public void draw() {
+	public void draw(SpriteBatch batch) {
 		
 	}
 

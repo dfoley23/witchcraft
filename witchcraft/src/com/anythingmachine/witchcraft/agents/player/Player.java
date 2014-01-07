@@ -1,25 +1,20 @@
 package com.anythingmachine.witchcraft.agents.player;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import com.anythingmachine.aiengine.State;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
+import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.Agent;
-import com.anythingmachine.witchcraft.agents.player.Power.ConvertPower;
-import com.anythingmachine.witchcraft.agents.player.Power.DeathPower;
-import com.anythingmachine.witchcraft.agents.player.Power.FreezePower;
-import com.anythingmachine.witchcraft.agents.player.Power.IntangibilityPower;
 import com.anythingmachine.witchcraft.agents.player.Power.InvisiblePower;
 import com.anythingmachine.witchcraft.agents.player.Power.MindControlPower;
 import com.anythingmachine.witchcraft.agents.player.Power.Power;
-import com.anythingmachine.witchcraft.agents.player.Power.ShapeShiftCatPower;
-import com.anythingmachine.witchcraft.agents.player.Power.ShapeShiftCrowPower;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
@@ -50,17 +45,17 @@ public class Player extends Agent {
 	private AnimationManager animate;
 	private Body collisionBody;
 	private boolean hitRoof;
-	private HashMap<String, Power> powers;
-	private Power power;
+	private ArrayList<Power> powers;
+	private int power;
 
-	public Player() {
+	public Player(RK4Integrator rk4) {
 		this.playerState = State.IDLE;
 		this.curGroundSegment = 0;
 		this.curCurve = WitchCraft.ground.getCurve(curGroundSegment);
 		this.onElevatedSegment = false;
 		this.body = new KinematicParticle(new Vector3(32f,
 				WitchCraft.ground.findPointOnCurve(curGroundSegment, 32f).y, 0f), Util.GRAVITY);
-		WitchCraft.rk4.addComponent(body);
+		WitchCraft.rk4System.addParticle(body);
 		this.input = new InputManager();
 		hitRoof = false;
 		setupInput();
@@ -68,20 +63,21 @@ public class Player extends Agent {
 
 		neck = animate.findBone("neck");
 
-		cape = new Cape(3, 5);
+		cape = new Cape(3, 5, rk4);
 		buildCollisionBody();
 		setupPowers();
-
+		power = 0;
 		type = EntityType.PLAYER;
 
 	}
 
 	public void update(float dT) {
-
 		float delta = Gdx.graphics.getDeltaTime();
 
+		//check if on ground
 		checkGround();
-
+		
+		//handle walking input
 		boolean moving = false;
 		if (input.is("Right") || input.is("Left")) {
 			updateWalking();
@@ -97,28 +93,36 @@ public class Player extends Agent {
 
 		animate.setFlipX(facingLeft);
 
+		//handle flying input
 		if (input.is("Fly") && !hitRoof) {
 			updateFlying();
-		} else if ( hitRoof ) {
-			body.apply2DImpulse(0, -1);
-			hitRoof = false;
 		} else if ( onElevatedSegment ){
 			body.setVel(body.getVel().x, 0, 0);
 		}
 
-		if ( input.is("UsePower") ) {
-			//power.usePower(playerState);
-			animate.switchSkin("invi");
+		//handle user power input
+		if ( input.is("SwitchPower") ) {
+			power = (power+1)>=powers.size() ? 0 : power+1;
 		}
-
+		if ( input.is("UsePower") ) {
+			powers.get(power).usePower(playerState, animate, body);
+			playerState = State.USINGPOWER;
+		} else {
+			powers.get(power).updatePower(playerState, animate, dT);
+		}
+		
+		//update skeletal animation
 		updateSkeleton(moving, delta);
-		if (playerState.startingToFly())
+		
+		//rotate collision box when flying
+		if (playerState.startingToFly()) {
 			collisionBody.setTransform(
 					body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX),
 					Util.HALF_PI);
-		else
+		} else {
 			collisionBody.setTransform(
 					body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX), 0);
+		}
 
 	}
 
@@ -260,6 +264,7 @@ public class Player extends Agent {
 		}
 		animate.setPos(body.getPos(), -8f, 0f);
 		animate.updateSkel(delta);
+		//update the root position of the cape
 		if (facingLeft) {
 			if (playerState == State.FLYING) {
 				cape.updatePos(neck.getWorldX() + 25, neck.getWorldY() + 7,
@@ -304,10 +309,11 @@ public class Player extends Agent {
 	}
 
 	private void setupPowers() {
-//		powers.put("mindcontrol", new MindControlPower());
+		powers = new ArrayList<Power>();  
+		powers.add( new MindControlPower());
 //		powers.put("shapecrow", new ShapeShiftCrowPower());
 //		powers.put("shapecat", new ShapeShiftCatPower());
-//		powers.put("invisible", new InvisiblePower());
+		powers.add( new InvisiblePower());
 //		powers.put("intangible", new IntangibilityPower());
 //		powers.put("convert", new ConvertPower());
 //		powers.put("freeze", new FreezePower());
@@ -335,6 +341,10 @@ public class Player extends Agent {
 				"idle",
 				sb.readAnimation(
 						Gdx.files.internal("data/spine/player-idle.anim"), sd));
+		animate.addAnimation(
+				"castspell",
+				sb.readAnimation(
+						Gdx.files.internal("data/spine/player-castspell.anim"), sd));
 		animate.setCurrent("idle", true);
 	}
 

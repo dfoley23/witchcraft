@@ -20,6 +20,7 @@ public class AnimationManager {
 	private float totalTime = 0f;
 	private Vector2 scale;
 	private boolean loop;
+	private boolean isFlipped = false;
 	
 	public AnimationManager(String name, Vector3 pos, Vector2 scl,
 			boolean flip, SkeletonData sd) {
@@ -67,7 +68,7 @@ public class AnimationManager {
 	public void applyTotalTime(boolean val, float delta) {
 		animations.get(currentAnim).apply(skel, totalTime+delta, val);
 	}
-	
+
 	public void draw(SpriteBatch batch) {
 		skel.draw(batch);
 	}
@@ -76,6 +77,10 @@ public class AnimationManager {
 		animations.put(id, anim);
 	}
 
+	public boolean isFlipped() {
+		return isFlipped;
+	}
+	
 	public void setCurrent(String id, boolean val) {
 		currentAnim = id;
 		loop = val;
@@ -92,8 +97,13 @@ public class AnimationManager {
 		return totalTime+delta > animations.get(currentAnim).getQuarterDuration();
 	}
 	
+	public boolean isTImeOverThreeQuarters() {
+		return skel.getTime() > animations.get(currentAnim).getQuarterDuration()*3;
+	}
+	
 	public void setFlipX(boolean val){
 		skel.setFlipX(val);
+		isFlipped = val;
 	}
 	
 	public boolean atEnd() {

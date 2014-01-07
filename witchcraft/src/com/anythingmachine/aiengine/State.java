@@ -8,6 +8,16 @@ import com.anythingmachine.witchcraft.Util.Util;
 public enum State {
     IDLE {
     },
+    USINGPOWER {
+    	@Override
+    	public boolean canBeIdle() {
+    		return false;
+    	}
+    	@Override
+        public boolean canCastSpell() {
+        	return false;
+        }
+    },
     WALKING {
     	@Override
     	public boolean canWalk() {
@@ -27,6 +37,10 @@ public enum State {
     	public boolean startingToFly() {
     		return true;
     	}
+    	@Override
+        public boolean canCastSpell() {
+        	return false;
+        }
     },
     FLYING {
         @Override
@@ -53,7 +67,10 @@ public enum State {
         public float getInputSpeed(){
             return Util.PLAYERFLYSPEED;
         }
-
+    	@Override
+        public boolean canCastSpell() {
+        	return false;
+        }
     },
     LANDING {
         @Override
@@ -64,12 +81,20 @@ public enum State {
         public boolean canBeIdle() {
         	return false;
         }
+    	@Override
+        public boolean canCastSpell() {
+        	return false;
+        }
     },
     FALLING {
     	@Override
     	public boolean canWalk() {
     		return false;
     	}
+    	@Override
+        public boolean canCastSpell() {
+        	return false;
+        }
     },
     ATTACK {
         @Override
@@ -82,6 +107,10 @@ public enum State {
     	public boolean canFly() {
     		return false;
     	}
+    	@Override
+        public boolean canCastSpell() {
+        	return false;
+        }
     };
 	public boolean startingToFly() {
 		return false;
@@ -106,6 +135,9 @@ public enum State {
     }
     public float getInputSpeed(){
         return Util.PLAYERWALKSPEED;
+    }
+    public boolean canCastSpell() {
+    	return true;
     }
 }
 
