@@ -18,14 +18,10 @@ import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 
 public class NonPlayer extends Agent {
-	protected KinematicParticle body;
-	protected boolean facingLeft;
 	protected boolean inAir;
 	protected UtilityAI behavior;
 	protected float aiChoiceTime = 0.f;
 	protected AIState state = AIState.IDLE;
-	protected boolean onGround;
-	protected AnimationManager animate;
 	
 	public NonPlayer(String skinname, String atlasname, Vector2 pos) {
 		this.curGroundSegment = 0;
@@ -96,29 +92,7 @@ public class NonPlayer extends Agent {
 				break;
 			}
 		}
-		Vector3 pos = body.getPos();
-		if (pos.x > curCurve.lastPointOnCurve().x) {
-			curGroundSegment++;
-			if (curGroundSegment >= WitchCraft.ground.getNumCurves()) {
-				body.setVel(-50, 0, 0);
-				facingLeft = !facingLeft;
-			}
-			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-		} else if (pos.x < curCurve.firstPointOnCurve().x) {
-			curGroundSegment--;
-			if (curGroundSegment == 0) {
-				body.setVel(50, 0, 0);
-				facingLeft = !facingLeft;
-			}
-			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-		}
-		animate.setFlipX(facingLeft);
-		Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
-				curGroundSegment, pos.x);
-		if (pos.y < groundPoint.y) {
-			correctHeight(groundPoint.y);
-			onGround = true;
-		}
+		checkGround();
 		
 		animate.setPos(body.getPos(), 0, -16f);
 		if ( state == AIState.SWORDATTACK && animate.atEnd()) {
@@ -141,9 +115,6 @@ public class NonPlayer extends Agent {
 		return curGroundSegment;
 	}
 
-	public void correctHeight(float y) {
-		body.setPos(body.getPos().x, y, 0f);
-	}
 
 	public void incrementSegment() {
 		this.curGroundSegment++;

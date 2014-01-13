@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.agents.player;
 import java.util.ArrayList;
 
 import com.anythingmachine.aiengine.State;
+import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.input.InputManager;
@@ -12,11 +13,13 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.Agent;
+import com.anythingmachine.witchcraft.agents.player.Power.FlyingPower;
 import com.anythingmachine.witchcraft.agents.player.Power.InvisiblePower;
 import com.anythingmachine.witchcraft.agents.player.Power.MindControlPower;
 import com.anythingmachine.witchcraft.agents.player.Power.Power;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.anythingmachine.witchcraft.ground.Platform;
+import com.anythingmachine.witchcraft.ground.Stairs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,29 +38,25 @@ import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 
 public class Player extends Agent {
-	private boolean facingLeft;
-	private boolean onGround;
 	private Cape cape;
-	private State playerState;
+	private StateMachine playerState;
 	private Bone neck;
 	private InputManager input;
-	private KinematicParticle body;
-	private AnimationManager animate;
 	private Body collisionBody;
-	private boolean hitRoof;
 	private ArrayList<Power> powers;
 	private int power;
 
 	public Player(RK4Integrator rk4) {
-		this.playerState = State.IDLE;
 		this.curGroundSegment = 0;
 		this.curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-		this.onElevatedSegment = false;
-		this.body = new KinematicParticle(new Vector3(32f,
-				WitchCraft.ground.findPointOnCurve(curGroundSegment, 32f).y, 0f), Util.GRAVITY);
+		this.body = new KinematicParticle(
+				new Vector3(32f, WitchCraft.ground.findPointOnCurve(
+						curGroundSegment, 32f).y, 0f), Util.GRAVITY * 3);
 		WitchCraft.rk4System.addParticle(body);
+
+		playerState = new StateMachine();
+		this.playerState.setState(State.IDLE);
 		this.input = new InputManager();
-		hitRoof = false;
 		setupInput();
 		setupAnimations("player");
 
@@ -66,56 +65,44 @@ public class Player extends Agent {
 		cape = new Cape(3, 5, rk4);
 		buildCollisionBody();
 		setupPowers();
+		setupTests();
 		power = 0;
 		type = EntityType.PLAYER;
 
 	}
 
+	/** public functions **/
+
 	public void update(float dT) {
 		float delta = Gdx.graphics.getDeltaTime();
 
-		//check if on ground
+		// check if on ground
 		checkGround();
-		
-		//handle walking input
-		boolean moving = false;
-		if (input.is("Right") || input.is("Left")) {
-			updateWalking();
-			moving = true;
-		} else {
-			if (playerState.canBeIdle() && animate.isTimeOverAQuarter(delta)) {
-				playerState = State.IDLE;
-				animate.setCurrent("idle", true);
-				animate.bindPose();
-				body.setVel(0f, body.getVel().y, 0f);
-			}
-		}
 
-		animate.setFlipX(facingLeft);
+		// handle walking input
+		boolean moving = updateWalking(delta);
 
-		//handle flying input
-		if (input.is("Fly") && !hitRoof) {
-			updateFlying();
-		} else if ( onElevatedSegment ){
+		animate.setFlipX(playerState.test("facingleft"));
+
+		if (playerState.testtest("grounded", "hitplatform")) {
 			body.setVel(body.getVel().x, 0, 0);
 		}
 
-		//handle user power input
-		if ( input.is("SwitchPower") ) {
-			power = (power+1)>=powers.size() ? 0 : power+1;
+		// handle user power input
+		if (input.is("SwitchPower")) {
+			power = (power + 1) >= powers.size() ? 0 : power + 1;
 		}
-		if ( input.is("UsePower") ) {
+		if (input.is("UsePower")) {
 			powers.get(power).usePower(playerState, animate, body);
-			playerState = State.USINGPOWER;
 		} else {
 			powers.get(power).updatePower(playerState, animate, dT);
 		}
-		
-		//update skeletal animation
+
+		// update skeletal animation
 		updateSkeleton(moving, delta);
-		
-		//rotate collision box when flying
-		if (playerState.startingToFly()) {
+
+		// rotate collision box when flying
+		if (playerState.state.startingToFly()) {
 			collisionBody.setTransform(
 					body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX),
 					Util.HALF_PI);
@@ -123,7 +110,7 @@ public class Player extends Agent {
 			collisionBody.setTransform(
 					body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX), 0);
 		}
-
+		// System.out.println(playerState.state);
 	}
 
 	public void draw(SpriteBatch batch, Matrix4 cam) {
@@ -166,21 +153,42 @@ public class Player extends Agent {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		if (other.type == EntityType.PLATFORM) {
-			Platform plat = (Platform)other;
+		switch (other.type) {
+		case PLATFORM:
+			Platform plat = (Platform) other;
 			Vector2 pos = body.getPos2D();
-			if ( plat.isBetween(pos.x) ) {
-				if ( plat.getHeight()-64 < pos.y) {
-					onElevatedSegment = true;
+			if (plat.isBetween(pos.x)) {
+				if (plat.getHeight() - 64 < pos.y) {
+					playerState.setTestVal("hitplatform", true);
 					this.elevatedSegment = plat;
-					if (playerState.canLand())
-						playerState = State.LANDING;
+					if (playerState.state.canLand())
+						playerState.setState(State.LANDING);
 				} else {
-					System.out.println(plat.getHeight());
-					System.out.println(pos);
-					//body.setPos(pos.x,plat.getHeight()-10, 0);
-					body.setVel(body.getVel2D().x, -body.getVel2D().y, 0);
-					hitRoof = true;
+					// System.out.println("platfrom");
+					// System.out.println(plat.getHeight());
+					// System.out.println(pos);
+					// body.setPos(pos.x,plat.getHeight()-10, 0);
+					body.setVel(body.getVel2D().x, -50, 0);
+					playerState.setTestVal("hitroof", true);
+				}
+			}
+			break;
+		case STAIRS:
+			plat = (Stairs) other;
+			pos = body.getPos2D();
+			// System.out.println("stairsdfsdfd");
+			if (plat.isBetween(playerState.test("facingleft") ? pos.x - 16 : pos.x)) {
+				if (plat.getHeight() - 70 < pos.y) {
+					playerState.setTestVal("hitplatform", true);
+					this.elevatedSegment = plat;
+					if (playerState.state.canLand())
+						playerState.setState(State.LANDING);
+				} else {
+					// System.out.println(plat.getHeight());
+					// System.out.println(pos);
+					// body.setPos(pos.x,plat.getHeight()-10, 0);
+					body.setVel(body.getVel2D().x, -50, 0);
+					playerState.setTestVal("hitroof", true);
 				}
 			}
 		}
@@ -194,68 +202,73 @@ public class Player extends Agent {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		if ( other.type == EntityType.PLATFORM ) {
+		if (other.type == EntityType.PLATFORM) {
 			Platform plat = (Platform) other;
-			if ( plat.equals(elevatedSegment)) 
-				this.onElevatedSegment = false;
-			if( !playerState.canLand() ) {
-				playerState = State.FALLING;
+			if (plat.equals(elevatedSegment))
+				playerState.setTestVal("hitplatform", false);
+			if (!playerState.state.canLand()) {
+				playerState.setState(State.FALLING);
 			}
-		}
-	}
-	
-	private void updateFlying() {
-		body.setVel(body.getVel().x, 90f, 0f);
-		if (playerState.canFly()) {
-			animate.setCurrent("jump", true);
-			animate.bindPose();
-			playerState = State.JUMPING;
 		}
 	}
 
-	private void checkGround() {
-		if (!onElevatedSegment) {
+	/************ private functions ************/
+	/******************************************/
+	@Override
+	protected void checkGround() {
+		if (!playerState.test("hitplatform")) {
 			Vector3 pos = body.getPos().cpy();
-			if (pos.x > curCurve.lastPointOnCurve().x) {
+			// System.out.println(pos);
+			if (pos.x > curCurve.lastPointOnCurve().x
+					&& curGroundSegment + 1 < WitchCraft.ground.getNumCurves()) {
 				curGroundSegment++;
 				curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-			} else if (pos.x < curCurve.firstPointOnCurve().x) {
+			} else if (pos.x < curCurve.firstPointOnCurve().x
+					&& curGroundSegment - 1 >= 0) {
 				curGroundSegment--;
 				curCurve = WitchCraft.ground.getCurve(curGroundSegment);
 			}
-			Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(curGroundSegment,
-					pos.x);
-			onGround = false;
+			Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
+					curGroundSegment, pos.x);
+			playerState.setTestVal("grounded", false);
 			if (pos.y <= groundPoint.y) {
 				correctHeight(groundPoint.y);
-				onGround = true;
-				playerState = playerState.land();
+				playerState.setTestVal("grounded", true);
+				playerState.setState(playerState.state.land());
 			}
 		} else {
-			float groundPoint = elevatedSegment.getHeight();
-			onGround = false;
-			if ( body.getPos().y < groundPoint) {
-				correctHeight(groundPoint);
-				onGround = true;
+			float x = body.getPos2D().x;
+			playerState.setTestVal("grounded", false);
+			if (elevatedSegment.isBetween(playerState.test("facingleft") ? x - 16 : x)) {
+				float groundPoint = elevatedSegment.getHeight(x);
+				if (body.getPos().y < groundPoint) {
+					correctHeight(groundPoint);
+					playerState.setTestVal("grounded", true);
+				}
+			} else {
+				playerState.setTestVal("hitplatform", false);
 			}
 		}
 	}
 
 	private void updateSkeleton(boolean moving, float delta) {
-		if (playerState != State.FLYING) {
+		if (!playerState.inState(State.FLYING)) {
 			cape.addWindForce(0, -400);
-			if (animate.getTime() + delta > animate.getCurrentAnimTime()
-					&& !moving) {
-				playerState = State.IDLE;
+			if (animate.atEnd() && !moving) {
+				playerState.setState(State.IDLE);
 				animate.setCurrent("idle", true);
 				animate.bindPose();
-				body.setVel(0, 0, 0);
-			} else if (onGround || playerState != State.JUMPING
-					|| animate.getTime() + delta < 0.95f) {
+				body.setVel(0f, 0f, 0f);
+			} else if (playerState.testORNotState("grounded", State.JUMPING)
+					|| animate.testUnderTime(0f, 0.95f)) {
 				animate.applyTotalTime(true, delta);
 			} else {
-				playerState = State.FLYING;
-				if (facingLeft) {
+				// if you are not on the ground
+				// and you are jumping
+				// and the current animation time is over 0.95
+				// then begin flying
+				playerState.setState(State.FLYING);
+				if (playerState.test("facingleft")) {
 					cape.addWindForce(-500, 0);
 				} else {
 					cape.addWindForce(-500, 0);
@@ -264,9 +277,9 @@ public class Player extends Agent {
 		}
 		animate.setPos(body.getPos(), -8f, 0f);
 		animate.updateSkel(delta);
-		//update the root position of the cape
-		if (facingLeft) {
-			if (playerState == State.FLYING) {
+		// update the root position of the cape
+		if (playerState.test("facingleft")) {
+			if (playerState.inState(State.FLYING)) {
 				cape.updatePos(neck.getWorldX() + 25, neck.getWorldY() + 7,
 						true, false);
 			} else {
@@ -274,7 +287,7 @@ public class Player extends Agent {
 						false);
 			}
 		} else {
-			if (playerState == State.FLYING) {
+			if (playerState.inState(State.FLYING)) {
 				cape.updatePos(neck.getWorldX() + 5, neck.getWorldY() + 7,
 						false, false);
 			} else {
@@ -284,21 +297,35 @@ public class Player extends Agent {
 		}
 	}
 
-	private void updateWalking() {
-		if (onGround && !input.is("Fly") && playerState.canWalk()) {
+	private boolean updateWalking(float delta) {
+		boolean ismoving = false;
+		if (input.is("Right")) {
+			body.setVel(playerState.state.getInputSpeed(), body.getVel().y, 0f);
+			playerState.setTestVal("facingleft", false);
+			ismoving = true;
+		} else if (input.is("Left")) {
+			body.setVel(-playerState.state.getInputSpeed(), body.getVel().y, 0f);
+			playerState.setTestVal("facingleft", true);
+			ismoving = true;
+		}
+		if (playerState.test("grounded") && ismoving
+				&& playerState.state.canWalk()) {
 			animate.setCurrent("walk", true);
 			animate.bindPose();
-			playerState = State.WALKING;
+			playerState.setState(State.WALKING);
 		}
-		if (input.is("Right")) {
-			body.setVel(playerState.getInputSpeed(), body.getVel().y, 0f);
-			facingLeft = false;
-		} else if (input.is("Left")) {
-			body.setVel(-playerState.getInputSpeed(), body.getVel().y, 0f);
-			facingLeft = true;
-		}
+		// else if (playerState.state.canBeIdle()
+		// && animate.isTimeOverAQuarter(delta)) {
+		// playerState.setState(State.IDLE);
+		// animate.setCurrent("idle", true);
+		// animate.bindPose();
+		// body.setVel(0f, body.getVel().y, 0f);
+		// }
+		return ismoving;
 	}
 
+	/******************* setup functions ****************/
+	/***************************************************/
 	private void setupInput() {
 		input.addInputState("Left", Keys.LEFT);
 		input.addInputState("Right", Keys.RIGHT);
@@ -308,25 +335,31 @@ public class Player extends Agent {
 		input.addInputState("Interact", Keys.A);
 	}
 
+	private void setupTests() {
+		playerState.addTest("grounded", false);
+		playerState.addTest("hitplatform", false);
+		playerState.addTest("hitroof", false);
+		playerState.addTest("facingleft", false);
+	}
+
 	private void setupPowers() {
-		powers = new ArrayList<Power>();  
-		powers.add( new MindControlPower());
-//		powers.put("shapecrow", new ShapeShiftCrowPower());
-//		powers.put("shapecat", new ShapeShiftCatPower());
-		powers.add( new InvisiblePower());
-//		powers.put("intangible", new IntangibilityPower());
-//		powers.put("convert", new ConvertPower());
-//		powers.put("freeze", new FreezePower());
-//		powers.put("death", new DeathPower());
+		powers = new ArrayList<Power>();
+		powers.add(new FlyingPower());
+		powers.add(new MindControlPower());
+		// powers.put("shapecrow", new ShapeShiftCrowPower());
+		// powers.put("shapecat", new ShapeShiftCatPower());
+		powers.add(new InvisiblePower());
+		// powers.put("intangible", new IntangibilityPower());
+		// powers.put("convert", new ConvertPower());
+		// powers.put("freeze", new FreezePower());
+		// powers.put("death", new DeathPower());
 	}
 
 	private void setupAnimations(String name) {
 		TextureAtlas atlas = WitchCraft.assetManager.getAtlas("player");
-
 		SkeletonBinary sb = new SkeletonBinary(atlas);
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/player.skel"));
-
 		animate = new AnimationManager(name, body.getPos(), new Vector2(0.5f,
 				0.5f), false, sd);
 		animate.addAnimation(
@@ -341,10 +374,8 @@ public class Player extends Agent {
 				"idle",
 				sb.readAnimation(
 						Gdx.files.internal("data/spine/player-idle.anim"), sd));
-		animate.addAnimation(
-				"castspell",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/player-castspell.anim"), sd));
+		animate.addAnimation("castspell", sb.readAnimation(
+				Gdx.files.internal("data/spine/player-castspell.anim"), sd));
 		animate.setCurrent("idle", true);
 	}
 

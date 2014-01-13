@@ -33,6 +33,7 @@ import java.util.HashMap;
 import com.anythingmachine.gdxwrapper.TileMapRenderer;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ground.Platform;
+import com.anythingmachine.witchcraft.ground.Stairs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -121,7 +122,7 @@ public class TiledMapHelper {
 		map = TiledLoader.createMap(Gdx.files.internal(tmxFile));
 		tileAtlas = new TileAtlas(map, packFileDirectory);
 
-		tileMapRenderer = new TileMapRenderer(map, tileAtlas, 16, 16);
+		tileMapRenderer = new TileMapRenderer(map, tileAtlas, 32, 32);
 
 		int size = tileMapRenderer.getMap().layers.size();
 		layersList = new int[size];
@@ -187,7 +188,7 @@ public class TiledMapHelper {
 
 				tmp.add(new LineSegment(Integer.parseInt(start[0]), Integer
 						.parseInt(start[1]), Integer.parseInt(end[0]), Integer
-						.parseInt(end[1])));
+						.parseInt(end[1]), "" ));
 			}
 
 			tileCollisionJoints.put(Integer.valueOf(tileNo), tmp);
@@ -195,21 +196,27 @@ public class TiledMapHelper {
 
 		ArrayList<LineSegment> collisionLineSegments = new ArrayList<LineSegment>();
 
-		for (int y = 0; y < getMap().height; y++) {
-			for (int x = 0; x < getMap().width; x++) {
-				int tileType = getMap().layers.get(3).tiles[(getMap().height - 1)
-						- y][x];
+		for (int l = 0; l < getMap().layers.size(); l++) {
+			if (getMap().layers.get(l).properties.containsKey("collide")) {
+				for (int y = 0; y < getMap().height; y++) {
+					for (int x = 0; x < getMap().width; x++) {
+						int tileType = getMap().layers.get(l).tiles[(getMap().height - 1)
+								- y][x];
 
-				for (int n = 0; n < tileCollisionJoints.get(
-						Integer.valueOf(tileType)).size(); n++) {
-					LineSegment lineSeg = tileCollisionJoints.get(
-							Integer.valueOf(tileType)).get(n);
+						for (int n = 0; n < tileCollisionJoints.get(
+								Integer.valueOf(tileType)).size(); n++) {
+							LineSegment lineSeg = tileCollisionJoints.get(
+									Integer.valueOf(tileType)).get(n);
 
-					addOrExtendCollisionLineSegment(x * getMap().tileWidth
-							+ lineSeg.start().x, y * getMap().tileHeight
-							- lineSeg.start().y + 32, x * getMap().tileWidth
-							+ lineSeg.end().x, y * getMap().tileHeight
-							- lineSeg.end().y + 32, collisionLineSegments);
+							addOrExtendCollisionLineSegment(x
+									* getMap().tileWidth + lineSeg.start().x, y
+									* getMap().tileHeight - lineSeg.start().y
+									+ 32,
+									x * getMap().tileWidth + lineSeg.end().x,
+									y * getMap().tileHeight - lineSeg.end().y
+											+ 32, collisionLineSegments, getMap().getTileProperty(tileType, "type"));
+						}
+					}
 				}
 			}
 		}
@@ -218,16 +225,20 @@ public class TiledMapHelper {
 			groundBodyDef.type = BodyDef.BodyType.StaticBody;
 			groundBodyDef.position.set(0, 0);
 			Body groundBody = WitchCraft.world.createBody(groundBodyDef);
-			groundBody.setUserData(new Platform(lineSegment.start(),
-					lineSegment.end()));
-
+			if ( lineSegment.type != null && lineSegment.type.equals("STAIRS")) {
+				groundBody.setUserData(new Stairs(lineSegment.start(),
+						lineSegment.end()));
+			} else { 
+				groundBody.setUserData(new Platform(lineSegment.start(),
+						lineSegment.end()));
+			}
 			EdgeShape environmentShape = new EdgeShape();
 
 			environmentShape.set(lineSegment.start().mul(1 / pixelsPerMeter),
 					lineSegment.end().mul(1 / pixelsPerMeter));
 			FixtureDef fixture = new FixtureDef();
 			fixture.shape = environmentShape;
-			fixture.isSensor = true;
+			//fixture.isSensor = true;
 			fixture.density = 0;
 			groundBody.createFixture(fixture);
 			// for( Fixture fix: groundBody.getFixtureList() ) {
@@ -289,8 +300,8 @@ public class TiledMapHelper {
 	 *            the current list of line segments
 	 */
 	private void addOrExtendCollisionLineSegment(float lsx1, float lsy1,
-			float lsx2, float lsy2, ArrayList<LineSegment> collisionLineSegments) {
-		LineSegment line = new LineSegment(lsx1, lsy1, lsx2, lsy2);
+			float lsx2, float lsy2, ArrayList<LineSegment> collisionLineSegments, String type) {
+		LineSegment line = new LineSegment(lsx1, lsy1, lsx2, lsy2, type);
 
 		boolean didextend = false;
 
@@ -338,6 +349,7 @@ public class TiledMapHelper {
 	private class LineSegment {
 		private Vector2 start = new Vector2();
 		private Vector2 end = new Vector2();
+		private String type;
 
 		/**
 		 * Construct a new LineSegment with the specified coordinates.
@@ -347,9 +359,10 @@ public class TiledMapHelper {
 		 * @param x2
 		 * @param y2
 		 */
-		public LineSegment(float x1, float y1, float x2, float y2) {
+		public LineSegment(float x1, float y1, float x2, float y2, String type) {
 			start = new Vector2(x1, y1);
 			end = new Vector2(x2, y2);
+			this.type = type;
 		}
 
 		/**

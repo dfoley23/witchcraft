@@ -97,8 +97,8 @@ public class AnimationManager {
 		return totalTime+delta > animations.get(currentAnim).getQuarterDuration();
 	}
 	
-	public boolean isTImeOverThreeQuarters() {
-		return skel.getTime() > animations.get(currentAnim).getQuarterDuration()*3;
+	public boolean isTImeOverThreeQuarters(float delta) {
+		return totalTime+delta > animations.get(currentAnim).getQuarterDuration()*3;
 	}
 	
 	public void setFlipX(boolean val){
@@ -122,6 +122,10 @@ public class AnimationManager {
 		return root;
 	}
 	
+	/**
+	 * gets the duration of the current animation
+	 * @return
+	 */
 	public float getCurrentAnimTime() {
 		return animations.get(currentAnim).getDuration();
 	}
@@ -131,10 +135,22 @@ public class AnimationManager {
 		root.setY(pos.y + dy);
 	}
 	
+	/**
+	 * return the total time so far for this animations
+	 * @return
+	 */
 	public float getTime() {
 		return totalTime;
 	}
 	
+	public boolean testUnderTime(float delta, float test) {
+		return totalTime+delta < test;
+	}
+	
+	public boolean testOverTime(float delta, float test) {
+		return totalTime+delta > test;
+	}
+
 	public Bone findBone(String name) {
 		return skel.findBone(name);
 	}

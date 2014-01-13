@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -244,7 +245,7 @@ public class TileMapRenderer implements Disposable {
 				int tile = layer[row][col];
 				if (tile != 0) {
 					if (blended == blendedTiles.contains(tile)) {
-						TextureRegion reg = atlas.getRegion(tile);
+						TextureRegion reg = atlas.getRegion(tile+1);
 						if (reg != null) {
 							if (!isSimpleTileAtlas) {
 								AtlasRegion region = (AtlasRegion)reg;
@@ -372,13 +373,13 @@ public class TileMapRenderer implements Disposable {
 				default:
 					break;
 				}
+				Gdx.gl.glEnable(GL10.GL_BLEND);				
 				for (currentRow = initialRow; currentRow <= lastRow && currentRow < getLayerHeightInBlocks(currentLayer); currentRow++) {
 					for (currentCol = initialCol; currentCol <= lastCol
 						&& currentCol < getLayerWidthInBlocks(currentLayer, currentRow); currentCol++) {
-						Gdx.gl.glDisable(GL10.GL_BLEND);
-						cache.draw(normalCacheId[layers[currentLayer]][currentRow][currentCol]);
-						Gdx.gl.glEnable(GL10.GL_BLEND);
 						cache.draw(blendedCacheId[layers[currentLayer]][currentRow][currentCol]);
+						cache.draw(normalCacheId[layers[currentLayer]][currentRow][currentCol]);
+						Gdx.gl.glDisable(GL10.GL_BLEND);						
 					}
 				}
 			}

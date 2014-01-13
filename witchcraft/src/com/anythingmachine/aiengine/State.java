@@ -41,6 +41,10 @@ public enum State {
         public boolean canCastSpell() {
         	return false;
         }
+    	@Override
+    	public boolean canWalk() {
+    		return false;
+    	}
     },
     FLYING {
         @Override

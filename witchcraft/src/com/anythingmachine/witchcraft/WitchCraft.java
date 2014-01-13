@@ -180,11 +180,11 @@ public class WitchCraft implements ApplicationListener {
 
 		tiledMapHelper.render(this);
 
-		// debugRenderer.render(world,
-		// tiledMapHelper.getCamera().combined.scale(
-		// Util.PIXELS_PER_METER,
-		// Util.PIXELS_PER_METER,
-		// Util.PIXELS_PER_METER));
+		 debugRenderer.render(world,
+		 tiledMapHelper.getCamera().combined.scale(
+		 Util.PIXELS_PER_METER,
+		 Util.PIXELS_PER_METER,
+		 Util.PIXELS_PER_METER));
 
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS

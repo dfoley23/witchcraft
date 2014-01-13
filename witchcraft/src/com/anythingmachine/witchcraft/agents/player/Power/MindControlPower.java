@@ -4,6 +4,7 @@
 package com.anythingmachine.witchcraft.agents.player.Power;
 
 import com.anythingmachine.aiengine.State;
+import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
@@ -29,7 +30,7 @@ public class MindControlPower implements Power {
 	 * (non-Javadoc)
 	 */
 	@Override
-	public void usePower(State state, AnimationManager animate,
+	public void usePower(StateMachine state, AnimationManager animate,
 			KinematicParticle body) {
 		timeout--;
 		if ( timeout < 0 ) {
@@ -39,12 +40,13 @@ public class MindControlPower implements Power {
 						new Vector3(animate.isFlipped() ? -70 : 70, 0, 0)));
 			timeout = 2;
 		}
-		if (state.canCastSpell()) {
+		if (state.state.canCastSpell()) {
 			body.setVel(0, body.getVel().y, 0);
 			animate.bindPose();
 			animate.setCurrent("castspell", true);
-		} else if (state == State.USINGPOWER
-				&& animate.isTImeOverThreeQuarters()) {
+			state.setState(State.USINGPOWER);
+		} else if (state.inState(State.USINGPOWER)
+				&& animate.isTImeOverThreeQuarters(0.0f)) {
 			animate.applyTotalTime(true, -animate.getCurrentAnimTime() * 0.75f);
 		}
 	}
@@ -53,7 +55,7 @@ public class MindControlPower implements Power {
 	 * (non-Javadoc)
 	 */
 	@Override
-	public void updatePower(State state, AnimationManager animate, float dt) {
+	public void updatePower(StateMachine state, AnimationManager animate, float dt) {
 
 	}
 

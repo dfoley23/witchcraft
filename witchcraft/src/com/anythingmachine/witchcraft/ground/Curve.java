@@ -76,6 +76,10 @@ public class Curve {
 	 * @return
 	 */
 	public Vector2 findPointOnHCurve(float dX){	
+		if( dX < p1.x )
+			return p1;
+		else if ( dX > p2.x ) 
+			return p2;
 		Vector4 T = new Vector4();
 		Vector4 T0 = new Vector4();
 		Vector4 T1 = new Vector4();
@@ -83,7 +87,7 @@ public class Curve {
 		Vector4 T3 = new Vector4();
 		Vector2 point = new Vector2();
 		Vector4 TintM = new Vector4();
-
+		
 		float s = (dX - p1.x) / (p2.x - p1.x);
 
 		T.x = s*s*s; T.y = s*s; T.z = s; T.w = 1.0f;

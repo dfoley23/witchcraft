@@ -81,6 +81,11 @@ public class Ground {
 	}
 	
 	public Curve getCurve( int index ) {
+		if ( index >= curves.size() ) {
+			return curves.get(curves.size()-1);
+		} else if ( index < 0 ) {
+			return curves.get(0);
+		}
 		return curves.get(index);
 	}
 	

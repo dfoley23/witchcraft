@@ -5,10 +5,10 @@ import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.math.Vector2;
 
 public class Platform extends Entity {
-	private float posx;
-	private float posy;
-	private float width;
-	private float height;
+	protected float posx;
+	protected float posy;
+	protected float width;
+	protected float height;
 	
 	public Platform( float x, float y, int w, int h) {
 		this.posx = x;
@@ -20,10 +20,14 @@ public class Platform extends Entity {
 
 	public Platform( Vector2 start, Vector2 end) {
 		this.posx = start.x;
-		this.posy = start.y;
+		this.posy = end.y<start.y ? end.y : start.y;
 		this.width = end.x-start.x;
-		this.height = end.y-start.y;
+		this.height = Math.abs(end.y-start.y);
 		type = EntityType.PLATFORM;
+	}
+	
+	public float getHeight(float x) {
+		return posy+height;
 	}
 	
 	public float getHeight() {
