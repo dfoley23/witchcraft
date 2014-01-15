@@ -279,14 +279,9 @@ public class WitchCraft implements ApplicationListener {
 		assetManager = new AssetManager();
 		assetManager
 				.addAtlas(
-						"npcsheet1",
+						"characters",
 						new TextureAtlas(Gdx.files
-								.internal("data/spine/knight.atlas")));
-		assetManager
-				.addAtlas(
-						"player",
-						new TextureAtlas(Gdx.files
-								.internal("data/spine/player.atlas")));
+								.internal("data/spine/character.atlas")));
 		assetManager.addTexture("dust",
 				new Texture(Gdx.files.internal("data/dust.png")));
 		assetManager.addTexture("spiro",

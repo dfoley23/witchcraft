@@ -22,8 +22,8 @@ public class MindControlPower implements Power {
 
 	public MindControlPower() {
 		particle = new MindBeamParticle(new Vector3(0, 0, 0), new Sprite(
-				WitchCraft.assetManager.getAtlas("npcsheet1").findRegion(
-						"archer_xcf-string1")), new Vector3(0, -0, 0));
+				WitchCraft.assetManager.getAtlas("characters").findRegion(
+						"archer_xcf-1string")), new Vector3(0, -0, 0));
 	}
 
 	/*

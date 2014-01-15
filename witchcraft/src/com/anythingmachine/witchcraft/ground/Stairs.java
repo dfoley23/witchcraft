@@ -21,7 +21,7 @@ public class Stairs extends Platform {
 	public float getHeight(float x) {
 		float percent = (x-posx)/(end.x-posx);
 		percent = end.y==posy ? 1-percent: percent;
-		System.out.println(percent);
+		//System.out.println(percent);
 		return posy+((percent)*height);
 	}
 	

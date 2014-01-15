@@ -356,26 +356,26 @@ public class Player extends Agent {
 	}
 
 	private void setupAnimations(String name) {
-		TextureAtlas atlas = WitchCraft.assetManager.getAtlas("player");
+		TextureAtlas atlas = WitchCraft.assetManager.getAtlas("characters");
 		SkeletonBinary sb = new SkeletonBinary(atlas);
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
-				.internal("data/spine/player.skel"));
+				.internal("data/spine/characters.skel"));
 		animate = new AnimationManager(name, body.getPos(), new Vector2(0.5f,
 				0.5f), false, sd);
 		animate.addAnimation(
 				"jump",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/player-jump.anim"), sd));
+						Gdx.files.internal("data/spine/characters-beginfly.anim"), sd));
 		animate.addAnimation(
 				"walk",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/player-walk.anim"), sd));
+						Gdx.files.internal("data/spine/characters-walk.anim"), sd));
 		animate.addAnimation(
 				"idle",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/player-idle.anim"), sd));
+						Gdx.files.internal("data/spine/characters-idle.anim"), sd));
 		animate.addAnimation("castspell", sb.readAnimation(
-				Gdx.files.internal("data/spine/player-castspell.anim"), sd));
+				Gdx.files.internal("data/spine/characters-castspell.anim"), sd));
 		animate.setCurrent("idle", true);
 	}
 

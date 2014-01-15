@@ -26,7 +26,7 @@ public class Arrow extends Particle {
 		buildCollisionBody();
 		WitchCraft.rk4System.addParticle(this);
 		sprite = WitchCraft.assetManager.
-				getAtlas("npcsheet1").createSprite("archer_xcf-aroow");
+				getAtlas("characters").createSprite("archer_xcf-aroow");
 		sprite.scale(-0.4f);
 		sprite.setOrigin(sprite.getWidth()/2f, sprite.getHeight()/2f);
 	}

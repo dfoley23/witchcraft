@@ -66,9 +66,9 @@ public class Archer extends NonPlayer {
 
 	@Override
 	protected void setupAnimations(String skinname,  String atlasname) {
-		SkeletonBinary sb = new SkeletonBinary(WitchCraft.assetManager.getAtlas(atlasname));
+		SkeletonBinary sb = new SkeletonBinary(WitchCraft.assetManager.getAtlas("characters"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
-				.internal("data/spine/knight.skel"));
+				.internal("data/spine/characters.skel"));
 
 		animate = new AnimationManager(skinname, body.getPos(), new Vector2(0.6f,
 				0.7f), true, sd);
@@ -76,19 +76,19 @@ public class Archer extends NonPlayer {
 		animate.addAnimation(
 				"walk",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/knight-walk.anim"), sd));
+						Gdx.files.internal("data/spine/characters-walk.anim"), sd));
 		animate.addAnimation(
 				"idle",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/knight-idle.anim"), sd));
+						Gdx.files.internal("data/spine/characters-idle.anim"), sd));
 		animate.addAnimation(
 				"sword-attack",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/knight-overheadattack.anim"), sd));
+						Gdx.files.internal("data/spine/characters-overheadattack.anim"), sd));
 		animate.addAnimation(
 				"shoot-arrow",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/knight-drawbow.anim"), sd));
+						Gdx.files.internal("data/spine/characters-drawbow.anim"), sd));
 
 		animate.setCurrent("idle", true);
 	}

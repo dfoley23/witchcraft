@@ -1,0 +1,725 @@
+character.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+left-upper-leg
+  rotate: false
+  xy: 819, 158
+  size: 36, 84
+  orig: 36, 84
+  offset: 0, 0
+  index: -1
+witch-left-upper-leg
+  rotate: false
+  xy: 163, 158
+  size: 33, 70
+  orig: 33, 70
+  offset: 0, 0
+  index: -1
+witch-right-foot
+  rotate: false
+  xy: 932, 2
+  size: 63, 33
+  orig: 63, 33
+  offset: 0, 0
+  index: -1
+archer_xcf-pelvis
+  rotate: false
+  xy: 619, 2
+  size: 55, 28
+  orig: 55, 28
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerLeftArm
+  rotate: false
+  xy: 927, 87
+  size: 38, 67
+  orig: 38, 67
+  offset: 0, 0
+  index: -1
+witch-left-foot-invi
+  rotate: false
+  xy: 694, 2
+  size: 65, 31
+  orig: 65, 31
+  offset: 0, 0
+  index: -1
+witch-right-foot-invi
+  rotate: false
+  xy: 67, 37
+  size: 63, 33
+  orig: 63, 33
+  offset: 0, 0
+  index: -1
+archer_xcf-leftupperleg
+  rotate: false
+  xy: 576, 87
+  size: 40, 54
+  orig: 40, 54
+  offset: 0, 0
+  index: -1
+civ-hood
+  rotate: false
+  xy: 457, 158
+  size: 67, 78
+  orig: 67, 78
+  offset: 0, 0
+  index: -1
+swordb
+  rotate: false
+  xy: 370, 254
+  size: 154, 126
+  orig: 154, 126
+  offset: 0, 0
+  index: -1
+archer_xcf-upperleftarm
+  rotate: false
+  xy: 399, 37
+  size: 16, 34
+  orig: 16, 34
+  offset: 0, 0
+  index: -1
+civ1_xcf-rightlowerarm
+  rotate: false
+  xy: 530, 2
+  size: 30, 26
+  orig: 30, 26
+  offset: 0, 0
+  index: -1
+archer_xcf-leftfoot
+  rotate: false
+  xy: 297, 2
+  size: 36, 16
+  orig: 36, 16
+  offset: 0, 0
+  index: -1
+civ1_xcf-body
+  rotate: false
+  xy: 590, 158
+  size: 62, 78
+  orig: 62, 78
+  offset: 0, 0
+  index: -1
+left-arm
+  rotate: false
+  xy: 435, 37
+  size: 37, 35
+  orig: 37, 35
+  offset: 0, 0
+  index: -1
+witch-left-arm
+  rotate: false
+  xy: 474, 37
+  size: 37, 35
+  orig: 37, 35
+  offset: 0, 0
+  index: -1
+knight_xcf-upperLeftArm
+  rotate: false
+  xy: 2, 158
+  size: 41, 69
+  orig: 41, 69
+  offset: 0, 0
+  index: -1
+left-foot
+  rotate: false
+  xy: 828, 2
+  size: 65, 31
+  orig: 65, 31
+  offset: 0, 0
+  index: -1
+archer_xcf-neck
+  rotate: false
+  xy: 54, 2
+  size: 22, 15
+  orig: 22, 15
+  offset: 0, 0
+  index: -1
+broom
+  rotate: false
+  xy: 526, 254
+  size: 154, 126
+  orig: 154, 126
+  offset: 0, 0
+  index: -1
+knight_xcf-head
+  rotate: false
+  xy: 26, 87
+  size: 52, 49
+  orig: 52, 49
+  offset: 0, 0
+  index: -1
+witch-right-shoulder
+  rotate: false
+  xy: 809, 37
+  size: 39, 45
+  orig: 39, 45
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerRightLeg
+  rotate: false
+  xy: 352, 158
+  size: 27, 74
+  orig: 27, 74
+  offset: 0, 0
+  index: -1
+archer_xcf-leftleg
+  rotate: false
+  xy: 2, 87
+  size: 22, 48
+  orig: 22, 48
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerRightArm
+  rotate: false
+  xy: 798, 87
+  size: 25, 65
+  orig: 25, 65
+  offset: 0, 0
+  index: -1
+civ1_xcf-rightleg
+  rotate: false
+  xy: 999, 37
+  size: 22, 48
+  orig: 22, 48
+  offset: 0, 0
+  index: -1
+archer_xcf-1string
+  rotate: false
+  xy: 682, 254
+  size: 8, 152
+  orig: 8, 152
+  offset: 0, 0
+  index: 1
+ archer_xcf-2string
+  rotate: false
+  xy: 682, 254
+  size: 8, 152
+  orig: 8, 152
+  offset: 0, 0
+  index: 1  
+civ1_xcf-rightupperarm
+  rotate: false
+  xy: 676, 2
+  size: 16, 30
+  orig: 16, 30
+  offset: 0, 0
+  index: -1
+knight_xcf-torso
+  rotate: false
+  xy: 857, 87
+  size: 68, 67
+  orig: 68, 67
+  offset: 0, 0
+  index: -1
+witch-head
+  rotate: false
+  xy: 542, 87
+  size: 32, 54
+  orig: 32, 54
+  offset: 0, 0
+  index: -1
+left-lower-leg
+  rotate: false
+  xy: 198, 158
+  size: 33, 70
+  orig: 33, 70
+  offset: 0, 0
+  index: -1
+archer_xcf-righthanditem
+  rotate: false
+  xy: 744, 254
+  size: 50, 160
+  orig: 50, 160
+  offset: 0, 0
+  index: -1
+knight_xcf-upperRightLeg
+  rotate: false
+  xy: 767, 158
+  size: 50, 82
+  orig: 50, 82
+  offset: 0, 0
+  index: -1
+torso
+  rotate: false
+  xy: 2, 254
+  size: 68, 96
+  orig: 68, 96
+  offset: 0, 0
+  index: -1
+archer_xcf-aroow
+  rotate: false
+  xy: 147, 2
+  size: 128, 16
+  orig: 128, 16
+  offset: 0, 0
+  index: -1
+civ1_xcf-righthand
+  rotate: false
+  xy: 335, 2
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
+  index: -1
+right-upper-leg
+  rotate: false
+  xy: 316, 158
+  size: 34, 73
+  orig: 34, 73
+  offset: 0, 0
+  index: -1
+civ1_xcf-pelvis
+  rotate: false
+  xy: 562, 2
+  size: 55, 28
+  orig: 55, 28
+  offset: 0, 0
+  index: -1
+sworda
+  rotate: false
+  xy: 132, 37
+  size: 265, 34
+  orig: 265, 34
+  offset: 0, 0
+  index: -1
+archer_xcf-lefthanditem
+  rotate: false
+  xy: 692, 254
+  size: 50, 160
+  orig: 50, 160
+  offset: 0, 0
+  index: -1
+witch-left-shoulder
+  rotate: false
+  xy: 921, 37
+  size: 28, 46
+  orig: 28, 46
+  offset: 0, 0
+  index: -1
+civ2_xcf-dress
+  rotate: false
+  xy: 233, 158
+  size: 81, 70
+  orig: 81, 70
+  offset: 0, 0
+  index: -1
+civmale-brownhair
+  rotate: false
+  xy: 274, 87
+  size: 44, 52
+  orig: 44, 52
+  offset: 0, 0
+  index: -1
+witch-left-hand
+  rotate: false
+  xy: 607, 37
+  size: 35, 40
+  orig: 35, 40
+  offset: 0, 0
+  index: -1
+left-shoulder
+  rotate: false
+  xy: 891, 37
+  size: 28, 46
+  orig: 28, 46
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 686, 87
+  size: 43, 58
+  orig: 43, 58
+  offset: 0, 0
+  index: -1
+archer_xcf-lowerleftarm
+  rotate: false
+  xy: 486, 2
+  size: 20, 24
+  orig: 20, 24
+  offset: 0, 0
+  index: -1
+witch-pelvis
+  rotate: false
+  xy: 745, 37
+  size: 62, 43
+  orig: 62, 43
+  offset: 0, 0
+  index: -1
+archer_xcf-rightupperleg
+  rotate: false
+  xy: 80, 87
+  size: 40, 49
+  orig: 40, 49
+  offset: 0, 0
+  index: -1
+witch-torso
+  rotate: false
+  xy: 72, 254
+  size: 70, 96
+  orig: 70, 96
+  offset: 0, 0
+  index: -1
+archer_xcf-rightleg
+  rotate: false
+  xy: 951, 37
+  size: 22, 48
+  orig: 22, 48
+  offset: 0, 0
+  index: -1
+witch-hood-invi
+  rotate: false
+  xy: 857, 158
+  size: 67, 94
+  orig: 67, 94
+  offset: 0, 0
+  index: -1
+witch-right-lower-leg
+  rotate: false
+  xy: 419, 158
+  size: 36, 76
+  orig: 36, 76
+  offset: 0, 0
+  index: -1
+civ1_xcf-leftupperleg
+  rotate: false
+  xy: 500, 87
+  size: 40, 54
+  orig: 40, 54
+  offset: 0, 0
+  index: -1
+archer_xcf-rightupperarm
+  rotate: false
+  xy: 513, 37
+  size: 16, 35
+  orig: 16, 35
+  offset: 0, 0
+  index: -1
+archer_xcf-string
+  rotate: false
+  xy: 682, 254
+  size: 8, 152
+  orig: 8, 152
+  offset: 0, 0
+  index: 2
+knight_xcf-leftFoot
+  rotate: false
+  xy: 102, 2
+  size: 43, 15
+  orig: 43, 15
+  offset: 0, 0
+  index: -1
+witch-left-lower-leg
+  rotate: false
+  xy: 128, 158
+  size: 33, 70
+  orig: 33, 70
+  offset: 0, 0
+  index: -1
+civ2_xcf-body
+  rotate: false
+  xy: 705, 158
+  size: 60, 82
+  orig: 60, 82
+  offset: 0, 0
+  index: -1
+civ1_xcf-rightupperleg
+  rotate: false
+  xy: 458, 87
+  size: 40, 53
+  orig: 40, 53
+  offset: 0, 0
+  index: -1
+right-hand
+  rotate: false
+  xy: 569, 37
+  size: 36, 37
+  orig: 36, 37
+  offset: 0, 0
+  index: -1
+pelvis
+  rotate: false
+  xy: 681, 37
+  size: 62, 43
+  orig: 62, 43
+  offset: 0, 0
+  index: -1
+right-lower-leg
+  rotate: false
+  xy: 381, 158
+  size: 36, 76
+  orig: 36, 76
+  offset: 0, 0
+  index: -1
+witch-torso-invi
+  rotate: false
+  xy: 144, 254
+  size: 68, 96
+  orig: 68, 96
+  offset: 0, 0
+  index: -1
+civ2_xcf-femaleredhair
+  rotate: false
+  xy: 366, 87
+  size: 44, 52
+  orig: 44, 52
+  offset: 0, 0
+  index: -1
+witch-right-hand
+  rotate: false
+  xy: 531, 37
+  size: 36, 37
+  orig: 36, 37
+  offset: 0, 0
+  index: -1
+archer_xcf-rightlowerarm
+  rotate: false
+  xy: 895, 2
+  size: 35, 32
+  orig: 35, 32
+  offset: 0, 0
+  index: -1
+witch-hood
+  rotate: false
+  xy: 926, 158
+  size: 81, 94
+  orig: 81, 94
+  offset: 0, 0
+  index: -1
+civ2_xcf-femalebrownhair
+  rotate: false
+  xy: 228, 87
+  size: 44, 52
+  orig: 44, 52
+  offset: 0, 0
+  index: -1
+civ2_xcf-femaleblackhair
+  rotate: false
+  xy: 182, 87
+  size: 44, 52
+  orig: 44, 52
+  offset: 0, 0
+  index: -1
+right-shoulder
+  rotate: false
+  xy: 850, 37
+  size: 39, 45
+  orig: 39, 45
+  offset: 0, 0
+  index: -1
+archer_xcf-lefthand
+  rotate: false
+  xy: 355, 2
+  size: 20, 18
+  orig: 20, 18
+  offset: 0, 0
+  index: -1
+right-foot
+  rotate: false
+  xy: 2, 37
+  size: 63, 33
+  orig: 63, 33
+  offset: 0, 0
+  index: -1
+witch-closedEyes
+  rotate: false
+  xy: 24, 2
+  size: 28, 9
+  orig: 28, 9
+  offset: 0, 0
+  index: -1
+witch-broom_invi
+  rotate: false
+  xy: 864, 254
+  size: 66, 240
+  orig: 66, 240
+  offset: 0, 0
+  index: -1
+archerclosedeyes
+  rotate: false
+  xy: 2, 2
+  size: 20, 5
+  orig: 20, 5
+  offset: 0, 0
+  index: -1
+witch-right-upper-leg
+  rotate: false
+  xy: 762, 87
+  size: 34, 63
+  orig: 34, 63
+  offset: 0, 0
+  index: -1
+civ1_xcf-neck
+  rotate: false
+  xy: 78, 2
+  size: 22, 15
+  orig: 22, 15
+  offset: 0, 0
+  index: -1
+civ1_xcf-lowerleftarm
+  rotate: false
+  xy: 508, 2
+  size: 20, 24
+  orig: 20, 24
+  offset: 0, 0
+  index: -1
+archer_xcf-righthand
+  rotate: false
+  xy: 277, 2
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
+  index: -1
+witch-left-foot
+  rotate: false
+  xy: 761, 2
+  size: 65, 31
+  orig: 65, 31
+  offset: 0, 0
+  index: -1
+closedEyes
+  rotate: false
+  xy: 24, 2
+  size: 28, 9
+  orig: 28, 9
+  offset: 0, 0
+  index: -1
+witch-right-hand-flat
+  rotate: false
+  xy: 438, 2
+  size: 46, 20
+  orig: 46, 20
+  offset: 0, 0
+  index: -1
+civ1_xcf-lefthand
+  rotate: false
+  xy: 377, 2
+  size: 20, 18
+  orig: 20, 18
+  offset: 0, 0
+  index: -1
+civ2_xcf-dressback
+  rotate: false
+  xy: 45, 158
+  size: 81, 70
+  orig: 81, 70
+  offset: 0, 0
+  index: -1
+knight_xcf-pelvis
+  rotate: false
+  xy: 618, 87
+  size: 66, 57
+  orig: 66, 57
+  offset: 0, 0
+  index: -1
+archer_xcf-body
+  rotate: false
+  xy: 526, 158
+  size: 62, 78
+  orig: 62, 78
+  offset: 0, 0
+  index: -1
+civ1_xcf-upperleftarm
+  rotate: false
+  xy: 417, 37
+  size: 16, 34
+  orig: 16, 34
+  offset: 0, 0
+  index: -1
+swordc
+  rotate: false
+  xy: 214, 254
+  size: 154, 126
+  orig: 154, 126
+  offset: 0, 0
+  index: -1
+civ1_xcf-leftleg
+  rotate: false
+  xy: 975, 37
+  size: 22, 48
+  orig: 22, 48
+  offset: 0, 0
+  index: -1
+witch-left-hand-flat
+  rotate: false
+  xy: 438, 2
+  size: 46, 20
+  orig: 46, 20
+  offset: 0, 0
+  index: -1
+civmale-redhair
+  rotate: false
+  xy: 320, 87
+  size: 44, 52
+  orig: 44, 52
+  offset: 0, 0
+  index: -1
+knight_xcf-lowerLeftLeg
+  rotate: false
+  xy: 731, 87
+  size: 29, 62
+  orig: 29, 62
+  offset: 0, 0
+  index: -1
+witch-broom
+  rotate: false
+  xy: 796, 254
+  size: 66, 240
+  orig: 66, 240
+  offset: 0, 0
+  index: -1
+witch-right-arm
+  rotate: false
+  xy: 122, 87
+  size: 28, 50
+  orig: 28, 50
+  offset: 0, 0
+  index: -1
+knight_xcf-upperRightArm
+  rotate: false
+  xy: 825, 87
+  size: 30, 67
+  orig: 30, 67
+  offset: 0, 0
+  index: -1
+left-hand
+  rotate: false
+  xy: 644, 37
+  size: 35, 40
+  orig: 35, 40
+  offset: 0, 0
+  index: -1
+knight_xcf-rightfoot
+  rotate: false
+  xy: 399, 2
+  size: 37, 19
+  orig: 37, 19
+  offset: 0, 0
+  index: -1
+right-arm
+  rotate: false
+  xy: 152, 87
+  size: 28, 50
+  orig: 28, 50
+  offset: 0, 0
+  index: -1
+civ2_xcf-leftdress
+  rotate: false
+  xy: 967, 87
+  size: 47, 69
+  orig: 47, 69
+  offset: 0, 0
+  index: -1
+knight_xcf-upperLeftLeg
+  rotate: false
+  xy: 654, 158
+  size: 49, 81
+  orig: 49, 81
+  offset: 0, 0
+  index: -1
+archer_xcf-head
+  rotate: false
+  xy: 412, 87
+  size: 44, 52
+  orig: 44, 52
+  offset: 0, 0
+  index: -1
