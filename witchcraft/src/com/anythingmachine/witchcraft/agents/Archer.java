@@ -22,8 +22,8 @@ public class Archer extends NonPlayer {
 	private boolean shotArrow = false;
 	private Bone arrowBone;
 	
-	public Archer (String skinname, String atlasname, Vector2 pos) {
-		super(skinname, atlasname,  pos);
+	public Archer (String skinname, String atlasname, Vector2 pos, Vector2 bodyScale) {
+		super(skinname, atlasname,  pos, bodyScale);
 		arrow = new Arrow(new Vector3(0, 0, 0),	new Vector3(0, 0, 0));
 		arrowBone = animate.findBone("right hand");
 	}
@@ -69,9 +69,7 @@ public class Archer extends NonPlayer {
 		SkeletonBinary sb = new SkeletonBinary(WitchCraft.assetManager.getAtlas("characters"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
-
-		animate = new AnimationManager(skinname, body.getPos(), new Vector2(0.6f,
-				0.7f), true, sd);
+		animate = new AnimationManager(skinname, body.getPos(), bodyScale, true, sd);
 
 		animate.addAnimation(
 				"walk",

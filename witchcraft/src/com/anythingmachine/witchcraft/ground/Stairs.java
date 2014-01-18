@@ -30,7 +30,11 @@ public class Stairs extends Platform {
 		return posy;
 	}
 	
-	public boolean isBetween(float x) {
-		return x > posx && x < posx+width;
+	@Override
+	public boolean isBetween(boolean facingLeft, float x) {
+		if ( facingLeft ) 
+			return x > posx-4 && x < posx+width+34;
+		else
+			return x > posx-68 && x < posx+width+4;			
 	}
 }

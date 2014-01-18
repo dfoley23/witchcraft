@@ -1,3 +1,4 @@
+
 package com.anythingmachine.witchcraft.agents;
 
 import java.util.ArrayList;
@@ -10,21 +11,34 @@ import com.anythingmachine.aiengine.UtilityAI.AIState;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.Skin;
 
 public class NonPlayer extends Agent {
 	protected boolean inAir;
 	protected UtilityAI behavior;
 	protected float aiChoiceTime = 0.f;
 	protected AIState state = AIState.IDLE;
-	
-	public NonPlayer(String skinname, String atlasname, Vector2 pos) {
+	protected Vector2 bodyScale;
+	protected boolean active;
+	protected AnimationManager animate;
+
+	public NonPlayer(String skinname, String atlasname, Vector2 pos, Vector2 bodyScale) {
+		this.bodyScale = bodyScale;
+		this.type = EntityType.NONPLAYER;
 		this.curGroundSegment = 0;
+		active = true;
 		ArrayList<Vector2> points = WitchCraft.ground.getCurveBeginPoints();
 		for (int i = 0; i < points.size(); i++) {
 			if (pos.x > points.get(i).x) {
@@ -42,6 +56,7 @@ public class NonPlayer extends Agent {
 		setupAnimations(skinname, atlasname);
 
 		setupAI();
+		buildCollisionBody();
 	}
 
 	public void update(float dT) {
@@ -93,13 +108,17 @@ public class NonPlayer extends Agent {
 			}
 		}
 		checkGround();
-		
+
+		if ( active ) {
 		animate.setPos(body.getPos(), 0, -16f);
 		if ( state == AIState.SWORDATTACK && animate.atEnd()) {
 			animate.applyTotalTime(false, animate.getCurrentAnimTime());
 		} else {
 			animate.update(delta);
 		}
+		}
+		collisionBody.setTransform(
+				body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX), 0);
 
 	}
 
@@ -115,6 +134,9 @@ public class NonPlayer extends Agent {
 		return curGroundSegment;
 	}
 
+	public Vector2 getBodyScale() {
+		return bodyScale;
+	}
 
 	public void incrementSegment() {
 		this.curGroundSegment++;
@@ -124,28 +146,53 @@ public class NonPlayer extends Agent {
 		this.curGroundSegment++;
 	}
 
+	public Skin getSkin() {
+		return animate.getSkin();
+	}
+	
+	protected void checkGround() {
+		Vector3 pos = body.getPos();
+		if (pos.x > curCurve.lastPointOnCurve().x) {
+			curGroundSegment++;
+			if (curGroundSegment >= WitchCraft.ground.getNumCurves()) {
+				body.setVel(-50, 0, 0);
+				facingLeft = !facingLeft;
+			}
+			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
+		} else if (pos.x < curCurve.firstPointOnCurve().x) {
+			curGroundSegment--;
+			if (curGroundSegment == 0) {
+				body.setVel(50, 0, 0);
+				facingLeft = !facingLeft;
+			}
+			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
+		}
+		animate.setFlipX(facingLeft);
+		Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
+				curGroundSegment, pos.x);
+		if (pos.y < groundPoint.y) {
+			correctHeight(groundPoint.y);
+			onGround = true;
+		}
+	}
 	protected void handleState(AIState state) {
 	}
 	
 	protected void setupAnimations(String skinname, String atlasname) {
 		SkeletonBinary sb = new SkeletonBinary(WitchCraft.assetManager.getAtlas(atlasname));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
-				.internal("data/spine/knight.skel"));
+				.internal("data/spine/characters.skel"));
 
 		animate = new AnimationManager(skinname, body.getPos(), new Vector2(0.6f,
 				0.7f), true, sd);
 		animate.addAnimation(
 				"walk",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/knight-walk.anim"), sd));
+						Gdx.files.internal("data/spine/characters-walk.anim"), sd));
 		animate.addAnimation(
 				"idle",
 				sb.readAnimation(
-						Gdx.files.internal("data/spine/knight-idle.anim"), sd));
-		animate.addAnimation(
-				"sword-attack",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/knight-overheadattack.anim"), sd));
+						Gdx.files.internal("data/spine/characters-idle.anim"), sd));
 		animate.setCurrent("idle", true);
 
 	}
@@ -192,17 +239,36 @@ public class NonPlayer extends Agent {
 		action.addAction(1f, "Sleep");
 		action.addAction(-4f, "Hunt");
 		behavior.addAction(action);
-		action = new Action("shootArrow", AIState.SHOOTARROW);
-		action.addAction(1f, "Eat");
-		action.addAction(1f, "Sleep");
-		action.addAction(-4f, "Hunt");
-		behavior.addAction(action);
-		action = new Action("swordAttack", AIState.SWORDATTACK);
-		action.addAction(1f, "Eat");
-		action.addAction(1f, "Sleep");
-		action.addAction(-6f, "Hunt");
-		behavior.addAction(action);
 
 	}
-	
+
+	private void buildCollisionBody() {
+		BodyDef def = new BodyDef();
+		def.type = BodyType.DynamicBody;
+		def.position
+				.set(new Vector2(this.body.getPos().x, this.body.getPos().y));
+		collisionBody = WitchCraft.world.createBody(def);
+		collisionBody.setBullet(true);
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
+		FixtureDef fixture = new FixtureDef();
+		fixture.shape = shape;
+		fixture.isSensor = true;
+		fixture.density = 1f;
+		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
+		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
+		feetFixture = collisionBody.createFixture(fixture);
+
+		shape = new PolygonShape();
+		shape.setAsBox(64 * Util.PIXEL_TO_BOX, 32 * Util.PIXEL_TO_BOX);
+		fixture = new FixtureDef();
+		fixture.shape = shape;
+		fixture.isSensor = true;
+		fixture.density = 1f;
+		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
+		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
+		feetFixture = collisionBody.createFixture(fixture);
+		collisionBody.setUserData(this);
+		shape.dispose();
+	}
 }

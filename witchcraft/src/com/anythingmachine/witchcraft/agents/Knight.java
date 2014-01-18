@@ -25,8 +25,8 @@ public class Knight extends NonPlayer {
 	private Bone sword;
 	private Body swordBody;
 
-	public Knight ( String skinname, String atlasname, Vector2 pos) {
-		super(skinname, atlasname, pos);
+	public Knight ( String skinname, String atlasname, Vector2 pos, Vector2 bodyScale) {
+		super(skinname, atlasname, pos, bodyScale);
 		sword = animate.findBone("right hand");
 		buildSwordBody();
 
@@ -61,8 +61,7 @@ public class Knight extends NonPlayer {
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		animate = new AnimationManager(skinname, body.getPos(), new Vector2(0.6f,
-				0.7f), true, sd);
+		animate = new AnimationManager(skinname, body.getPos(), bodyScale, true, sd);
 		animate.addAnimation(
 				"walk",
 				sb.readAnimation(

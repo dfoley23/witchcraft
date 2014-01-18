@@ -379,9 +379,9 @@ public class TileMapRenderer implements Disposable {
 						&& currentCol < getLayerWidthInBlocks(currentLayer, currentRow); currentCol++) {
 						cache.draw(blendedCacheId[layers[currentLayer]][currentRow][currentCol]);
 						cache.draw(normalCacheId[layers[currentLayer]][currentRow][currentCol]);
-						Gdx.gl.glDisable(GL10.GL_BLEND);						
 					}
 				}
+				Gdx.gl.glDisable(GL10.GL_BLEND);
 			}
 		}
 		cache.end();

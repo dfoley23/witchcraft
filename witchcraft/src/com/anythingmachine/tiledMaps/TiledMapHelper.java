@@ -55,11 +55,11 @@ public class TiledMapHelper {
 	 * Renders the part of the map that should be visible to the user.
 	 */
 	public void render(WitchCraft main) {
-		tileMapRenderer.getProjectionMatrix().set(camera.combined);
+		tileMapRenderer.getProjectionMatrix().set(Camera.camera.combined);
 
 		Vector3 tmp = new Vector3();
 		tmp.set(0, 0, 0);
-		camera.unproject(tmp);
+		Camera.camera.unproject(tmp);
 
 		tileMapRenderer.render(main, (int) tmp.x, (int) tmp.y,
 				Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), layersList);
@@ -324,9 +324,9 @@ public class TiledMapHelper {
 	 * @param screenHeight
 	 */
 	public void prepareCamera(int screenWidth, int screenHeight) {
-		camera = new OrthographicCamera(screenWidth, screenHeight);
+		Camera.camera = new OrthographicCamera(screenWidth, screenHeight);
 
-		camera.position.set(screenWidth / 2.0f, screenHeight / 2.0f, 0);
+		Camera.camera.position.set(screenWidth / 2.0f, screenHeight / 2.0f, 0);
 	}
 
 	/**
@@ -335,11 +335,11 @@ public class TiledMapHelper {
 	 * @return OrthographicCamera
 	 */
 	public OrthographicCamera getCamera() {
-		if (camera == null) {
+		if (Camera.camera == null) {
 			throw new IllegalStateException(
 					"getCamera() called out of sequence");
 		}
-		return camera;
+		return Camera.camera;
 	}
 
 	/**
@@ -441,8 +441,6 @@ public class TiledMapHelper {
 	}
 
 	private FileHandle packFileDirectory;
-
-	private OrthographicCamera camera;
 
 	private TileAtlas tileAtlas;
 	private TileMapRenderer tileMapRenderer;

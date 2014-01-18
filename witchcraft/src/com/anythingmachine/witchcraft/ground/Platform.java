@@ -34,7 +34,19 @@ public class Platform extends Entity {
 		return posy+height;
 	}
 	
-	public boolean isBetween(float x) {
-		return x > posx && x < posx+width;
+	public Vector2 getPos() {
+		return new Vector2(posx, posy);
 	}
+	
+	public float getHeightLocal() {
+		return height;
+	}
+	public float getWidth() {
+		return posx+width+34;
+	}
+	
+	public boolean isBetween(boolean facingLeft, float x) {
+		return x > posx && x < posx+width;			
+	}
+
 }

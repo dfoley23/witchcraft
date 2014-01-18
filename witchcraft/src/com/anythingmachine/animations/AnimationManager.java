@@ -118,6 +118,10 @@ public class AnimationManager {
 		skel.setSkin(skin);
 	}
 	
+	public void setSkin(Skin skin) {
+		skel.setSkin(skin);
+	}
+	
 	public Bone getRoot() {
 		return root;
 	}

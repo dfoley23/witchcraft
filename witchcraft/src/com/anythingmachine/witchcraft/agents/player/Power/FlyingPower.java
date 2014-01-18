@@ -15,7 +15,7 @@ public class FlyingPower implements Power {
 		this.body = body;
 		if (!state.test("hitroof") ) {
 			body.setVel(body.getVel().x, 150f, 0f);
-			if (state.state.canFly()) {
+			if (state.state.canFly(state)) {
 				animate.setCurrent("jump", true);
 				animate.bindPose();
 				state.setState(State.JUMPING);
