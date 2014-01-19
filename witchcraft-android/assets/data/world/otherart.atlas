@@ -1,0 +1,67 @@
+otherart.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+MORS
+  rotate: false
+  xy: 335, 131
+  size: 143, 41
+  orig: 143, 41
+  offset: 0, 0
+  index: -1
+EFFINGO
+  rotate: false
+  xy: 281, 2
+  size: 193, 41
+  orig: 193, 41
+  offset: 0, 0
+  index: -1
+FUGE
+  rotate: false
+  xy: 2, 45
+  size: 134, 41
+  orig: 134, 41
+  offset: 0, 0
+  index: -1
+INTACTILUS
+  rotate: false
+  xy: 2, 88
+  size: 243, 41
+  orig: 243, 41
+  offset: 0, 0
+  index: -1
+INVISIBIL
+  rotate: false
+  xy: 2, 131
+  size: 331, 41
+  orig: 331, 41
+  offset: 0, 0
+  index: -1
+GELO
+  rotate: false
+  xy: 138, 45
+  size: 136, 41
+  orig: 136, 41
+  offset: 0, 0
+  index: -1
+ANIMIMPERI
+  rotate: false
+  xy: 2, 2
+  size: 277, 41
+  orig: 277, 41
+  offset: 0, 0
+  index: -1
+MUTATIO
+  rotate: false
+  xy: 2, 174
+  size: 200, 41
+  orig: 200, 41
+  offset: 0, 0
+  index: -1
+mindbeam
+  rotate: false
+  xy: 204, 174
+  size: 16, 96
+  orig: 16, 96
+  offset: 0, 0
+  index: -1

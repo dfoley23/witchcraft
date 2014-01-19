@@ -191,8 +191,11 @@ public class WitchCraft implements ApplicationListener {
 		cam.update();
 
 		tiledMapHelper.render(this);
-
-		debugRenderer.render(world, Camera.camera.combined.scale(
+		spriteBatch.begin();
+		player.drawUI(spriteBatch);
+		spriteBatch.end();
+		if ( DEV_MODE )
+			debugRenderer.render(world, Camera.camera.combined.scale(
 				Util.PIXELS_PER_METER, Util.PIXELS_PER_METER,
 				Util.PIXELS_PER_METER));
 
@@ -269,14 +272,13 @@ public class WitchCraft implements ApplicationListener {
 		spriteBatch.end();
 		player.drawCape(Camera.camera.combined);
 
-
-		shapeRenderer.setProjectionMatrix(combined);
-		shapeRenderer.begin(ShapeType.FilledRectangle);
-		shapeRenderer.setColor(0, 1, 0, 1);
-		shapeRenderer.filledRect((cam.camera.position.x-cam.camera.viewportWidth*0.5f)
-				+ ((cam.camera.viewportWidth * .1f) * player.getPower()),
-				(cam.camera.position.y+cam.camera.viewportHeight*0.5f)-20, (cam.camera.viewportWidth * .1f), 20);
-		shapeRenderer.end();
+//		shapeRenderer.setProjectionMatrix(combined);
+//		shapeRenderer.begin(ShapeType.FilledRectangle);
+//		shapeRenderer.setColor(0, 1, 0, 1);
+//		shapeRenderer.filledRect((cam.camera.position.x-cam.camera.viewportWidth*0.5f)
+//				+ ((cam.camera.viewportWidth * .1f) * player.getPower()),
+//				(cam.camera.position.y+cam.camera.viewportHeight*0.5f)-20, (cam.camera.viewportWidth * .1f), 20);
+//		shapeRenderer.end();
 		//
 		// player.drawCape(shapeRenderer);
 
@@ -300,6 +302,10 @@ public class WitchCraft implements ApplicationListener {
 				"characters",
 				new TextureAtlas(Gdx.files
 						.internal("data/spine/character.atlas")));
+		assetManager.addAtlas(
+				"otherart",
+				new TextureAtlas(Gdx.files
+						.internal("data/world/otherart.atlas")));
 		assetManager.addTexture("dust",
 				new Texture(Gdx.files.internal("data/dust.png")));
 		assetManager.addTexture("spiro",

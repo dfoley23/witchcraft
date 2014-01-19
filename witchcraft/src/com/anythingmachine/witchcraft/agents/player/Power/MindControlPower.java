@@ -21,8 +21,8 @@ public class MindControlPower implements Power {
 
 	public MindControlPower() {
 		particle = new MindBeamParticle(new Vector3(0, 0, 0), new Sprite(
-				WitchCraft.assetManager.getAtlas("characters").findRegion(
-						"archer_xcf-1string")), new Vector3(0, -0, 0));
+				WitchCraft.assetManager.getAtlas("otherart").findRegion(
+						"mindbeam")), new Vector3(0, 0, 0));
 	}
 
 	/*
@@ -35,15 +35,16 @@ public class MindControlPower implements Power {
 		if ( timeout < 0 ) {
 			WitchCraft.rk4System.addParticle(particle.copy(
 					new Vector3(animate.isFlipped() ? body.getPos().x - 48f
-							: body.getPos().x + 8, body.getPos().y + 16, 0),
+							: body.getPos().x + 8, body.getPos().y + 32, 0),
 						new Vector3(animate.isFlipped() ? -70 : 70, 0, 0)));
-			timeout = 2;
+			timeout = 4;
 		}
 		if (state.state.canCastSpell(state) && !state.test("usingpower")) {
 			body.setVel(0, body.getVel().y, 0);
 			animate.bindPose();
 			animate.setCurrent("castspell", true);
 			state.setTestVal("usingpower", true);
+			body.setVel(0, 0, 0);
 		} else if (	state.test("usingpower")
 				&& animate.isTImeOverThreeQuarters(0.0f)) {
 			animate.applyTotalTime(true, -animate.getCurrentAnimTime() * 0.75f);

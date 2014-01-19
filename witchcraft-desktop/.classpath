@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="libs/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-natives.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/witchcraft"/>
+	<classpathentry kind="lib" path="libs/gdx-controllers-desktop.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
