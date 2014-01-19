@@ -9,6 +9,7 @@ import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ParticleEngine.MindBeamParticle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -21,8 +22,9 @@ public class MindControlPower implements Power {
 
 	public MindControlPower() {
 		particle = new MindBeamParticle(new Vector3(0, 0, 0), new Sprite(
-				WitchCraft.assetManager.getAtlas("otherart").findRegion(
-						"mindbeam")), new Vector3(0, 0, 0));
+				((TextureAtlas) WitchCraft.assetManager
+						.get("data/world/otherart.atlas"))
+						.findRegion("mindbeam")), new Vector3(0, 0, 0));
 	}
 
 	/*
@@ -32,11 +34,11 @@ public class MindControlPower implements Power {
 	public void usePower(StateMachine state, AnimationManager animate,
 			KinematicParticle body) {
 		timeout--;
-		if ( timeout < 0 ) {
+		if (timeout < 0) {
 			WitchCraft.rk4System.addParticle(particle.copy(
 					new Vector3(animate.isFlipped() ? body.getPos().x - 48f
 							: body.getPos().x + 8, body.getPos().y + 32, 0),
-						new Vector3(animate.isFlipped() ? -70 : 70, 0, 0)));
+					new Vector3(animate.isFlipped() ? -70 : 70, 0, 0)));
 			timeout = 4;
 		}
 		if (state.state.canCastSpell(state) && !state.test("usingpower")) {
@@ -45,7 +47,7 @@ public class MindControlPower implements Power {
 			animate.setCurrent("castspell", true);
 			state.setTestVal("usingpower", true);
 			body.setVel(0, 0, 0);
-		} else if (	state.test("usingpower")
+		} else if (state.test("usingpower")
 				&& animate.isTImeOverThreeQuarters(0.0f)) {
 			animate.applyTotalTime(true, -animate.getCurrentAnimTime() * 0.75f);
 		}
@@ -55,8 +57,9 @@ public class MindControlPower implements Power {
 	 * (non-Javadoc)
 	 */
 	@Override
-	public void updatePower(StateMachine state, AnimationManager animate, float dt) {
-		if ( state.test("usingpower") && animate.atEnd() ) {
+	public void updatePower(StateMachine state, AnimationManager animate,
+			float dt) {
+		if (state.test("usingpower") && animate.atEnd()) {
 			state.setTestVal("usingpower", false);
 		}
 	}

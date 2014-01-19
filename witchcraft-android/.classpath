@@ -10,6 +10,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/witchcraft/libs/tween-engine-api.jar" sourcepath="/witchcraft/libs/tween-engine-api-sources.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="libs/gdx-controllers-android.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-controllers-android.jar"/>
+	<classpathentry exported="true" kind="lib" path="/witchcraft/libs/gdx-controllers.jar" sourcepath="/witchcraft/libs/gdx-controllers-sources.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

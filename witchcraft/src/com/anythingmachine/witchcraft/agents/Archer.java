@@ -11,6 +11,7 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
@@ -66,7 +67,7 @@ public class Archer extends NonPlayer {
 
 	@Override
 	protected void setupAnimations(String skinname,  String atlasname) {
-		SkeletonBinary sb = new SkeletonBinary(WitchCraft.assetManager.getAtlas("characters"));
+		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/character.atlas"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 		animate = new AnimationManager(skinname, body.getPos(), bodyScale, true, sd);

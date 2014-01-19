@@ -8,6 +8,7 @@ import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -25,8 +26,7 @@ public class Arrow extends Particle {
 		this.type = EntityType.ARROW;
 		buildCollisionBody();
 		WitchCraft.rk4System.addParticle(this);
-		sprite = WitchCraft.assetManager.
-				getAtlas("characters").createSprite("archer_xcf-aroow");
+		sprite = ((TextureAtlas)WitchCraft.assetManager.get("data/spine/character.atlas")).createSprite("archer_xcf-aroow");
 		sprite.scale(-0.4f);
 		sprite.setOrigin(sprite.getWidth()/2f, sprite.getHeight()/2f);
 	}

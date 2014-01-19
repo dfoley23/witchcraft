@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import com.anythingmachine.LuaEngine.LoadScript;
-import com.anythingmachine.assets.AssetManager;
 import com.anythingmachine.collisionEngine.MyContactListener;
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.physicsEngine.RK4Integrator;
@@ -23,12 +22,14 @@ import com.anythingmachine.witchcraft.agents.player.Player;
 import com.anythingmachine.witchcraft.ground.Ground;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -64,6 +65,7 @@ public class WitchCraft implements ApplicationListener {
 	private MyContactListener contactListener;
 	private int screenWidth;
 	private int screenHeight;
+	
 
 	public WitchCraft() {
 		super();
@@ -94,6 +96,7 @@ public class WitchCraft implements ApplicationListener {
 		world.setContactListener(contactListener);
 
 		loadAssets();
+			
 		/**
 		 * If the viewport's size is not yet known, determine it here.
 		 */
@@ -104,7 +107,7 @@ public class WitchCraft implements ApplicationListener {
 
 		tiledMapHelper = new TiledMapHelper();
 		tiledMapHelper.setPackerDirectory("data/packer");
-		tiledMapHelper.loadMap("data/world/level1/level.tmx");
+		tiledMapHelper.loadMap(spriteBatch);
 		cam = new Camera(screenWidth, screenHeight);
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
 
@@ -153,9 +156,9 @@ public class WitchCraft implements ApplicationListener {
 		rk4.step(dt);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Color c = getTimeOfDay();
-		Gdx.gl.glClearColor((float) c.getRed() / 255f,
-				(float) c.getGreen() / 255f, (float) c.getBlue() / 255f, 1f);
+//		Color c = getTimeOfDay();
+//		Gdx.gl.glClearColor((float) c.getRed() / 255f,
+//				(float) c.getGreen() / 255f, (float) c.getBlue() / 255f, 1f);
 
 		player.update(dT);
 		npc1.update(dT);
@@ -298,18 +301,12 @@ public class WitchCraft implements ApplicationListener {
 
 	public void loadAssets() {
 		assetManager = new AssetManager();
-		assetManager.addAtlas(
-				"characters",
-				new TextureAtlas(Gdx.files
-						.internal("data/spine/character.atlas")));
-		assetManager.addAtlas(
-				"otherart",
-				new TextureAtlas(Gdx.files
-						.internal("data/world/otherart.atlas")));
-		assetManager.addTexture("dust",
-				new Texture(Gdx.files.internal("data/dust.png")));
-		assetManager.addTexture("spiro",
-				new Texture(Gdx.files.internal("data/spiro.png")));
+		assetManager.load("data/spine/character.atlas", TextureAtlas.class);
+		assetManager.load("data/world/otherart.atlas", TextureAtlas.class);
 
+		//load level
+		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+		assetManager.load("data/world/level1/level.tmx", TiledMap.class);
+		assetManager.finishLoading();
 	}
 }

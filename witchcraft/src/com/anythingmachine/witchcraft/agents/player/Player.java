@@ -2,8 +2,6 @@ package com.anythingmachine.witchcraft.agents.player;
 
 import java.util.ArrayList;
 
-import org.lwjgl.input.Controllers;
-
 import com.anythingmachine.aiengine.State;
 import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.collisionEngine.Entity;
@@ -25,6 +23,7 @@ import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -398,7 +397,7 @@ public class Player extends Agent {
 	/******************* setup functions ****************/
 	/***************************************************/
 	private void setupInput() {
-		if ( Controllers.getControllerCount() > 0 )  {
+		if ( Controllers.getControllers().size > 0 )  {
 			input.addInputState("Left", 21);
 			input.addInputState("Right", 22);
 			input.addInputState("UP", 19);
@@ -434,24 +433,24 @@ public class Player extends Agent {
 		powers = new ArrayList<Power>();
 		powerUi = new ArrayList<Sprite>();
 		powers.add(new FlyingPower());
-		Sprite sprite = new Sprite(WitchCraft.assetManager.getAtlas("otherart")
+		Sprite sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
 				.findRegion("FUGE"));
 		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
 		powerUi.add(sprite);
 		powers.add(new MindControlPower());
-		sprite = new Sprite(WitchCraft.assetManager.getAtlas("otherart")
+		sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
 				.findRegion("ANIMIMPERI"));
 		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
 		powerUi.add(sprite);
 		// powers.put("shapecrow", new ShapeShiftCrowPower());
 		// powers.put("shapecat", new ShapeShiftCatPower());
 		powers.add(new InvisiblePower());
-		sprite = new Sprite(WitchCraft.assetManager.getAtlas("otherart")
+		sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
 				.findRegion("INVISIBIL"));
 		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
 		powerUi.add(sprite);
 		powers.add(new DuplicateSkin());
-		sprite = new Sprite(WitchCraft.assetManager.getAtlas("otherart")
+		sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
 				.findRegion("EFFINGO"));
 		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
 		powerUi.add(sprite);
@@ -462,7 +461,7 @@ public class Player extends Agent {
 	}
 
 	private void setupAnimations(String name) {
-		TextureAtlas atlas = WitchCraft.assetManager.getAtlas("characters");
+		TextureAtlas atlas = WitchCraft.assetManager.get("data/spine/character.atlas");
 		SkeletonBinary sb = new SkeletonBinary(atlas);
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));

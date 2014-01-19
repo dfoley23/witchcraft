@@ -115,7 +115,7 @@ public class Skeleton {
 		renderer.end();
 
 		renderer.setColor(Color.GREEN);
-		renderer.begin(ShapeType.FilledRectangle);
+		renderer.begin(ShapeType.Filled);
 		for (int i = 0, n = bones.size; i < n; i++) {
 			Bone bone = bones.get(i);
 			renderer.setColor(Color.GREEN);
