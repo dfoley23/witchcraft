@@ -1,19 +1,51 @@
+/******************************************************************************
+ * Spine Runtimes Software License
+ * Version 2
+ * 
+ * Copyright (c) 2013, Esoteric Software
+ * All rights reserved.
+ * 
+ * You are granted a perpetual, non-exclusive, non-sublicensable and
+ * non-transferable license to install, execute and perform the Spine Runtimes
+ * Software (the "Software") solely for internal use. Without the written
+ * permission of Esoteric Software, you may not (a) modify, translate, adapt or
+ * otherwise create derivative works, improvements of the Software or develop
+ * new applications using the Software or (b) remove, delete, alter or obscure
+ * any trademarks or any copyright, trademark, patent or other intellectual
+ * property or proprietary rights notices on or in the Software, including
+ * any copy thereof. Redistributions in binary or source form must include
+ * this license and terms. THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ESOTERIC SOFTARE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *****************************************************************************/
 
 package com.esotericsoftware.spine;
 
 import com.badlogic.gdx.utils.Array;
 
 public class SkeletonData {
+	String name;
 	final Array<BoneData> bones = new Array(); // Ordered parents first.
-	final Array<SlotData> slots = new Array(); // Bind pose draw order.
+	final Array<SlotData> slots = new Array(); // Setup pose draw order.
 	final Array<Skin> skins = new Array();
 	Skin defaultSkin;
+	final Array<EventData> events = new Array();
+	final Array<Animation> animations = new Array();
 
 	public void clear () {
 		bones.clear();
 		slots.clear();
 		skins.clear();
 		defaultSkin = null;
+		events.clear();
+		animations.clear();
 	}
 
 	// --- Bones.
@@ -106,5 +138,62 @@ public class SkeletonData {
 	/** Returns all skins, including the default skin. */
 	public Array<Skin> getSkins () {
 		return skins;
+	}
+
+	// --- Events.
+
+	public void addEvent (EventData eventData) {
+		if (eventData == null) throw new IllegalArgumentException("eventData cannot be null.");
+		events.add(eventData);
+	}
+
+	/** @return May be null. */
+	public EventData findEvent (String eventDataName) {
+		if (eventDataName == null) throw new IllegalArgumentException("eventDataName cannot be null.");
+		for (EventData eventData : events)
+			if (eventData.name.equals(eventDataName)) return eventData;
+		return null;
+	}
+
+	public Array<EventData> getEvents () {
+		return events;
+	}
+
+	// --- Animations.
+
+	public void addAnimation (Animation animation) {
+		if (animation == null) throw new IllegalArgumentException("animation cannot be null.");
+		animations.add(animation);
+	}
+
+	public Array<Animation> getAnimations () {
+		return animations;
+	}
+
+	/** @return May be null. */
+	public Animation findAnimation (String animationName) {
+		if (animationName == null) throw new IllegalArgumentException("animationName cannot be null.");
+		Array<Animation> animations = this.animations;
+		for (int i = 0, n = animations.size; i < n; i++) {
+			Animation animation = animations.get(i);
+			if (animation.name.equals(animationName)) return animation;
+		}
+		return null;
+	}
+
+	// ---
+
+	/** @return May be null. */
+	public String getName () {
+		return name;
+	}
+
+	/** @param name May be null. */
+	public void setName (String name) {
+		this.name = name;
+	}
+
+	public String toString () {
+		return name != null ? name : super.toString();
 	}
 }

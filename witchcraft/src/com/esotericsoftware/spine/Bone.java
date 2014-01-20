@@ -1,3 +1,30 @@
+/******************************************************************************
+ * Spine Runtimes Software License
+ * Version 2
+ * 
+ * Copyright (c) 2013, Esoteric Software
+ * All rights reserved.
+ * 
+ * You are granted a perpetual, non-exclusive, non-sublicensable and
+ * non-transferable license to install, execute and perform the Spine Runtimes
+ * Software (the "Software") solely for internal use. Without the written
+ * permission of Esoteric Software, you may not (a) modify, translate, adapt or
+ * otherwise create derivative works, improvements of the Software or develop
+ * new applications using the Software or (b) remove, delete, alter or obscure
+ * any trademarks or any copyright, trademark, patent or other intellectual
+ * property or proprietary rights notices on or in the Software, including
+ * any copy thereof. Redistributions in binary or source form must include
+ * this license and terms. THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ESOTERIC SOFTARE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *****************************************************************************/
 
 package com.esotericsoftware.spine;
 
@@ -11,7 +38,8 @@ public class Bone {
 	final Bone parent;
 	float x, y;
 	float rotation;
-	float scaleX = 1, scaleY = 1;
+	float scaleX, scaleY;
+	float flipX, flipY;
 
 	float m00, m01, worldX; // a b x
 	float m10, m11, worldY; // c d y
@@ -23,7 +51,7 @@ public class Bone {
 		if (data == null) throw new IllegalArgumentException("data cannot be null.");
 		this.data = data;
 		this.parent = parent;
-		setToBindPose();
+		setToSetupPose();
 	}
 
 	/** Copy constructor.
@@ -45,15 +73,24 @@ public class Bone {
 		if (parent != null) {
 			worldX = x * parent.m00 + y * parent.m01 + parent.worldX;
 			worldY = x * parent.m10 + y * parent.m11 + parent.worldY;
-			worldScaleX = parent.worldScaleX * scaleX;
-			worldScaleY = parent.worldScaleY * scaleY;
-			worldRotation = parent.worldRotation + rotation;
+			this.flipX = flipX ? -1 : 1;
+			this.flipY = flipY ? -1 : 1;
+			if (data.inheritScale) {
+				worldScaleX = parent.worldScaleX * scaleX;
+				worldScaleY = parent.worldScaleY * scaleY;
+			} else {
+				worldScaleX = scaleX;
+				worldScaleY = scaleY;
+			}
+			worldRotation = data.inheritRotation ? parent.worldRotation + rotation : rotation;
 		} else {
 			worldX = x;
 			worldY = y;
 			worldScaleX = scaleX;
 			worldScaleY = scaleY;
 			worldRotation = rotation;
+			this.flipX = flipX ? -1 : 1;
+			this.flipY = flipY ? -1 : 1;
 		}
 		float cos = MathUtils.cosDeg(worldRotation);
 		float sin = MathUtils.sinDeg(worldRotation);
@@ -71,7 +108,7 @@ public class Bone {
 		}
 	}
 
-	public void setToBindPose () {
+	public void setToSetupPose () {
 		BoneData data = this.data;
 		x = data.x;
 		y = data.y;
@@ -167,11 +204,11 @@ public class Bone {
 	public Matrix3 getWorldTransform (Matrix3 worldTransform) {
 		if (worldTransform == null) throw new IllegalArgumentException("worldTransform cannot be null.");
 		float[] val = worldTransform.val;
-		val[M00] = m00;
+		val[M00] = m00 * flipX;
 		val[M01] = m01;
-		val[M02] = worldX;
 		val[M10] = m10;
-		val[M11] = m11;
+		val[M11] = m11 * flipY;
+		val[M02] = worldX;
 		val[M12] = worldY;
 		val[M20] = 0;
 		val[M21] = 0;

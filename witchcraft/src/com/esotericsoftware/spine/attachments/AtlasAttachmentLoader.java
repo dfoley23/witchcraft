@@ -26,60 +26,42 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-package com.esotericsoftware.spine;
+package com.esotericsoftware.spine.attachments;
 
-import com.badlogic.gdx.graphics.Color;
+import com.esotericsoftware.spine.Skin;
 
-public class SlotData {
-	final String name;
-	final BoneData boneData;
-	final Color color = new Color(1, 1, 1, 1);
-	String attachmentName;
-	boolean additiveBlending;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
-	SlotData () {
-		name = null;
-		boneData = null;
+public class AtlasAttachmentLoader implements AttachmentLoader {
+	private TextureAtlas atlas;
+
+	public AtlasAttachmentLoader (TextureAtlas atlas) {
+		if (atlas == null) throw new IllegalArgumentException("atlas cannot be null.");
+		this.atlas = atlas;
 	}
 
-	public SlotData (String name, BoneData boneData) {
-		if (name == null) throw new IllegalArgumentException("name cannot be null.");
-		if (boneData == null) throw new IllegalArgumentException("boneData cannot be null.");
-		this.name = name;
-		this.boneData = boneData;
+	public RegionAttachment newRegionAttachment (Skin skin, String name, String path) {
+		RegionAttachment attachment = new RegionAttachment(name);
+		attachment.setPath(path);
+		AtlasRegion region = atlas.findRegion(path);
+		if (region == null)
+			throw new RuntimeException("Region not found in atlas: " + attachment + " (region attachment: " + name + ")");
+		attachment.setRegion(region);
+		return attachment;
 	}
 
-	public String getName () {
-		return name;
+	public MeshAttachment newMeshAttachment (Skin skin, String name, String path) {
+		MeshAttachment attachment = new MeshAttachment(name);
+		attachment.setPath(path);
+		AtlasRegion region = atlas.findRegion(path);
+		if (region == null)
+			throw new RuntimeException("Region not found in atlas: " + attachment + " (region attachment: " + name + ")");
+		attachment.setRegion(region);
+		return attachment;
 	}
 
-	public BoneData getBoneData () {
-		return boneData;
-	}
-
-	public Color getColor () {
-		return color;
-	}
-
-	/** @param attachmentName May be null. */
-	public void setAttachmentName (String attachmentName) {
-		this.attachmentName = attachmentName;
-	}
-
-	/** @return May be null. */
-	public String getAttachmentName () {
-		return attachmentName;
-	}
-
-	public boolean getAdditiveBlending () {
-		return additiveBlending;
-	}
-
-	public void setAdditiveBlending (boolean additiveBlending) {
-		this.additiveBlending = additiveBlending;
-	}
-
-	public String toString () {
-		return name;
+	public BoundingBoxAttachment newBoundingBoxAttachment (Skin skin, String name) {
+		return new BoundingBoxAttachment(name);
 	}
 }

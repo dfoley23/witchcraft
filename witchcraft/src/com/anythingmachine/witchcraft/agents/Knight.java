@@ -58,23 +58,17 @@ public class Knight extends NonPlayer {
 	
 	@Override
 	protected void setupAnimations(String skinname,  String atlasname) {
-		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/character.atlas"));
+		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/characters.atlas"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
 		animate = new AnimationManager(skinname, body.getPos(), bodyScale, true, sd);
-		animate.addAnimation(
-				"walk",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-walk.anim"), sd));
-		animate.addAnimation(
-				"idle",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-idle.anim"), sd));
-		animate.addAnimation(
-				"sword-attack",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-overheadattack.anim"), sd));
+
+		animate.addAnimation("idle", sd.findAnimation("idle"));
+		animate.addAnimation("walk", sd.findAnimation("walk"));
+		animate.addAnimation("run", sd.findAnimation("run"));
+		animate.addAnimation("swordattack", sd.findAnimation("overheadattack"));
+
 		animate.setCurrent("idle", true);
 	}
 
@@ -139,7 +133,7 @@ public class Knight extends NonPlayer {
 		PolygonShape shape = new PolygonShape();
 //		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 150 * Util.PIXEL_TO_BOX);
 		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX,
-				new Vector2(0, 93).mul(Util.PIXEL_TO_BOX), 
+				new Vector2(0, 93).scl(Util.PIXEL_TO_BOX), 
 				0f);
 		FixtureDef fixture = new FixtureDef();
 		fixture.shape = shape;

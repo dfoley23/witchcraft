@@ -1,7 +1,37 @@
+/******************************************************************************
+ * Spine Runtimes Software License
+ * Version 2
+ * 
+ * Copyright (c) 2013, Esoteric Software
+ * All rights reserved.
+ * 
+ * You are granted a perpetual, non-exclusive, non-sublicensable and
+ * non-transferable license to install, execute and perform the Spine Runtimes
+ * Software (the "Software") solely for internal use. Without the written
+ * permission of Esoteric Software, you may not (a) modify, translate, adapt or
+ * otherwise create derivative works, improvements of the Software or develop
+ * new applications using the Software or (b) remove, delete, alter or obscure
+ * any trademarks or any copyright, trademark, patent or other intellectual
+ * property or proprietary rights notices on or in the Software, including
+ * any copy thereof. Redistributions in binary or source form must include
+ * this license and terms. THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ESOTERIC SOFTARE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *****************************************************************************/
 
 package com.esotericsoftware.spine;
 
+import com.esotericsoftware.spine.attachments.Attachment;
+
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.FloatArray;
 
 public class Slot {
 	final SlotData data;
@@ -10,6 +40,7 @@ public class Slot {
 	final Color color;
 	Attachment attachment;
 	private float attachmentTime;
+	private final FloatArray attachmentVertices = new FloatArray();
 
 	Slot () {
 		data = null;
@@ -25,8 +56,8 @@ public class Slot {
 		this.data = data;
 		this.skeleton = skeleton;
 		this.bone = bone;
-		color = new Color(1, 1, 1, 1);
-		setToBindPose();
+		color = new Color();
+		setToSetupPose();
 	}
 
 	/** Copy constructor. */
@@ -63,11 +94,13 @@ public class Slot {
 		return attachment;
 	}
 
-	/** Sets the attachment and resets {@link #getAttachmentTime()}.
+	/** Sets the attachment, resets {@link #getAttachmentTime()}, and clears {@link #getAttachmentVertices()}.
 	 * @param attachment May be null. */
 	public void setAttachment (Attachment attachment) {
+		if (this.attachment == attachment) return;
 		this.attachment = attachment;
 		attachmentTime = skeleton.time;
+		attachmentVertices.clear();
 	}
 
 	public void setAttachmentTime (float time) {
@@ -79,13 +112,17 @@ public class Slot {
 		return skeleton.time - attachmentTime;
 	}
 
-	void setToBindPose (int slotIndex) {
+	public FloatArray getAttachmentVertices () {
+		return attachmentVertices;
+	}
+
+	void setToSetupPose (int slotIndex) {
 		color.set(data.color);
 		setAttachment(data.attachmentName == null ? null : skeleton.getAttachment(slotIndex, data.attachmentName));
 	}
 
-	public void setToBindPose () {
-		setToBindPose(skeleton.data.slots.indexOf(data, true));
+	public void setToSetupPose () {
+		setToSetupPose(skeleton.data.slots.indexOf(data, true));
 	}
 
 	public String toString () {

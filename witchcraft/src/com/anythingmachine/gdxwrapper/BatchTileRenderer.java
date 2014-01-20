@@ -99,7 +99,7 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 			i++;
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
-					System.out.println("Render layer: " + layer.getName());
+					//System.out.println("Render layer: " + layer.getName());
 					renderTileLayer((TiledMapTileLayer)layer);
 				} else {
 					for (MapObject object : layer.getObjects()) {

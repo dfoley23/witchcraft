@@ -26,60 +26,38 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-package com.esotericsoftware.spine;
+package com.esotericsoftware.spine.attachments;
 
-import com.badlogic.gdx.graphics.Color;
+import com.esotericsoftware.spine.Bone;
 
-public class SlotData {
-	final String name;
-	final BoneData boneData;
-	final Color color = new Color(1, 1, 1, 1);
-	String attachmentName;
-	boolean additiveBlending;
+public class BoundingBoxAttachment extends Attachment {
+	private float[] vertices;
 
-	SlotData () {
-		name = null;
-		boneData = null;
+	public BoundingBoxAttachment (String name) {
+		super(name);
 	}
 
-	public SlotData (String name, BoneData boneData) {
-		if (name == null) throw new IllegalArgumentException("name cannot be null.");
-		if (boneData == null) throw new IllegalArgumentException("boneData cannot be null.");
-		this.name = name;
-		this.boneData = boneData;
+	public void computeWorldVertices (float x, float y, Bone bone, float[] worldVertices) {
+		x += bone.getWorldX();
+		y += bone.getWorldY();
+		float m00 = bone.getM00();
+		float m01 = bone.getM01();
+		float m10 = bone.getM10();
+		float m11 = bone.getM11();
+		float[] vertices = this.vertices;
+		for (int i = 0, n = vertices.length; i < n; i += 2) {
+			float px = vertices[i];
+			float py = vertices[i + 1];
+			worldVertices[i] = px * m00 + py * m01 + x;
+			worldVertices[i + 1] = px * m10 + py * m11 + y;
+		}
 	}
 
-	public String getName () {
-		return name;
+	public float[] getVertices () {
+		return vertices;
 	}
 
-	public BoneData getBoneData () {
-		return boneData;
-	}
-
-	public Color getColor () {
-		return color;
-	}
-
-	/** @param attachmentName May be null. */
-	public void setAttachmentName (String attachmentName) {
-		this.attachmentName = attachmentName;
-	}
-
-	/** @return May be null. */
-	public String getAttachmentName () {
-		return attachmentName;
-	}
-
-	public boolean getAdditiveBlending () {
-		return additiveBlending;
-	}
-
-	public void setAdditiveBlending (boolean additiveBlending) {
-		this.additiveBlending = additiveBlending;
-	}
-
-	public String toString () {
-		return name;
+	public void setVertices (float[] vertices) {
+		this.vertices = vertices;
 	}
 }

@@ -95,7 +95,7 @@ public class NonPlayer extends Agent {
 			case SWORDATTACK:
 				body.setVel(0, body.getVel().y, 0f);
 				animate.bindPose();
-				animate.setCurrent("sword-attack", true);
+				animate.setCurrent("swordattack", true);
 				break;
 			default:	
 				handleState(state);
@@ -119,7 +119,7 @@ public class NonPlayer extends Agent {
 		}
 		}
 		collisionBody.setTransform(
-				body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX), 0);
+				body.getPos2D().add(-8, 64).scl(Util.PIXEL_TO_BOX), 0);
 
 	}
 
@@ -180,20 +180,17 @@ public class NonPlayer extends Agent {
 	}
 	
 	protected void setupAnimations(String skinname, String atlasname) {
-		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/character.atlas"));
+		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/characters.atlas"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
 		animate = new AnimationManager(skinname, body.getPos(), new Vector2(0.6f,
 				0.7f), true, sd);
-		animate.addAnimation(
-				"walk",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-walk.anim"), sd));
-		animate.addAnimation(
-				"idle",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-idle.anim"), sd));
+		animate.addAnimation("idle", sd.findAnimation("idle"));
+		animate.addAnimation("walk", sd.findAnimation("walk"));
+		animate.addAnimation("run", sd.findAnimation("run"));
+		animate.addAnimation("swordattack", sd.findAnimation("overheadattack"));
+
 		animate.setCurrent("idle", true);
 
 	}

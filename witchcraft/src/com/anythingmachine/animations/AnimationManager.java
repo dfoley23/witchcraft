@@ -5,15 +5,19 @@ import java.util.HashMap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.Bone;
+import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.SkeletonRenderer;
 import com.esotericsoftware.spine.Skin;
 import com.esotericsoftware.spine.Slot;
 
 public class AnimationManager {
 	private HashMap<String, Animation> animations;
+	private SkeletonRenderer renderer;
 	private Skeleton skel;
 	private String currentAnim;
 	private Bone root;
@@ -21,6 +25,7 @@ public class AnimationManager {
 	private Vector2 scale;
 	private boolean loop;
 	private boolean isFlipped = false;
+	private Array<Event> events;
 	
 	public AnimationManager(String name, Vector3 pos, Vector2 scl,
 			boolean flip, SkeletonData sd) {
@@ -28,7 +33,7 @@ public class AnimationManager {
 		animations = new HashMap<String, Animation>();
 		skel = new com.esotericsoftware.spine.Skeleton(sd);
 		skel.setSkin(name);
-		skel.setToBindPose();
+		skel.setToSetupPose();
 		root = skel.getRootBone();
 		root.setX(pos.x);
 		root.setY(pos.y);
@@ -37,6 +42,8 @@ public class AnimationManager {
 		skel.updateWorldTransform();
 		skel.setFlipX(flip);
 		loop = true;
+		events = new Array<Event>();
+		renderer = new SkeletonRenderer();
 	}
 
 	public void update(float delta) {
@@ -52,7 +59,9 @@ public class AnimationManager {
 		// root.setScaleY(0.7f);
 		// } else
 		{
-			animations.get(currentAnim).apply(skel, totalTime, loop);
+//			System.out.println(currentAnim);
+
+			animations.get(currentAnim).apply(skel, totalTime-delta, totalTime, loop, events);
 		}
 		// }
 		skel.updateWorldTransform();
@@ -66,11 +75,11 @@ public class AnimationManager {
 	}
 	
 	public void applyTotalTime(boolean val, float delta) {
-		animations.get(currentAnim).apply(skel, totalTime+delta, val);
+		animations.get(currentAnim).apply(skel, totalTime, totalTime+delta, val, events);
 	}
 
 	public void draw(SpriteBatch batch) {
-		skel.draw(batch);
+		renderer.draw(batch, skel);
 	}
 	
 	public void addAnimation(String id, Animation anim) {
@@ -88,25 +97,29 @@ public class AnimationManager {
 
 	public void bindPose() {
 		totalTime = 0;
-		skel.setToBindPose();
+		skel.setToSetupPose();
 		root.setScaleX(scale.x);
 		root.setScaleY(scale.y);
 	}
 
 	public boolean isTimeOverAQuarter(float delta) {
-		return totalTime+delta > animations.get(currentAnim).getQuarterDuration();
+		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.25f;
 	}
 	
 	public boolean isTImeOverThreeQuarters(float delta) {
-		return totalTime+delta > animations.get(currentAnim).getQuarterDuration()*3;
+		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.75f;
 	}
 	
 	public void setFlipX(boolean val){
+		float x = skel.getX();
+		skel.setX(0);
 		skel.setFlipX(val);
+		skel.setX(x);
 		isFlipped = val;
 	}
 	
 	public boolean atEnd() {
+//		System.out.println(currentAnim);
 		return totalTime > animations.get(currentAnim).getDuration();
 	}
 

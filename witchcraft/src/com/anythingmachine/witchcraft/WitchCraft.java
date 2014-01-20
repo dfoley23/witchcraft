@@ -20,6 +20,7 @@ import com.anythingmachine.witchcraft.agents.Knight;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
 import com.anythingmachine.witchcraft.ground.Ground;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -37,53 +38,52 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class WitchCraft implements ApplicationListener {
-	// the time the last frame was rendered, used for throttling framerate
-	private long lastRender;
-	private TiledMapHelper tiledMapHelper;
-	public static AssetManager assetManager;
-	private NonPlayer npc1;
-	private NonPlayer npc2;
-	private NonPlayer npc3;
-	private NonPlayer npc4;
-	private NonPlayer npc5;
-	public static Ground ground;
-	private Box2DDebugRenderer debugRenderer;
-	private PolygonSpriteBatchWrap polygonBatch;
-	private SpriteBatch spriteBatch;
-	private ShapeRenderer shapeRenderer;
 	public static Player player;
 	public static World world;
 	public static Camera cam;
 	private static RK4Integrator rk4;
 	public static ParticleSystem rk4System;
+	public static AssetManager assetManager;
+	public static Ground ground;
+	public static boolean ON_ANDROID;
+	public static float dt = 1f / 30f;
+
+	private long lastRender;
+	private TiledMapHelper tiledMapHelper;
+	private PolygonSpriteBatchWrap polygonBatch;
+	private SpriteBatch spriteBatch;
 	private float xGrid;
 	private int camWorldSize;
 	private Calendar cal;
 	private float dawnDuskProgress = 0;
-	private LoadScript script;
-	public static float dt = 1f / 30f;
-	private MyContactListener contactListener;
 	private int screenWidth;
 	private int screenHeight;
-	
+	private MyContactListener contactListener;
+	private LoadScript script;
+
+	//test fields
+	private Box2DDebugRenderer debugRenderer;
+	private ShapeRenderer shapeRenderer;
+	private NonPlayer npc1;
+	private NonPlayer npc2;
+	private NonPlayer npc3;
+	private NonPlayer npc4;
+	private NonPlayer npc5;
 
 	public WitchCraft() {
 		super();
-
-		// Defer until create() when Gdx is initialized.
 		screenWidth = -1;
 		screenHeight = -1;
 	}
 
 	public WitchCraft(int width, int height) {
 		super();
-
-		screenWidth = width;
-		screenHeight = height;
 	}
 
 	@Override
 	public void create() {
+		screenWidth = Gdx.graphics.getWidth();
+		screenHeight = Gdx.graphics.getHeight();
 		Date date = new Date();
 		cal = GregorianCalendar.getInstance();
 		cal.setTime(date);
@@ -96,30 +96,17 @@ public class WitchCraft implements ApplicationListener {
 		world.setContactListener(contactListener);
 
 		loadAssets();
-			
-		/**
-		 * If the viewport's size is not yet known, determine it here.
-		 */
-		if (screenWidth == -1) {
-			screenWidth = Gdx.graphics.getWidth();
-			screenHeight = Gdx.graphics.getHeight();
-		}
 
 		tiledMapHelper = new TiledMapHelper();
-		tiledMapHelper.setPackerDirectory("data/packer");
 		tiledMapHelper.loadMap(spriteBatch);
 		cam = new Camera(screenWidth, screenHeight);
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
-
-		// overallTexture = new
-		// Texture(Gdx.files.internal("data/tileSheet.png"));
-		// overallTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		spriteBatch = new SpriteBatch();
 		polygonBatch = new PolygonSpriteBatchWrap();
 		shapeRenderer = new ShapeRenderer();
 
-		script = new LoadScript("helloworld.lua");
+		//script = new LoadScript("helloworld.lua");
 
 		debugRenderer = new Box2DDebugRenderer();
 		ground = new Ground(world);
@@ -136,10 +123,13 @@ public class WitchCraft implements ApplicationListener {
 				3.0f), new Vector2(0.6f, 0.7f));
 		npc5 = new NonPlayer("civfemaleblack-hood", "characters", new Vector2(
 				300.0f, 3.0f), new Vector2(0.6f, 0.7f));
+
 		tiledMapHelper.loadCollisions("data/collisions.txt", world,
 				Util.PIXELS_PER_METER);
 
 		lastRender = System.nanoTime();
+
+		ON_ANDROID = Gdx.app.getType() == ApplicationType.Android;
 	}
 
 	@Override
@@ -151,14 +141,18 @@ public class WitchCraft implements ApplicationListener {
 		long now = System.nanoTime();
 		float dT = Gdx.graphics.getDeltaTime();
 
+		if ( ON_ANDROID ) {
+			Gdx.app.log("***************************frames per sec: ", ""
+				+ Gdx.app.getGraphics().getFramesPerSecond());
+		}
 		world.step(dT, 1, 1);
 
 		rk4.step(dt);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-//		Color c = getTimeOfDay();
-//		Gdx.gl.glClearColor((float) c.getRed() / 255f,
-//				(float) c.getGreen() / 255f, (float) c.getBlue() / 255f, 1f);
+		 Color c = getTimeOfDay();
+		 Gdx.gl.glClearColor((float) c.getRed() / 255f,
+		 (float) c.getGreen() / 255f, (float) c.getBlue() / 255f, 1f);
 
 		player.update(dT);
 		npc1.update(dT);
@@ -173,21 +167,9 @@ public class WitchCraft implements ApplicationListener {
 		if (xGrid < Gdx.graphics.getWidth() / 2) {
 			xGrid = Camera.camera.position.x = Gdx.graphics.getWidth() / 2;
 		}
-		// else if (xGrid >= TiledMapHelper.getWidth()
-		// - Gdx.graphics.getWidth() / 2) {
-		// xGrid = TiledMapHelper.camera.position.x =
-		// TiledMapHelper.getWidth()
-		// - Gdx.graphics.getWidth() / 2;
-		// }
-
 		if (yGrid < Gdx.graphics.getHeight() / 2) {
 			Camera.camera.position.y = Gdx.graphics.getHeight() / 2;
 		}
-		// if (TiledMapHelper.camera.position.y >=
-		// TiledMapHelper.getHeight()
-		// - Gdx.graphics.getHeight() / 2) {
-		// TiledMapHelper.camera.position.y = TiledMapHelper.getHeight();
-		// }
 
 		camWorldSize = (int) (Gdx.graphics.getWidth() * Camera.camera.zoom);
 
@@ -197,10 +179,10 @@ public class WitchCraft implements ApplicationListener {
 		spriteBatch.begin();
 		player.drawUI(spriteBatch);
 		spriteBatch.end();
-		if ( DEV_MODE )
+		if (DEV_MODE)
 			debugRenderer.render(world, Camera.camera.combined.scale(
-				Util.PIXELS_PER_METER, Util.PIXELS_PER_METER,
-				Util.PIXELS_PER_METER));
+					Util.PIXELS_PER_METER, Util.PIXELS_PER_METER,
+					Util.PIXELS_PER_METER));
 
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS
@@ -274,15 +256,6 @@ public class WitchCraft implements ApplicationListener {
 
 		spriteBatch.end();
 		player.drawCape(Camera.camera.combined);
-
-//		shapeRenderer.setProjectionMatrix(combined);
-//		shapeRenderer.begin(ShapeType.FilledRectangle);
-//		shapeRenderer.setColor(0, 1, 0, 1);
-//		shapeRenderer.filledRect((cam.camera.position.x-cam.camera.viewportWidth*0.5f)
-//				+ ((cam.camera.viewportWidth * .1f) * player.getPower()),
-//				(cam.camera.position.y+cam.camera.viewportHeight*0.5f)-20, (cam.camera.viewportWidth * .1f), 20);
-//		shapeRenderer.end();
-		//
 		// player.drawCape(shapeRenderer);
 
 	}
@@ -301,12 +274,13 @@ public class WitchCraft implements ApplicationListener {
 
 	public void loadAssets() {
 		assetManager = new AssetManager();
-		assetManager.load("data/spine/character.atlas", TextureAtlas.class);
+		assetManager.load("data/spine/characters.atlas", TextureAtlas.class);
 		assetManager.load("data/world/otherart.atlas", TextureAtlas.class);
 
-		//load level
-		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		assetManager.load("data/world/level1/level.tmx", TiledMap.class);
+		// load level
+		assetManager.setLoader(TiledMap.class, new TmxMapLoader(
+				new InternalFileHandleResolver()));
+		assetManager.load("data/world/level1/level1.tmx", TiledMap.class);
 		assetManager.finishLoading();
 	}
 }

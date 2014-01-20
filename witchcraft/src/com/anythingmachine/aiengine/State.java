@@ -6,15 +6,20 @@ public enum State {
 	IDLE {
 	},
 	WALKING {
+
 		@Override
-		public boolean canWalk(StateMachine sm) {
-			return false;
+		public void setWalk(StateMachine sm) {
+
 		}
 	},
 	RUNNING {
 		@Override
-		public boolean canRun(StateMachine sm) {
-			return false;
+		public void setRun(StateMachine sm) {
+		}
+
+		@Override
+		public float getInputSpeed(StateMachine sm) {
+			return Util.PLAYERRUNSPEED;
 		}
 	},
 	JUMPING {
@@ -39,28 +44,22 @@ public enum State {
 		}
 
 		@Override
-		public boolean canWalk(StateMachine sm) {
-			return false;
+		public void setWalk(StateMachine sm) {
 		}
 		@Override
-		public boolean canRun(StateMachine sm) {
-			return false;
+		public void setRun(StateMachine sm) {
 		}
+
 	},
 	FLYING {
 		@Override
-		public State land(StateMachine sm) {
-			return LANDING;
+		public void land(StateMachine sm) {
+			sm.setState(State.LANDING);
 		}
 
 		@Override
 		public boolean canBeIdle(StateMachine sm) {
 			return false;
-		}
-
-		@Override
-		public boolean canLand(StateMachine sm) {
-			return true;
 		}
 
 		@Override
@@ -82,10 +81,16 @@ public enum State {
 		public boolean canCastSpell(StateMachine sm) {
 			return false;
 		}
+
 		@Override
-		public boolean canRun(StateMachine sm) {
-			return false;
+		public void setRun(StateMachine sm) {
 		}
+
+
+		@Override
+		public void setWalk(StateMachine sm) {
+		}
+
 	},
 	LANDING {
 
@@ -96,17 +101,16 @@ public enum State {
 	},
 	FALLING {
 		@Override
-		public boolean canWalk(StateMachine sm) {
-			return false;
+		public void setWalk(StateMachine sm) {
 		}
 
 		@Override
 		public boolean canCastSpell(StateMachine sm) {
 			return false;
 		}
+
 		@Override
-		public boolean canRun(StateMachine sm) {
-			return false;
+		public void setRun(StateMachine sm) {
 		}
 	},
 	ATTACK {
@@ -114,10 +118,12 @@ public enum State {
 		public boolean canBeIdle(StateMachine sm) {
 			return sm.animate.isTImeOverThreeQuarters(0);
 		}
+
 		@Override
 		public boolean canAttack(StateMachine sm) {
 			return false;
 		}
+
 	},
 	DEAD {
 		@Override
@@ -129,24 +135,24 @@ public enum State {
 		public boolean canCastSpell(StateMachine sm) {
 			return false;
 		}
+
 		@Override
-		public boolean canRun(StateMachine sm) {
-			return false;
+		public void setRun(StateMachine sm) {
 		}
+
 		@Override
-		public boolean canWalk(StateMachine sm) {
-			return false;
+		public void setWalk(StateMachine sm) {
 		}
 	};
 	public boolean canAttack(StateMachine sm) {
 		return true;
 	}
+
 	public boolean startingToFly(StateMachine sm) {
 		return false;
 	}
 
-	public State land(StateMachine sm) {
-		return this;
+	public void land(StateMachine sm) {
 	}
 
 	public boolean canBeIdle(StateMachine sm) {
@@ -161,13 +167,6 @@ public enum State {
 		return !sm.testtesttestOR("usingpower", "dupeskin", "usingdupeskin");
 	}
 
-	public boolean canWalk(StateMachine sm) {
-		return !sm.testORtest("usingpower", "dupeskin");
-	}
-
-	public boolean canRun(StateMachine sm) {
-		return !sm.testORtest("usingpower", "dupeskin");
-	}
 	public float getInputSpeed(StateMachine sm) {
 		if (!sm.testORtest("usingpower", "dupeskin"))
 			return Util.PLAYERWALKSPEED;
@@ -178,4 +177,21 @@ public enum State {
 	public boolean canCastSpell(StateMachine sm) {
 		return !sm.testORtest("usingpower", "dupeskin");
 	}
+
+	public void setWalk(StateMachine sm) {
+		if (!sm.testORtest("usingpower", "dupeskin")) {
+			sm.setState(State.WALKING);
+			sm.animate.bindPose();
+			sm.animate.setCurrent("walk", true);
+		}
+	}
+
+	public void setRun(StateMachine sm) {
+		if (!sm.testORtest("usingpower", "dupeskin")) {
+			sm.setState(State.RUNNING);
+			sm.animate.bindPose();
+			sm.animate.setCurrent("run", true);
+		}
+	}
+
 }

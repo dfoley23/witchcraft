@@ -105,7 +105,9 @@ public class Player extends Agent {
 		}
 
 		// handle user power input
-		if (input.isNowNotThen("SwitchPower")) {
+		if (input.isNowNotThen("SwitchPower")
+				|| input.isNowNotThen("SwitchPower1")
+				|| input.isNowNotThen("SwitchPower2")) {
 			power = (power + 1) >= powers.size() ? 0 : power + 1;
 			uiFadein = 0f;
 		}
@@ -130,41 +132,17 @@ public class Player extends Agent {
 		// rotate collision box when flying
 		if (state.state.startingToFly(state)) {
 			collisionBody.setTransform(
-					body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX),
+					body.getPos2D().add(-8, 64).scl(Util.PIXEL_TO_BOX),
 					Util.HALF_PI);
 		} else {
 			collisionBody.setTransform(
-					body.getPos2D().add(-8, 64).mul(Util.PIXEL_TO_BOX), 0);
+					body.getPos2D().add(-8, 64).scl(Util.PIXEL_TO_BOX), 0);
 		}
 		// System.out.println(state.state);
 	}
 
 	public void draw(SpriteBatch batch, Matrix4 cam) {
 		state.animate.draw(batch);
-	}
-
-	public void drawUI(SpriteBatch batch) {
-		if (uiFadein >= 0f) {
-			Sprite sprite = powerUi.get(power);
-			sprite.setPosition(
-					WitchCraft.cam.camera.position.x-sprite.getWidth()*0.5f,
-					WitchCraft.cam.camera.position.y
-							+ (WitchCraft.cam.camera.viewportHeight*0.5f )-sprite.getHeight());
-			powerUi.get(power).draw(batch, uiFadein);
-			uiFadein += WitchCraft.dt*0.5f;
-			if (uiFadein >= 1f)
-				uiFadein = -2f;
-		} else if (uiFadein < 0 && uiFadein > -4) {
-			Sprite sprite = powerUi.get(power);
-			sprite.setPosition(
-					WitchCraft.cam.camera.position.x-sprite.getWidth()*0.5f,
-					WitchCraft.cam.camera.position.y
-							+ (WitchCraft.cam.camera.viewportHeight*0.5f )-sprite.getHeight());
-			powerUi.get(power).draw(batch, -(uiFadein + 1));
-			uiFadein += WitchCraft.dt*0.5f;
-			if (uiFadein >= -1)
-				uiFadein = -5f;
-		}
 	}
 
 	public void drawCape(Matrix4 cam) {
@@ -201,6 +179,32 @@ public class Player extends Agent {
 		this.curGroundSegment++;
 	}
 
+	public void drawUI(SpriteBatch batch) {
+		if (uiFadein >= 0f) {
+			Sprite sprite = powerUi.get(power);
+			sprite.setPosition(
+					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
+					WitchCraft.cam.camera.position.y
+							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
+							- sprite.getHeight());
+			powerUi.get(power).draw(batch, uiFadein);
+			uiFadein += WitchCraft.dt * 0.5f;
+			if (uiFadein >= 1f)
+				uiFadein = -2f;
+		} else if (uiFadein < 0 && uiFadein > -4) {
+			Sprite sprite = powerUi.get(power);
+			sprite.setPosition(
+					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
+					WitchCraft.cam.camera.position.y
+							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
+							- sprite.getHeight());
+			powerUi.get(power).draw(batch, -(uiFadein + 1));
+			uiFadein += WitchCraft.dt * 0.5f;
+			if (uiFadein >= -1)
+				uiFadein = -5f;
+		}
+	}
+	
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -209,29 +213,33 @@ public class Player extends Agent {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
+		Vector2 pos = body.getPos2D();
+		Vector2 vel = body.getVel2D();
 		switch (other.type) {
 		case NONPLAYER:
 			npc = (NonPlayer) other;
 			state.setTestVal("hitnpc", true);
 			break;
+		case WALL:
+			body.setPos(pos.x-(Math.signum(vel.x)*8), pos.y, 0);
+			body.setVel(0, vel.y, 0);
+			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
-			Vector2 pos = body.getPos2D();
 			if (plat.isBetween(state.test("facingleft"), pos.x)) {
 				if (plat.getHeight() - 32 < pos.y) {
 					state.setTestVal("hitplatform", true);
 					this.elevatedSegment = plat;
-					if (state.state.canLand(state))
-						state.setState(State.LANDING);
+					state.state.land(state);
 				} else {
-					body.setVel(body.getVel2D().x, -50, 0);
+					body.setPos(pos.x, pos.y-8, 0);
+					body.setVel(vel.x, 0, 0);
 					state.setTestVal("hitroof", true);
 				}
 			}
 			break;
 		case STAIRS:
 			plat = (Platform) other;
-			pos = body.getPos2D();
 			if (input.is("UP")
 					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
 							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
@@ -240,8 +248,7 @@ public class Player extends Agent {
 					if (plat.getHeight(pos.x) - 8 < pos.y) {
 						state.setTestVal("hitplatform", true);
 						this.elevatedSegment = plat;
-						if (state.state.canLand(state))
-							state.setState(State.LANDING);
+						state.state.land(state);
 					}
 				}
 			}
@@ -286,7 +293,7 @@ public class Player extends Agent {
 			if (pos.y <= groundPoint.y) {
 				correctHeight(groundPoint.y);
 				state.setTestVal("grounded", true);
-				state.setState(state.state.land(state));
+				state.state.land(state);
 				body.setVel(0f, 0f, 0f);
 			}
 		} else {
@@ -297,7 +304,7 @@ public class Player extends Agent {
 				if (body.getPos().y < groundPoint) {
 					correctHeight(groundPoint);
 					state.setTestVal("grounded", true);
-					state.setState(state.state.land(state));
+					state.state.land(state);
 					body.setVel(0f, 0f, 0f);
 				}
 			} else {
@@ -371,49 +378,79 @@ public class Player extends Agent {
 	}
 
 	private boolean updateWalking(float delta) {
-		boolean ismoving = false;
-		if (input.is("Right")) {
-			body.setVel(state.state.getInputSpeed(state), body.getVel().y, 0f);
-			state.setTestVal("facingleft", false);
-			ismoving = true;
-		} else if (input.is("Left")) {
-			body.setVel(-state.state.getInputSpeed(state), body.getVel().y, 0f);
-			state.setTestVal("facingleft", true);
-			ismoving = true;
+		if (WitchCraft.ON_ANDROID) {
+			int axisVal = input.axisRange2();
+			if (axisVal != 0) {
+				if (state.test("grounded")) {
+					int absval = Math.abs(axisVal);
+					if (absval == 1) {
+						state.state.setWalk(state);
+					} else if (absval == 2) {
+						state.state.setRun(state);
+					}
+				}
+				body.setVel(
+						Math.signum(axisVal) * state.state.getInputSpeed(state),
+						body.getVel().y, 0f);
+				state.setTestVal("facingleft", axisVal < 0);
+				return true;
+			} else if (state.state.canBeIdle(state)) { // state.animate.isTimeOverAQuarter(delta)
+				state.setState(State.IDLE);
+				state.animate.setCurrent("idle", true);
+				state.animate.bindPose();
+				body.setVel(0f, body.getVel().y, 0f);
+			}
+			return false;
+		} else {
+			boolean ismoving = false;
+			if (input.is("Right")) {
+				body.setVel(state.state.getInputSpeed(state), body.getVel().y,
+						0f);
+				state.setTestVal("facingleft", false);
+				ismoving = true;
+			} else if (input.is("Left")) {
+				body.setVel(-state.state.getInputSpeed(state), body.getVel().y,
+						0f);
+				state.setTestVal("facingleft", true);
+				ismoving = true;
+			}
+			if (state.test("grounded") && ismoving) {
+				state.state.setWalk(state);
+			} else if (!ismoving && state.state.canBeIdle(state)) { // state.animate.isTimeOverAQuarter(delta)
+				state.setState(State.IDLE);
+				state.animate.setCurrent("idle", true);
+				state.animate.bindPose();
+				body.setVel(0f, body.getVel().y, 0f);
+			}
+			return ismoving;
 		}
-		if (state.test("grounded") && ismoving && state.state.canWalk(state)) {
-			state.animate.setCurrent("walk", true);
-			state.animate.bindPose();
-			state.setState(State.WALKING);
-		} else if (!ismoving && state.state.canBeIdle(state)) { // state.animate.isTimeOverAQuarter(delta)
-			state.setState(State.IDLE);
-			state.animate.setCurrent("idle", true);
-			state.animate.bindPose();
-			body.setVel(0f, body.getVel().y, 0f);
-		}
-		return ismoving;
 	}
 
 	/******************* setup functions ****************/
 	/***************************************************/
 	private void setupInput() {
-		if ( Controllers.getControllers().size > 0 )  {
+		if (Controllers.getControllers().size > 0) {
 			input.addInputState("Left", 21);
 			input.addInputState("Right", 22);
+			input.addInputState("UPAxis", 1);
 			input.addInputState("UP", 19);
 			input.addInputState("SwitchPower", 97);
+			input.addInputState("SwitchPower1", 105);
+			input.addInputState("SwitchPower2", 103);
 			input.addInputState("UsePower", 96);
 			input.addInputState("Interact", 100);
 			input.addInputState("attack", 99);
-			
+
 		} else {
-		input.addInputState("Left", Keys.LEFT);
-		input.addInputState("Right", Keys.RIGHT);
-		input.addInputState("UP", Keys.UP);
-		input.addInputState("SwitchPower", Keys.SHIFT_LEFT);
-		input.addInputState("UsePower", Keys.SPACE);
-		input.addInputState("Interact", Keys.D);
-		input.addInputState("attack", Keys.A);
+			input.addInputState("Left", Keys.LEFT);
+			input.addInputState("Right", Keys.RIGHT);
+			input.addInputState("UP", Keys.UP);
+			input.addInputState("SwitchPower", Keys.SHIFT_LEFT);
+			input.addInputState("SwitchPower1", Keys.SHIFT_LEFT);
+			input.addInputState("SwitchPower2", Keys.SHIFT_LEFT);
+			input.addInputState("UsePower", Keys.SPACE);
+			input.addInputState("Interact", Keys.D);
+			input.addInputState("attack", Keys.A);
 		}
 	}
 
@@ -433,26 +470,33 @@ public class Player extends Agent {
 		powers = new ArrayList<Power>();
 		powerUi = new ArrayList<Sprite>();
 		powers.add(new FlyingPower());
-		Sprite sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
-				.findRegion("FUGE"));
-		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
+		Sprite sprite = new Sprite(
+				((TextureAtlas) WitchCraft.assetManager
+						.get("data/world/otherart.atlas")).findRegion("FUGE"));
+		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		powerUi.add(sprite);
 		powers.add(new MindControlPower());
-		sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
-				.findRegion("ANIMIMPERI"));
-		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
+		sprite = new Sprite(
+				((TextureAtlas) WitchCraft.assetManager
+						.get("data/world/otherart.atlas"))
+						.findRegion("ANIMIMPERI"));
+		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		powerUi.add(sprite);
 		// powers.put("shapecrow", new ShapeShiftCrowPower());
 		// powers.put("shapecat", new ShapeShiftCatPower());
 		powers.add(new InvisiblePower());
-		sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
-				.findRegion("INVISIBIL"));
-		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
+		sprite = new Sprite(
+				((TextureAtlas) WitchCraft.assetManager
+						.get("data/world/otherart.atlas"))
+						.findRegion("INVISIBIL"));
+		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		powerUi.add(sprite);
 		powers.add(new DuplicateSkin());
-		sprite = new Sprite(((TextureAtlas)WitchCraft.assetManager.get("data/world/otherart.atlas"))
-				.findRegion("EFFINGO"));
-		sprite.setOrigin(sprite.getWidth()*0.5f, sprite.getHeight()*0.5f);
+		sprite = new Sprite(
+				((TextureAtlas) WitchCraft.assetManager
+						.get("data/world/otherart.atlas"))
+						.findRegion("EFFINGO"));
+		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		powerUi.add(sprite);
 		// powers.put("intangible", new IntangibilityPower());
 		// powers.put("convert", new ConvertPower());
@@ -461,28 +505,22 @@ public class Player extends Agent {
 	}
 
 	private void setupAnimations(String name) {
-		TextureAtlas atlas = WitchCraft.assetManager.get("data/spine/character.atlas");
+		TextureAtlas atlas = WitchCraft.assetManager
+				.get("data/spine/characters.atlas");
 		SkeletonBinary sb = new SkeletonBinary(atlas);
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
 		state = new StateMachine(name, body.getPos(), new Vector2(0.5f, 0.5f),
 				false, sd);
-		state.animate.addAnimation("jump", sb.readAnimation(
-				Gdx.files.internal("data/spine/characters-beginfly.anim"), sd));
-		state.animate.addAnimation("walk", sb.readAnimation(
-				Gdx.files.internal("data/spine/characters-walk.anim"), sd));
-		state.animate.addAnimation("idle", sb.readAnimation(
-				Gdx.files.internal("data/spine/characters-idle.anim"), sd));
-		state.animate
-				.addAnimation("castspell", sb.readAnimation(Gdx.files
-						.internal("data/spine/characters-castspell.anim"), sd));
+		state.animate.addAnimation("jump", sd.findAnimation("beginfly"));
+		state.animate.addAnimation("idle", sd.findAnimation("idle"));
+		state.animate.addAnimation("walk", sd.findAnimation("walk"));
+		state.animate.addAnimation("run", sd.findAnimation("run"));
+		state.animate.addAnimation("castspell", sd.findAnimation("castspell"));
 		state.animate.addAnimation("swordattack",
-				sb.readAnimation(Gdx.files
-						.internal("data/spine/characters-overheadattack.anim"),
-						sd));
-		state.animate.addAnimation("drawbow", sb.readAnimation(
-				Gdx.files.internal("data/spine/characters-drawbow.anim"), sd));
+				sd.findAnimation("overheadattack"));
+		state.animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
 
 		state.animate.setCurrent("idle", true);
 	}
@@ -506,7 +544,7 @@ public class Player extends Agent {
 
 		shape = new PolygonShape();
 		shape.setAsBox(64 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
-				new Vector2(0, 16).mul(Util.PIXEL_TO_BOX), 0f);
+				new Vector2(0, 16).scl(Util.PIXEL_TO_BOX), 0f);
 		fixture = new FixtureDef();
 		fixture.shape = shape;
 		fixture.isSensor = true;

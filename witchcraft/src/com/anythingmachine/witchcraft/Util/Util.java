@@ -79,11 +79,11 @@ public class Util {
 	
 	public static int readShaderString(String file, int type) {
 		int shaderID = 0;
-
-		shaderID = GL20.glCreateShader(type);
-		GL20.glShaderSource(shaderID, file);
-		GL20.glCompileShader(shaderID);
-		System.out.println(GL20.glGetShaderInfoLog(shaderID, 255));
+//
+//		shaderID = GL20.glCreateShader(type);
+//		GL20.glShaderSource(shaderID, file);
+//		GL20.glCompileShader(shaderID);
+//		System.out.println(GL20.glGetShaderInfoLog(shaderID, 255));
 		return shaderID;
 	}
 
@@ -100,9 +100,9 @@ public class Util {
 	public static final float MIN_VALUE = 0x0.000002P-126f; // 1.4e-45f
 
 	public static final int GRAVITY = -50;
-	public static final float PLAYERWALKSPEED = 80f;
-	public static final float PLAYERRUNSPEED = 115f;
-	public static final float PLAYERFLYSPEED = 125f;
+	public static final float PLAYERWALKSPEED = 90f;
+	public static final float PLAYERRUNSPEED = 160f;
+	public static final float PLAYERFLYSPEED = 170f;
 
 	/**
 	 * Collision Categories and masks for every object that needs them
@@ -128,7 +128,7 @@ public class Util {
 	public static final int VERTEX_SIZE = 2 + 1 + 2;
 
 	public enum EntityType {
-		PLATFORM, STAIRS, ENTITY, SWORD, ARROW, PLAYER, FIRE, VISION, PARTICLE,NONPLAYER,
+		PLATFORM, STAIRS, ENTITY, SWORD, ARROW, PLAYER, FIRE, PARTICLE,NONPLAYER, WALL,
 	}
 
 }

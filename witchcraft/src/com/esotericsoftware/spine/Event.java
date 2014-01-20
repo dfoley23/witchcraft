@@ -28,58 +28,45 @@
 
 package com.esotericsoftware.spine;
 
-import com.badlogic.gdx.graphics.Color;
+public class Event {
+	final private EventData data;
+	int intValue;
+	float floatValue;
+	String stringValue;
 
-public class SlotData {
-	final String name;
-	final BoneData boneData;
-	final Color color = new Color(1, 1, 1, 1);
-	String attachmentName;
-	boolean additiveBlending;
-
-	SlotData () {
-		name = null;
-		boneData = null;
+	public Event (EventData data) {
+		this.data = data;
 	}
 
-	public SlotData (String name, BoneData boneData) {
-		if (name == null) throw new IllegalArgumentException("name cannot be null.");
-		if (boneData == null) throw new IllegalArgumentException("boneData cannot be null.");
-		this.name = name;
-		this.boneData = boneData;
+	public int getInt () {
+		return intValue;
 	}
 
-	public String getName () {
-		return name;
+	public void setInt (int intValue) {
+		this.intValue = intValue;
 	}
 
-	public BoneData getBoneData () {
-		return boneData;
+	public float getFloat () {
+		return floatValue;
 	}
 
-	public Color getColor () {
-		return color;
+	public void setFloat (float floatValue) {
+		this.floatValue = floatValue;
 	}
 
-	/** @param attachmentName May be null. */
-	public void setAttachmentName (String attachmentName) {
-		this.attachmentName = attachmentName;
+	public String getString () {
+		return stringValue;
 	}
 
-	/** @return May be null. */
-	public String getAttachmentName () {
-		return attachmentName;
+	public void setString (String stringValue) {
+		this.stringValue = stringValue;
 	}
 
-	public boolean getAdditiveBlending () {
-		return additiveBlending;
-	}
-
-	public void setAdditiveBlending (boolean additiveBlending) {
-		this.additiveBlending = additiveBlending;
+	public EventData getData () {
+		return data;
 	}
 
 	public String toString () {
-		return name;
+		return data.name;
 	}
 }

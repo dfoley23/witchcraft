@@ -1,21 +1,48 @@
+/******************************************************************************
+ * Spine Runtimes Software License
+ * Version 2
+ * 
+ * Copyright (c) 2013, Esoteric Software
+ * All rights reserved.
+ * 
+ * You are granted a perpetual, non-exclusive, non-sublicensable and
+ * non-transferable license to install, execute and perform the Spine Runtimes
+ * Software (the "Software") solely for internal use. Without the written
+ * permission of Esoteric Software, you may not (a) modify, translate, adapt or
+ * otherwise create derivative works, improvements of the Software or develop
+ * new applications using the Software or (b) remove, delete, alter or obscure
+ * any trademarks or any copyright, trademark, patent or other intellectual
+ * property or proprietary rights notices on or in the Software, including
+ * any copy thereof. Redistributions in binary or source form must include
+ * this license and terms. THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ESOTERIC SOFTARE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *****************************************************************************/
 
 package com.esotericsoftware.spine;
 
+import com.esotericsoftware.spine.attachments.Attachment;
+
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Array;
 
 public class Skeleton {
 	final SkeletonData data;
 	final Array<Bone> bones;
 	final Array<Slot> slots;
-	final Array<Slot> drawOrder;
+	Array<Slot> drawOrder;
 	Skin skin;
 	final Color color;
 	float time;
 	boolean flipX, flipY;
+	float x, y;
 
 	public Skeleton (SkeletonData data) {
 		if (data == null) throw new IllegalArgumentException("data cannot be null.");
@@ -46,7 +73,7 @@ public class Skeleton {
 
 		bones = new Array(skeleton.bones.size);
 		for (Bone bone : skeleton.bones) {
-			Bone parent = bones.get(skeleton.bones.indexOf(bone.parent, true));
+			Bone parent = bone.parent == null ? null : bones.get(skeleton.bones.indexOf(bone.parent, true));
 			bones.add(new Bone(bone, parent));
 		}
 
@@ -75,53 +102,23 @@ public class Skeleton {
 			bones.get(i).updateWorldTransform(flipX, flipY);
 	}
 
-	/** Sets the bones and slots to their bind pose values. */
-	public void setToBindPose () {
-		setBonesToBindPose();
-		setSlotsToBindPose();
+	/** Sets the bones and slots to their setup pose values. */
+	public void setToSetupPose () {
+		setBonesToSetupPose();
+		setSlotsToSetupPose();
 	}
 
-	public void setBonesToBindPose () {
+	public void setBonesToSetupPose () {
 		Array<Bone> bones = this.bones;
 		for (int i = 0, n = bones.size; i < n; i++)
-			bones.get(i).setToBindPose();
+			bones.get(i).setToSetupPose();
 	}
 
-	public void setSlotsToBindPose () {
+	public void setSlotsToSetupPose () {
 		Array<Slot> slots = this.slots;
+		System.arraycopy(slots.items, 0, drawOrder.items, 0, slots.size);		
 		for (int i = 0, n = slots.size; i < n; i++)
-			slots.get(i).setToBindPose(i);
-	}
-
-	public void draw (SpriteBatch batch) {
-		Array<Slot> drawOrder = this.drawOrder;
-		for (int i = 0, n = drawOrder.size; i < n; i++) {
-			Slot slot = drawOrder.get(i);
-			Attachment attachment = slot.attachment;
-			if (attachment != null) attachment.draw(batch, slot);
-		}
-	}
-
-	public void drawDebug (ShapeRenderer renderer) {
-		renderer.setColor(Color.RED);
-		renderer.begin(ShapeType.Line);
-		for (int i = 0, n = bones.size; i < n; i++) {
-			Bone bone = bones.get(i);
-			if (bone.parent == null) continue;
-			float x = bone.data.length * bone.m00 + bone.worldX;
-			float y = bone.data.length * bone.m10 + bone.worldY;
-			renderer.line(bone.worldX, bone.worldY, x, y);
-		}
-		renderer.end();
-
-		renderer.setColor(Color.GREEN);
-		renderer.begin(ShapeType.Filled);
-		for (int i = 0, n = bones.size; i < n; i++) {
-			Bone bone = bones.get(i);
-			renderer.setColor(Color.GREEN);
-			renderer.circle(bone.worldX, bone.worldY, 3);
-		}
-		renderer.end();
+			slots.get(i).setToSetupPose(i);
 	}
 
 	public SkeletonData getData () {
@@ -135,7 +132,7 @@ public class Skeleton {
 	/** @return May return null. */
 	public Bone getRootBone () {
 		if (bones.size == 0) return null;
-		return bones.get(0);
+		return bones.first();
 	}
 
 	/** @return May be null. */
@@ -187,6 +184,11 @@ public class Skeleton {
 		return drawOrder;
 	}
 
+	/** Sets the slots and the order they will be drawn. */
+	public void setDrawOrder (Array<Slot> drawOrder) {
+		this.drawOrder = drawOrder;
+	}
+
 	/** @return May be null. */
 	public Skin getSkin () {
 		return skin;
@@ -201,7 +203,7 @@ public class Skeleton {
 	}
 
 	/** Sets the skin used to look up attachments not found in the {@link SkeletonData#getDefaultSkin() default skin}. Attachments
-	 * from the new skin are attached if the corresponding attachment from the old skin is currently attached.
+	 * from the new skin are attached if the corresponding attachment from the old skin was attached.
 	 * @param newSkin May be null. */
 	public void setSkin (Skin newSkin) {
 		if (skin != null && newSkin != null) newSkin.attachAll(this, skin);
@@ -216,22 +218,28 @@ public class Skeleton {
 	/** @return May be null. */
 	public Attachment getAttachment (int slotIndex, String attachmentName) {
 		if (attachmentName == null) throw new IllegalArgumentException("attachmentName cannot be null.");
-		if (data.defaultSkin != null) {
-			Attachment attachment = data.defaultSkin.getAttachment(slotIndex, attachmentName);
+		if (skin != null) {
+			Attachment attachment = skin.getAttachment(slotIndex, attachmentName);
 			if (attachment != null) return attachment;
 		}
-		if (skin != null) return skin.getAttachment(slotIndex, attachmentName);
+		if (data.defaultSkin != null) return data.defaultSkin.getAttachment(slotIndex, attachmentName);
 		return null;
 	}
 
 	/** @param attachmentName May be null. */
 	public void setAttachment (String slotName, String attachmentName) {
 		if (slotName == null) throw new IllegalArgumentException("slotName cannot be null.");
-		if (attachmentName == null) throw new IllegalArgumentException("attachmentName cannot be null.");
+		Array<Slot> slots = this.slots;
 		for (int i = 0, n = slots.size; i < n; i++) {
 			Slot slot = slots.get(i);
 			if (slot.data.name.equals(slotName)) {
-				slot.setAttachment(getAttachment(i, attachmentName));
+				Attachment attachment = null;
+				if (attachmentName != null) {
+					attachment = getAttachment(i, attachmentName);
+					if (attachment == null)
+						throw new IllegalArgumentException("Attachment not found: " + attachmentName + ", for slot: " + slotName);
+				}
+				slot.setAttachment(attachment);
 				return;
 			}
 		}
@@ -258,6 +266,22 @@ public class Skeleton {
 		this.flipY = flipY;
 	}
 
+	public float getX () {
+		return x;
+	}
+
+	public void setX (float x) {
+		this.x = x;
+	}
+
+	public float getY () {
+		return y;
+	}
+
+	public void setY (float y) {
+		this.y = y;
+	}
+
 	public float getTime () {
 		return time;
 	}
@@ -268,5 +292,9 @@ public class Skeleton {
 
 	public void update (float delta) {
 		time += delta;
+	}
+
+	public String toString () {
+		return data.name != null ? data.name : super.toString();
 	}
 }

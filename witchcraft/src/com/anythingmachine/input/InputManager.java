@@ -31,7 +31,7 @@ public class InputManager {
 					onoffmap.put(s, false);
 				}
 			} else {
-				if (onoffmap.get(s) && controller.getButton(keymap.get(s))) {
+				if (onoffmap.get(s) && !controller.getButton(keymap.get(s))) {
 					onoffmap.put(s, false);
 				}
 			}
@@ -85,6 +85,25 @@ public class InputManager {
 		return false;
 	}
 
+	/**
+	 * sets two regions of movement
+	 * with the axis stick first range return 1 or -1 
+	 * second range return 2 or -2
+	 * @return
+	 */
+	public int axisRange2() {
+		float val = controller.getAxis(0);
+		float absval = Math.abs(val);
+		if ( absval > 0.25 ) {
+			if ( absval > 0.95 ) {
+				return (int)Math.signum(val)*2;
+			} else {
+				return (int)Math.signum(val);
+			}
+		}
+		return 0;
+	}
+	
 	public void addInputState(String state, Integer keyValue) {
 		keymap.put(state, keyValue);
 		deltamap.put(state, 10f);

@@ -26,60 +26,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-package com.esotericsoftware.spine;
+package com.esotericsoftware.spine.attachments;
 
-import com.badlogic.gdx.graphics.Color;
+import com.esotericsoftware.spine.Skeleton;
 
-public class SlotData {
-	final String name;
-	final BoneData boneData;
-	final Color color = new Color(1, 1, 1, 1);
-	String attachmentName;
-	boolean additiveBlending;
+/** Attachment that displays a texture region. */
+public class SkeletonAttachment extends Attachment {
+	private Skeleton skeleton;
 
-	SlotData () {
-		name = null;
-		boneData = null;
+	public SkeletonAttachment (String name) {
+		super(name);
 	}
 
-	public SlotData (String name, BoneData boneData) {
-		if (name == null) throw new IllegalArgumentException("name cannot be null.");
-		if (boneData == null) throw new IllegalArgumentException("boneData cannot be null.");
-		this.name = name;
-		this.boneData = boneData;
+	/** @return May return null. */
+	public Skeleton getSkeleton () {
+		return skeleton;
 	}
 
-	public String getName () {
-		return name;
-	}
-
-	public BoneData getBoneData () {
-		return boneData;
-	}
-
-	public Color getColor () {
-		return color;
-	}
-
-	/** @param attachmentName May be null. */
-	public void setAttachmentName (String attachmentName) {
-		this.attachmentName = attachmentName;
-	}
-
-	/** @return May be null. */
-	public String getAttachmentName () {
-		return attachmentName;
-	}
-
-	public boolean getAdditiveBlending () {
-		return additiveBlending;
-	}
-
-	public void setAdditiveBlending (boolean additiveBlending) {
-		this.additiveBlending = additiveBlending;
-	}
-
-	public String toString () {
-		return name;
+	/** @param skeleton May be null. */
+	public void setSkeleton (Skeleton skeleton) {
+		this.skeleton = skeleton;
 	}
 }

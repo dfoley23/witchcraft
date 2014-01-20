@@ -58,7 +58,7 @@ public class Archer extends NonPlayer {
 			animate.setFlipX(facingLeft);
 			body.setVel(0, body.getVel().y, 0f);
 			animate.bindPose();
-			animate.setCurrent("shoot-arrow", false);
+			animate.setCurrent("drawbow", false);
 			break;
 		default:
 			break;
@@ -67,27 +67,16 @@ public class Archer extends NonPlayer {
 
 	@Override
 	protected void setupAnimations(String skinname,  String atlasname) {
-		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/character.atlas"));
+		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/characters.atlas"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 		animate = new AnimationManager(skinname, body.getPos(), bodyScale, true, sd);
 
-		animate.addAnimation(
-				"walk",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-walk.anim"), sd));
-		animate.addAnimation(
-				"idle",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-idle.anim"), sd));
-		animate.addAnimation(
-				"sword-attack",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-overheadattack.anim"), sd));
-		animate.addAnimation(
-				"shoot-arrow",
-				sb.readAnimation(
-						Gdx.files.internal("data/spine/characters-drawbow.anim"), sd));
+		animate.addAnimation("idle", sd.findAnimation("idle"));
+		animate.addAnimation("walk", sd.findAnimation("walk"));
+		animate.addAnimation("run", sd.findAnimation("run"));
+		animate.addAnimation("swordattack", sd.findAnimation("overheadattack"));
+		animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
 
 		animate.setCurrent("idle", true);
 	}

@@ -26,6 +26,8 @@ public class Cloth implements PhysicsComponent {
 		links = new ArrayList<Particle>();
 		offset = 6;
 		shader = new ShaderProgram(this.vertexShader, this.fragShader);
+		Gdx.app.log("shader compiled:", ""+shader.isCompiled());
+		Gdx.app.log("shader log:", ""+shader.getLog());
 		indices = Util.triangulateRect((short) w, (short) h, (short) offset);
 		indicount = indices.length;
 		verts = new float[w * h * indicount];	  
@@ -110,7 +112,10 @@ public class Cloth implements PhysicsComponent {
 		}
 	}
 
-	private String vertexShader = "attribute vec3 a_position;\n" //
+	private String vertexShader =  "#ifdef GL_ES\n" //
+			+ "precision highp float;\n" //
+			+ "#endif\n" //
+			+ "attribute vec3 a_position;\n" //
 			+ "attribute vec3 a_normal;\n" //
 			// + "attribute vec4 a_color;\n" //
 			+ "uniform mat4 u_proj;\n" //
@@ -121,9 +126,9 @@ public class Cloth implements PhysicsComponent {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   vec3 normal = normalize(a_normal);\n" //
-			+ "   vec4 c = vec4(1, 1, 1, alpha_val);\n" //
-			+ "   float LdotN = dot(vec3(0, -0.5, -0.5), normal);\n" //
-			+ "   if ( LdotN < 0 ) {\n" // 
+			+ "   vec4 c = vec4(1.0, 1.0, 1.0, alpha_val);\n" //
+			+ "   float LdotN = dot(vec3(0.0, -0.5, -0.5), normal);\n" //
+			+ "   if ( LdotN < 0.0 ) {\n" // 
 			+ "      LdotN = -LdotN;\n" //
 			+ "   }\n" //
 			+ "   vec4 color = c;\n" //
