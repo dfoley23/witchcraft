@@ -3,6 +3,7 @@ package com.anythingmachine.aiengine;
 import java.util.HashMap;
 
 import com.anythingmachine.animations.AnimationManager;
+import com.anythingmachine.input.InputManager;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonData;
@@ -11,11 +12,13 @@ public class StateMachine {
 	public State state;
 	public AnimationManager animate;
 	private HashMap<String, Boolean> tests;
+	public InputManager input;
 
 	public StateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd) {
 		tests = new HashMap<String, Boolean>();
 		animate = new AnimationManager(name, pos, scl, flip, sd);
+		input = new InputManager();
 	}
 
 	public void addTest(String name, boolean val) {

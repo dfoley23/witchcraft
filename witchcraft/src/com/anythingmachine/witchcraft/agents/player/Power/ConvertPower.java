@@ -8,7 +8,7 @@ public class ConvertPower implements Power {
 
 	@Override
 	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle Body) {
+			KinematicParticle Body, float dt) {
 		// TODO Auto-generated method stub
 
 	}

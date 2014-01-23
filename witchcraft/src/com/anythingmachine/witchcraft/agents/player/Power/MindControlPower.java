@@ -32,7 +32,7 @@ public class MindControlPower implements Power {
 	 */
 	@Override
 	public void usePower(StateMachine state, AnimationManager animate,
-			KinematicParticle body) {
+			KinematicParticle body, float dt) {
 		timeout--;
 		if (timeout < 0) {
 			WitchCraft.rk4System.addParticle(particle.copy(
@@ -61,6 +61,7 @@ public class MindControlPower implements Power {
 			float dt) {
 		if (state.test("usingpower") && animate.atEnd()) {
 			state.setTestVal("usingpower", false);
+			state.state.setWalk(state);
 		}
 	}
 

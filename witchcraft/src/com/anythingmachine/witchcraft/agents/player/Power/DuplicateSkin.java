@@ -14,7 +14,7 @@ public class DuplicateSkin implements Power {
 	
 	@Override
 	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle body) {
+			KinematicParticle body, float dt) {
 		if (state.state.canCastSpell(state) && 
 				 time > timeout*2)  {
 			body.setVel(0, body.getVel().y, 0);

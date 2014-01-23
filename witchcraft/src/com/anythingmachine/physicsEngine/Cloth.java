@@ -26,8 +26,8 @@ public class Cloth implements PhysicsComponent {
 		links = new ArrayList<Particle>();
 		offset = 6;
 		shader = new ShaderProgram(this.vertexShader, this.fragShader);
-		Gdx.app.log("shader compiled:", ""+shader.isCompiled());
-		Gdx.app.log("shader log:", ""+shader.getLog());
+//		Gdx.app.log("shader compiled:", ""+shader.isCompiled());
+//		Gdx.app.log("shader log:", ""+shader.getLog());
 		indices = Util.triangulateRect((short) w, (short) h, (short) offset);
 		indicount = indices.length;
 		verts = new float[w * h * indicount];	  

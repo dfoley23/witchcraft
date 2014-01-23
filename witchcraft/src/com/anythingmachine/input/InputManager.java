@@ -41,22 +41,22 @@ public class InputManager {
 	public boolean is(String state) {
 		if (debugcontrols) {
 			return Gdx.input.isKeyPressed(keymap.get(state));
-		} 
+		}
 		return controller.getButton(keymap.get(state));
 	}
 
 	public boolean isAfterDelta(String state, Float delta) {
 		if (debugcontrols) {
-		if (Gdx.input.isKeyPressed(keymap.get(state))) {
-			Float last = deltamap.get(state);
-			if (last > delta) {
-				deltamap.put(state, 0f);
-				return true;
-			} else {
-				deltamap.put(state, WitchCraft.dt + last);
+			if (Gdx.input.isKeyPressed(keymap.get(state))) {
+				Float last = deltamap.get(state);
+				if (last > delta) {
+					deltamap.put(state, 0f);
+					return true;
+				} else {
+					deltamap.put(state, WitchCraft.dt + last);
+				}
 			}
-		}
-		}else {
+		} else {
 			if (controller.getButton(keymap.get(state))) {
 				Float last = deltamap.get(state);
 				if (last > delta) {
@@ -71,11 +71,12 @@ public class InputManager {
 	}
 
 	public boolean isNowNotThen(String state) {
-		if ( debugcontrols) {
-		if (!onoffmap.get(state) && Gdx.input.isKeyPressed(keymap.get(state))) {
-			onoffmap.put(state, true);
-			return true;
-		}
+		if (debugcontrols) {
+			if (!onoffmap.get(state)
+					&& Gdx.input.isKeyPressed(keymap.get(state))) {
+				onoffmap.put(state, true);
+				return true;
+			}
 		} else {
 			if (!onoffmap.get(state) && controller.getButton(keymap.get(state))) {
 				onoffmap.put(state, true);
@@ -86,24 +87,38 @@ public class InputManager {
 	}
 
 	/**
-	 * sets two regions of movement
-	 * with the axis stick first range return 1 or -1 
-	 * second range return 2 or -2
+	 * sets two regions of movement with the axis stick first range return 1 or
+	 * -1 second range return 2 or -2
+	 * 
 	 * @return
 	 */
 	public int axisRange2() {
 		float val = controller.getAxis(0);
 		float absval = Math.abs(val);
-		if ( absval > 0.25 ) {
-			if ( absval > 0.95 ) {
-				return (int)Math.signum(val)*2;
+		if (absval > 0.25) {
+			if (absval > 0.95) {
+				return (int) Math.signum(val) * 2;
 			} else {
-				return (int)Math.signum(val);
+				return (int) Math.signum(val);
 			}
 		}
 		return 0;
 	}
-	
+
+	public boolean left() {
+		if (debugcontrols)
+			return Gdx.input.isKeyPressed(keymap.get("Left"));
+		return controller.getButton(keymap.get("Left"))
+				|| axisRange2() != 0;
+	}
+
+	public boolean right() {
+		if (debugcontrols)
+			return Gdx.input.isKeyPressed(keymap.get("Right"));
+		return controller.getButton(keymap.get("Right"))
+				|| axisRange2() != 0;
+	}
+
 	public void addInputState(String state, Integer keyValue) {
 		keymap.put(state, keyValue);
 		deltamap.put(state, 10f);

@@ -30,8 +30,10 @@ package com.anythingmachine.tiledMaps;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.gdxwrapper.OrthoTileRenderer;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.anythingmachine.witchcraft.ground.Stairs;
 import com.badlogic.gdx.Gdx;
@@ -175,21 +177,39 @@ public class TiledMapHelper {
 						if (tile != null) {
 							int tileID = tile.getTile().getId();
 
-							for (int n = 0; n < tileCollisionJoints.get(tileID)
-									.size(); n++) {
-								LineSegment lineSeg = tileCollisionJoints.get(
-										tileID).get(n);
-								Gdx.app.log("lineSeg: ", ""+lineSeg);
+							int start = 0;
+							int tileCollisionSegments = tileCollisionJoints
+									.get(tileID).size();
+							if (tileCollisionSegments != 0) {
+								String type = "";
+								if (tile.getTile().getProperties()
+										.containsKey("type")) {
+									type = (String) getMap().getTileSets()
+											.getTile(tileID).getProperties()
+											.get("type");
+								}
+								if (type == "") {
+									if (layer.getProperties().containsKey(
+											"WALLS")) {
+										type = "WALLS";
+										start = 1;
+									} else if (tileCollisionSegments > 1) {
+										tileCollisionSegments = 1;
+										type = "PLATFORMS";
+									}
+								}
 
-								addOrExtendCollisionLineSegment(x * 32
-										+ lineSeg.start().x,
-										y * 32 - lineSeg.start().y + 32, x * 32
-												+ lineSeg.end().x, y * 32
-												- lineSeg.end().y + 32,
-										collisionLineSegments,
-										(String) getMap().getTileSets()
-												.getTile(tileID)
-												.getProperties().get("type"));
+								for (int n = start; n < tileCollisionSegments; n++) {
+									LineSegment lineSeg = tileCollisionJoints
+											.get(tileID).get(n);
+
+									addOrExtendCollisionLineSegment(x * 32
+											+ lineSeg.start().x, y * 32
+											- lineSeg.start().y + 32, x * 32
+											+ lineSeg.end().x,
+											y * 32 - lineSeg.end().y + 32,
+											collisionLineSegments, type);
+								}
 							}
 						}
 					}
@@ -201,9 +221,11 @@ public class TiledMapHelper {
 			groundBodyDef.type = BodyDef.BodyType.StaticBody;
 			groundBodyDef.position.set(0, 0);
 			Body groundBody = WitchCraft.world.createBody(groundBodyDef);
-			if (lineSegment.type != null && lineSegment.type.equals("STAIRS")) {
+			if (lineSegment.type.equals("STAIRS")) {
 				groundBody.setUserData(new Stairs(lineSegment.start(),
 						lineSegment.end()));
+			} else if (lineSegment.type.equals("WALLS")) {
+				groundBody.setUserData(new Entity().setType(EntityType.WALL));
 			} else {
 				groundBody.setUserData(new Platform(lineSegment.start(),
 						lineSegment.end()));

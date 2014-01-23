@@ -19,7 +19,19 @@ public enum State {
 
 		@Override
 		public float getInputSpeed(StateMachine sm) {
-			return Util.PLAYERRUNSPEED;
+			if ( sm.input.right()) {
+				if (!sm.test("hitrightwall") ) {
+					sm.setTestVal("hitleftwall", false);
+					return Util.PLAYERRUNSPEED;
+				}
+			}
+			else if (sm.input.left() ) {
+				if (!sm.test("hitleftwall")) {
+					sm.setTestVal("hitrightwall", false);
+					return Util.PLAYERRUNSPEED;
+				}
+			}
+			return 0;
 		}
 	},
 	JUMPING {
@@ -74,7 +86,19 @@ public enum State {
 
 		@Override
 		public float getInputSpeed(StateMachine sm) {
-			return Util.PLAYERFLYSPEED;
+			if ( sm.input.right()) {
+				if (!sm.test("hitrightwall") ) {
+					sm.setTestVal("hitleftwall", false);
+					return Util.PLAYERFLYSPEED;
+				}
+			}
+			else if (sm.input.left() ) {
+				if (!sm.test("hitleftwall")) {
+					sm.setTestVal("hitrightwall", false);
+					return Util.PLAYERFLYSPEED;
+				}
+			}
+			return 0;
 		}
 
 		@Override
@@ -168,10 +192,21 @@ public enum State {
 	}
 
 	public float getInputSpeed(StateMachine sm) {
-		if (!sm.testORtest("usingpower", "dupeskin"))
-			return Util.PLAYERWALKSPEED;
-		else
-			return 0;
+		if (!sm.testORtest("usingpower", "dupeskin")) {
+			if ( sm.input.right()) {
+				if (!sm.test("hitrightwall") ) {
+					sm.setTestVal("hitleftwall", false);
+					return Util.PLAYERWALKSPEED;
+				}
+			}
+			else if (sm.input.left() ) {
+				if (!sm.test("hitleftwall")){
+					sm.setTestVal("hitrightwall", false);
+					return Util.PLAYERWALKSPEED;
+				}
+			}
+		}
+		return 0;
 	}
 
 	public boolean canCastSpell(StateMachine sm) {

@@ -8,7 +8,7 @@ public class ShapeShiftCatPower implements Power {
 
 	@Override
 	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle body) {
+			KinematicParticle body, float dt) {
 		// TODO Auto-generated method stub
 
 	}

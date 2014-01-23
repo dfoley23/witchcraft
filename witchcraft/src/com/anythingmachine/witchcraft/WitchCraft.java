@@ -110,7 +110,7 @@ public class WitchCraft implements ApplicationListener {
 
 		debugRenderer = new Box2DDebugRenderer();
 		ground = new Ground(world);
-		ground.readCurveFile("data/groundcurves.txt", -240, -250);
+		ground.readCurveFile("data/groundcurves.txt", -240, -320);
 
 		player = new Player(rk4);
 		npc1 = new Knight("knight2", "characters", new Vector2(354.0f, 3.0f),
@@ -241,7 +241,7 @@ public class WitchCraft implements ApplicationListener {
 				(int) (xGrid - (Gdx.graphics.getWidth() / 2.f))
 						/ Util.curveLength, camWorldSize / Util.curveLength);
 		if (DEV_MODE) {
-			ground.drawDebugCurve(shapeRenderer);
+			//ground.drawDebugCurve(shapeRenderer);
 		}
 
 		npc2.draw(spriteBatch);

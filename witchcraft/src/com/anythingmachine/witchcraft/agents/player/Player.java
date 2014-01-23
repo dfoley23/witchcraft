@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.anythingmachine.aiengine.State;
 import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
@@ -43,7 +42,6 @@ public class Player extends Agent {
 	private Cape cape;
 	private StateMachine state;
 	private Bone neck;
-	private InputManager input;
 	private ArrayList<Power> powers;
 	private ArrayList<Sprite> powerUi;
 	private int power;
@@ -62,9 +60,8 @@ public class Player extends Agent {
 						curGroundSegment, 32f).y, 0f), Util.GRAVITY * 3);
 		WitchCraft.rk4System.addParticle(body);
 
-		this.input = new InputManager();
-		setupInput();
 		setupAnimations("player");
+		setupInput();
 		this.state.setState(State.IDLE);
 		arrow = new Arrow(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
 		arrowBone = state.animate.findBone("right hand");
@@ -83,7 +80,7 @@ public class Player extends Agent {
 
 	public void update(float dT) {
 		float delta = Gdx.graphics.getDeltaTime();
-		input.update(dT);
+		state.input.update(dT);
 		if (state.test("dupeskin") && state.test("hitnpc")) {
 			currentSkin = npc.getSkin().getName();
 			state.animate.switchSkin(currentSkin);
@@ -95,7 +92,7 @@ public class Player extends Agent {
 		// check if on ground
 		checkGround();
 
-		// handle walking input
+		// handle walking state.input
 		boolean moving = updateWalking(delta);
 
 		state.animate.setFlipX(state.test("facingleft"));
@@ -104,15 +101,15 @@ public class Player extends Agent {
 			body.setVel(body.getVel().x, 0, 0);
 		}
 
-		// handle user power input
-		if (input.isNowNotThen("SwitchPower")
-				|| input.isNowNotThen("SwitchPower1")
-				|| input.isNowNotThen("SwitchPower2")) {
+		// handle user power state.input
+		if (state.input.isNowNotThen("SwitchPower")
+				|| state.input.isNowNotThen("SwitchPower1")
+				|| state.input.isNowNotThen("SwitchPower2")) {
 			power = (power + 1) >= powers.size() ? 0 : power + 1;
 			uiFadein = 0f;
 		}
-		if (input.is("UsePower")) {
-			powers.get(power).usePower(state, state.animate, body);
+		if (state.input.is("UsePower")) {
+			powers.get(power).usePower(state, state.animate, body, dT);
 		} else {
 			powers.get(power).updatePower(state, state.animate, dT);
 		}
@@ -124,7 +121,7 @@ public class Player extends Agent {
 			i++;
 		}
 
-		if (input.is("attack") && state.state.canAttack(state))
+		if (state.input.is("attack") && state.state.canAttack(state))
 			handleAttacking();
 		// update skeletal animation
 		updateSkeleton(moving, delta);
@@ -221,8 +218,14 @@ public class Player extends Agent {
 			state.setTestVal("hitnpc", true);
 			break;
 		case WALL:
-			body.setPos(pos.x-(Math.signum(vel.x)*8), pos.y, 0);
+			float sign = Math.signum(vel.x);
+			body.setPos(pos.x-(sign*2), pos.y, 0);
 			body.setVel(0, vel.y, 0);
+			if ( sign == -1 )  {
+				state.setTestVal("hitleftwall", true);				
+			} else {
+				state.setTestVal("hitrightwall", true);
+			}
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
@@ -232,7 +235,6 @@ public class Player extends Agent {
 					this.elevatedSegment = plat;
 					state.state.land(state);
 				} else {
-					body.setPos(pos.x, pos.y-8, 0);
 					body.setVel(vel.x, 0, 0);
 					state.setTestVal("hitroof", true);
 				}
@@ -240,7 +242,7 @@ public class Player extends Agent {
 			break;
 		case STAIRS:
 			plat = (Platform) other;
-			if (input.is("UP")
+			if (state.input.is("UP")
 					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
 							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
 							+ plat.getPos().y)) {
@@ -371,7 +373,7 @@ public class Player extends Agent {
 			if (!shotArrow && state.animate.isTImeOverThreeQuarters(0f)) {
 				arrow.setPos(arrowBone.getWorldX() + (facingLeft ? -128 : 128),
 						arrowBone.getWorldY(), 0);
-				arrow.pointAtTarget(WitchCraft.player.getPosPixels(), 650);
+				arrow.pointAtTarget(Util.addVecs(body.getPos(), new Vector3(facingLeft ? -100 : 100, 0, 0)), 650);
 				shotArrow = true;
 			}
 		}
@@ -379,7 +381,7 @@ public class Player extends Agent {
 
 	private boolean updateWalking(float delta) {
 		if (WitchCraft.ON_ANDROID) {
-			int axisVal = input.axisRange2();
+			int axisVal = state.input.axisRange2();
 			if (axisVal != 0) {
 				if (state.test("grounded")) {
 					int absval = Math.abs(axisVal);
@@ -403,12 +405,12 @@ public class Player extends Agent {
 			return false;
 		} else {
 			boolean ismoving = false;
-			if (input.is("Right")) {
+			if (state.input.is("Right")) {
 				body.setVel(state.state.getInputSpeed(state), body.getVel().y,
 						0f);
 				state.setTestVal("facingleft", false);
 				ismoving = true;
-			} else if (input.is("Left")) {
+			} else if (state.input.is("Left")) {
 				body.setVel(-state.state.getInputSpeed(state), body.getVel().y,
 						0f);
 				state.setTestVal("facingleft", true);
@@ -423,34 +425,34 @@ public class Player extends Agent {
 				body.setVel(0f, body.getVel().y, 0f);
 			}
 			return ismoving;
-		}
+		} 
 	}
 
 	/******************* setup functions ****************/
 	/***************************************************/
 	private void setupInput() {
 		if (Controllers.getControllers().size > 0) {
-			input.addInputState("Left", 21);
-			input.addInputState("Right", 22);
-			input.addInputState("UPAxis", 1);
-			input.addInputState("UP", 19);
-			input.addInputState("SwitchPower", 97);
-			input.addInputState("SwitchPower1", 105);
-			input.addInputState("SwitchPower2", 103);
-			input.addInputState("UsePower", 96);
-			input.addInputState("Interact", 100);
-			input.addInputState("attack", 99);
+			state.input.addInputState("Left", 21);
+			state.input.addInputState("Right", 22);
+			state.input.addInputState("UPAxis", 1);
+			state.input.addInputState("UP", 19);
+			state.input.addInputState("SwitchPower", 97);
+			state.input.addInputState("SwitchPower1", 105);
+			state.input.addInputState("SwitchPower2", 103);
+			state.input.addInputState("UsePower", 96);
+			state.input.addInputState("Interact", 100);
+			state.input.addInputState("attack", 99);
 
 		} else {
-			input.addInputState("Left", Keys.LEFT);
-			input.addInputState("Right", Keys.RIGHT);
-			input.addInputState("UP", Keys.UP);
-			input.addInputState("SwitchPower", Keys.SHIFT_LEFT);
-			input.addInputState("SwitchPower1", Keys.SHIFT_LEFT);
-			input.addInputState("SwitchPower2", Keys.SHIFT_LEFT);
-			input.addInputState("UsePower", Keys.SPACE);
-			input.addInputState("Interact", Keys.D);
-			input.addInputState("attack", Keys.A);
+			state.input.addInputState("Left", Keys.LEFT);
+			state.input.addInputState("Right", Keys.RIGHT);
+			state.input.addInputState("UP", Keys.UP);
+			state.input.addInputState("SwitchPower", Keys.SHIFT_LEFT);
+			state.input.addInputState("SwitchPower1", Keys.SHIFT_LEFT);
+			state.input.addInputState("SwitchPower2", Keys.SHIFT_LEFT);
+			state.input.addInputState("UsePower", Keys.SPACE);
+			state.input.addInputState("Interact", Keys.D);
+			state.input.addInputState("attack", Keys.A);
 		}
 	}
 
@@ -464,6 +466,8 @@ public class Player extends Agent {
 		state.addTest("dupeskin", false);
 		state.addTest("usingdupeskin", false);
 		state.addTest("hitnpc", false);
+		state.addTest("hitrightwall", false);
+		state.addTest("hitleftwall", false);
 	}
 
 	private void setupPowers() {
@@ -543,7 +547,7 @@ public class Player extends Agent {
 		feetFixture = collisionBody.createFixture(fixture);
 
 		shape = new PolygonShape();
-		shape.setAsBox(64 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
+		shape.setAsBox(35 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
 				new Vector2(0, 16).scl(Util.PIXEL_TO_BOX), 0f);
 		fixture = new FixtureDef();
 		fixture.shape = shape;

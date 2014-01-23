@@ -4,14 +4,17 @@ import com.anythingmachine.aiengine.State;
 import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 public class FlyingPower implements Power {
 	private KinematicParticle body;
+	private float hitrooftimeout = 0.25f;
+	private float time = 0f;
 
 	@Override
 	public void usePower(StateMachine state, AnimationManager animate,
-			KinematicParticle body) {
+			KinematicParticle body, float dt) {
 		this.body = body;
 		if (!state.test("hitroof") ) {
 			body.setVel(body.getVel().x, 150f, 0f);
@@ -24,7 +27,11 @@ public class FlyingPower implements Power {
 				body.setVel((state.test("facingleft") ? -1 : 1)*350f, vel.y, 0f);
 			}
 		} else {
-			state.setTestVal("hitroof", false);
+			time += dt;
+			if ( time > hitrooftimeout ) {
+				state.setTestVal("hitroof", false);
+				time = 0;
+			}
 		}
 	}
 

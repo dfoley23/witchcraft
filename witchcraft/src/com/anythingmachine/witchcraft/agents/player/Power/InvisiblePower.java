@@ -14,7 +14,7 @@ public class InvisiblePower implements Power {
 	
 	@Override
 	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle Body) {
+			KinematicParticle Body, float dt) {
 		if ( !state.test("invi") && time > timeout*2) {
 			state.setTestVal("invi", true);
 			animate.switchSkin("invi");

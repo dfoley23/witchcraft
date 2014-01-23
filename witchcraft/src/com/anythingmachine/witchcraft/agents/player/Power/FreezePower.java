@@ -8,7 +8,7 @@ public class FreezePower implements Power {
 
 	@Override
 	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle Body) {
+			KinematicParticle Body, float dtvv) {
 		// TODO Auto-generated method stub
 
 	}

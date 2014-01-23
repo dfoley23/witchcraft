@@ -10,6 +10,10 @@ public class Entity extends Object {
 		type = EntityType.ENTITY;
 	}
 	
+	public Entity setType(EntityType type) {
+		this.type = type;
+		return this;
+	}
 	public void handleContact(Contact contact, boolean isFixture1){
 			
 	}
