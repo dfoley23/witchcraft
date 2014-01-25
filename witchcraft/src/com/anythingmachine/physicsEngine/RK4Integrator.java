@@ -51,7 +51,7 @@ public class RK4Integrator {
     }
 	
 	private Derivative evaluate(Particle p, float t, float dt, Derivative d){
-		Vector3 pos = Util.addVecs(p.getPos().cpy(), Util.sclVec(d.dp.cpy(), dt));
+		Vector3 pos = Util.addVecs(p.getPos3D().cpy(), Util.sclVec(d.dp.cpy(), dt));
 	    Vector3 vel = Util.addVecs(p.getVel().cpy(), Util.sclVec(d.dv.cpy(), dt));
 
 	    Particle state = new Particle(pos, vel);

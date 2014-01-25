@@ -18,8 +18,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.esotericsoftware.spine.SkeletonBinary;
@@ -34,6 +36,12 @@ public class NonPlayer extends Agent {
 	protected Vector2 bodyScale;
 	protected boolean active;
 	protected AnimationManager animate;
+	protected boolean facingLeft;
+	protected boolean onGround;
+	protected KinematicParticle body;
+	protected Body collisionBody;
+	protected Fixture feetFixture;
+	protected Fixture hitRadius;
 
 	public NonPlayer(String skinname, String atlasname, Vector2 pos, Vector2 bodyScale) {
 		this.bodyScale = bodyScale;
@@ -119,7 +127,7 @@ public class NonPlayer extends Agent {
 		}
 		}
 		collisionBody.setTransform(
-				body.getPos2D().add(-8, 64).scl(Util.PIXEL_TO_BOX), 0);
+				body.getPos().add(-8, 64).scl(Util.PIXEL_TO_BOX), 0);
 
 	}
 
@@ -127,7 +135,7 @@ public class NonPlayer extends Agent {
 		animate.draw(batch);
 	}
 
-	public Vector3 getPosPixels() {
+	public Vector2 getPosPixels() {
 		return body.getPos();
 	}
 
@@ -152,7 +160,7 @@ public class NonPlayer extends Agent {
 	}
 	
 	protected void checkGround() {
-		Vector3 pos = body.getPos();
+		Vector2 pos = body.getPos();
 		if (pos.x > curCurve.lastPointOnCurve().x) {
 			curGroundSegment++;
 			if (curGroundSegment >= WitchCraft.ground.getNumCurves()) {
@@ -175,6 +183,10 @@ public class NonPlayer extends Agent {
 			correctHeight(groundPoint.y);
 			onGround = true;
 		}
+	}
+	
+	public void correctHeight(float y) {
+		body.setPos(body.getPos().x, y, 0f);
 	}
 	protected void handleState(AIState state) {
 	}

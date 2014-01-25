@@ -93,13 +93,21 @@ public class InputManager {
 	 * @return
 	 */
 	public int axisRange2() {
-		float val = controller.getAxis(0);
-		float absval = Math.abs(val);
-		if (absval > 0.25) {
-			if (absval > 0.95) {
-				return (int) Math.signum(val) * 2;
-			} else {
-				return (int) Math.signum(val);
+		if (WitchCraft.ON_ANDROID) {
+			float val = controller.getAxis(0);
+			float absval = Math.abs(val);
+			if (absval > 0.25) {
+				if (absval > 0.95) {
+					return (int) Math.signum(val) * 2;
+				} else {
+					return (int) Math.signum(val);
+				}
+			}
+		} else {
+			if (left()) {
+				return -1;
+			} else if (right()) {
+				return 1;
 			}
 		}
 		return 0;
@@ -108,15 +116,13 @@ public class InputManager {
 	public boolean left() {
 		if (debugcontrols)
 			return Gdx.input.isKeyPressed(keymap.get("Left"));
-		return controller.getButton(keymap.get("Left"))
-				|| axisRange2() != 0;
+		return controller.getButton(keymap.get("Left")) || axisRange2() != 0;
 	}
 
 	public boolean right() {
 		if (debugcontrols)
 			return Gdx.input.isKeyPressed(keymap.get("Right"));
-		return controller.getButton(keymap.get("Right"))
-				|| axisRange2() != 0;
+		return controller.getButton(keymap.get("Right")) || axisRange2() != 0;
 	}
 
 	public void addInputState(String state, Integer keyValue) {

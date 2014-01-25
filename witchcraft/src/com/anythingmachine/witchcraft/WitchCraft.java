@@ -125,7 +125,7 @@ public class WitchCraft implements ApplicationListener {
 				300.0f, 3.0f), new Vector2(0.6f, 0.7f));
 
 		tiledMapHelper.loadCollisions("data/collisions.txt", world,
-				Util.PIXELS_PER_METER);
+				Util.PIXELS_PER_METER, 1);
 
 		lastRender = System.nanoTime();
 
@@ -161,7 +161,7 @@ public class WitchCraft implements ApplicationListener {
 		npc4.update(dT);
 		npc5.update(dT);
 
-		Vector3 playerPos = player.getPosPixels();
+		Vector2 playerPos = player.getPosPixels();
 		xGrid = Camera.camera.position.x = playerPos.x;
 		float yGrid = Camera.camera.position.y = playerPos.y;
 		if (xGrid < Gdx.graphics.getWidth() / 2) {

@@ -37,15 +37,14 @@ public class Particle extends Entity {
 	public void draw(SpriteBatch batch) {
 		
 	}
-		
-	public Vector3 getPos() {
-		return pos;
-	}
-	
-	public Vector2 getPos2D() {
+			
+	public Vector2 getPos() {
 		return new Vector2(pos.x, pos.y);
 	}
 	
+	public Vector3 getPos3D() {
+		return pos;
+	}
 	public Vector3 getVel() {
 		return vel;
 	}

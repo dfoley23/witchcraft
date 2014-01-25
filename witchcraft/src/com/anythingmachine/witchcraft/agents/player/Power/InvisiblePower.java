@@ -13,25 +13,24 @@ public class InvisiblePower implements Power {
 	}
 	
 	@Override
-	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle Body, float dt) {
+	public void usePower(StateMachine state, float dt) {
 		if ( !state.test("invi") && time > timeout*2) {
 			state.setTestVal("invi", true);
-			animate.switchSkin("invi");
-			animate.bindPose();
+			state.animate.switchSkin("invi");
+			state.animate.bindPose();
 			time = 0;
 		}
 	}
 
 	@Override
-	public void updatePower(StateMachine state, AnimationManager animate, float dt) {
+	public void updatePower(StateMachine state, float dt) {
 		time += dt;
 		if( time > timeout ) {
 			if ( state.test("invi") ) {
 				time = 0;
-				animate.switchSkin("player");				
-				animate.bindPose();
-				animate.setCurrent("walk", true);
+				state.animate.switchSkin("player");				
+				state.animate.bindPose();
+				state.animate.setCurrent("walk", true);
 				state.setTestVal("invi", false);
 				state.setTestVal("usingdupeskin", false);
 			}

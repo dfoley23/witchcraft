@@ -2,16 +2,24 @@ package com.anythingmachine.witchcraft.agents.player;
 
 import java.util.ArrayList;
 
-import com.anythingmachine.aiengine.State;
 import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
+import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
+import com.anythingmachine.witchcraft.States.Attacking;
+import com.anythingmachine.witchcraft.States.Dead;
+import com.anythingmachine.witchcraft.States.Falling;
+import com.anythingmachine.witchcraft.States.Flying;
+import com.anythingmachine.witchcraft.States.Idle;
+import com.anythingmachine.witchcraft.States.Jumping;
+import com.anythingmachine.witchcraft.States.Landing;
+import com.anythingmachine.witchcraft.States.Running;
+import com.anythingmachine.witchcraft.States.StateEnum;
+import com.anythingmachine.witchcraft.States.Walking;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.anythingmachine.witchcraft.agents.Agent;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Power.DuplicateSkin;
 import com.anythingmachine.witchcraft.agents.player.Power.FlyingPower;
@@ -29,48 +37,32 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 
-public class Player extends Agent {
-	private Cape cape;
+public class Player extends Entity {
+	public Cape cape;
 	private StateMachine state;
-	private Bone neck;
 	private ArrayList<Power> powers;
 	private ArrayList<Sprite> powerUi;
 	private int power;
 	private NonPlayer npc;
-	private Arrow arrow;
-	private boolean shotArrow = false;
-	private Bone arrowBone;
-	private String currentSkin;
 	private float uiFadein = -1f;
 
 	public Player(RK4Integrator rk4) {
-		this.curGroundSegment = 0;
-		this.curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-		this.body = new KinematicParticle(
-				new Vector3(32f, WitchCraft.ground.findPointOnCurve(
-						curGroundSegment, 32f).y, 0f), Util.GRAVITY * 3);
-		WitchCraft.rk4System.addParticle(body);
-
-		setupAnimations("player");
+		setupState("player");
 		setupInput();
-		this.state.setState(State.IDLE);
-		arrow = new Arrow(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-		arrowBone = state.animate.findBone("right hand");
-		neck = state.animate.findBone("neck");
-
-		cape = new Cape(3, 5, rk4);
-		buildCollisionBody();
 		setupPowers();
 		setupTests();
+
+		cape = new Cape(3, 5, rk4);
 		power = 0;
 		type = EntityType.PLAYER;
 
@@ -79,27 +71,9 @@ public class Player extends Agent {
 	/** public functions **/
 
 	public void update(float dT) {
-		float delta = Gdx.graphics.getDeltaTime();
-		state.input.update(dT);
-		if (state.test("dupeskin") && state.test("hitnpc")) {
-			currentSkin = npc.getSkin().getName();
-			state.animate.switchSkin(currentSkin);
-			state.animate.bindPose();
-			state.setTestVal("usingdupeskin", true);
-			state.setTestVal("dupeskin", false);
-			state.setTestVal("hitnpc", false);
-		}
+//		System.out.println(state.state.name);
+		state.update(dT);
 		// check if on ground
-		checkGround();
-
-		// handle walking state.input
-		boolean moving = updateWalking(delta);
-
-		state.animate.setFlipX(state.test("facingleft"));
-
-		if (state.testANDtest("grounded", "hitplatform")) {
-			body.setVel(body.getVel().x, 0, 0);
-		}
 
 		// handle user power state.input
 		if (state.input.isNowNotThen("SwitchPower")
@@ -109,32 +83,21 @@ public class Player extends Agent {
 			uiFadein = 0f;
 		}
 		if (state.input.is("UsePower")) {
-			powers.get(power).usePower(state, state.animate, body, dT);
+			powers.get(power).usePower(state, dT);
 		} else {
-			powers.get(power).updatePower(state, state.animate, dT);
+			powers.get(power).updatePower(state, dT);
 		}
 		int i = 0;
 		for (Power p : powers) {
 			if (i != power) {
-				p.updatePower(state, state.animate, dT);
+				p.updatePower(state, dT);
 			}
 			i++;
 		}
 
-		if (state.input.is("attack") && state.state.canAttack(state))
-			handleAttacking();
 		// update skeletal animation
-		updateSkeleton(moving, delta);
 
 		// rotate collision box when flying
-		if (state.state.startingToFly(state)) {
-			collisionBody.setTransform(
-					body.getPos2D().add(-8, 64).scl(Util.PIXEL_TO_BOX),
-					Util.HALF_PI);
-		} else {
-			collisionBody.setTransform(
-					body.getPos2D().add(-8, 64).scl(Util.PIXEL_TO_BOX), 0);
-		}
 		// System.out.println(state.state);
 	}
 
@@ -152,28 +115,12 @@ public class Player extends Agent {
 		}
 	}
 
-	public Vector3 getPosPixels() {
-		return body.getPos();
+	public Vector2 getPosPixels() {
+		return state.phyState.body.getPos();
 	}
 
 	public int getPower() {
 		return power;
-	}
-
-	public int getCurSegment() {
-		return curGroundSegment;
-	}
-
-	public void correctHeight(float y) {
-		body.setPos(body.getPos().x, y, 0);
-	}
-
-	public void incrementSegment() {
-		this.curGroundSegment++;
-	}
-
-	public void decrementSegment() {
-		this.curGroundSegment++;
 	}
 
 	public void drawUI(SpriteBatch batch) {
@@ -210,17 +157,16 @@ public class Player extends Agent {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		Vector2 pos = body.getPos2D();
-		Vector2 vel = body.getVel2D();
+		Vector2 pos = state.phyState.body.getPos();
+		Vector2 vel = state.phyState.body.getVel2D();
 		switch (other.type) {
 		case NONPLAYER:
 			npc = (NonPlayer) other;
-			state.setTestVal("hitnpc", true);
+			state.state.hitNPC(npc);
 			break;
 		case WALL:
 			float sign = Math.signum(vel.x);
-			body.setPos(pos.x-(sign*2), pos.y, 0);
-			body.setVel(0, vel.y, 0);
+			state.phyState.stopOnX();
 			if ( sign == -1 )  {
 				state.setTestVal("hitleftwall", true);				
 			} else {
@@ -232,10 +178,10 @@ public class Player extends Agent {
 			if (plat.isBetween(state.test("facingleft"), pos.x)) {
 				if (plat.getHeight() - 32 < pos.y) {
 					state.setTestVal("hitplatform", true);
-					this.elevatedSegment = plat;
-					state.state.land(state);
+					state.elevatedSegment = plat;
+					state.state.land();
 				} else {
-					body.setVel(vel.x, 0, 0);
+					state.phyState.stopOnY();
 					state.setTestVal("hitroof", true);
 				}
 			}
@@ -249,8 +195,8 @@ public class Player extends Agent {
 				if (plat.isBetween(state.test("facingleft"), pos.x)) {
 					if (plat.getHeight(pos.x) - 8 < pos.y) {
 						state.setTestVal("hitplatform", true);
-						this.elevatedSegment = plat;
-						state.state.land(state);
+						state.elevatedSegment = plat;
+						state.state.land();
 					}
 				}
 			}
@@ -276,157 +222,6 @@ public class Player extends Agent {
 
 	/************ private functions ************/
 	/******************************************/
-	protected void checkGround() {
-		if (!state.test("hitplatform")) {
-			Vector3 pos = body.getPos().cpy();
-			// System.out.println(pos);
-			if (pos.x > curCurve.lastPointOnCurve().x
-					&& curGroundSegment + 1 < WitchCraft.ground.getNumCurves()) {
-				curGroundSegment++;
-				curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-			} else if (pos.x < curCurve.firstPointOnCurve().x
-					&& curGroundSegment - 1 >= 0) {
-				curGroundSegment--;
-				curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-			}
-			Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
-					curGroundSegment, pos.x);
-			state.setTestVal("grounded", false);
-			if (pos.y <= groundPoint.y) {
-				correctHeight(groundPoint.y);
-				state.setTestVal("grounded", true);
-				state.state.land(state);
-				body.setVel(0f, 0f, 0f);
-			}
-		} else {
-			float x = body.getPos2D().x;
-			state.setTestVal("grounded", false);
-			if (elevatedSegment.isBetween(state.test("facingleft"), x)) {
-				float groundPoint = elevatedSegment.getHeight(x);
-				if (body.getPos().y < groundPoint) {
-					correctHeight(groundPoint);
-					state.setTestVal("grounded", true);
-					state.state.land(state);
-					body.setVel(0f, 0f, 0f);
-				}
-			} else {
-				state.setTestVal("hitplatform", false);
-			}
-		}
-	}
-
-	private void updateSkeleton(boolean moving, float delta) {
-		if (!state.inState(State.FLYING)) {
-			cape.addWindForce(0, -400);
-			if (state.testORNotState("grounded", State.JUMPING)
-					|| state.animate.testUnderTime(0f, 0.95f)) {
-				state.animate.applyTotalTime(true, delta);
-			} else {
-				// if you are not on the ground
-				// and you are jumping
-				// and the current animation time is over 0.95
-				// then begin flying
-				state.setState(State.FLYING);
-				if (state.test("facingleft")) {
-					cape.addWindForce(-500, 0);
-				} else {
-					cape.addWindForce(-500, 0);
-				}
-			}
-		}
-		state.animate.setPos(body.getPos(), -8f, 0f);
-		state.animate.updateSkel(delta);
-		// update the root position of the cape
-		if (state.test("facingleft")) {
-			if (state.inState(State.FLYING)) {
-				cape.updatePos(neck.getWorldX() + 25, neck.getWorldY() + 7,
-						true, false);
-			} else {
-				cape.updatePos(neck.getWorldX() + 25, neck.getWorldY(), true,
-						false);
-			}
-		} else {
-			if (state.inState(State.FLYING)) {
-				cape.updatePos(neck.getWorldX() + 5, neck.getWorldY() + 7,
-						false, false);
-			} else {
-				cape.updatePos(neck.getWorldX() + 7, neck.getWorldY(), false,
-						false);
-			}
-		}
-	}
-
-	private void handleAttacking() {
-		if (currentSkin.equals("archer")) {
-			state.animate.bindPose();
-			state.animate.setCurrent("drawbow", true);
-			state.setState(State.ATTACK);
-		} else if (currentSkin.contains("knight")) {
-			state.animate.bindPose();
-			state.animate.setCurrent("swordattack", true);
-			state.setState(State.ATTACK);
-		}
-	}
-
-	public void updateAttacking() {
-		if (state.inState(State.ATTACK) && currentSkin.equals("archer")) {
-			if (!shotArrow && state.animate.isTImeOverThreeQuarters(0f)) {
-				arrow.setPos(arrowBone.getWorldX() + (facingLeft ? -128 : 128),
-						arrowBone.getWorldY(), 0);
-				arrow.pointAtTarget(Util.addVecs(body.getPos(), new Vector3(facingLeft ? -100 : 100, 0, 0)), 650);
-				shotArrow = true;
-			}
-		}
-	}
-
-	private boolean updateWalking(float delta) {
-		if (WitchCraft.ON_ANDROID) {
-			int axisVal = state.input.axisRange2();
-			if (axisVal != 0) {
-				if (state.test("grounded")) {
-					int absval = Math.abs(axisVal);
-					if (absval == 1) {
-						state.state.setWalk(state);
-					} else if (absval == 2) {
-						state.state.setRun(state);
-					}
-				}
-				body.setVel(
-						Math.signum(axisVal) * state.state.getInputSpeed(state),
-						body.getVel().y, 0f);
-				state.setTestVal("facingleft", axisVal < 0);
-				return true;
-			} else if (state.state.canBeIdle(state)) { // state.animate.isTimeOverAQuarter(delta)
-				state.setState(State.IDLE);
-				state.animate.setCurrent("idle", true);
-				state.animate.bindPose();
-				body.setVel(0f, body.getVel().y, 0f);
-			}
-			return false;
-		} else {
-			boolean ismoving = false;
-			if (state.input.is("Right")) {
-				body.setVel(state.state.getInputSpeed(state), body.getVel().y,
-						0f);
-				state.setTestVal("facingleft", false);
-				ismoving = true;
-			} else if (state.input.is("Left")) {
-				body.setVel(-state.state.getInputSpeed(state), body.getVel().y,
-						0f);
-				state.setTestVal("facingleft", true);
-				ismoving = true;
-			}
-			if (state.test("grounded") && ismoving) {
-				state.state.setWalk(state);
-			} else if (!ismoving && state.state.canBeIdle(state)) { // state.animate.isTimeOverAQuarter(delta)
-				state.setState(State.IDLE);
-				state.animate.setCurrent("idle", true);
-				state.animate.bindPose();
-				body.setVel(0f, body.getVel().y, 0f);
-			}
-			return ismoving;
-		} 
-	}
 
 	/******************* setup functions ****************/
 	/***************************************************/
@@ -456,6 +251,18 @@ public class Player extends Agent {
 		}
 	}
 
+	private void setupStates() {
+		state.addState(StateEnum.IDLE, new Idle(state, StateEnum.IDLE));
+		state.addState(StateEnum.WALKING, new Walking(state, StateEnum.WALKING));
+		state.addState(StateEnum.RUNNING, new Running(state, StateEnum.RUNNING));
+		state.addState(StateEnum.JUMPING, new Jumping(state, StateEnum.JUMPING));
+		state.addState(StateEnum.FLYING, new Flying(state, StateEnum.FLYING));
+		state.addState(StateEnum.FALLING, new Falling(state, StateEnum.FALLING));
+		state.addState(StateEnum.LANDING, new Landing(state, StateEnum.LANDING));
+		state.addState(StateEnum.ATTACKING, new Attacking(state, StateEnum.ATTACKING));
+		state.addState(StateEnum.DEAD, new Dead(state, StateEnum.DEAD));
+		state.setState(StateEnum.IDLE);
+	}
 	private void setupTests() {
 		state.addTest("grounded", false);
 		state.addTest("hitplatform", false);
@@ -465,7 +272,6 @@ public class Player extends Agent {
 		state.addTest("usingpower", false);
 		state.addTest("dupeskin", false);
 		state.addTest("usingdupeskin", false);
-		state.addTest("hitnpc", false);
 		state.addTest("hitrightwall", false);
 		state.addTest("hitleftwall", false);
 	}
@@ -508,15 +314,20 @@ public class Player extends Agent {
 		// powers.put("death", new DeathPower());
 	}
 
-	private void setupAnimations(String name) {
+	private void setupState(String name) {
 		TextureAtlas atlas = WitchCraft.assetManager
 				.get("data/spine/characters.atlas");
 		SkeletonBinary sb = new SkeletonBinary(atlas);
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
+		KinematicParticle body = new KinematicParticle(
+				new Vector3(32f, WitchCraft.ground.findPointOnCurve(
+						0, 32f).y, 0f), Util.GRAVITY * 3);
+		
 		state = new StateMachine(name, body.getPos(), new Vector2(0.5f, 0.5f),
 				false, sd);
+
 		state.animate.addAnimation("jump", sd.findAnimation("beginfly"));
 		state.animate.addAnimation("idle", sd.findAnimation("idle"));
 		state.animate.addAnimation("walk", sd.findAnimation("walk"));
@@ -526,15 +337,17 @@ public class Player extends Agent {
 				sd.findAnimation("overheadattack"));
 		state.animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
 
-		state.animate.setCurrent("idle", true);
+		setupStates();
+				
+		buildPhysics(body);
 	}
 
-	private void buildCollisionBody() {
+	private void buildPhysics(KinematicParticle body) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position
-				.set(new Vector2(this.body.getPos().x, this.body.getPos().y));
-		collisionBody = WitchCraft.world.createBody(def);
+				.set(new Vector2(body.getPos().x, body.getPos().y));
+		Body collisionBody = WitchCraft.world.createBody(def);
 		collisionBody.setBullet(true);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
@@ -544,7 +357,7 @@ public class Player extends Agent {
 		fixture.density = 1f;
 		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
 		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
-		feetFixture = collisionBody.createFixture(fixture);
+		Fixture feetFixture = collisionBody.createFixture(fixture);
 
 		shape = new PolygonShape();
 		shape.setAsBox(35 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
@@ -555,8 +368,14 @@ public class Player extends Agent {
 		fixture.density = 1f;
 		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
 		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
-		hitRadius = collisionBody.createFixture(fixture);
+		Fixture hitRadius = collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();
+		WitchCraft.rk4System.addParticle(body);
+
+		state.phyState = new PhysicsState(body, collisionBody);
+		state.phyState.addFixture(feetFixture, "feet");
+		state.phyState.addFixture(hitRadius, "radius");
+
 	}
 }

@@ -4,12 +4,11 @@
 package com.anythingmachine.witchcraft.agents.player.Power;
 
 import com.anythingmachine.aiengine.StateMachine;
-import com.anythingmachine.animations.AnimationManager;
-import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ParticleEngine.MindBeamParticle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -31,25 +30,24 @@ public class MindControlPower implements Power {
 	 * (non-Javadoc)
 	 */
 	@Override
-	public void usePower(StateMachine state, AnimationManager animate,
-			KinematicParticle body, float dt) {
+	public void usePower(StateMachine state, float dt) {
 		timeout--;
 		if (timeout < 0) {
+			Vector2 pos = state.phyState.getPos();
 			WitchCraft.rk4System.addParticle(particle.copy(
-					new Vector3(animate.isFlipped() ? body.getPos().x - 48f
-							: body.getPos().x + 8, body.getPos().y + 32, 0),
-					new Vector3(animate.isFlipped() ? -70 : 70, 0, 0)));
+					new Vector3(state.animate.isFlipped() ? pos.x - 48f
+							: pos.x + 8, pos.y + 32, 0),
+					new Vector3(state.animate.isFlipped() ? -70 : 70, 0, 0)));
 			timeout = 4;
 		}
-		if (state.state.canCastSpell(state) && !state.test("usingpower")) {
-			body.setVel(0, body.getVel().y, 0);
-			animate.bindPose();
-			animate.setCurrent("castspell", true);
+		if (state.state.canCastSpell()) {
+			state.animate.bindPose();
+			state.animate.setCurrent("castspell", true);
 			state.setTestVal("usingpower", true);
-			body.setVel(0, 0, 0);
+			state.phyState.stop();
 		} else if (state.test("usingpower")
-				&& animate.isTImeOverThreeQuarters(0.0f)) {
-			animate.applyTotalTime(true, -animate.getCurrentAnimTime() * 0.75f);
+				&& state.animate.isTImeOverThreeQuarters(0.0f)) {
+			state.animate.applyTotalTime(true, -state.animate.getCurrentAnimTime() * 0.75f);
 		}
 	}
 
@@ -57,11 +55,10 @@ public class MindControlPower implements Power {
 	 * (non-Javadoc)
 	 */
 	@Override
-	public void updatePower(StateMachine state, AnimationManager animate,
-			float dt) {
-		if (state.test("usingpower") && animate.atEnd()) {
+	public void updatePower(StateMachine state, float dt) {
+		if (state.test("usingpower") && state.animate.atEnd()) {
 			state.setTestVal("usingpower", false);
-			state.state.setWalk(state);
+			state.state.setWalk();
 		}
 	}
 

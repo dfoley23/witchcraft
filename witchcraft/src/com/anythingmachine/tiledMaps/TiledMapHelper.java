@@ -33,7 +33,9 @@ import java.util.HashMap;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.gdxwrapper.OrthoTileRenderer;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.anythingmachine.witchcraft.ground.LevelWall;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.anythingmachine.witchcraft.ground.Stairs;
 import com.badlogic.gdx.Gdx;
@@ -46,6 +48,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
@@ -112,7 +115,7 @@ public class TiledMapHelper {
 	 *            the pixels per meter scale used for this world
 	 */
 	public void loadCollisions(String collisionsFile, World world,
-			float pixelsPerMeter) {
+			float pixelsPerMeter, int level) {
 		/**
 		 * Detect the tiles and dynamically create a representation of the map
 		 * layout, for collision detection. Each tile has its own collision
@@ -254,26 +257,37 @@ public class TiledMapHelper {
 		 * try to push them out.
 		 */
 
-		// EdgeShape mapBounds = new EdgeShape();
-		// mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(getWidth()
-		// / pixelsPerMeter, 0.0f));
-		// groundBody.createFixture(mapBounds, 0);
-		//
-		// mapBounds.set(new Vector2(0.0f, getHeight() / pixelsPerMeter),
-		// new Vector2(getWidth() / pixelsPerMeter, getHeight()
-		// / pixelsPerMeter));
-		// groundBody.createFixture(mapBounds, 0);
-		//
-		// mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0.0f,
-		// getHeight() / pixelsPerMeter));
-		// groundBody.createFixture(mapBounds, 0);
-		//
-		// mapBounds.set(new Vector2(getWidth() / pixelsPerMeter, 0.0f),
-		// new Vector2(getWidth() / pixelsPerMeter, getHeight()
-		// / pixelsPerMeter));
-		// groundBody.createFixture(mapBounds, 0);
-		//
-		// mapBounds.dispose();
+		TiledMapTileLayer layer = (TiledMapTileLayer) getMap().getLayers()
+				.get(3);
+
+		BodyDef bodydef = new BodyDef();
+		bodydef.type = BodyType.StaticBody;
+		bodydef.position.set(0, 0);
+		Body body = WitchCraft.world.createBody(bodydef);
+		if ( level == 1 ) {
+			body.setUserData(new Entity().setType(EntityType.LEVELWALL));
+		} else {
+	        body.setUserData(new LevelWall(level-1));			
+		}
+		EdgeShape mapBounds = new EdgeShape();
+		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0, layer.getHeight()).scl(Util.PIXELS_PER_METER));
+        body.createFixture(mapBounds, 0);
+
+        body = WitchCraft.world.createBody(bodydef);
+        body.setUserData(new LevelWall(level+1));
+		EdgeShape mapBounds2 = new EdgeShape();
+		mapBounds.set(new Vector2(layer.getWidth(), 0.0f), new Vector2(0, layer.getHeight()).scl(Util.PIXELS_PER_METER));
+        body.createFixture(mapBounds, 0);
+
+        body = WitchCraft.world.createBody(bodydef);
+        body.setUserData(new Platform(new Vector2(0.0f, layer.getHeight()), new Vector2(layer.getWidth(), layer.getHeight())));
+		EdgeShape mapBounds3 = new EdgeShape();
+		mapBounds3.set(new Vector2(0.0f, layer.getHeight()), new Vector2(layer.getWidth(), layer.getHeight()).scl(Util.PIXELS_PER_METER));
+        body.createFixture(mapBounds, 0);
+		
+		 mapBounds.dispose();
+		 mapBounds2.dispose();
+		 mapBounds3.dispose();
 	}
 
 	/**

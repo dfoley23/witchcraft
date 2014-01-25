@@ -17,8 +17,8 @@ public class Spring {
 	}
 	
 	public Vector3 accel(Particle p) {
-		Vector3 pos = p.getPos().cpy();
-		Vector3 otherpos = other.getPos().cpy();
+		Vector3 pos = p.getPos3D().cpy();
+		Vector3 otherpos = other.getPos3D().cpy();
 		Vector3 diff = new Vector3( 0, 0, 0);
 		diff.x = pos.x - otherpos.x;
 		diff.y = pos.y - otherpos.y;

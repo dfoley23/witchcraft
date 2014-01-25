@@ -7,14 +7,13 @@ import com.anythingmachine.physicsEngine.KinematicParticle;
 public class ConvertPower implements Power {
 
 	@Override
-	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle Body, float dt) {
+	public void usePower(StateMachine state, float dt) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void updatePower(StateMachine state, AnimationManager animate, float dt) {
+	public void updatePower(StateMachine state, float dt) {
 		// TODO Auto-generated method stub
 
 	}

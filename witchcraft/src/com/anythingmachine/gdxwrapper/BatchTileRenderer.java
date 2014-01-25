@@ -87,16 +87,14 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 	@Override
 	public void render (WitchCraft main) {
 		beginRender();
-		int i =0;
 		for (MapLayer layer : map.getLayers()) {
-			if ( i == 3 ) {
+			if ( layer.getName().equals("playerlayer") ) {
 				endRender();
 				Gdx.gl.glDisable(GL10.GL_BLEND);
 				main.drawPlayerLayer();
 				beginRender();
 				Gdx.gl.glEnable(GL10.GL_BLEND);
 			}
-			i++;
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					//System.out.println("Render layer: " + layer.getName());

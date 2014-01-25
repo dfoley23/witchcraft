@@ -27,7 +27,7 @@ public class AnimationManager {
 	private boolean isFlipped = false;
 	private Array<Event> events;
 	
-	public AnimationManager(String name, Vector3 pos, Vector2 scl,
+	public AnimationManager(String name, Vector2 pos, Vector2 scl,
 			boolean flip, SkeletonData sd) {
 		this.scale = scl;
 		animations = new HashMap<String, Animation>();
@@ -74,6 +74,10 @@ public class AnimationManager {
 		skel.update(delta);		
 	}
 	
+	public boolean isSkin(String skinname) {
+		return getSkin().getName().equals(skinname);
+	}
+
 	public void applyTotalTime(boolean val, float delta) {
 		animations.get(currentAnim).apply(skel, totalTime, totalTime+delta, val, events);
 	}
@@ -147,7 +151,7 @@ public class AnimationManager {
 		return animations.get(currentAnim).getDuration();
 	}
 
-	public void setPos(Vector3 pos, float dx, float dy) {
+	public void setPos(Vector2 pos, float dx, float dy) {
 		root.setX(pos.x + dx);
 		root.setY(pos.y + dy);
 	}

@@ -19,7 +19,7 @@ public class MindBeamParticle extends TexturedBodyParticle {
 	public void draw(SpriteBatch batch) {
 		scale += 0.02f;
 		if ( scale < 2f ) {
-			collisionBody.setTransform(getPos2D().cpy().mul(Util.PIXEL_TO_BOX),
+			collisionBody.setTransform(getPos().cpy().scl(Util.PIXEL_TO_BOX),
 					collisionBody.getAngle());
 			sprite.setScale(1f, scale);
 			sprite.setPosition(pos.x, pos.y);

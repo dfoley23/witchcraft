@@ -50,7 +50,7 @@ public class Archer extends NonPlayer {
 	protected void handleState(AIState state) {
 		switch (state) {
 		case SHOOTARROW:			
-			if ( WitchCraft.player.getPosPixels().x < body.getPos2D().x) {
+			if ( WitchCraft.player.getPosPixels().x < body.getPos().x) {
 				facingLeft = true;
 			} else {
 				facingLeft = false;

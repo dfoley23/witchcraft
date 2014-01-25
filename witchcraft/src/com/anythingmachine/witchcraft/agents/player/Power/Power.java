@@ -5,7 +5,6 @@ import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 
 public interface Power {
-	public void usePower(StateMachine state, AnimationManager animate, 
-			KinematicParticle Body, float dt);
-	public void updatePower(StateMachine state, AnimationManager animate, float dt);
+	public void usePower(StateMachine state, float dt);
+	public void updatePower(StateMachine state, float dt);
 }
