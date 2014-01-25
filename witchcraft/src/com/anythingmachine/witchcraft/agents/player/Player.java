@@ -71,7 +71,7 @@ public class Player extends Entity {
 	/** public functions **/
 
 	public void update(float dT) {
-//		System.out.println(state.state.name);
+		// System.out.println(state.state.name);
 		state.update(dT);
 		// check if on ground
 
@@ -123,32 +123,6 @@ public class Player extends Entity {
 		return power;
 	}
 
-	public void drawUI(SpriteBatch batch) {
-		if (uiFadein >= 0f) {
-			Sprite sprite = powerUi.get(power);
-			sprite.setPosition(
-					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
-					WitchCraft.cam.camera.position.y
-							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
-							- sprite.getHeight());
-			powerUi.get(power).draw(batch, uiFadein);
-			uiFadein += WitchCraft.dt * 0.5f;
-			if (uiFadein >= 1f)
-				uiFadein = -2f;
-		} else if (uiFadein < 0 && uiFadein > -4) {
-			Sprite sprite = powerUi.get(power);
-			sprite.setPosition(
-					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
-					WitchCraft.cam.camera.position.y
-							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
-							- sprite.getHeight());
-			powerUi.get(power).draw(batch, -(uiFadein + 1));
-			uiFadein += WitchCraft.dt * 0.5f;
-			if (uiFadein >= -1)
-				uiFadein = -5f;
-		}
-	}
-	
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -159,16 +133,17 @@ public class Player extends Entity {
 		}
 		Vector2 pos = state.phyState.body.getPos();
 		Vector2 vel = state.phyState.body.getVel2D();
+		float sign;
 		switch (other.type) {
 		case NONPLAYER:
 			npc = (NonPlayer) other;
 			state.state.hitNPC(npc);
 			break;
 		case WALL:
-			float sign = Math.signum(vel.x);
+			sign = Math.signum(vel.x);
 			state.phyState.stopOnX();
-			if ( sign == -1 )  {
-				state.setTestVal("hitleftwall", true);				
+			if (sign == -1) {
+				state.setTestVal("hitleftwall", true);
 			} else {
 				state.setTestVal("hitrightwall", true);
 			}
@@ -200,6 +175,15 @@ public class Player extends Entity {
 					}
 				}
 			}
+		case LEVELWALL:
+			sign = Math.signum(vel.x);
+			state.phyState.stopOnX();
+			if (sign == -1) {
+				state.setTestVal("hitleftwall", true);
+			} else {
+				state.setTestVal("hitrightwall", true);
+			}
+			break;
 		}
 	}
 
@@ -218,6 +202,32 @@ public class Player extends Entity {
 		// state.setState(State.FALLING);
 		// }
 		// }
+	}
+
+	public void drawUI(SpriteBatch batch) {
+		if (uiFadein >= 0f) {
+			Sprite sprite = powerUi.get(power);
+			sprite.setPosition(
+					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
+					WitchCraft.cam.camera.position.y
+							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
+							- sprite.getHeight());
+			powerUi.get(power).draw(batch, uiFadein);
+			uiFadein += WitchCraft.dt * 0.5f;
+			if (uiFadein >= 1f)
+				uiFadein = -2f;
+		} else if (uiFadein < 0 && uiFadein > -4) {
+			Sprite sprite = powerUi.get(power);
+			sprite.setPosition(
+					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
+					WitchCraft.cam.camera.position.y
+							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
+							- sprite.getHeight());
+			powerUi.get(power).draw(batch, -(uiFadein + 1));
+			uiFadein += WitchCraft.dt * 0.5f;
+			if (uiFadein >= -1)
+				uiFadein = -5f;
+		}
 	}
 
 	/************ private functions ************/
@@ -259,10 +269,12 @@ public class Player extends Entity {
 		state.addState(StateEnum.FLYING, new Flying(state, StateEnum.FLYING));
 		state.addState(StateEnum.FALLING, new Falling(state, StateEnum.FALLING));
 		state.addState(StateEnum.LANDING, new Landing(state, StateEnum.LANDING));
-		state.addState(StateEnum.ATTACKING, new Attacking(state, StateEnum.ATTACKING));
+		state.addState(StateEnum.ATTACKING, new Attacking(state,
+				StateEnum.ATTACKING));
 		state.addState(StateEnum.DEAD, new Dead(state, StateEnum.DEAD));
 		state.setState(StateEnum.IDLE);
 	}
+
 	private void setupTests() {
 		state.addTest("grounded", false);
 		state.addTest("hitplatform", false);
@@ -321,10 +333,10 @@ public class Player extends Entity {
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		KinematicParticle body = new KinematicParticle(
-				new Vector3(32f, WitchCraft.ground.findPointOnCurve(
-						0, 32f).y, 0f), Util.GRAVITY * 3);
-		
+		KinematicParticle body = new KinematicParticle(new Vector3(256f,
+				WitchCraft.ground.findPointOnCurve(3, 32f).y, 0f),
+				Util.GRAVITY * 3);
+
 		state = new StateMachine(name, body.getPos(), new Vector2(0.5f, 0.5f),
 				false, sd);
 
@@ -338,15 +350,14 @@ public class Player extends Entity {
 		state.animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
 
 		setupStates();
-				
+
 		buildPhysics(body);
 	}
 
 	private void buildPhysics(KinematicParticle body) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
-		def.position
-				.set(new Vector2(body.getPos().x, body.getPos().y));
+		def.position.set(new Vector2(body.getPos().x, body.getPos().y));
 		Body collisionBody = WitchCraft.world.createBody(def);
 		collisionBody.setBullet(true);
 		PolygonShape shape = new PolygonShape();

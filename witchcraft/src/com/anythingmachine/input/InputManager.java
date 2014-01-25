@@ -113,6 +113,15 @@ public class InputManager {
 		return 0;
 	}
 
+	public float axisDegree() {
+		if ( WitchCraft.ON_ANDROID ) {
+			float xval = controller.getAxis(0);
+			float yval = controller.getAxis(1);
+			if ( Math.abs(xval) > 0.25f || Math.abs(yval) > 0.25f )
+				return (float)Math.atan2(yval, xval);
+		}
+		return 0;
+	}
 	public boolean left() {
 		if (debugcontrols)
 			return Gdx.input.isKeyPressed(keymap.get("Left"));

@@ -33,7 +33,7 @@ public class StateMachine {
 		animate = new AnimationManager(name, pos, scl, flip, sd);
 		input = new InputManager();
 		states = new State[StateEnum.DEAD.getSize()];
-		this.curGroundSegment = 0;
+		this.curGroundSegment = 3;
 		this.curCurve = WitchCraft.ground.getCurve(curGroundSegment);
 		neck = animate.findBone("neck");
 

@@ -150,9 +150,9 @@ public class WitchCraft implements ApplicationListener {
 		rk4.step(dt);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		 Color c = getTimeOfDay();
-		 Gdx.gl.glClearColor((float) c.getRed() / 255f,
-		 (float) c.getGreen() / 255f, (float) c.getBlue() / 255f, 1f);
+//		 Color c = getTimeOfDay();
+//		 Gdx.gl.glClearColor((float) c.getRed() / 255f,
+//		 (float) c.getGreen() / 255f, (float) c.getBlue() / 255f, 1f);
 
 		player.update(dT);
 		npc1.update(dT);

@@ -27,10 +27,10 @@ public class FlyingPower implements Power {
 
 	@Override
 	public void updatePower(StateMachine state, float dt) {
-		if ( state.inState(StateEnum.FLYING) ) {
-			Vector2 vel = state.phyState.body.getVel2D();
-			state.phyState.setVel((state.test("facingleft") ? -1 : 1)*350f, vel.y);
-		}
+//		if ( state.inState(StateEnum.FLYING) ) {
+//			Vector2 vel = state.phyState.body.getVel2D();
+//			state.phyState.setVel((state.test("facingleft") ? -1 : 1)*350f, vel.y);
+//		}
 	}
 
 }

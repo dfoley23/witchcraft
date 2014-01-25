@@ -94,6 +94,15 @@ public class AnimationManager {
 		return isFlipped;
 	}
 	
+	public void rotate(float r) {
+		float x = root.getX();
+		float y = root.getY();
+		root.setX(0);
+		root.setY(0);
+		this.root.setRotation(r);
+		root.setX(x);
+		root.setY(y);
+	}
 	public void setCurrent(String id, boolean val) {
 		currentAnim = id;
 		loop = val;
@@ -121,7 +130,14 @@ public class AnimationManager {
 		skel.setX(x);
 		isFlipped = val;
 	}
-	
+
+	public void setFlipY(boolean val){
+		float x = skel.getY();
+		skel.setY(0);
+		skel.setFlipY(val);
+		skel.setY(x);
+	}
+
 	public boolean atEnd() {
 //		System.out.println(currentAnim);
 		return totalTime > animations.get(currentAnim).getDuration();

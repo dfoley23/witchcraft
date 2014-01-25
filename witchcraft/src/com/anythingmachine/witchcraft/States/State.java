@@ -81,7 +81,7 @@ public class State {
 					sm.setTestVal("hitrightwall", false);
 					if (axisVal < -1) {
 						setRun();
-						sm.phyState.setXVel(-Util.PLAYERWALKSPEED);
+						sm.phyState.setXVel(-Util.PLAYERRUNSPEED);
 					} else {
 						setWalk();
 						sm.phyState.setXVel(-Util.PLAYERWALKSPEED);

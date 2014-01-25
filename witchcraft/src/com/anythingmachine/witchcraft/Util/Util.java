@@ -97,8 +97,8 @@ public class Util {
 
 	public static final int GRAVITY = -50;
 	public static final float PLAYERWALKSPEED = 90f;
-	public static final float PLAYERRUNSPEED = 160f;
-	public static final float PLAYERFLYSPEED = 170f;
+	public static final float PLAYERRUNSPEED = 350f;
+	public static final float PLAYERFLYSPEED = 350f;
 
 	/**
 	 * Collision Categories and masks for every object that needs them
