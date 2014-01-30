@@ -29,4 +29,8 @@ public class Camera {
 	public boolean inBounds(Vector2 pos) {
 		return bounds.contains(pos.x, pos.y);
 	}
+	
+	public Rectangle getBounds() {
+		return bounds;
+	}
 }

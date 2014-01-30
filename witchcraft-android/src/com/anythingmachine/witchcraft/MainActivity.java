@@ -14,7 +14,7 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = true;
 
-        cfg.resolutionStrategy = new RatioResolutionStrategy(1366,720); 
+        cfg.resolutionStrategy = new RatioResolutionStrategy(1366, 768); 
         initialize(new WitchCraft(), cfg);
     }
 }

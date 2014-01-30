@@ -26,15 +26,16 @@ public class StateMachine {
 	public int curGroundSegment;
 	public Curve curCurve;
 	public Platform elevatedSegment;
-
+	public String dupeSkin;
+	
 	public StateMachine(String name, Vector2 pos, Vector2 scl, boolean flip,
 			SkeletonData sd) {
 		tests = new HashMap<String, Boolean>();
 		animate = new AnimationManager(name, pos, scl, flip, sd);
 		input = new InputManager();
 		states = new State[StateEnum.DEAD.getSize()];
-		this.curGroundSegment = 3;
-		this.curCurve = WitchCraft.ground.getCurve(curGroundSegment);
+//		this.curGroundSegment = 3;
+//		this.curCurve = WitchCraft.ground.getCurve(curGroundSegment);
 		neck = animate.findBone("neck");
 
 	}
@@ -62,6 +63,7 @@ public class StateMachine {
 
 	public void setState(StateEnum name) {
 		this.state = states[name.getID()];
+		state.transistionIn();
 	}
 
 	public boolean inState(StateEnum state) {

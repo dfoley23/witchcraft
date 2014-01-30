@@ -4,10 +4,11 @@ import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
+import com.badlogic.gdx.math.Vector2;
 
 public class Flying extends State {
 	private float rotation;
-
+	
 	public Flying(StateMachine sm, StateEnum name) {
 		super(sm, name);
 	}
@@ -19,16 +20,22 @@ public class Flying extends State {
 
 		setInputSpeed();
 
-		// sm.animate.setFlipX(sm.test("facingleft"));
-
-		sm.phyState.correctCBody(-8, 64, sm.neck.getRotation());
-
 		if (WitchCraft.ON_ANDROID) {
-			sm.animate.setFlipY(sm.test("facingleft"));
-			sm.animate.rotate(-rotation * Util.RAD_TO_DEG);
+			if ( sm.test("facingleft")) {
+				sm.phyState.correctCBody(-8, 64, -rotation+(120*Util.DEG_TO_RAD));
+				sm.animate.rotate((-rotation * Util.RAD_TO_DEG)+120);
+			} else {
+				sm.phyState.correctCBody(-8, 64, rotation+(120*Util.DEG_TO_RAD));
+				sm.animate.rotate((rotation * Util.RAD_TO_DEG)+120);
+			}
+			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
 		} else {
-			sm.animate.setFlipX(sm.test("facingleft"));
+			sm.phyState.correctCBody(-8, -64, -Util.HALF_PI);
+			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
 		}
+
+		sm.animate.setFlipX(sm.test("facingleft"));
+		
 		Cape cape = WitchCraft.player.cape;
 		if (sm.test("facingleft")) {
 			cape.addWindForce(500, 0);
@@ -36,18 +43,13 @@ public class Flying extends State {
 			cape.addWindForce(-500, 0);
 		}
 
-		if (sm.test("facingleft")) {
-			cape.updatePos(sm.neck.getWorldX() + 25, sm.neck.getWorldY() + 7,
-					true, false);
-		} else {
-			cape.updatePos(sm.neck.getWorldX() + 5, sm.neck.getWorldY() + 7,
-					false, false);
-		}
+
+		cape.updatePos(sm.neck.getWorldX() + 14, sm.neck.getWorldY());
 	}
 
 	@Override
 	public void setInputSpeed() {
-		rotation = sm.input.axisDegree();
+		rotation = -sm.input.axisDegree();
 		int axisVal = sm.input.axisRange2();
 		boolean facingleft = sm.test("facingleft");
 		if (axisVal > 0) {
@@ -57,20 +59,27 @@ public class Flying extends State {
 		} else if (axisVal < 0) {
 			facingleft = true;
 			sm.setTestVal("facingleft", true);
-			rotation = -rotation;
 			sm.setTestVal("hitrightwall", false);
 		}
 		if ( facingleft && !sm.test("hitleftwall")) {
 			if ( rotation == 0 ) 
-				rotation = Util.HALF_PI;
-			rotation = -rotation;
-			sm.phyState.setVel(-Util.PLAYERFLYSPEED,
-					(float) Math.sin(rotation) * Util.PLAYERFLYSPEED);
-		} else 	if (!sm.test("hitrightwall")) {
-			sm.phyState.setVel(Util.PLAYERFLYSPEED,
-					-(float) Math.sin(rotation) * Util.PLAYERFLYSPEED);
+				rotation = Util.PI;
+			float x = -Util.PLAYERFLYSPEED;
+			float y = (float) Math.sin(rotation) * Util.PLAYERFLYSPEED;
+			sm.phyState.body.setVel(x, y, 0);
+		} else 	if (!facingleft && !sm.test("hitrightwall")) {
+			rotation += Util.PI;
+			float x = Util.PLAYERFLYSPEED;
+			float y = (float) -Math.sin(rotation) * Util.PLAYERFLYSPEED;
+			sm.phyState.body.setVel(x, y, 0);
+		} else {
+			sm.phyState.stop();
 		}
 
+	}
+
+	@Override
+	public void transistionIn() {
 	}
 
 	@Override
@@ -83,7 +92,6 @@ public class Flying extends State {
 		sm.animate.rotate(0);
 		if (sm.test("facingleft")) {
 			sm.animate.setFlipX(true);
-			sm.animate.setFlipY(false);
 		}
 		sm.setState(StateEnum.LANDING);
 	}
@@ -99,16 +107,55 @@ public class Flying extends State {
 	}
 
 	@Override
-	public boolean canCastSpell() {
-		return false;
+	public void setCastSpell() {
+		
 	}
-
+	
+	@Override
+	public void setDupeSkin() {
+		
+	}
+	
 	@Override
 	public void setRun() {
 	}
 
 	@Override
 	public void setWalk() {
+	}
+
+	@Override
+	public void checkGround() {
+		Vector2 pos = sm.phyState.getPos();
+		if (!sm.test("hitplatform")) {
+			// System.out.println(pos);
+			if (pos.x > sm.curCurve.lastPointOnCurve().x
+					&& sm.curGroundSegment + 1 < WitchCraft.ground
+							.getNumCurves()) {
+				sm.curGroundSegment++;
+				sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
+			} else if (pos.x < sm.curCurve.firstPointOnCurve().x
+					&& sm.curGroundSegment - 1 >= 0) {
+				sm.curGroundSegment--;
+				sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
+			}
+			Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
+					sm.curGroundSegment, pos.x);
+			sm.setTestVal("grounded", false);
+			if (pos.y <= groundPoint.y) {
+				sm.phyState.correctHeight(groundPoint.y);
+				sm.state.land();
+			}
+		} else {
+			sm.setTestVal("grounded", false);
+			if (sm.elevatedSegment.isBetween(sm.test("facingleft"), pos.x)) {
+				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
+				if (pos.y < groundPoint) {
+					sm.phyState.correctHeight(groundPoint);
+					sm.state.land();
+				}
+			}
+		}
 	}
 
 }

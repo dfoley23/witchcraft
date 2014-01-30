@@ -9,6 +9,7 @@ import com.anythingmachine.aiengine.UtilityAI.AIState;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
+import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -37,7 +38,14 @@ public class Archer extends NonPlayer {
 			arrow.setPos(arrowBone.getWorldX() + (facingLeft ? -128 : 128), arrowBone.getWorldY(), 0);
 			arrow.pointAtTarget(WitchCraft.player.getPosPixels(), 650);
 			shotArrow = true;
+		} else {
+			Vector2 target = WitchCraft.player.getPosPixels();
+			Vector2 pos = this.getPosPixels();
+			Vector3 dir = new Vector3(target.x-pos.x, target.y-pos.y, 0);
+			float costheta = Util.dot(dir, new Vector3(1, 0, 0))/dir.len();
+			animate.rotate((float)Math.acos(costheta));
 		}
+		
 		super.update(dt);
 	}
 	

@@ -9,12 +9,7 @@ public class Dead extends State {
 		@Override
 		public void setFlying() {
 		}
-
-		@Override
-		public boolean canCastSpell() {
-			return false;
-		}
-
+		
 		@Override
 		public void setRun() {
 		}

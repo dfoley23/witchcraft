@@ -21,6 +21,10 @@ public class Cloth implements PhysicsComponent {
 	private float[] verts;
 	private Mesh mesh;
 	private ShaderProgram shader;
+	private Matrix4 model;
+	private Vector3 trans;
+	private float rot;
+	private boolean flip;
 	
 	public Cloth(int w, int h, RK4Integrator rk4) {
 		links = new ArrayList<Particle>();
@@ -36,6 +40,10 @@ public class Cloth implements PhysicsComponent {
 			    new VertexAttribute( Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE ) );
 		mesh.setIndices(indices);
 		rk4.addComponent(this);
+		model = new Matrix4();
+		flip = false;
+		trans = new Vector3(0, 0, 0);
+		rot = 0;
 	}
 
 	public Cloth() {
@@ -47,7 +55,27 @@ public class Cloth implements PhysicsComponent {
 			p.applyImpulse(force);
 		}
 	}
+	
+	public void flip(boolean val) {
+		flip = val;
+	}
+	
+	public void trans(float x, float y) {
+		trans = new Vector3(x, y, 0);
+	}
+	
+	public void rotate(float degrees) {
+		rot = degrees;
+	}
+	
 	public void draw(Matrix4 cam, float alpha) {
+		model.idt();
+		if ( flip ) {
+			model.scl(-1);
+		}
+//		model.rotate(new Vector3(0, 0, 1), rot);
+		model.trn(trans);
+		
 		mesh.setVertices(verts);
 		
 		updateVertsByIndex();
@@ -56,6 +84,7 @@ public class Cloth implements PhysicsComponent {
 			Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
 		shader.begin();
 		shader.setUniformMatrix("u_proj", cam);
+		shader.setUniformMatrix("u_model", model);
 		shader.setUniformf("alpha_val", alpha);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
@@ -119,6 +148,7 @@ public class Cloth implements PhysicsComponent {
 			+ "attribute vec3 a_normal;\n" //
 			// + "attribute vec4 a_color;\n" //
 			+ "uniform mat4 u_proj;\n" //
+			+ "uniform mat4 u_model;\n" //
 			+ "uniform float alpha_val;\n" //
 			+ "varying vec4 v_color;\n" //
 			// + "varying vec3 v_normal;\n" //
@@ -138,7 +168,7 @@ public class Cloth implements PhysicsComponent {
 			+ "      color = c * 0.35;\n" //
 			+ "   }\n" //
 			+ "   v_color = color;\n" //
-			+ "   gl_Position =  u_proj * vec4(a_position, 1.0);\n" //
+			+ "   gl_Position =  u_proj * u_model * vec4(a_position, 1.0);\n" //
 			+ "}\n";
 	private String fragShader = "#ifdef GL_ES\n" //
 			+ "precision mediump float;\n" //

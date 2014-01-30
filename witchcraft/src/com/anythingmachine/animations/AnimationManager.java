@@ -21,6 +21,7 @@ public class AnimationManager {
 	private Skeleton skel;
 	private String currentAnim;
 	private Bone root;
+	public Bone hip;
 	private float totalTime = 0f;
 	private Vector2 scale;
 	private boolean loop;
@@ -35,6 +36,7 @@ public class AnimationManager {
 		skel.setSkin(name);
 		skel.setToSetupPose();
 		root = skel.getRootBone();
+		hip = skel.findBone("hip");
 		root.setX(pos.x);
 		root.setY(pos.y);
 		root.setScaleX(scl.x);
@@ -95,13 +97,13 @@ public class AnimationManager {
 	}
 	
 	public void rotate(float r) {
-		float x = root.getX();
-		float y = root.getY();
-		root.setX(0);
-		root.setY(0);
-		this.root.setRotation(r);
-		root.setX(x);
-		root.setY(y);
+		float x = hip.getX();
+		float y = hip.getY();
+		hip.setX(0);
+		hip.setY(0);
+		this.hip.setRotation(r);
+		hip.setX(x);
+		hip.setY(y);
 	}
 	public void setCurrent(String id, boolean val) {
 		currentAnim = id;

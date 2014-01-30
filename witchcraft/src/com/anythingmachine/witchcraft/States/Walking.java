@@ -14,6 +14,12 @@ public class Walking extends State {
 	}
 	
 	@Override
+	public void setCastSpell() {
+		if ( parent != StateEnum.DUPESKIN ) {
+			super.setCastSpell();
+		}
+	}
+	@Override
 	public void update(float dt) {
 		super.update(dt);
 	}

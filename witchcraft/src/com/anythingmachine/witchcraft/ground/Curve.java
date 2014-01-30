@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 
 public class Curve {
 	private Vector2 p0;
@@ -25,8 +24,8 @@ public class Curve {
 	private Vector2 p2;
 	private Vector2 p3;
 	private int zLayer;
-	private PolygonSpriteWrap sprite;
 	private ArrayList<GroundElem> groundElems;
+	private PolygonSpriteWrap sprite;
 	//private Body body;
 	
 	public Curve( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, 
@@ -176,7 +175,7 @@ public class Curve {
 		sprite = new PolygonSpriteWrap(polyReg);
 		sprite.setOrigin(p1.x, p1.y);
 		
-
+		
 		//create the body
 //		BodyDef bodyDef = new BodyDef();
 //		bodyDef.position.set(0, 0);

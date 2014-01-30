@@ -31,23 +31,17 @@ public class MindControlPower implements Power {
 	 */
 	@Override
 	public void usePower(StateMachine state, float dt) {
-		timeout--;
-		if (timeout < 0) {
-			Vector2 pos = state.phyState.getPos();
-			WitchCraft.rk4System.addParticle(particle.copy(
-					new Vector3(state.animate.isFlipped() ? pos.x - 48f
-							: pos.x + 8, pos.y + 32, 0),
-					new Vector3(state.animate.isFlipped() ? -70 : 70, 0, 0)));
-			timeout = 4;
-		}
-		if (state.state.canCastSpell()) {
-			state.animate.bindPose();
-			state.animate.setCurrent("castspell", true);
-			state.setTestVal("usingpower", true);
-			state.phyState.stop();
-		} else if (state.test("usingpower")
-				&& state.animate.isTImeOverThreeQuarters(0.0f)) {
-			state.animate.applyTotalTime(true, -state.animate.getCurrentAnimTime() * 0.75f);
+		if (state.state.isPlayer()) {
+			timeout--;
+			if (timeout < 0) {
+				Vector2 pos = state.phyState.getPos();
+				WitchCraft.rk4System.addParticle(particle.copy(new Vector3(
+						state.animate.isFlipped() ? pos.x - 48f : pos.x + 8,
+						pos.y + 32, 0), new Vector3(
+						state.animate.isFlipped() ? -70 : 70, 0, 0)));
+				timeout = 4;
+			}
+			state.state.setCastSpell();
 		}
 	}
 
@@ -56,10 +50,6 @@ public class MindControlPower implements Power {
 	 */
 	@Override
 	public void updatePower(StateMachine state, float dt) {
-		if (state.test("usingpower") && state.animate.atEnd()) {
-			state.setTestVal("usingpower", false);
-			state.state.setWalk();
-		}
 	}
 
 }

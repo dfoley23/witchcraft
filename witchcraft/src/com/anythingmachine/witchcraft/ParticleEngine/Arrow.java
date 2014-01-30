@@ -28,7 +28,6 @@ public class Arrow extends Particle {
 		WitchCraft.rk4System.addParticle(this);
 		sprite = ((TextureAtlas)WitchCraft.assetManager.get("data/spine/characters.atlas")).createSprite("archer_xcf-aroow");
 		sprite.scale(-0.4f);
-		sprite.setOrigin(sprite.getWidth()/2f, sprite.getHeight()/2f);
 	}
 
 	public void destroy() {
@@ -77,6 +76,7 @@ public class Arrow extends Particle {
 	public void setVel(float x, float y, float z) {
 		this.vel.set(x, y, z);
 		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
+		sprite.setOrigin(0, 0);
 		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
 		sprite.setPosition(pos.x, pos.y);
 		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,
@@ -112,6 +112,7 @@ public class Arrow extends Particle {
 		this.vel.add(Util.sclVec(dvdp, dt));		
 		externalForce = new Vector3(0, 0, 0);
 		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
+		sprite.setPosition(0, 0);
 		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
 		sprite.setPosition(pos.x, pos.y);
 		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,

@@ -9,7 +9,9 @@ import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.States.Attacking;
+import com.anythingmachine.witchcraft.States.CastSpell;
 import com.anythingmachine.witchcraft.States.Dead;
+import com.anythingmachine.witchcraft.States.DupeSkin;
 import com.anythingmachine.witchcraft.States.Falling;
 import com.anythingmachine.witchcraft.States.Flying;
 import com.anythingmachine.witchcraft.States.Idle;
@@ -62,7 +64,7 @@ public class Player extends Entity {
 		setupPowers();
 		setupTests();
 
-		cape = new Cape(3, 5, rk4);
+		cape = new Cape(3, 5, rk4, state.phyState.getPos());
 		power = 0;
 		type = EntityType.PLAYER;
 
@@ -101,14 +103,14 @@ public class Player extends Entity {
 		// System.out.println(state.state);
 	}
 
-	public void draw(SpriteBatch batch, Matrix4 cam) {
+	public void draw(SpriteBatch batch) {
 		state.animate.draw(batch);
 	}
 
 	public void drawCape(Matrix4 cam) {
-		if (!state.test("usingdupeskin")) {
+		if (state.state.isPlayer()) {
 			if (state.test("invi")) {
-				cape.draw(cam, 0.1f);
+				cape.draw(cam, 0.5f);
 			} else {
 				cape.draw(cam, 1f);
 			}
@@ -141,6 +143,7 @@ public class Player extends Entity {
 			break;
 		case WALL:
 			sign = Math.signum(vel.x);
+//			System.out.println("hello wall");
 			state.phyState.stopOnX();
 			if (sign == -1) {
 				state.setTestVal("hitleftwall", true);
@@ -168,6 +171,7 @@ public class Player extends Entity {
 							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
 							+ plat.getPos().y)) {
 				if (plat.isBetween(state.test("facingleft"), pos.x)) {
+					System.out.println("hello");
 					if (plat.getHeight(pos.x) - 8 < pos.y) {
 						state.setTestVal("hitplatform", true);
 						state.elevatedSegment = plat;
@@ -175,8 +179,10 @@ public class Player extends Entity {
 					}
 				}
 			}
+			break;
 		case LEVELWALL:
 			sign = Math.signum(vel.x);
+			System.out.println("hello wall");
 			state.phyState.stopOnX();
 			if (sign == -1) {
 				state.setTestVal("hitleftwall", true);
@@ -272,6 +278,8 @@ public class Player extends Entity {
 		state.addState(StateEnum.ATTACKING, new Attacking(state,
 				StateEnum.ATTACKING));
 		state.addState(StateEnum.DEAD, new Dead(state, StateEnum.DEAD));
+		state.addState(StateEnum.CASTSPELL, new CastSpell(state, StateEnum.CASTSPELL));
+		state.addState(StateEnum.DUPESKIN, new DupeSkin(state, StateEnum.DUPESKIN));
 		state.setState(StateEnum.IDLE);
 	}
 
@@ -281,9 +289,6 @@ public class Player extends Entity {
 		state.addTest("hitroof", false);
 		state.addTest("facingleft", false);
 		state.addTest("invi", false);
-		state.addTest("usingpower", false);
-		state.addTest("dupeskin", false);
-		state.addTest("usingdupeskin", false);
 		state.addTest("hitrightwall", false);
 		state.addTest("hitleftwall", false);
 	}
@@ -333,12 +338,9 @@ public class Player extends Entity {
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		KinematicParticle body = new KinematicParticle(new Vector3(256f,
-				WitchCraft.ground.findPointOnCurve(3, 32f).y, 0f),
-				Util.GRAVITY * 3);
+		KinematicParticle body = new KinematicParticle(new Vector3(256f,128f,0f),Util.GRAVITY * 3);
 
-		state = new StateMachine(name, body.getPos(), new Vector2(0.5f, 0.5f),
-				false, sd);
+		state = new StateMachine(name, body.getPos(), new Vector2(0.53f, 0.53f), false, sd);
 
 		state.animate.addAnimation("jump", sd.findAnimation("beginfly"));
 		state.animate.addAnimation("idle", sd.findAnimation("idle"));

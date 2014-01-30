@@ -25,6 +25,7 @@ public class PhysicsState {
 	public void stopOnX() {
 		body.setVel(0, body.getVel2D().y, 0);
 	}
+	
 	public void stopOnY() {
 		body.setVel(body.getVel2D().x, 0, 0);
 	}
@@ -51,4 +52,5 @@ public class PhysicsState {
 	public Vector2 getPos() { 
 		return body.getPos();
 	}
+
 }

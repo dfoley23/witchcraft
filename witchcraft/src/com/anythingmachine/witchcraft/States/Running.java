@@ -10,6 +10,14 @@ public class Running extends State{
 
 	
 	@Override
+	public void setCastSpell() {
+		if ( parent != StateEnum.DUPESKIN ) {
+			super.setCastSpell();
+		}
+	}
+
+	
+	@Override
 	public void setRun() {
 	}
 

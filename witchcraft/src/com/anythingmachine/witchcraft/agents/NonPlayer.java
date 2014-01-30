@@ -1,7 +1,5 @@
-
 package com.anythingmachine.witchcraft.agents;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import com.anythingmachine.aiengine.Action;
@@ -9,10 +7,12 @@ import com.anythingmachine.aiengine.Goal;
 import com.anythingmachine.aiengine.UtilityAI;
 import com.anythingmachine.aiengine.UtilityAI.AIState;
 import com.anythingmachine.animations.AnimationManager;
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -43,23 +44,22 @@ public class NonPlayer extends Agent {
 	protected Fixture feetFixture;
 	protected Fixture hitRadius;
 
-	public NonPlayer(String skinname, String atlasname, Vector2 pos, Vector2 bodyScale) {
+	public NonPlayer(String skinname, String atlasname, Vector2 pos,
+			Vector2 bodyScale) {
 		this.bodyScale = bodyScale;
 		this.type = EntityType.NONPLAYER;
 		this.curGroundSegment = 0;
 		active = true;
-		ArrayList<Vector2> points = WitchCraft.ground.getCurveBeginPoints();
-		for (int i = 0; i < points.size(); i++) {
-			if (pos.x > points.get(i).x) {
-				this.curGroundSegment = i;
-			}
-		}
+		// ArrayList<Vector2> points = WitchCraft.ground.getCurveBeginPoints();
+		// for (int i = 0; i < points.size(); i++) {
+		// if (pos.x > points.get(i).x) {
+		// this.curGroundSegment = i;
+		// }
+		// }
+		//
+		// curCurve = WitchCraft.ground.getCurve(curGroundSegment);
 
-		curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-
-		this.body = new KinematicParticle(
-				new Vector3(pos.x, WitchCraft.ground.findPointOnCurve(
-						curGroundSegment, 32f).y, 0f), -50f);
+		this.body = new KinematicParticle(new Vector3(pos.x, 128f, 0f), -50f);
 		WitchCraft.rk4System.addParticle(body);
 
 		setupAnimations(skinname, atlasname);
@@ -105,26 +105,26 @@ public class NonPlayer extends Agent {
 				animate.bindPose();
 				animate.setCurrent("swordattack", true);
 				break;
-			default:	
+			default:
 				handleState(state);
-//				body.setVel(50f, body.getVel().y, 0f);
-//				animate.setCurrent("walk", true);
-//				facingLeft = false;
-//				if (old != AIState.WALKINGRIGHT) {
-//					animate.bindPose();
-//				}
+				// body.setVel(50f, body.getVel().y, 0f);
+				// animate.setCurrent("walk", true);
+				// facingLeft = false;
+				// if (old != AIState.WALKINGRIGHT) {
+				// animate.bindPose();
+				// }
 				break;
 			}
 		}
 		checkGround();
 
-		if ( active ) {
-		animate.setPos(body.getPos(), 0, -16f);
-		if ( state == AIState.SWORDATTACK && animate.atEnd()) {
-			animate.applyTotalTime(false, animate.getCurrentAnimTime());
-		} else {
-			animate.update(delta);
-		}
+		if (active) {
+			animate.setPos(body.getPos(), 0, -16f);
+			if (state == AIState.SWORDATTACK && animate.atEnd()) {
+				animate.applyTotalTime(false, animate.getCurrentAnimTime());
+			} else {
+				animate.update(delta);
+			}
 		}
 		collisionBody.setTransform(
 				body.getPos().add(-8, 64).scl(Util.PIXEL_TO_BOX), 0);
@@ -158,46 +158,85 @@ public class NonPlayer extends Agent {
 	public Skin getSkin() {
 		return animate.getSkin();
 	}
-	
-	protected void checkGround() {
-		Vector2 pos = body.getPos();
-		if (pos.x > curCurve.lastPointOnCurve().x) {
-			curGroundSegment++;
-			if (curGroundSegment >= WitchCraft.ground.getNumCurves()) {
-				body.setVel(-50, 0, 0);
-				facingLeft = !facingLeft;
-			}
-			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-		} else if (pos.x < curCurve.firstPointOnCurve().x) {
-			curGroundSegment--;
-			if (curGroundSegment == 0) {
-				body.setVel(50, 0, 0);
-				facingLeft = !facingLeft;
-			}
-			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
+
+	@Override
+	public void handleContact(Contact contact, boolean isFixture1) {
+		Entity other;
+		if (isFixture1) {
+			other = (Entity) contact.getFixtureB().getBody().getUserData();
+		} else {
+			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		animate.setFlipX(facingLeft);
-		Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
-				curGroundSegment, pos.x);
-		if (pos.y < groundPoint.y) {
-			correctHeight(groundPoint.y);
-			onGround = true;
+		Vector2 pos = body.getPos();
+		Vector2 vel = body.getVel2D();
+		switch (other.type) {
+		case WALL:
+			// System.out.println("hello wall");
+			body.setVel(-vel.x, vel.y, 0);
+			facingLeft = !facingLeft;
+			break;
+		case PLATFORM:
+			Platform plat = (Platform) other;
+			if (plat.isBetween(facingLeft, pos.x)) {
+				if (plat.getHeight() - 32 < pos.y)
+					elevatedSegment = plat;
+			}
+			break;
+		default:
+			break;
 		}
 	}
-	
+
+	protected void checkGround() {
+		Vector2 pos = body.getPos();
+//		if (pos.x > curCurve.lastPointOnCurve().x) {
+//			curGroundSegment++;
+//			if (curGroundSegment >= WitchCraft.ground.getNumCurves()) {
+//				body.setVel(-50, 0, 0);
+//				facingLeft = !facingLeft;
+//			}
+//			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
+//		} else if (pos.x < curCurve.firstPointOnCurve().x) {
+//			curGroundSegment--;
+//			if (curGroundSegment == 0) {
+//				body.setVel(50, 0, 0);
+//				facingLeft = !facingLeft;
+//			}
+//			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
+//		}
+//		animate.setFlipX(facingLeft);
+//		Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
+//				curGroundSegment, pos.x);
+//		if (pos.y < groundPoint.y) {
+//			correctHeight(groundPoint.y);
+//			onGround = true;
+//		}
+		onGround = false;
+		if (elevatedSegment != null && elevatedSegment.isBetween(facingLeft, pos.x)) {
+			float groundPoint = elevatedSegment.getHeight(pos.x);
+//			if (pos.y < groundPoint) {
+				body.setPos(pos.x, groundPoint, 0);
+				onGround=true;
+//			}
+		} 
+	}
+
 	public void correctHeight(float y) {
 		body.setPos(body.getPos().x, y, 0f);
 	}
+
 	protected void handleState(AIState state) {
 	}
-	
+
 	protected void setupAnimations(String skinname, String atlasname) {
-		SkeletonBinary sb = new SkeletonBinary((TextureAtlas)WitchCraft.assetManager.get("data/spine/characters.atlas"));
+		SkeletonBinary sb = new SkeletonBinary(
+				(TextureAtlas) WitchCraft.assetManager
+						.get("data/spine/characters.atlas"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		animate = new AnimationManager(skinname, body.getPos(), new Vector2(0.6f,
-				0.7f), true, sd);
+		animate = new AnimationManager(skinname, body.getPos(), new Vector2(
+				0.6f, 0.7f), true, sd);
 		animate.addAnimation("idle", sd.findAnimation("idle"));
 		animate.addAnimation("walk", sd.findAnimation("walk"));
 		animate.addAnimation("run", sd.findAnimation("run"));

@@ -9,8 +9,12 @@ public class Landing extends State {
 		}
 
 		@Override
-		public boolean canCastSpell() {
-			return false;
+		public void setCastSpell() {
+			
+		}
+		@Override
+		public void setDupeSkin() {
+			
 		}
 
 }

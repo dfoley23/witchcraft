@@ -265,9 +265,9 @@ public class TiledMapHelper {
 		bodydef.position.set(0, 0);
 		Body body = WitchCraft.world.createBody(bodydef);
 		if ( level == 1 ) {
-			body.setUserData(new Entity().setType(EntityType.LEVELWALL));
+			body.setUserData(new Entity().setType(EntityType.WALL));
 		} else {
-	        body.setUserData(new LevelWall(level-1));			
+	        body.setUserData(new LevelWall(level-1));
 		}
 		EdgeShape mapBounds = new EdgeShape();
 		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0, layer.getHeight()).scl(Util.PIXELS_PER_METER));
@@ -338,7 +338,8 @@ public class TiledMapHelper {
 	 */
 	public void prepareCamera(int screenWidth, int screenHeight) {
 		Camera.camera = new OrthographicCamera(screenWidth, screenHeight);
-
+//		if ( WitchCraft.ON_ANDROID )
+//			Camera.camera.zoom = 0.5f;
 		Camera.camera.position.set(screenWidth / 2.0f, screenHeight / 2.0f, 0);
 	}
 

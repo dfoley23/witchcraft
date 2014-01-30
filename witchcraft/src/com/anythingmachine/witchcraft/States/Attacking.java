@@ -38,13 +38,29 @@ public class Attacking extends State {
 			if ( sm.animate.isTImeOverThreeQuarters(0)) {
 				sm.animate.bindPose();
 				sm.animate.setCurrent("idle", true);
-				sm.setState(StateEnum.IDLE);
+				sm.setState(parent);
 				sm.phyState.stop();
 			}
 		}
 
 		@Override
+		public void setInputSpeed() {
+			setIdle();
+		}
+		
+		@Override
 		public void setAttack() {
 			
 		}
+		
+		@Override
+		public void setWalk() {
+			
+		}
+		
+		@Override
+		public void setRun() {
+			
+		}
+
 }

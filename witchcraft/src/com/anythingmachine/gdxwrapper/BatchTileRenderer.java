@@ -105,6 +105,13 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 					}
 				}
 			}
+			if ( layer.getName().equals("backbackground")) {
+				endRender();
+//				Gdx.gl.glDisable(GL10.GL_BLEND);
+				main.drawBackGround();
+				beginRender();
+//				Gdx.gl.glEnable(GL10.GL_BLEND);
+			}
 		}
 		endRender();
 	}

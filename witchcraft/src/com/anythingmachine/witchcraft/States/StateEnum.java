@@ -55,6 +55,18 @@ public enum StateEnum {
 		public int getID() {
 			return 7;
 		}
+	},
+	DUPESKIN{
+		@Override
+		public int getID() {
+			return 9;
+		}
+	},
+	CASTSPELL {
+		@Override
+		public int getID() {
+			return 10;
+		}
 	};
 	
 	public int getID() {
