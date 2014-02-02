@@ -16,22 +16,17 @@ public class Spring {
 		this.springK = k;
 	}
 	
-	public Vector3 accel(Particle p) {
-		Vector3 pos = p.getPos3D().cpy();
-		Vector3 otherpos = other.getPos3D().cpy();
-		Vector3 diff = new Vector3( 0, 0, 0);
-		diff.x = pos.x - otherpos.x;
-		diff.y = pos.y - otherpos.y;
-		diff.z = pos.z - otherpos.z;
+	public Vector3 accel(Vector3 pos, Vector3 vel) {
+		Vector3 otherpos = other.getPos();
+		Vector3 diff = new Vector3(pos.x - otherpos.x, pos.y - otherpos.y, pos.z - otherpos.z);
 		//System.out.println(diff);
 		float mag =(float) Math.sqrt((double)(diff.x*diff.x + diff.y*diff.y +diff.z*diff.z));
 		Vector3 unitDir = new Vector3(diff.x/mag, diff.y/mag, diff.z/mag);
-		Vector3 vel = p.getVel().cpy();
 		Vector3 result =  new Vector3(0, 0, 0);
 
-		result.x = (-springK * (mag-restLength)*Util.dot(unitDir.cpy(), new Vector3(1f,0f,0f)))-vel.x*damper;
-	    result.y = (-springK * (mag-restLength)*Util.dot(unitDir.cpy(), new Vector3(0f,1f,0f)))-vel.y*damper;
-		result.z = (-springK * (mag-restLength)*Util.dot(unitDir.cpy(), new Vector3(0f,0f,1f)))-vel.z*damper;
+		result.x = (-springK * (mag-restLength)*Util.dot(unitDir, new Vector3(1f,0f,0f)))-vel.x*damper;
+	    result.y = (-springK * (mag-restLength)*Util.dot(unitDir, new Vector3(0f,1f,0f)))-vel.y*damper;
+		result.z = (-springK * (mag-restLength)*Util.dot(unitDir, new Vector3(0f,0f,1f)))-vel.z*damper;
 		return result;
 	}
 	

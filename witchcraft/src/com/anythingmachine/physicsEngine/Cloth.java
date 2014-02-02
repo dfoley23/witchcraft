@@ -23,7 +23,6 @@ public class Cloth implements PhysicsComponent {
 	private ShaderProgram shader;
 	private Matrix4 model;
 	private Vector3 trans;
-	private float rot;
 	private boolean flip;
 	
 	public Cloth(int w, int h, RK4Integrator rk4) {
@@ -43,7 +42,6 @@ public class Cloth implements PhysicsComponent {
 		model = new Matrix4();
 		flip = false;
 		trans = new Vector3(0, 0, 0);
-		rot = 0;
 	}
 
 	public Cloth() {
@@ -61,11 +59,8 @@ public class Cloth implements PhysicsComponent {
 	}
 	
 	public void trans(float x, float y) {
-		trans = new Vector3(x, y, 0);
-	}
-	
-	public void rotate(float degrees) {
-		rot = degrees;
+		trans.x = x;
+		trans.y = y;
 	}
 	
 	public void draw(Matrix4 cam, float alpha) {
@@ -93,6 +88,7 @@ public class Cloth implements PhysicsComponent {
 	}
 
 	public void addLink(Particle p) {
+		p.useEuler = false;
 		links.add(p);
 	}
 
@@ -102,10 +98,14 @@ public class Cloth implements PhysicsComponent {
 
 	public void updateVertsByIndex() {
 		Arrays.fill(verts, 0);
+		Vector3 p1;
+		Vector3 p2;
+		Vector3 p3;
+
 		for (int i = 0; i < indicount; i += 3) {
-			Vector3 p1 = links.get((int) (indices[i])).pos;
-			Vector3 p2 = links.get((int) (indices[i + 1])).pos;
-			Vector3 p3 = links.get((int) (indices[i + 2])).pos;
+			p1 = links.get((int) (indices[i])).pos;
+			p2 = links.get((int) (indices[i + 1])).pos;
+			p3 = links.get((int) (indices[i + 2])).pos;
 
 			verts[(indices[i] * offset)] = p1.x;
 			verts[(indices[i] * offset) + 1] = p1.y;

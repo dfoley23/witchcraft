@@ -44,7 +44,7 @@ public class Link {
 	}
 	
 	public void updatePos( Vector2 pos ) {
-		body.setTransform(pos.mul(Util.PIXEL_TO_BOX), 0.0f);
+		body.setTransform(pos.scl(Util.PIXEL_TO_BOX), 0.0f);
 	}
 	
 	public void setVelocity( Vector2 vel ) {
@@ -56,7 +56,7 @@ public class Link {
 	}
 	
 	public Vector2 getPositionPixels( ) {
-		return body.getPosition().cpy().mul(Util.PIXELS_PER_METER);
+		return body.getPosition().cpy().scl(Util.PIXELS_PER_METER);
 	}
 	
 	public void flipSprite() {
@@ -73,7 +73,7 @@ public class Link {
 	}
 	
 	public void draw( SpriteBatch batch ) {
-		Vector2 pos =  body.getPosition().cpy().mul(Util.PIXELS_PER_METER)
+		Vector2 pos =  body.getPosition().cpy().scl(Util.PIXELS_PER_METER)
 				.sub(sprite.getWidth()/4.f, sprite.getHeight()/4.f);
 		this.sprite.setPosition( pos.x, pos.y );
 		if( !isRotated )
@@ -83,8 +83,8 @@ public class Link {
 
 	private void constructBody( Vector2 pos, float density, World world, float height ) {
 		BodyDef bodyDef = new BodyDef( );
-		bodyDef.position.set( pos.mul(Util.PIXEL_TO_BOX) );
-		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set( pos.scl(Util.PIXEL_TO_BOX) );
+		bodyDef.type = BodyType.KinematicBody;
 		bodyDef.allowSleep = false;
 		//bodyDef.gravityScale = 1f;
 		CircleShape shape = new CircleShape( );

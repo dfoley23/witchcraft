@@ -34,7 +34,7 @@ public class MindControlPower implements Power {
 		if (state.state.isPlayer()) {
 			timeout--;
 			if (timeout < 0) {
-				Vector2 pos = state.phyState.getPos();
+				Vector3 pos = state.phyState.getPos();
 				WitchCraft.rk4System.addParticle(particle.copy(new Vector3(
 						state.animate.isFlipped() ? pos.x - 48f : pos.x + 8,
 						pos.y + 32, 0), new Vector3(

@@ -4,7 +4,7 @@ import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class Flying extends State {
 	private float rotation;
@@ -126,28 +126,9 @@ public class Flying extends State {
 
 	@Override
 	public void checkGround() {
-		Vector2 pos = sm.phyState.getPos();
-		if (!sm.test("hitplatform")) {
-			// System.out.println(pos);
-			if (pos.x > sm.curCurve.lastPointOnCurve().x
-					&& sm.curGroundSegment + 1 < WitchCraft.ground
-							.getNumCurves()) {
-				sm.curGroundSegment++;
-				sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
-			} else if (pos.x < sm.curCurve.firstPointOnCurve().x
-					&& sm.curGroundSegment - 1 >= 0) {
-				sm.curGroundSegment--;
-				sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
-			}
-			Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
-					sm.curGroundSegment, pos.x);
-			sm.setTestVal("grounded", false);
-			if (pos.y <= groundPoint.y) {
-				sm.phyState.correctHeight(groundPoint.y);
-				sm.state.land();
-			}
-		} else {
-			sm.setTestVal("grounded", false);
+		Vector3 pos = sm.phyState.getPos();
+		sm.setTestVal("grounded", false);
+		if (sm.test("hitplatform")) {
 			if (sm.elevatedSegment.isBetween(sm.test("facingleft"), pos.x)) {
 				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 				if (pos.y < groundPoint) {

@@ -6,8 +6,8 @@ import com.anythingmachine.physicsEngine.Particle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -40,7 +40,9 @@ public class Arrow extends Particle {
 		return list;
 	}
 
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {		
+		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX, 0);
+		sprite.setPosition(pos.x, pos.y);
 		sprite.draw(batch);
 	}
 		
@@ -58,11 +60,9 @@ public class Arrow extends Particle {
 
 	public void setPos(float x, float y, float z) {
 		this.pos.set(x, y, z);
-		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX, 0);
-		sprite.setPosition(pos.x, pos.y);
 	}
 
-	public void pointAtTarget(Vector2 target, float speed) {
+	public void pointAtTarget(Vector3 target, float speed) {
 		Vector3 dir = new Vector3(target.x-pos.x, target.y-pos.y, 0);
 		dir.scl(1/dir.len());
 		this.vel.set(dir.x*speed, Math.max(0.125f, dir.y)*speed, 0);
@@ -96,9 +96,8 @@ public class Arrow extends Particle {
 	}
 
 	@Override
-	public Vector3 accel(Particle p, float t) {
-		Vector3 result =  new Vector3(0, 0, 0);
-		result.y += Util.GRAVITY;
+	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {
+		Vector3 result =  new Vector3(0, Util.GRAVITY, 0);
 		return result;
 	}
 		
@@ -129,8 +128,8 @@ public class Arrow extends Particle {
 		def.position
 				.set(new Vector2(this.getPos().x, this.getPos().y));
 		collisionBody = WitchCraft.world.createBody(def);
-		collisionBody.setBullet(true);
 		PolygonShape shape = new PolygonShape();
+		collisionBody.setBullet(true);
 		shape.setAsBox(32 * Util.PIXEL_TO_BOX, 16 * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();
 		fixture.shape = shape;

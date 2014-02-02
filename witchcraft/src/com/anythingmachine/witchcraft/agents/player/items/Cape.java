@@ -7,7 +7,6 @@ import com.anythingmachine.physicsEngine.Particle;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.SpringParticle;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class Cape {
@@ -15,7 +14,7 @@ public class Cape {
 	private ArrayList<Vector3> pinpos;
 	private Cloth cloth;
 	
-	public Cape(int width, int height, RK4Integrator rk4, Vector2 originpos) {
+	public Cape(int width, int height, RK4Integrator rk4, Vector3 originpos) {
 		pins = new ArrayList<Particle>();
 		pinpos = new ArrayList<Vector3>();
 		cloth = new Cloth(width, height, rk4);
@@ -64,7 +63,7 @@ public class Cape {
 		cloth.addForce(new Vector3(x, y, 0));
 	}
 	
-	private void buildCloth(Cloth cloth, Vector2 originpos) { 
+	private void buildCloth(Cloth cloth, Vector3 originpos) { 
 		float springK = 350f;
 		float damper = 0.75f;
 		Particle pin1 = new Particle(new Vector3(10f,  6f,  -30f));

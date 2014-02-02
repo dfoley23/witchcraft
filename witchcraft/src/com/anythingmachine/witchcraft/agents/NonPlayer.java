@@ -14,7 +14,7 @@ import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -126,16 +126,15 @@ public class NonPlayer extends Agent {
 				animate.update(delta);
 			}
 		}
-		collisionBody.setTransform(
-				body.getPos().add(-8, 64).scl(Util.PIXEL_TO_BOX), 0);
+		collisionBody.setTransform(Util.addVecsToVec2(body.getPos(), -8, 64).scl(Util.PIXEL_TO_BOX), 0);
 
 	}
 
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		animate.draw(batch);
 	}
 
-	public Vector2 getPosPixels() {
+	public Vector3 getPosPixels() {
 		return body.getPos();
 	}
 
@@ -167,8 +166,8 @@ public class NonPlayer extends Agent {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		Vector2 pos = body.getPos();
-		Vector2 vel = body.getVel2D();
+		Vector3 pos = body.getPos();
+		Vector3 vel = body.getVel();
 		switch (other.type) {
 		case WALL:
 			// System.out.println("hello wall");
@@ -188,7 +187,7 @@ public class NonPlayer extends Agent {
 	}
 
 	protected void checkGround() {
-		Vector2 pos = body.getPos();
+		Vector3 pos = body.getPos();
 //		if (pos.x > curCurve.lastPointOnCurve().x) {
 //			curGroundSegment++;
 //			if (curGroundSegment >= WitchCraft.ground.getNumCurves()) {
@@ -297,8 +296,7 @@ public class NonPlayer extends Agent {
 		def.position
 				.set(new Vector2(this.body.getPos().x, this.body.getPos().y));
 		collisionBody = WitchCraft.world.createBody(def);
-		collisionBody.setBullet(true);
-		PolygonShape shape = new PolygonShape();
+		PolygonShape shape = new PolygonShape();		
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();
 		fixture.shape = shape;

@@ -5,13 +5,13 @@ import java.util.HashMap;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.PhysicsState;
-import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.States.State;
 import com.anythingmachine.witchcraft.States.StateEnum;
 import com.anythingmachine.witchcraft.ground.Curve;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.SkeletonData;
 
@@ -28,7 +28,7 @@ public class StateMachine {
 	public Platform elevatedSegment;
 	public String dupeSkin;
 	
-	public StateMachine(String name, Vector2 pos, Vector2 scl, boolean flip,
+	public StateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd) {
 		tests = new HashMap<String, Boolean>();
 		animate = new AnimationManager(name, pos, scl, flip, sd);

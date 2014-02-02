@@ -35,6 +35,13 @@ public class Util {
 	public static Vector3 addVecs(Vector3 v, Vector3 u) {
 		return new Vector3(v.x + u.x, v.y + u.y, v.z + u.z);
 	}
+	public static Vector3 addVecs(Vector3 v, float x, float y) {
+		return new Vector3(v.x + x, v.y + y, 0);
+	}
+
+	public static Vector2 addVecsToVec2(Vector3 v, float x, float y) {
+		return new Vector2(v.x + x, v.y + y);
+	}
 	public static Vector2 addVecs(Vector2 v, Vector2 u) {
 		return new Vector2(v.x + u.x, v.y + u.y);
 	}
@@ -49,6 +56,10 @@ public class Util {
 
 	public static Vector3 sclVec(Vector3 v, float s) {
 		return new Vector3(v.x * s, v.y * s, v.z * s);
+	}
+
+	public static Vector2 sclVecTo2(Vector3 v, float s) {
+		return new Vector2(v.x * s, v.y * s);
 	}
 
 //	public static int loadShader(String filename, int type) {

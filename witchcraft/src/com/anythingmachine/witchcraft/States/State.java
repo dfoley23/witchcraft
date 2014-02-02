@@ -5,7 +5,7 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class State {
 	protected StateMachine sm;
@@ -148,7 +148,7 @@ public class State {
 	}
 
 	protected void checkGround() {
-		Vector2 pos = sm.phyState.getPos();
+		Vector3 pos = sm.phyState.getPos();
 		if (sm.test("hitplatform")) {
 			// System.out.println(pos);
 //			if (pos.x > sm.curCurve.lastPointOnCurve().x

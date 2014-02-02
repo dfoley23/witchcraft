@@ -23,7 +23,7 @@ public class TexturedBodyParticle extends TexturedParticle {
 	
 	@Override
 	public void draw(SpriteBatch batch) {
-		collisionBody.setTransform(getPos().cpy().mul(Util.PIXEL_TO_BOX),
+		collisionBody.setTransform(Util.sclVecTo2(getPos(), Util.PIXEL_TO_BOX),
 				collisionBody.getAngle());
 		sprite.setPosition(pos.x, pos.y);
 		sprite.setRotation(collisionBody.getAngle()*Util.RAD_TO_DEG);

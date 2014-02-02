@@ -3,7 +3,7 @@ package com.anythingmachine.physicsEngine;
 import java.util.ArrayList;
 
 import com.anythingmachine.witchcraft.Util.Util;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
 public class SpringParticle extends Particle {
@@ -16,7 +16,7 @@ public class SpringParticle extends Particle {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		
 	}
 
@@ -30,10 +30,10 @@ public class SpringParticle extends Particle {
 	}
 	
 	@Override
-	public Vector3 accel(Particle p, float t) {
+	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {
 		Vector3 result =  new Vector3(0, 0, 0);
 		for( Spring s: springs ) {
-			Vector3 force = s.accel(p);
+			Vector3 force = s.accel(pos, vel);
 			//System.out.println(force);
 			result.x += force.x;
 			result.y += force.y;
@@ -48,12 +48,20 @@ public class SpringParticle extends Particle {
 		
 	@Override
 	public void integratePos(Vector3 dxdp, float dt) {
-		this.pos.add(Util.sclVec(dxdp, dt));
+		Vector3 ds = Util.sclVec(dxdp, dt);
+		this.pos.x += ds.x;
+		this.pos.y += ds.y;
+		this.pos.z += ds.z;
 	}
 
 	@Override
 	public void integrateVel(Vector3 dvdp, float dt) {
-		this.vel.add(Util.sclVec(dvdp, dt));		
-		externalForce = new Vector3(0, 0, 0);
+		Vector3 ds = Util.sclVec(dvdp, dt);
+		this.vel.x += ds.x;
+		this.vel.y += ds.y;
+		this.vel.z += ds.z;
+//		externalForce.x = 0;
+//		externalForce.y = 0;
+//		externalForce.z = 0;
 	}
 }

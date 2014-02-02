@@ -1,683 +1,683 @@
 
-characters.png
+characters-1.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 archer_xcf-1string
-  rotate: true
-  xy: 269, 501
+  rotate: false
+  xy: 38, 119
   size: 8, 152
   orig: 8, 152
   offset: 0, 0
   index: -1
 archer_xcf-aroow
   rotate: true
-  xy: 54, 118
+  xy: 48, 155
   size: 116, 13
   orig: 128, 16
   offset: 8, 3
   index: -1
 archer_xcf-body
-  rotate: false
-  xy: 542, 431
+  rotate: true
+  xy: 809, 448
   size: 62, 78
   orig: 62, 78
   offset: 0, 0
   index: -1
 archer_xcf-head
   rotate: false
-  xy: 480, 286
+  xy: 38, 2
   size: 44, 47
   orig: 44, 52
   offset: 0, 4
   index: -1
 archer_xcf-leftfoot
-  rotate: true
-  xy: 550, 297
+  rotate: false
+  xy: 112, 108
   size: 36, 16
   orig: 36, 16
   offset: 0, 0
   index: -1
 archer_xcf-lefthand
-  rotate: true
-  xy: 865, 397
+  rotate: false
+  xy: 705, 393
   size: 20, 18
   orig: 20, 18
   offset: 0, 0
   index: -1
 archer_xcf-lefthanditem
-  rotate: false
-  xy: 2, 74
+  rotate: true
+  xy: 213, 460
   size: 50, 160
   orig: 50, 160
   offset: 0, 0
   index: -1
 archer_xcf-leftleg
-  rotate: true
-  xy: 726, 381
+  rotate: false
+  xy: 396, 201
   size: 22, 48
   orig: 22, 48
   offset: 0, 0
   index: -1
 archer_xcf-leftupperleg
-  rotate: true
-  xy: 649, 393
+  rotate: false
+  xy: 69, 66
   size: 36, 51
   orig: 40, 54
   offset: 1, 3
   index: -1
 archer_xcf-lowerleftarm
   rotate: true
-  xy: 191, 100
+  xy: 654, 391
   size: 20, 24
   orig: 20, 24
   offset: 0, 0
   index: -1
 archer_xcf-neck
-  rotate: true
-  xy: 203, 265
+  rotate: false
+  xy: 630, 399
   size: 22, 15
   orig: 22, 15
   offset: 0, 0
   index: -1
 archer_xcf-pelvis
-  rotate: false
-  xy: 223, 194
+  rotate: true
+  xy: 134, 76
   size: 30, 20
   orig: 55, 28
   offset: 3, 6
   index: -1
 archer_xcf-righthand
   rotate: false
-  xy: 568, 295
+  xy: 515, 217
   size: 18, 16
   orig: 18, 16
   offset: 0, 0
   index: -1
 archer_xcf-righthanditem
-  rotate: false
-  xy: 70, 313
+  rotate: true
+  xy: 213, 408
   size: 50, 160
   orig: 50, 160
   offset: 0, 0
   index: -1
 archer_xcf-rightleg
   rotate: true
-  xy: 54, 75
+  xy: 384, 133
   size: 22, 48
   orig: 22, 48
   offset: 0, 0
   index: -1
 archer_xcf-rightlowerarm
   rotate: true
-  xy: 795, 405
+  xy: 48, 119
   size: 34, 32
   orig: 35, 32
   offset: 1, 0
   index: -1
 archer_xcf-rightupperarm
   rotate: false
-  xy: 847, 409
+  xy: 577, 348
   size: 16, 32
   orig: 16, 35
   offset: 0, 0
   index: -1
 archer_xcf-rightupperleg
-  rotate: true
-  xy: 500, 335
+  rotate: false
+  xy: 388, 157
   size: 37, 42
   orig: 40, 49
   offset: 2, 7
   index: -1
 archer_xcf-upperleftarm
   rotate: true
-  xy: 776, 387
+  xy: 332, 117
   size: 16, 34
   orig: 16, 34
   offset: 0, 0
   index: -1
 archerclosedeyes
   rotate: true
-  xy: 422, 308
+  xy: 63, 251
   size: 20, 5
   orig: 20, 5
   offset: 0, 0
   index: -1
 civ-hood
-  rotate: false
-  xy: 606, 431
+  rotate: true
+  xy: 889, 449
   size: 61, 78
   orig: 67, 78
   offset: 6, 0
   index: -1
 civ1_xcf-body
   rotate: false
-  xy: 669, 431
+  xy: 153, 314
   size: 59, 78
   orig: 62, 78
   offset: 0, 0
   index: -1
 civ1_xcf-lefthand
-  rotate: true
-  xy: 568, 313
+  rotate: false
+  xy: 515, 235
   size: 20, 18
   orig: 20, 18
   offset: 0, 0
   index: -1
 civ1_xcf-leftleg
-  rotate: true
-  xy: 104, 76
+  rotate: false
+  xy: 481, 296
   size: 22, 48
   orig: 22, 48
   offset: 0, 0
   index: -1
 civ1_xcf-leftupperleg
-  rotate: false
-  xy: 103, 100
+  rotate: true
+  xy: 427, 304
   size: 40, 52
   orig: 40, 54
   offset: 0, 2
   index: -1
 civ1_xcf-lowerleftarm
   rotate: true
-  xy: 427, 181
+  xy: 680, 391
   size: 20, 23
   orig: 20, 24
   offset: 0, 1
   index: -1
 civ1_xcf-neck
-  rotate: true
-  xy: 865, 419
+  rotate: false
+  xy: 516, 255
   size: 22, 15
   orig: 22, 15
   offset: 0, 0
   index: -1
 civ1_xcf-pelvis
   rotate: true
-  xy: 526, 296
+  xy: 553, 342
   size: 37, 22
   orig: 55, 28
   offset: 2, 6
   index: -1
 civ1_xcf-righthand
-  rotate: false
-  xy: 812, 387
+  rotate: true
+  xy: 520, 197
   size: 18, 16
   orig: 18, 16
   offset: 0, 0
   index: -1
 civ1_xcf-rightleg
-  rotate: true
-  xy: 154, 76
+  rotate: false
+  xy: 474, 207
   size: 22, 48
   orig: 22, 48
   offset: 0, 0
   index: -1
 civ1_xcf-rightlowerarm
-  rotate: true
-  xy: 191, 122
+  rotate: false
+  xy: 434, 135
   size: 30, 26
   orig: 30, 26
   offset: 0, 0
   index: -1
 civ1_xcf-rightupperarm
   rotate: false
-  xy: 208, 154
+  xy: 576, 382
   size: 16, 30
   orig: 16, 30
   offset: 0, 0
   index: -1
 civ1_xcf-rightupperleg
-  rotate: true
-  xy: 430, 293
+  rotate: false
+  xy: 112, 126
   size: 40, 48
   orig: 40, 53
   offset: 0, 5
   index: -1
 civ1_xcf-upperleftarm
-  rotate: false
-  xy: 829, 407
+  rotate: true
+  xy: 594, 398
   size: 16, 34
   orig: 16, 34
   offset: 0, 0
   index: -1
 civ2_xcf-body
   rotate: false
-  xy: 436, 427
+  xy: 969, 428
   size: 53, 82
   orig: 60, 82
   offset: 7, 0
   index: -1
 civ2_xcf-dress
   rotate: false
-  xy: 808, 443
+  xy: 732, 444
   size: 75, 66
   orig: 81, 70
   offset: 2, 4
   index: -1
 civ2_xcf-dressback
   rotate: false
-  xy: 730, 441
+  xy: 654, 442
   size: 76, 68
   orig: 81, 70
   offset: 3, 2
   index: -1
 civ2_xcf-femaleblackhair
-  rotate: false
-  xy: 145, 100
+  rotate: true
+  xy: 425, 258
   size: 44, 52
   orig: 44, 52
   offset: 0, 0
   index: -1
 civ2_xcf-femalebrownhair
-  rotate: false
-  xy: 503, 374
+  rotate: true
+  xy: 342, 205
   size: 44, 52
   orig: 44, 52
   offset: 0, 0
   index: -1
 civ2_xcf-femaleredhair
-  rotate: false
-  xy: 549, 377
+  rotate: true
+  xy: 334, 159
   size: 44, 52
   orig: 44, 52
   offset: 0, 0
   index: -1
 civmale-brownhair
-  rotate: true
-  xy: 885, 400
+  rotate: false
+  xy: 154, 128
   size: 44, 47
   orig: 44, 52
   offset: 0, 4
   index: -1
 civmale-redhair
-  rotate: true
-  xy: 420, 250
+  rotate: false
+  xy: 200, 128
   size: 41, 47
   orig: 44, 52
   offset: 3, 4
   index: -1
 closedEyes
-  rotate: true
-  xy: 105, 199
+  rotate: false
+  xy: 505, 299
   size: 28, 9
   orig: 28, 9
   offset: 0, 0
   index: -1
 witch-closedEyes
-  rotate: true
-  xy: 105, 199
+  rotate: false
+  xy: 505, 299
   size: 28, 9
   orig: 28, 9
   offset: 0, 0
   index: -1
 head
-  rotate: false
-  xy: 382, 190
+  rotate: true
+  xy: 274, 176
   size: 43, 58
   orig: 43, 58
   offset: 0, 0
   index: -1
 knight_xcf-head
   rotate: false
-  xy: 595, 380
+  xy: 420, 207
   size: 52, 49
   orig: 52, 49
   offset: 0, 0
   index: -1
 knight_xcf-leftFoot
-  rotate: false
-  xy: 952, 396
+  rotate: true
+  xy: 498, 212
   size: 43, 15
   orig: 43, 15
   offset: 0, 0
   index: -1
 knight_xcf-lowerLeftArm
-  rotate: true
-  xy: 361, 330
+  rotate: false
+  xy: 141, 177
   size: 38, 67
   orig: 38, 67
   offset: 0, 0
   index: -1
 knight_xcf-lowerLeftLeg
-  rotate: false
-  xy: 327, 284
+  rotate: true
+  xy: 355, 251
   size: 29, 62
   orig: 29, 62
   offset: 0, 0
   index: -1
 knight_xcf-lowerRightArm
   rotate: true
-  xy: 436, 401
+  xy: 375, 388
   size: 24, 65
   orig: 25, 65
   offset: 1, 0
   index: -1
 knight_xcf-lowerRightLeg
   rotate: true
-  xy: 885, 482
+  xy: 654, 413
   size: 27, 74
   orig: 27, 74
   offset: 0, 0
   index: -1
 knight_xcf-pelvis
   rotate: true
-  xy: 961, 443
+  xy: 153, 246
   size: 66, 57
   orig: 66, 57
   offset: 0, 0
   index: -1
 knight_xcf-rightfoot
   rotate: true
-  xy: 513, 247
+  xy: 499, 173
   size: 37, 19
   orig: 37, 19
   offset: 0, 0
   index: -1
 knight_xcf-torso
   rotate: false
-  xy: 122, 185
+  xy: 214, 339
   size: 68, 67
   orig: 68, 67
   offset: 0, 0
   index: -1
 knight_xcf-upperLeftArm
-  rotate: true
-  xy: 256, 305
+  rotate: false
+  xy: 98, 176
   size: 41, 69
   orig: 41, 69
   offset: 0, 0
   index: -1
 knight_xcf-upperLeftLeg
-  rotate: false
-  xy: 491, 428
+  rotate: true
+  xy: 70, 247
   size: 49, 81
   orig: 49, 81
   offset: 0, 0
   index: -1
 knight_xcf-upperRightArm
-  rotate: true
-  xy: 256, 273
+  rotate: false
+  xy: 181, 177
   size: 30, 67
   orig: 30, 67
   offset: 0, 0
   index: -1
 knight_xcf-upperRightLeg
-  rotate: false
-  xy: 70, 229
+  rotate: true
+  xy: 284, 356
   size: 50, 82
   orig: 50, 82
   offset: 0, 0
   index: -1
 left-arm
-  rotate: true
-  xy: 501, 206
+  rotate: false
+  xy: 505, 310
   size: 37, 35
   orig: 37, 35
   offset: 0, 0
   index: -1
 left-foot
   rotate: false
-  xy: 433, 368
+  xy: 275, 221
   size: 65, 31
   orig: 65, 31
   offset: 0, 0
   index: -1
 left-hand
-  rotate: true
-  xy: 173, 154
+  rotate: false
+  xy: 468, 172
   size: 29, 33
   orig: 35, 40
   offset: 0, 6
   index: -1
 left-lower-leg
   rotate: true
-  xy: 105, 154
+  xy: 287, 254
   size: 29, 66
   orig: 33, 70
   offset: 3, 4
   index: -1
 left-shoulder
   rotate: false
-  xy: 427, 203
+  xy: 82, 119
   size: 28, 45
   orig: 28, 46
   offset: 0, 1
   index: -1
 left-upper-leg
-  rotate: true
-  xy: 122, 254
+  rotate: false
+  xy: 63, 166
   size: 33, 79
   orig: 36, 84
   offset: 0, 5
   index: -1
 pelvis
   rotate: false
-  xy: 358, 250
+  xy: 213, 222
   size: 60, 43
   orig: 62, 43
   offset: 1, 0
   index: -1
 right-arm
   rotate: true
-  xy: 649, 369
+  xy: 332, 135
   size: 22, 50
   orig: 28, 50
   offset: 3, 0
   index: -1
 right-foot
   rotate: false
-  xy: 256, 238
+  xy: 368, 353
   size: 63, 33
   orig: 63, 33
   offset: 0, 0
   index: -1
 right-hand
   rotate: false
-  xy: 997, 385
+  xy: 107, 80
   size: 25, 26
   orig: 36, 37
   offset: 7, 11
   index: -1
 right-lower-leg
-  rotate: false
-  xy: 69, 155
+  rotate: true
+  xy: 214, 303
   size: 34, 72
   orig: 36, 76
   offset: 2, 4
   index: -1
 right-shoulder
-  rotate: true
-  xy: 469, 245
+  rotate: false
+  xy: 273, 132
   size: 39, 42
   orig: 39, 45
   offset: 0, 0
   index: -1
 right-upper-leg
   rotate: true
-  xy: 885, 446
+  xy: 212, 267
   size: 34, 73
   orig: 34, 73
   offset: 0, 0
   index: -1
 sworda
-  rotate: false
-  xy: 2, 475
+  rotate: true
+  xy: 2, 6
   size: 265, 34
   orig: 265, 34
   offset: 0, 0
   index: -1
 swordc
   rotate: false
-  xy: 122, 357
+  xy: 70, 394
   size: 141, 116
   orig: 154, 126
   offset: 0, 10
   index: -1
 torso
-  rotate: true
-  xy: 122, 289
+  rotate: false
+  xy: 517, 414
   size: 66, 96
   orig: 68, 96
   offset: 0, 0
   index: -1
 witch-broom
   rotate: false
-  xy: 2, 236
+  xy: 2, 273
   size: 66, 237
   orig: 66, 240
   offset: 0, 3
   index: -1
 witch-head
-  rotate: false
-  xy: 69, 99
+  rotate: true
+  xy: 497, 347
   size: 32, 54
   orig: 32, 54
   offset: 0, 0
   index: -1
 witch-hood
-  rotate: true
-  xy: 265, 348
+  rotate: false
+  xy: 70, 298
   size: 81, 94
   orig: 81, 94
   offset: 0, 0
   index: -1
 witch-hood-invi
   rotate: false
-  xy: 367, 405
+  xy: 585, 416
   size: 67, 94
   orig: 67, 94
   offset: 0, 0
   index: -1
 witch-left-arm
   rotate: true
-  xy: 544, 335
+  xy: 479, 257
   size: 37, 35
   orig: 37, 35
   offset: 0, 0
   index: -1
 witch-left-foot
   rotate: false
-  xy: 430, 335
+  xy: 442, 381
   size: 65, 31
   orig: 65, 31
   offset: 0, 0
   index: -1
 witch-left-foot-invi
-  rotate: true
-  xy: 223, 216
+  rotate: false
+  xy: 509, 381
   size: 65, 31
   orig: 65, 31
   offset: 0, 0
   index: -1
 witch-left-hand
   rotate: false
-  xy: 999, 416
+  xy: 516, 272
   size: 23, 25
   orig: 28, 32
   offset: 0, 7
   index: -1
 witch-left-hand-flat
   rotate: true
-  xy: 934, 399
+  xy: 314, 129
   size: 45, 16
   orig: 46, 20
   offset: 0, 0
   index: -1
 witch-right-hand-flat
   rotate: true
-  xy: 934, 399
+  xy: 314, 129
   size: 45, 16
   orig: 46, 20
   offset: 0, 0
   index: -1
 witch-left-lower-leg
   rotate: false
-  xy: 192, 186
+  xy: 38, 51
   size: 29, 66
   orig: 33, 70
   offset: 3, 4
   index: -1
 witch-left-shoulder
-  rotate: true
-  xy: 952, 413
+  rotate: false
+  xy: 243, 130
   size: 28, 45
   orig: 28, 46
   offset: 0, 1
   index: -1
 witch-left-upper-leg
   rotate: true
-  xy: 361, 370
+  xy: 288, 285
   size: 33, 70
   orig: 33, 70
   offset: 0, 0
   index: -1
 witch-pelvis
   rotate: false
-  xy: 321, 205
+  xy: 213, 177
   size: 59, 43
   orig: 62, 43
   offset: 1, 0
   index: -1
 witch-right-arm
   rotate: false
-  xy: 702, 379
+  xy: 84, 14
   size: 22, 50
   orig: 28, 50
   offset: 3, 0
   index: -1
 witch-right-foot
   rotate: false
-  xy: 256, 203
+  xy: 362, 318
   size: 63, 33
   orig: 63, 33
   offset: 0, 0
   index: -1
 witch-right-foot-invi
   rotate: false
-  xy: 358, 295
+  xy: 433, 346
   size: 62, 33
   orig: 63, 33
   offset: 0, 0
   index: -1
 witch-right-hand
   rotate: false
-  xy: 226, 166
+  xy: 544, 314
   size: 26, 26
   orig: 36, 37
   offset: 7, 11
   index: -1
 witch-right-lower-leg
-  rotate: false
-  xy: 220, 283
+  rotate: true
+  xy: 288, 320
   size: 34, 72
   orig: 36, 76
   offset: 2, 4
   index: -1
 witch-right-shoulder
-  rotate: true
-  xy: 457, 204
+  rotate: false
+  xy: 427, 163
   size: 39, 42
   orig: 39, 45
   offset: 0, 0
   index: -1
 witch-right-upper-leg
   rotate: true
-  xy: 730, 405
+  xy: 360, 282
   size: 34, 63
   orig: 34, 63
   offset: 0, 0
   index: -1
 witch-torso
-  rotate: true
-  xy: 2, 2
+  rotate: false
+  xy: 375, 414
   size: 70, 96
   orig: 70, 96
   offset: 0, 0
   index: -1
 witch-torso-invi
-  rotate: true
-  xy: 269, 431
+  rotate: false
+  xy: 447, 414
   size: 68, 96
   orig: 68, 96
   offset: 0, 0

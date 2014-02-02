@@ -11,7 +11,7 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -39,8 +39,8 @@ public class Archer extends NonPlayer {
 			arrow.pointAtTarget(WitchCraft.player.getPosPixels(), 650);
 			shotArrow = true;
 		} else {
-			Vector2 target = WitchCraft.player.getPosPixels();
-			Vector2 pos = this.getPosPixels();
+			Vector3 target = WitchCraft.player.getPosPixels();
+			Vector3 pos = this.getPosPixels();
 			Vector3 dir = new Vector3(target.x-pos.x, target.y-pos.y, 0);
 			float costheta = Util.dot(dir, new Vector3(1, 0, 0))/dir.len();
 			animate.rotate((float)Math.acos(costheta));
@@ -50,7 +50,7 @@ public class Archer extends NonPlayer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		super.draw(batch);
 	}
 	

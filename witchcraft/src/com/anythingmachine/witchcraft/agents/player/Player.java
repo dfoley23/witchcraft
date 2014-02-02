@@ -33,6 +33,7 @@ import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -103,7 +104,7 @@ public class Player extends Entity {
 		// System.out.println(state.state);
 	}
 
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		state.animate.draw(batch);
 	}
 
@@ -117,7 +118,7 @@ public class Player extends Entity {
 		}
 	}
 
-	public Vector2 getPosPixels() {
+	public Vector3 getPosPixels() {
 		return state.phyState.body.getPos();
 	}
 
@@ -133,8 +134,8 @@ public class Player extends Entity {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		Vector2 pos = state.phyState.body.getPos();
-		Vector2 vel = state.phyState.body.getVel2D();
+		Vector3 pos = state.phyState.body.getPos();
+		Vector3 vel = state.phyState.body.getVel();
 		float sign;
 		switch (other.type) {
 		case NONPLAYER:
@@ -361,7 +362,6 @@ public class Player extends Entity {
 		def.type = BodyType.DynamicBody;
 		def.position.set(new Vector2(body.getPos().x, body.getPos().y));
 		Body collisionBody = WitchCraft.world.createBody(def);
-		collisionBody.setBullet(true);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();

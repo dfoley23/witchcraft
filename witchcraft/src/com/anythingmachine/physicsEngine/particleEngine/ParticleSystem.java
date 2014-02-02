@@ -6,7 +6,7 @@ import java.util.Iterator;
 import com.anythingmachine.physicsEngine.Particle;
 import com.anythingmachine.physicsEngine.PhysicsComponent;
 import com.anythingmachine.physicsEngine.RK4Integrator;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class ParticleSystem implements PhysicsComponent {
 	ArrayList<Particle> particles;
@@ -16,7 +16,7 @@ public class ParticleSystem implements PhysicsComponent {
 		particles = new ArrayList<Particle>();
 	}
 	
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		Iterator<Particle> it = particles.iterator();
 		while( it.hasNext() ) {
 			Particle p = it.next();

@@ -3,7 +3,6 @@ package com.anythingmachine.witchcraft.States;
 import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
 
@@ -27,7 +26,7 @@ public class Attacking extends State {
 				if (!shotArrow && sm.animate.isTImeOverThreeQuarters(0f)) {
 					arrow.setPos(arrowBone.getWorldX() + (facingleft ? -128 : 128),
 							arrowBone.getWorldY(), 0);
-					arrow.pointAtTarget(Util.addVecs(sm.phyState.getPos(), new Vector2(facingleft ? -100 : 100, 0)), 650);
+					arrow.pointAtTarget(Util.addVecs(sm.phyState.getPos(), facingleft ? -100 : 100, 0), 650);
 					shotArrow = true;
 				}
 			}

@@ -89,11 +89,11 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 		beginRender();
 		for (MapLayer layer : map.getLayers()) {
 			if ( layer.getName().equals("playerlayer") ) {
-				endRender();
-				Gdx.gl.glDisable(GL10.GL_BLEND);
-				main.drawPlayerLayer();
-				beginRender();
-				Gdx.gl.glEnable(GL10.GL_BLEND);
+//				endRender();
+//				Gdx.gl.glDisable(GL10.GL_BLEND);
+				main.drawPlayerLayer(spriteBatch);
+//				beginRender();
+//				Gdx.gl.glEnable(GL10.GL_BLEND);
 			}
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
@@ -106,10 +106,10 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 				}
 			}
 			if ( layer.getName().equals("backbackground")) {
-				endRender();
+//				endRender();
 //				Gdx.gl.glDisable(GL10.GL_BLEND);
-				main.drawBackGround();
-				beginRender();
+				main.drawBackGround(spriteBatch);
+//				beginRender();
 //				Gdx.gl.glEnable(GL10.GL_BLEND);
 			}
 		}

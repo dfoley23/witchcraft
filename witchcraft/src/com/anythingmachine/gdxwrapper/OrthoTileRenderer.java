@@ -66,14 +66,21 @@ public class OrthoTileRenderer extends BatchTileRenderer {
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
-		final int col1 = Math.max(0, (int) (viewBounds.x / layerTileWidth));
-		final int col2 = Math.min(layerWidth, (int) ((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth));
+		int col1 = Math.max(0, (int) (viewBounds.x / layerTileWidth));
+		int col2 = Math.min(layerWidth, (int) ((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth));
 
-		final int row1 = Math.max(0, (int) (viewBounds.y / layerTileHeight));
-		final int row2 = Math.min(layerHeight, (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));				
+		int row1 = Math.max(0, (int) (viewBounds.y / layerTileHeight));
+		int row2 = Math.min(layerHeight, (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));				
 
+		if ( layer.getProperties().containsKey("128")) {
+			col1 = Math.max(0, col1-4);
+			col2 = col2+4;
+			row1 = Math.max(0, row1-4);
+			row2 = row2+4;
+		}
 		float y = row1 * layerTileHeight;
 		float xStart = col1 * layerTileWidth;
+
 		final float[] vertices = this.vertices;
 
 		for (int row = row1; row < row2; row++) {

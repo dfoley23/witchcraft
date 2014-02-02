@@ -2,8 +2,7 @@ package com.anythingmachine.physicsEngine;
 
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
 public class Particle extends Entity {
@@ -13,6 +12,7 @@ public class Particle extends Entity {
 	protected Vector3 externalForce;
 	protected ParticleSystem system;
 	protected boolean destroyed = false;
+	protected boolean useEuler = true;
 	
 	public Particle(Vector3 pos) {
 		//this.pos = pos;
@@ -29,28 +29,21 @@ public class Particle extends Entity {
 	public boolean isDestroyed() {
 		return destroyed;
 	}
+	
 	public Particle(Vector3 pos, Vector3 vel) {
-		this.pos = pos.cpy();
-		this.vel = vel.cpy();
+		this.pos = pos;
+		this.vel = vel;
 	}
 	
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		
 	}
-			
-	public Vector2 getPos() {
-		return new Vector2(pos.x, pos.y);
-	}
-	
-	public Vector3 getPos3D() {
+				
+	public Vector3 getPos() {
 		return pos;
 	}
 	public Vector3 getVel() {
 		return vel;
-	}
-
-	public Vector2 getVel2D() {
-		return new Vector2(vel.x, vel.y);
 	}
 
 	public void setPos(float x, float y, float z) {
@@ -69,10 +62,10 @@ public class Particle extends Entity {
 		this.externalForce = force;	
 	}
 
-	public Vector3 accel(Particle p, float t) {
+	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {
 		return new Vector3(0, 0, 0);
 	}
-	
+		
 	public void integratePos(Vector3 dxdp, float dt) {
 		
 	}

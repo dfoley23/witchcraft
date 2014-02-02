@@ -3,7 +3,7 @@ package com.anythingmachine.physicsEngine;
 import java.util.HashMap;
 
 import com.anythingmachine.witchcraft.Util.Util;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
@@ -23,11 +23,11 @@ public class PhysicsState {
 	}
 	
 	public void stopOnX() {
-		body.setVel(0, body.getVel2D().y, 0);
+		body.setVel(0, body.getVel().y, 0);
 	}
 	
 	public void stopOnY() {
-		body.setVel(body.getVel2D().x, 0, 0);
+		body.setVel(body.getVel().x, 0, 0);
 	}
 	public void stop() {
 		body.setVel(0, 0, 0);
@@ -39,17 +39,17 @@ public class PhysicsState {
 		body.setPos(body.getPos().x, y, 0);
 	}
 	public void setYVel(float yv) {
-		body.setVel(body.getVel2D().x, yv, 0);
+		body.setVel(body.getVel().x, yv, 0);
 	}
 	public void setXVel(float xv) {
-		body.setVel(xv, body.getVel2D().y, 0);
+		body.setVel(xv, body.getVel().y, 0);
 	}
 
 	public void correctCBody(float x, float y, float theta) {
-		collisionBody.setTransform(
-					body.getPos().add(x, y).scl(Util.PIXEL_TO_BOX), theta);
+		collisionBody.setTransform(Util.addVecsToVec2(body.getPos(), x, y).scl(Util.PIXEL_TO_BOX), theta);
 	}
-	public Vector2 getPos() { 
+	
+	public Vector3 getPos() { 
 		return body.getPos();
 	}
 

@@ -9,12 +9,12 @@ import java.util.GregorianCalendar;
 
 import com.anythingmachine.LuaEngine.LoadScript;
 import com.anythingmachine.collisionEngine.MyContactListener;
-import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
 import com.anythingmachine.tiledMaps.Camera;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
+import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.Archer;
 import com.anythingmachine.witchcraft.agents.Knight;
@@ -28,14 +28,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -50,14 +51,14 @@ public class WitchCraft implements ApplicationListener {
 	public static boolean ON_ANDROID;
 	public static int VIRTUAL_WIDTH = 1366;
 	public static int VIRTUAL_HEIGHT = 768;
-	public static float ASPECT_RATIO = (float)VIRTUAL_WIDTH/(float)VIRTUAL_HEIGHT;
+	public static float ASPECT_RATIO = (float) VIRTUAL_WIDTH
+			/ (float) VIRTUAL_HEIGHT;
 	public static float dt = 1f / 30f;
 	public Rectangle viewport;
 	public float scale = 0.5f;
 
 	private long lastRender;
 	private TiledMapHelper tiledMapHelper;
-	private PolygonSpriteBatchWrap polygonBatch;
 	private SpriteBatch spriteBatch;
 	private float xGrid;
 	private int camWorldSize;
@@ -67,10 +68,11 @@ public class WitchCraft implements ApplicationListener {
 	private int screenHeight;
 	private MyContactListener contactListener;
 	private LoadScript script;
-	
-	private CloudEmitter cloudE;
 
-	//test fields
+	private CloudEmitter cloudE;
+	private CrowEmitter crowE;
+
+	// test fields
 	private Box2DDebugRenderer debugRenderer;
 	private ShapeRenderer shapeRenderer;
 	private NonPlayer npc1;
@@ -83,7 +85,7 @@ public class WitchCraft implements ApplicationListener {
 	private float g = 0.7f;
 	private float b = 0.7f;
 	private float daynight = 1.2f;
-	
+
 	public WitchCraft() {
 		super();
 		screenWidth = -1;
@@ -97,7 +99,7 @@ public class WitchCraft implements ApplicationListener {
 	@Override
 	public void create() {
 		ON_ANDROID = Gdx.app.getType() == ApplicationType.Android;
-		if ( ON_ANDROID ) {
+		if (ON_ANDROID) {
 			screenWidth = VIRTUAL_WIDTH;
 			screenHeight = VIRTUAL_HEIGHT;
 		} else {
@@ -124,14 +126,13 @@ public class WitchCraft implements ApplicationListener {
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
 
 		spriteBatch = new SpriteBatch();
-		polygonBatch = new PolygonSpriteBatchWrap();
 		shapeRenderer = new ShapeRenderer();
 
-		//script = new LoadScript("helloworld.lua");
+		// script = new LoadScript("helloworld.lua");
 
 		debugRenderer = new Box2DDebugRenderer();
-//		ground = new Ground(world);
-//		ground.readCurveFile("data/groundcurves.txt", -240, -320);
+		// ground = new Ground(world);
+		// ground.readCurveFile("data/groundcurves.txt", -240, -320);
 
 		player = new Player(rk4);
 		npc1 = new Knight("knight2", "characters", new Vector2(354.0f, 3.0f),
@@ -146,7 +147,8 @@ public class WitchCraft implements ApplicationListener {
 				300.0f, 3.0f), new Vector2(0.6f, 0.7f));
 
 		cloudE = new CloudEmitter(17);
-		
+		crowE = new CrowEmitter(1);
+
 		tiledMapHelper.loadCollisions("data/collisions.txt", world,
 				Util.PIXELS_PER_METER, 1);
 
@@ -160,78 +162,83 @@ public class WitchCraft implements ApplicationListener {
 
 	@Override
 	public void render() {
-		long now = System.nanoTime();
 		float dT = Gdx.graphics.getDeltaTime();
 
-//		if ( ON_ANDROID ) {
-//			Gdx.app.log("***************************frames per sec: ", ""
-//				+ Gdx.app.getGraphics().getFramesPerSecond());
-//		}
-		world.step(dT, 1, 1);
+		// if ( ON_ANDROID ) {
+		// Gdx.app.log("***************************frames per sec: ", ""
+		// + Gdx.app.getGraphics().getFramesPerSecond());
+		// }
+		long now = System.nanoTime();
+		if (now - lastRender > 30000000) { // 30 ms, ~33FPS
 
-		rk4.step(dt);
+			world.step(dT, 1, 1);
 
-		Gdx.gl.glViewport((int)viewport.x, (int)viewport.y, (int)viewport.width, (int)viewport.height);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		if ( daynight > 0 ) {
-			daynight -= dt*.001;
-			r -= dt*.001;
-			g -= dt*.001;
-			b -= dt*.001;
-			if ( r < 0 ) { 
-				r = 0f;
+			rk4.step(dt);
+
+			Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
+					(int) viewport.width, (int) viewport.height);
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+			if (daynight > 0) {
+				daynight -= dt * .001;
+				r -= dt * .001;
+				g -= dt * .001;
+				b -= dt * .001;
+				if (r < 0) {
+					r = 0f;
+				}
+				if (g < 0) {
+					g = 0f;
+				}
+				if (b < 0) {
+					g = 0;
+				}
+				Gdx.gl.glClearColor(r, g, b, 1f);
+			} else if (daynight > -1.2f) {
+				daynight -= dt * .001;
+				r += dt * .001;
+				g += dt * .001;
+				b += dt * .001;
+				if (r < 0) {
+					r = 0f;
+				}
+				if (g < 0) {
+					g = 0f;
+				}
+				if (b < 0) {
+					g = 0;
+				}
+				Gdx.gl.glClearColor(r, g, b, 1f);
+			} else {
+				Gdx.gl.glClearColor(r, g, b, 1f);
+				daynight = 1.2f;
 			}
-			if ( g < 0 ) {
-				g = 0f;
+			// Color c = getTimeOfDay();
+
+			player.update(dT);
+			npc1.update(dT);
+			npc2.update(dT);
+			npc3.update(dT);
+			npc4.update(dT);
+			npc5.update(dT);
+
+			cloudE.update(dT);
+			crowE.update(dT);
+
+			Vector3 playerPos = player.getPosPixels();
+			xGrid = Camera.camera.position.x = playerPos.x;
+			float yGrid = Camera.camera.position.y = playerPos.y;
+			if (xGrid < screenWidth * (scale)) {
+				xGrid = Camera.camera.position.x = screenWidth * (scale);
 			}
-			if ( b < 0 ) {
-				g = 0;
+			if (yGrid < screenHeight * (scale)) {
+				Camera.camera.position.y = screenHeight * (scale);
 			}
-			 Gdx.gl.glClearColor(r, g, b, 1f);			
-		} else if (daynight > -1.2f ){
-			daynight -= dt*.001;
-			r += dt*.001;
-			g += dt*.001;
-			b += dt*.001;
-			if ( r < 0 ) { 
-				r = 0f;
-			}
-			if ( g < 0 ) {
-				g = 0f;
-			}
-			if ( b < 0 ) {
-				g = 0;
-			}
-			 Gdx.gl.glClearColor(r, g, b, 1f);
-		} else {
-			 Gdx.gl.glClearColor(r, g, b, 1f);
-			daynight = 1.2f;
+
+			camWorldSize = (int) (screenWidth * 1);
+
+			cam.update();
 		}
-//		 Color c = getTimeOfDay();
-
-		player.update(dT);
-		npc1.update(dT);
-		npc2.update(dT);
-		npc3.update(dT);
-		npc4.update(dT);
-		npc5.update(dT);
-
-		cloudE.update(dT);
-		
-		Vector2 playerPos = player.getPosPixels();
-		xGrid = Camera.camera.position.x = playerPos.x;
-		float yGrid = Camera.camera.position.y = playerPos.y;
-		if (xGrid < screenWidth * (scale)) {
-			xGrid = Camera.camera.position.x = screenWidth *(scale);
-		}
-		if (yGrid < screenHeight * (scale)) {
-			Camera.camera.position.y = screenHeight *(scale);
-		}
-
-		camWorldSize = (int) (screenWidth * 1);
-
-		cam.update();
 
 		tiledMapHelper.render(this);
 		spriteBatch.begin();
@@ -242,15 +249,6 @@ public class WitchCraft implements ApplicationListener {
 					Util.PIXELS_PER_METER, Util.PIXELS_PER_METER,
 					Util.PIXELS_PER_METER));
 
-		now = System.nanoTime();
-//		if (now - lastRender < 30000000) { // 30 ms, ~33FPS
-//			try {
-//				Thread.sleep(30 - (now - lastRender) / 1000000);
-//			} catch (InterruptedException e) {
-//			}
-//		}
-
-		lastRender = now;
 	}
 
 	public Color getTimeOfDay() {
@@ -282,72 +280,70 @@ public class WitchCraft implements ApplicationListener {
 		}
 	}
 
-	public void drawBackGround() {
-		spriteBatch.setProjectionMatrix(Camera.camera.combined);
-		spriteBatch.begin();
-		cloudE.draw(spriteBatch);
-		spriteBatch.end();
+	public void drawBackGround(Batch batch) {
+//		spriteBatch.setProjectionMatrix(Camera.camera.combined);
+//		spriteBatch.begin();
+		cloudE.draw(batch);
+		crowE.draw(batch);
+//		spriteBatch.end();
 	}
-	public void drawPlayerLayer() {
-//		Matrix4 combined = Camera.camera.combined;
-//		polygonBatch.setProjectionMatrix(combined);
-//		polygonBatch.begin();
-//
-//		ground.draw(polygonBatch,
-//				(int) (xGrid - (screenWidth / 2.f))
-//						/ Util.curveLength, camWorldSize / Util.curveLength);
 
-//		polygonBatch.end();
+	public void drawPlayerLayer(Batch batch) {
+		// Matrix4 combined = Camera.camera.combined;
+		// polygonBatch.setProjectionMatrix(combined);
+		// polygonBatch.begin();
+		//
+		// ground.draw(polygonBatch,
+		// (int) (xGrid - (screenWidth / 2.f))
+		// / Util.curveLength, camWorldSize / Util.curveLength);
 
-		spriteBatch.setProjectionMatrix(Camera.camera.combined);
-		spriteBatch.begin();
-//		ground.drawGroundElems(spriteBatch,
-//				(int) (xGrid - (screenWidth / 2.f))
-//						/ Util.curveLength, camWorldSize / Util.curveLength);
+		// polygonBatch.end();
+
+//		spriteBatch.setProjectionMatrix(Camera.camera.combined);
+//		spriteBatch.begin();
+		// ground.drawGroundElems(spriteBatch,
+		// (int) (xGrid - (screenWidth / 2.f))
+		// / Util.curveLength, camWorldSize / Util.curveLength);
 		if (DEV_MODE) {
-			//ground.drawDebugCurve(shapeRenderer);
+			// ground.drawDebugCurve(shapeRenderer);
 		}
-		
-		npc2.draw(spriteBatch);
-		npc1.draw(spriteBatch);
-		npc3.draw(spriteBatch);
-		npc4.draw(spriteBatch);
-		npc5.draw(spriteBatch);
-		
-		player.draw(spriteBatch);
 
-		rk4System.draw(spriteBatch);
+		npc2.draw(batch);
+		npc1.draw(batch);
+		npc3.draw(batch);
+		npc4.draw(batch);
+		npc5.draw(batch);
 
-		spriteBatch.end();
+		player.draw(batch);
+
+		rk4System.draw(batch);
+
+//		spriteBatch.end();
+		batch.end();
 		player.drawCape(Camera.camera.combined);
+		batch.begin();
 		// player.drawCape(shapeRenderer);
 	}
 
 	@Override
 	public void resize(int width, int height) {
 
-        float aspectRatio = (float)width/(float)height;
-        float scale = 1f;
-        Vector2 crop = new Vector2(0f, 0f);
-        if(aspectRatio > ASPECT_RATIO)
-        {
-            scale = (float)height/(float)VIRTUAL_HEIGHT;
-            crop.x = (width - VIRTUAL_WIDTH*scale)/2f;
-        }
-        else if(aspectRatio < ASPECT_RATIO)
-        {
-            scale = (float)width/(float)VIRTUAL_WIDTH;
-            crop.y = (height - VIRTUAL_HEIGHT*scale)/2f;
-        }
-        else
-        {
-            scale = (float)width/(float)VIRTUAL_WIDTH;
-        }
+		float aspectRatio = (float) width / (float) height;
+		float scale = 1f;
+		Vector2 crop = new Vector2(0f, 0f);
+		if (aspectRatio > ASPECT_RATIO) {
+			scale = (float) height / (float) VIRTUAL_HEIGHT;
+			crop.x = (width - VIRTUAL_WIDTH * scale) / 2f;
+		} else if (aspectRatio < ASPECT_RATIO) {
+			scale = (float) width / (float) VIRTUAL_WIDTH;
+			crop.y = (height - VIRTUAL_HEIGHT * scale) / 2f;
+		} else {
+			scale = (float) width / (float) VIRTUAL_WIDTH;
+		}
 
-        float w = (float)VIRTUAL_WIDTH*scale;
-        float h = (float)VIRTUAL_HEIGHT*scale;
-        viewport = new Rectangle(crop.x, crop.y, w, h);
- 
+		float w = (float) VIRTUAL_WIDTH * scale;
+		float h = (float) VIRTUAL_HEIGHT * scale;
+		viewport = new Rectangle(crop.x, crop.y, w, h);
 
 	}
 

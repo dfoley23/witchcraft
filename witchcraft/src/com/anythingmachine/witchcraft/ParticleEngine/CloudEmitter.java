@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class CloudEmitter {
@@ -34,7 +33,7 @@ public class CloudEmitter {
 		rect.width += 400;
 		rect.height += 400;
 		for (CloudParticle c : clouds) {
-			Vector2 pos = c.getPos();
+			Vector3 pos = c.getPos();
 			if (pos.x < rect.x) {
 				float x = rect.x+rect.width-8;
 				float y = rect.y + rand.nextInt((int) rect.height);
@@ -64,7 +63,7 @@ public class CloudEmitter {
 		}
 	}
 
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		for (CloudParticle c : clouds) {
 			c.draw(batch);
 		}

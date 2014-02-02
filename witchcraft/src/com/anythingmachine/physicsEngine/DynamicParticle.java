@@ -1,7 +1,7 @@
 package com.anythingmachine.physicsEngine;
 
 import com.anythingmachine.witchcraft.Util.Util;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
 public class DynamicParticle extends Particle {
@@ -11,37 +11,47 @@ public class DynamicParticle extends Particle {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		
 	}
 		
 	public void setVel(float x, float y, float z) {
-		this.vel = new Vector3(x, y, z);
+		this.vel.x = x;
+		this.vel.y = y;
+		this.vel.z = z;
 	}
 	
 	public void addVel(float x, float y, float z) {
-		this.vel.add(x, y, z);
+		this.vel.x += x;
+		this.vel.y += y;
+		this.vel.z += z;
 	}
 	
 	public void addPos(float x, float y) {
-		this.pos.add(x, y, 0);
+		this.pos.x += x;
+		this.pos.y += y;
 	}
+
 	
 	@Override
-	public Vector3 accel(Particle p, float t) {
-		Vector3 result = new Vector3(0, 0, 0);
-		result.add(externalForce);
-		return result;
+	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {
+		return externalForce;
 	}
 
 	@Override
 	public void integratePos(Vector3 dxdp, float dt) {
-		this.pos.add(Util.sclVec(dxdp, dt));
+		Vector3 ds = Util.sclVec(dxdp, dt);
+		this.pos.x += ds.x;
+		this.pos.y += ds.y;
+		this.pos.z += ds.z;
 	}
 
 	@Override
 	public void integrateVel(Vector3 dvdp, float dt) {
-		this.vel.add(Util.sclVec(dvdp, dt));		
+		Vector3 ds = Util.sclVec(dvdp, dt);
+		this.vel.x += ds.x;
+		this.vel.y += ds.y;
+		this.vel.z += ds.z;	
 		externalForce = new Vector3(0, 0, 0);
 	}
 }

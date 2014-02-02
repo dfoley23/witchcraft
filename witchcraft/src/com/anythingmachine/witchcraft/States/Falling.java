@@ -1,8 +1,7 @@
 package com.anythingmachine.witchcraft.States;
 
 import com.anythingmachine.aiengine.StateMachine;
-import com.anythingmachine.witchcraft.WitchCraft;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class Falling extends State {
 
@@ -46,7 +45,7 @@ public class Falling extends State {
 		
 		@Override
 		public void checkGround() {
-			Vector2 pos = sm.phyState.getPos();
+			Vector3 pos = sm.phyState.getPos();
 			sm.setTestVal("grounded", false);
 			if (sm.test("hitplatform")) {
 				if (sm.elevatedSegment.isBetween(sm.test("facingleft"), pos.x)) {

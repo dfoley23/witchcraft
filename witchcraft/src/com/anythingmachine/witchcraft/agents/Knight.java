@@ -10,7 +10,7 @@ import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -44,7 +44,7 @@ public class Knight extends NonPlayer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		super.draw(batch);
 	}
 
@@ -129,7 +129,6 @@ public class Knight extends NonPlayer {
 		def.position
 				.set(new Vector2(this.body.getPos().x, this.body.getPos().y));
 		swordBody = WitchCraft.world.createBody(def);
-		swordBody.setBullet(true);
 		PolygonShape shape = new PolygonShape();
 //		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 150 * Util.PIXEL_TO_BOX);
 		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX,

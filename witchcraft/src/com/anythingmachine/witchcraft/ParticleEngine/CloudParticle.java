@@ -3,8 +3,8 @@ package com.anythingmachine.witchcraft.ParticleEngine;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class CloudParticle extends KinematicParticle {
@@ -22,13 +22,12 @@ public class CloudParticle extends KinematicParticle {
 		pos.x += vel.x*dt;
 	}
 	
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		sprite.setPosition(pos.x, pos.y);
 		sprite.draw(batch);
 	}
 		
 	public void setPos(float x, float y ) {
-		sprite.setPosition(x, y);
 		setPos(x, y, 0);
 	}
 
