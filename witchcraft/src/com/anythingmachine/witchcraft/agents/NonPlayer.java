@@ -131,6 +131,7 @@ public class NonPlayer extends Agent {
 	}
 
 	public void draw(Batch batch) {
+		animate.setFlipX(facingLeft);
 		animate.draw(batch);
 	}
 

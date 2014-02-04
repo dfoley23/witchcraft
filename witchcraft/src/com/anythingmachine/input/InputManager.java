@@ -113,6 +113,33 @@ public class InputManager {
 		return 0;
 	}
 
+	/**
+	 * sets two regions of movement with the axis stick first range return 1 or
+	 * -1 second range return 2 or -2
+	 * 
+	 * @return
+	 */
+	public int axisRange2Y() {
+		if (WitchCraft.ON_ANDROID) {
+			float val = controller.getAxis(1);
+			float absval = Math.abs(val);
+			if (absval > 0.25) {
+				if (absval > 0.95) {
+					return (int) Math.signum(val) * 2;
+				} else {
+					return (int) Math.signum(val);
+				}
+			}
+		} else {
+			if (left()) {
+				return -1;
+			} else if (right()) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 	public float axisDegree() {
 		if ( WitchCraft.ON_ANDROID ) {
 			float xval = controller.getAxis(0);
@@ -125,13 +152,25 @@ public class InputManager {
 	public boolean left() {
 		if (debugcontrols)
 			return Gdx.input.isKeyPressed(keymap.get("Left"));
-		return controller.getButton(keymap.get("Left")) || axisRange2() != 0;
+		return controller.getButton(keymap.get("Left")) || axisRange2() < 0;
 	}
 
 	public boolean right() {
 		if (debugcontrols)
 			return Gdx.input.isKeyPressed(keymap.get("Right"));
-		return controller.getButton(keymap.get("Right")) || axisRange2() != 0;
+		return controller.getButton(keymap.get("Right")) || axisRange2() > 0;
+	}
+
+	public boolean up() {
+		if (debugcontrols)
+			return Gdx.input.isKeyPressed(keymap.get("UP"));
+		return controller.getButton(keymap.get("UP")) || axisRange2Y() > 0;
+	}
+
+	public boolean down() {
+		if (debugcontrols)
+			return Gdx.input.isKeyPressed(keymap.get("down"));
+		return controller.getButton(keymap.get("down")) || axisRange2Y() < 0;
 	}
 
 	public void addInputState(String state, Integer keyValue) {

@@ -17,5 +17,13 @@ public class Dead extends State {
 		@Override
 		public void setWalk() {
 		}
+		
+
+		@Override
+		public void transistionIn() {
+			sm.animate.bindPose();
+			sm.phyState.stopOnX();
+			sm.animate.setCurrent("dead", true);
+		}
 
 }

@@ -30,19 +30,19 @@ public class Falling extends State {
 		}
 
 		@Override
-		public void setCastSpell() {
+		public void switchPower() {
+			
+		}
+		
+		@Override
+		public void usePower() {
 			
 		}
 		
 		@Override
 		public void setRun() {
 		}
-		
-		@Override
-		public void setJumping() {
-			
-		}
-		
+				
 		@Override
 		public void checkGround() {
 			Vector3 pos = sm.phyState.getPos();

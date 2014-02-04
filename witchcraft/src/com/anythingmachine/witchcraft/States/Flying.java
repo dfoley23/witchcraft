@@ -6,27 +6,42 @@ import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.badlogic.gdx.math.Vector3;
 
-public class Flying extends State {
+public class Flying extends Jumping {
 	private float rotation;
-	
+	private float hitrooftimeout = 0.5f;
+	private float time = 0f;
+
 	public Flying(StateMachine sm, StateEnum name) {
 		super(sm, name);
 	}
 
 	@Override
+	public boolean canAnimate() {
+		return false;
+	}
+
+	@Override
+	public void transistionIn(){
+		
+	}
+	
+	@Override
 	public void update(float dt) {
-
 		checkGround();
-
+		
 		setInputSpeed();
 
+		usePower();
+
 		if (WitchCraft.ON_ANDROID) {
-			if ( sm.test("facingleft")) {
-				sm.phyState.correctCBody(-8, 64, -rotation+(120*Util.DEG_TO_RAD));
-				sm.animate.rotate((-rotation * Util.RAD_TO_DEG)+120);
+			if (sm.test("facingleft")) {
+				sm.phyState.correctCBody(-8, 64, -rotation
+						+ (120 * Util.DEG_TO_RAD));
+				sm.animate.rotate((-rotation * Util.RAD_TO_DEG) + 120);
 			} else {
-				sm.phyState.correctCBody(-8, 64, rotation+(120*Util.DEG_TO_RAD));
-				sm.animate.rotate((rotation * Util.RAD_TO_DEG)+120);
+				sm.phyState.correctCBody(-8, 64, rotation
+						+ (120 * Util.DEG_TO_RAD));
+				sm.animate.rotate((rotation * Util.RAD_TO_DEG) + 120);
 			}
 			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
 		} else {
@@ -35,14 +50,19 @@ public class Flying extends State {
 		}
 
 		sm.animate.setFlipX(sm.test("facingleft"));
-		
+
+		time += dt;
+		if (time > hitrooftimeout) {
+			sm.setTestVal("hitroof", false);
+			time = 0;
+		}
+
 		Cape cape = WitchCraft.player.cape;
 		if (sm.test("facingleft")) {
 			cape.addWindForce(500, 0);
 		} else {
 			cape.addWindForce(-500, 0);
 		}
-
 
 		cape.updatePos(sm.neck.getWorldX() + 14, sm.neck.getWorldY());
 	}
@@ -61,13 +81,13 @@ public class Flying extends State {
 			sm.setTestVal("facingleft", true);
 			sm.setTestVal("hitrightwall", false);
 		}
-		if ( facingleft && !sm.test("hitleftwall")) {
-			if ( rotation == 0 ) 
+		if (facingleft && !sm.test("hitleftwall")) {
+			if (rotation == 0)
 				rotation = Util.PI;
 			float x = -Util.PLAYERFLYSPEED;
 			float y = (float) Math.sin(rotation) * Util.PLAYERFLYSPEED;
 			sm.phyState.body.setVel(x, y, 0);
-		} else 	if (!facingleft && !sm.test("hitrightwall")) {
+		} else if (!facingleft && !sm.test("hitrightwall")) {
 			rotation += Util.PI;
 			float x = Util.PLAYERFLYSPEED;
 			float y = (float) -Math.sin(rotation) * Util.PLAYERFLYSPEED;
@@ -76,15 +96,6 @@ public class Flying extends State {
 			sm.phyState.stop();
 		}
 
-	}
-
-	@Override
-	public void transistionIn() {
-	}
-
-	@Override
-	public boolean canAnimate() {
-		return false;
 	}
 
 	@Override
@@ -97,31 +108,18 @@ public class Flying extends State {
 	}
 
 	@Override
-	public void setIdle() {
-
-	}
-
-	@Override
-	public void setJumping() {
-		sm.phyState.setYVel(150f);
-	}
-
-	@Override
-	public void setCastSpell() {
-		
-	}
-	
-	@Override
-	public void setDupeSkin() {
-		
-	}
-	
-	@Override
-	public void setRun() {
-	}
-
-	@Override
-	public void setWalk() {
+	public void usePower() {
+		if (sm.input.is("UsePower")) {
+			if (!sm.test("hitroof")) {
+				sm.phyState.setYVel(150f);
+			} else {
+				time += WitchCraft.dt;
+				if (time > hitrooftimeout) {
+					sm.setTestVal("hitroof", false);
+					time = 0;
+				}
+			}
+		}
 	}
 
 	@Override

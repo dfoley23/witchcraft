@@ -12,22 +12,21 @@ import com.anythingmachine.witchcraft.States.Attacking;
 import com.anythingmachine.witchcraft.States.CastSpell;
 import com.anythingmachine.witchcraft.States.Dead;
 import com.anythingmachine.witchcraft.States.DupeSkin;
+import com.anythingmachine.witchcraft.States.DupeSkinPower;
 import com.anythingmachine.witchcraft.States.Falling;
 import com.anythingmachine.witchcraft.States.Flying;
 import com.anythingmachine.witchcraft.States.Idle;
+import com.anythingmachine.witchcraft.States.Invisible;
 import com.anythingmachine.witchcraft.States.Jumping;
 import com.anythingmachine.witchcraft.States.Landing;
+import com.anythingmachine.witchcraft.States.MindControlPower;
 import com.anythingmachine.witchcraft.States.Running;
+import com.anythingmachine.witchcraft.States.ShapeCrow;
 import com.anythingmachine.witchcraft.States.StateEnum;
 import com.anythingmachine.witchcraft.States.Walking;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
-import com.anythingmachine.witchcraft.agents.player.Power.DuplicateSkin;
-import com.anythingmachine.witchcraft.agents.player.Power.FlyingPower;
-import com.anythingmachine.witchcraft.agents.player.Power.InvisiblePower;
-import com.anythingmachine.witchcraft.agents.player.Power.MindControlPower;
-import com.anythingmachine.witchcraft.agents.player.Power.Power;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
@@ -35,7 +34,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -53,11 +51,6 @@ import com.esotericsoftware.spine.SkeletonData;
 public class Player extends Entity {
 	public Cape cape;
 	private StateMachine state;
-	private ArrayList<Power> powers;
-	private ArrayList<Sprite> powerUi;
-	private int power;
-	private NonPlayer npc;
-	private float uiFadein = -1f;
 
 	public Player(RK4Integrator rk4) {
 		setupState("player");
@@ -66,7 +59,6 @@ public class Player extends Entity {
 		setupTests();
 
 		cape = new Cape(3, 5, rk4, state.phyState.getPos());
-		power = 0;
 		type = EntityType.PLAYER;
 
 	}
@@ -74,29 +66,11 @@ public class Player extends Entity {
 	/** public functions **/
 
 	public void update(float dT) {
-		// System.out.println(state.state.name);
+//		 System.out.println(state.state.name);
 		state.update(dT);
 		// check if on ground
 
 		// handle user power state.input
-		if (state.input.isNowNotThen("SwitchPower")
-				|| state.input.isNowNotThen("SwitchPower1")
-				|| state.input.isNowNotThen("SwitchPower2")) {
-			power = (power + 1) >= powers.size() ? 0 : power + 1;
-			uiFadein = 0f;
-		}
-		if (state.input.is("UsePower")) {
-			powers.get(power).usePower(state, dT);
-		} else {
-			powers.get(power).updatePower(state, dT);
-		}
-		int i = 0;
-		for (Power p : powers) {
-			if (i != power) {
-				p.updatePower(state, dT);
-			}
-			i++;
-		}
 
 		// update skeletal animation
 
@@ -105,25 +79,15 @@ public class Player extends Entity {
 	}
 
 	public void draw(Batch batch) {
-		state.animate.draw(batch);
+		state.state.draw(batch);
 	}
 
 	public void drawCape(Matrix4 cam) {
-		if (state.state.isPlayer()) {
-			if (state.test("invi")) {
-				cape.draw(cam, 0.5f);
-			} else {
-				cape.draw(cam, 1f);
-			}
-		}
+		state.state.drawCape(cam);
 	}
 
 	public Vector3 getPosPixels() {
 		return state.phyState.body.getPos();
-	}
-
-	public int getPower() {
-		return power;
 	}
 
 	@Override
@@ -139,8 +103,7 @@ public class Player extends Entity {
 		float sign;
 		switch (other.type) {
 		case NONPLAYER:
-			npc = (NonPlayer) other;
-			state.state.hitNPC(npc);
+			state.state.hitNPC((NonPlayer) other);
 			break;
 		case WALL:
 			sign = Math.signum(vel.x);
@@ -211,30 +174,8 @@ public class Player extends Entity {
 		// }
 	}
 
-	public void drawUI(SpriteBatch batch) {
-		if (uiFadein >= 0f) {
-			Sprite sprite = powerUi.get(power);
-			sprite.setPosition(
-					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
-					WitchCraft.cam.camera.position.y
-							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
-							- sprite.getHeight());
-			powerUi.get(power).draw(batch, uiFadein);
-			uiFadein += WitchCraft.dt * 0.5f;
-			if (uiFadein >= 1f)
-				uiFadein = -2f;
-		} else if (uiFadein < 0 && uiFadein > -4) {
-			Sprite sprite = powerUi.get(power);
-			sprite.setPosition(
-					WitchCraft.cam.camera.position.x - sprite.getWidth() * 0.5f,
-					WitchCraft.cam.camera.position.y
-							+ (WitchCraft.cam.camera.viewportHeight * 0.5f)
-							- sprite.getHeight());
-			powerUi.get(power).draw(batch, -(uiFadein + 1));
-			uiFadein += WitchCraft.dt * 0.5f;
-			if (uiFadein >= -1)
-				uiFadein = -5f;
-		}
+	public void drawUI(Batch batch) {
+		state.drawUI(batch);
 	}
 
 	/************ private functions ************/
@@ -259,9 +200,8 @@ public class Player extends Entity {
 			state.input.addInputState("Left", Keys.LEFT);
 			state.input.addInputState("Right", Keys.RIGHT);
 			state.input.addInputState("UP", Keys.UP);
+			state.input.addInputState("down", Keys.DOWN);
 			state.input.addInputState("SwitchPower", Keys.SHIFT_LEFT);
-			state.input.addInputState("SwitchPower1", Keys.SHIFT_LEFT);
-			state.input.addInputState("SwitchPower2", Keys.SHIFT_LEFT);
 			state.input.addInputState("UsePower", Keys.SPACE);
 			state.input.addInputState("Interact", Keys.D);
 			state.input.addInputState("attack", Keys.A);
@@ -281,7 +221,14 @@ public class Player extends Entity {
 		state.addState(StateEnum.DEAD, new Dead(state, StateEnum.DEAD));
 		state.addState(StateEnum.CASTSPELL, new CastSpell(state, StateEnum.CASTSPELL));
 		state.addState(StateEnum.DUPESKIN, new DupeSkin(state, StateEnum.DUPESKIN));
-		state.setState(StateEnum.IDLE);
+		/*power states*/
+		state.addState(StateEnum.DUPESKINPOWER, new DupeSkinPower(state, StateEnum.DUPESKINPOWER));
+		state.addState(StateEnum.MINDCONTROLPOWER, new MindControlPower(state, StateEnum.MINDCONTROLPOWER));
+		state.addState(StateEnum.INVISIBLEPOWER, new Invisible(state, StateEnum.INVISIBLEPOWER));
+		state.addState(StateEnum.SHAPECROWPOWER, new ShapeCrow(state, StateEnum.SHAPECROWPOWER));
+//		state.addState(StateEnum.SHAPECATPOWER, new ShapeCatPower(state, StateEnum.SHAPECATPOWER));
+//		state.addState(StateEnum.INTANGIBLEPOWER, new Intangible(state, StateEnum.INTANGIBLEPOWER));
+		state.setInitialState(StateEnum.IDLE);
 	}
 
 	private void setupTests() {
@@ -295,37 +242,43 @@ public class Player extends Entity {
 	}
 
 	private void setupPowers() {
-		powers = new ArrayList<Power>();
-		powerUi = new ArrayList<Sprite>();
-		powers.add(new FlyingPower());
+		float width = WitchCraft.cam.camera.viewportWidth/2f;
+		float height = WitchCraft.cam.camera.viewportHeight;
+		state.powerUi = new ArrayList<Sprite>();
 		Sprite sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas")).findRegion("FUGE"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		powerUi.add(sprite);
-		powers.add(new MindControlPower());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		state.powerUi.add(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
 						.findRegion("ANIMIMPERI"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		powerUi.add(sprite);
-		// powers.put("shapecrow", new ShapeShiftCrowPower());
-		// powers.put("shapecat", new ShapeShiftCatPower());
-		powers.add(new InvisiblePower());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		state.powerUi.add(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
 						.findRegion("INVISIBIL"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		powerUi.add(sprite);
-		powers.add(new DuplicateSkin());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		state.powerUi.add(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
 						.findRegion("EFFINGO"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		powerUi.add(sprite);
+		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		state.powerUi.add(sprite);
+		sprite = new Sprite(
+				((TextureAtlas) WitchCraft.assetManager
+						.get("data/world/otherart.atlas"))
+						.findRegion("MUTATIO"));
+		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
+		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		state.powerUi.add(sprite);
 		// powers.put("intangible", new IntangibilityPower());
 		// powers.put("convert", new ConvertPower());
 		// powers.put("freeze", new FreezePower());
@@ -351,6 +304,7 @@ public class Player extends Entity {
 		state.animate.addAnimation("swordattack",
 				sd.findAnimation("overheadattack"));
 		state.animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
+		state.animate.addAnimation("dead", sd.findAnimation("ded"));
 
 		setupStates();
 

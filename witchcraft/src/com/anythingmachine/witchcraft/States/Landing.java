@@ -8,13 +8,4 @@ public class Landing extends State {
  			super(sm, name);
 		}
 
-		@Override
-		public void setCastSpell() {
-			
-		}
-		@Override
-		public void setDupeSkin() {
-			
-		}
-
 }

@@ -91,7 +91,7 @@ public class TiledMapHelper {
 	 * 
 	 * @param tmxFile
 	 */
-	public void loadMap(SpriteBatch batch) {
+	public void loadMap() {
 
 		map = WitchCraft.assetManager.get("data/world/level1/level1.tmx");
 		// tileAtlas = new TileAtlas(map, packFileDirectory);

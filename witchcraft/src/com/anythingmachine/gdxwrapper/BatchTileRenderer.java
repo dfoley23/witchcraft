@@ -86,9 +86,10 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 
 	@Override
 	public void render (WitchCraft main) {
+		boolean drewBG = false;
 		beginRender();
 		for (MapLayer layer : map.getLayers()) {
-			if ( layer.getName().equals("playerlayer") ) {
+			if ( drewBG && layer.getProperties().containsKey("player") ) {
 //				endRender();
 //				Gdx.gl.glDisable(GL10.GL_BLEND);
 				main.drawPlayerLayer(spriteBatch);
@@ -105,7 +106,8 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 					}
 				}
 			}
-			if ( layer.getName().equals("backbackground")) {
+			if ( !drewBG && layer.getProperties().containsKey("bg") ) {
+				drewBG = true;
 //				endRender();
 //				Gdx.gl.glDisable(GL10.GL_BLEND);
 				main.drawBackGround(spriteBatch);

@@ -17,6 +17,10 @@ public class KinematicParticle extends Particle {
 		
 	}
 		
+	public void setGravityVal(float val) {
+		externalForce.y = val;
+	}
+	
 	public void setVel(float x, float y, float z) {
 		this.vel.x = x;
 		this.vel.y = y;

@@ -59,7 +59,7 @@ public class WitchCraft implements ApplicationListener {
 
 	private long lastRender;
 	private TiledMapHelper tiledMapHelper;
-	private SpriteBatch spriteBatch;
+	private Batch spriteBatch;
 	private float xGrid;
 	private int camWorldSize;
 	private Calendar cal;
@@ -121,7 +121,7 @@ public class WitchCraft implements ApplicationListener {
 		loadAssets();
 
 		tiledMapHelper = new TiledMapHelper();
-		tiledMapHelper.loadMap(spriteBatch);
+		tiledMapHelper.loadMap();
 		cam = new Camera(screenWidth, screenHeight);
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
 

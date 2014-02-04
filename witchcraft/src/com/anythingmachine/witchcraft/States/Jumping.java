@@ -12,16 +12,23 @@ public class Jumping extends State {
 		@Override
 		public void update(float dt) {
 			super.update(dt);
-			
-			sm.animate.applyTotalTime(true, dt);
+						
 			if ( sm.animate.testOverTime(0f, 0.95f) ) {
 				setFlying();
 			}
 		}
 		
 		@Override
-		public void setJumping() {
+		public void transistionIn() {
+			sm.animate.bindPose();
+			sm.animate.setCurrent("jump", true);
 			sm.phyState.setYVel(150f);
+		}
+				
+		@Override
+		public void usePower() {
+			if( sm.input.is("UsePower"))
+				sm.phyState.setYVel(150f);			
 		}
 		
 		@Override 
@@ -55,16 +62,12 @@ public class Jumping extends State {
 			sm.setState(StateEnum.FLYING);
 		}
 		
-		@Override
-		public void setDupeSkin() {
-			
-		}
 		
 		@Override
-		public void setCastSpell() {
+		public void switchPower() {
 			
 		}
-		
+				
 		@Override
 		public void setAttack() {
 			

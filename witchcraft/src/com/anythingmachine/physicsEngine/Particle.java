@@ -49,7 +49,7 @@ public class Particle extends Entity {
 	public void setPos(float x, float y, float z) {
 		this.pos.set(x, y, z);
 	}
-
+	
 	public void addPos(float x, float y) {
 		this.pos.add(x, y, 0);
 	}

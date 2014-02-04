@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.States;
 import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
 
@@ -30,6 +31,7 @@ public class Attacking extends State {
 					shotArrow = true;
 				}
 			}
+			parent.updatePower(dt);
 
 		}
 		@Override
@@ -37,11 +39,25 @@ public class Attacking extends State {
 			if ( sm.animate.isTImeOverThreeQuarters(0)) {
 				sm.animate.bindPose();
 				sm.animate.setCurrent("idle", true);
-				sm.setState(parent);
+				sm.setState(parent.name);
 				sm.phyState.stop();
 			}
 		}
+		
+		@Override
+		public void drawCape(Matrix4 cam) {
+			parent.drawCape(cam);
+		}
 
+		@Override
+		public void usePower() {
+			
+		}
+		@Override
+		public void nextPower() {
+			
+		}
+		
 		@Override
 		public void setInputSpeed() {
 			setIdle();
