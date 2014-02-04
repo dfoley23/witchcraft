@@ -3,8 +3,8 @@ package com.anythingmachine.physicsEngine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -22,7 +22,7 @@ public class TexturedBodyParticle extends TexturedParticle {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		collisionBody.setTransform(Util.sclVecTo2(getPos(), Util.PIXEL_TO_BOX),
 				collisionBody.getAngle());
 		sprite.setPosition(pos.x, pos.y);
@@ -30,6 +30,7 @@ public class TexturedBodyParticle extends TexturedParticle {
 		sprite.draw(batch);
 	}
 	
+	@Override
 	public void destroy() {
 		super.destroy();
 		WitchCraft.world.destroyBody(collisionBody);
@@ -46,7 +47,6 @@ public class TexturedBodyParticle extends TexturedParticle {
 		def.position
 				.set(new Vector2(pos.x, pos.y));
 		collisionBody = WitchCraft.world.createBody(def);
-		collisionBody.setBullet(true);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(sprite.getWidth() * Util.PIXEL_TO_BOX, sprite.getHeight() * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();

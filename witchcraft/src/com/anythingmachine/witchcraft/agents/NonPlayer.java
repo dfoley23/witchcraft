@@ -222,7 +222,7 @@ public class NonPlayer extends Agent {
 	}
 
 	public void correctHeight(float y) {
-		body.setPos(body.getPos().x, y, 0f);
+		body.setPos(body.getX(), y, 0f);
 	}
 
 	protected void handleState(AIState state) {
@@ -295,7 +295,7 @@ public class NonPlayer extends Agent {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position
-				.set(new Vector2(this.body.getPos().x, this.body.getPos().y));
+				.set(new Vector2(this.body.getX(), this.body.getY()));
 		collisionBody = WitchCraft.world.createBody(def);
 		PolygonShape shape = new PolygonShape();		
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);

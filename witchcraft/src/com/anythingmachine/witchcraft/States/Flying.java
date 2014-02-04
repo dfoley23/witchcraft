@@ -104,7 +104,7 @@ public class Flying extends Jumping {
 		if (sm.test("facingleft")) {
 			sm.animate.setFlipX(true);
 		}
-		sm.setState(StateEnum.LANDING);
+		sm.setState(StateEnum.IDLE);
 	}
 
 	@Override

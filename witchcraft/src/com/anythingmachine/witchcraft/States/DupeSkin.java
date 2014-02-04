@@ -4,7 +4,7 @@ import com.anythingmachine.aiengine.StateMachine;
 import com.badlogic.gdx.math.Matrix4;
 
 public class DupeSkin extends State {
-	private float timeout = 50;
+	private float timeout = 10;
 	private float time = 0;
 	
 	public DupeSkin (StateMachine sm , StateEnum name) {
@@ -21,10 +21,9 @@ public class DupeSkin extends State {
 		if ( time > timeout ) {
 			time = 0;
 			sm.animate.switchSkin("player");
-			super.setIdle();
+			sm.setState(StateEnum.IDLE);
 		} else {
 			sm.animate.bindPose();
-			sm.animate.setCurrent("idle", true);
 			sm.phyState.stop();
 		}
 	}
@@ -32,15 +31,11 @@ public class DupeSkin extends State {
 	public void setWalk() {
 		sm.setState(StateEnum.WALKING);
 		sm.state.setParent(this);
-		sm.animate.bindPose();
-		sm.animate.setCurrent("walk", true);
 	}
 
 	public void setRun() {
 		sm.setState(StateEnum.RUNNING);
 		sm.state.setParent(this);
-		sm.animate.bindPose();
-		sm.animate.setCurrent("run", true);
 	}
 
 	@Override

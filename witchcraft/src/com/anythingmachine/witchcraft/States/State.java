@@ -37,6 +37,8 @@ public class State {
 
 		usePower();
 		
+		updatePower(dt);
+		
 		sm.phyState.correctCBody(-8, 64, 0);
 
 		setAttack();
@@ -89,10 +91,7 @@ public class State {
 	}
 	
 	public void setIdle() {
-		sm.animate.bindPose();
-		sm.animate.setCurrent("idle", true);
 		sm.setState(parent.name);
-		sm.phyState.stop();
 	}
 
 	public void hitNPC(NonPlayer npc) {

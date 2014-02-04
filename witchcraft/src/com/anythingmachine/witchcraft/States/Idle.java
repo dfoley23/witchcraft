@@ -8,4 +8,10 @@ public class Idle extends State {
  			super(sm, name);
 		}
 
+		@Override
+		public void transistionIn() {
+			sm.phyState.stop();
+			sm.animate.bindPose();
+			sm.animate.setCurrent("idle", true);			
+		}
 }

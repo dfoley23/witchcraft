@@ -3,8 +3,8 @@ package com.anythingmachine.witchcraft.ParticleEngine;
 import com.anythingmachine.physicsEngine.TexturedBodyParticle;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class MindBeamParticle extends TexturedBodyParticle {
@@ -16,7 +16,7 @@ public class MindBeamParticle extends TexturedBodyParticle {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		scale += 0.02f;
 		if ( scale < 2f ) {
 			collisionBody.setTransform(Util.sclVecTo2(getPos(), Util.PIXEL_TO_BOX),

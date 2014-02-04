@@ -10,12 +10,6 @@ public class Falling extends State {
 		}
 
 		@Override
-		public void update(float dt) {
-			super.update(dt);
-//			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
-		}
-
-		@Override
 		public void setIdle() {
 			
 		}
@@ -67,6 +61,6 @@ public class Falling extends State {
 		@Override
 		public void land() {
 			super.land();
-			sm.setState(StateEnum.LANDING);
+			sm.setState(StateEnum.IDLE);
 		}
 }

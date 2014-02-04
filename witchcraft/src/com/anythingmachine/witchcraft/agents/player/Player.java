@@ -66,7 +66,7 @@ public class Player extends Entity {
 	/** public functions **/
 
 	public void update(float dT) {
-//		 System.out.println(state.state.name);
+		 System.out.println(state.state.name);
 		state.update(dT);
 		// check if on ground
 
@@ -87,9 +87,13 @@ public class Player extends Entity {
 	}
 
 	public Vector3 getPosPixels() {
-		return state.phyState.body.getPos();
+		return state.phyState.getPos();
 	}
 
+	public float getX() {
+		return state.phyState.getX();
+	}
+	
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -229,6 +233,8 @@ public class Player extends Entity {
 //		state.addState(StateEnum.SHAPECATPOWER, new ShapeCatPower(state, StateEnum.SHAPECATPOWER));
 //		state.addState(StateEnum.INTANGIBLEPOWER, new Intangible(state, StateEnum.INTANGIBLEPOWER));
 		state.setInitialState(StateEnum.IDLE);
+		state.animate.bindPose();
+		state.animate.setCurrent("idle", true);
 	}
 
 	private void setupTests() {

@@ -127,7 +127,7 @@ public class Knight extends NonPlayer {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position
-				.set(new Vector2(this.body.getPos().x, this.body.getPos().y));
+				.set(new Vector2(this.body.getX(), this.body.getY()));
 		swordBody = WitchCraft.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 //		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 150 * Util.PIXEL_TO_BOX);

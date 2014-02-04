@@ -36,21 +36,40 @@ public class PhysicsState {
 		body.setVel(x, y, 0);
 	}
 	public void correctHeight(float y) {
-		body.setPos(body.getPos().x, y, 0);
+		body.setPos(body.getX(), y, 0);
 	}
 	public void setYVel(float yv) {
-		body.setVel(body.getVel().x, yv, 0);
+		body.setVel(body.getVelX(), yv, 0);
 	}
 	public void setXVel(float xv) {
-		body.setVel(xv, body.getVel().y, 0);
+		body.setVel(xv, body.getVelY(), 0);
 	}
 
 	public void correctCBody(float x, float y, float theta) {
 		collisionBody.setTransform(Util.addVecsToVec2(body.getPos(), x, y).scl(Util.PIXEL_TO_BOX), theta);
 	}
 	
+	public Vector3 getVel() {
+		return body.getVel();
+	}
+	
 	public Vector3 getPos() { 
 		return body.getPos();
 	}
 
+	public float getX() {
+		return body.getX();
+	}
+	
+	public float getY(){
+		return body.getY();
+	}
+	
+	public float getVelX(){
+		return body.getVelX();
+	}
+	
+	public float getVelY(){
+		return body.getVelY();
+	}
 }

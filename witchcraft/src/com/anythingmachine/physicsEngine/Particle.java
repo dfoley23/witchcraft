@@ -45,6 +45,22 @@ public class Particle extends Entity {
 	public Vector3 getVel() {
 		return vel;
 	}
+	
+	public float getX() {
+		return pos.x;
+	}
+	
+	public float getY() {
+		return pos.y;
+	}
+	
+	public float getVelX(){
+		return vel.x;
+	}
+	
+	public float getVelY() {
+		return vel.y;
+	}
 
 	public void setPos(float x, float y, float z) {
 		this.pos.set(x, y, z);

@@ -88,7 +88,6 @@ public class StateMachine {
 
 	public void setInitialState(StateEnum name) {
 		this.state = states[name.getID()];
-		state.transistionIn();
 	}
 
 	public void setState(StateEnum name) {

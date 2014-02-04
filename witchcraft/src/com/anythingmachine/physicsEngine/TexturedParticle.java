@@ -2,8 +2,8 @@ package com.anythingmachine.physicsEngine;
 
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class TexturedParticle extends Particle {
@@ -18,7 +18,8 @@ public class TexturedParticle extends Particle {
 		this.type = type;
 	}
 	
-	public void draw(SpriteBatch batch) {
+	@Override
+	public void draw(Batch batch) {
 		sprite.draw(batch);
 	}
 

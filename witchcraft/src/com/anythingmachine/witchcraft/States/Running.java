@@ -1,9 +1,8 @@
 package com.anythingmachine.witchcraft.States;
 
 import com.anythingmachine.aiengine.StateMachine;
-import com.badlogic.gdx.math.Matrix4;
 
-public class Running extends State{
+public class Running extends SharedState {
 
 	public Running(StateMachine sm, StateEnum name) {
 		super(sm, name);
@@ -16,19 +15,7 @@ public class Running extends State{
 	}
 	
 	@Override
-	public void drawCape(Matrix4 cam) {
-		parent.drawCape(cam);
-	}
-
-	
-	@Override
 	public void setRun() {
 	}
-
-	@Override
-	public void update(float dt) {
-		super.update(dt);
-		parent.updatePower(dt);
-	}
-
+	
 }
