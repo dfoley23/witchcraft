@@ -1,28 +1,29 @@
 package com.anythingmachine.aiengine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.anythingmachine.LuaEngine.LoadScript;
+import com.anythingmachine.witchcraft.States.NPCState;
+import com.anythingmachine.witchcraft.States.NPCStateEnum;
 import com.badlogic.gdx.Gdx;
 
 public class UtilityAI {
 	private ArrayList<Goal> goals;
-	private ArrayList<Action> actions;
+	private HashMap<String, Action> actions;
 	private LoadScript script;
-	public enum AIState { 
-		WALKINGLEFT, WALKINGRIGHT, IDLE, ATTACK, FALLING, SHOOTARROW, SWORDATTACK,
-	}
+	
 	public UtilityAI() {
 		goals = new ArrayList<Goal>();
-		actions = new ArrayList<Action>();
-		script = new LoadScript("aiScript.lua");
+		actions = new HashMap<String, Action>();
 	}
 	
-	public AIState ChooseAction()
+	public NPCState ChooseAction(NPCStateEnum state)
     {
+		NPCStateEnum[] followUps = state.getFollowUpStates();
 		Action bestAction = actions.get(0);
         float thisValue = 0;
-        float bestValue = calculateDiscontentment(actions.get(0));
+        float bestValue = calculateDiscontentment(actions.get(followUps[0].getName()));
 
         for (int i = 1; i < actions.size(); i++)
         {
@@ -36,12 +37,16 @@ public class UtilityAI {
             }
         }
 
+        return bestAction.getAIState();
+        
+    }
+	
+	public void takeAction(String name) {
         Gdx.app.log("ai has chosen to " + bestAction.name, "");
         for(Goal g: goals ) {
         	g.insistence += bestAction.getGoalChange(g.name);
-        }
-        return bestAction.getAIState();
-    }
+        }	
+	}
 	
     public float calculateDiscontentment(Action action)
     {

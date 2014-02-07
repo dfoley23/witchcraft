@@ -1,6 +1,6 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.ParticleEngine.MindBeamParticle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,7 +11,7 @@ public class MindControlPower extends CastSpell {
 	private MindBeamParticle particle;
 	private int timeout = 0;
 
-	public MindControlPower(StateMachine sm, StateEnum name) {
+	public MindControlPower(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 		particle = new MindBeamParticle(new Vector3(0, 0, 0), new Sprite(
 				((TextureAtlas) WitchCraft.assetManager

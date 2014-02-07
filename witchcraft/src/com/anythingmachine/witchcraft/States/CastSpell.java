@@ -1,10 +1,10 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 
-public class CastSpell extends State {
+public class CastSpell extends PlayerState {
 	
-	public CastSpell(StateMachine sm, StateEnum name) {
+	public CastSpell(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 	}
 

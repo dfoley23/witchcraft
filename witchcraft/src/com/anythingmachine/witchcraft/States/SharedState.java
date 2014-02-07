@@ -1,11 +1,11 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.badlogic.gdx.math.Matrix4;
 
-public class SharedState extends State {
+public class SharedState extends PlayerState {
 
-	public SharedState(StateMachine sm, StateEnum name) {
+	public SharedState(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 	}
 	

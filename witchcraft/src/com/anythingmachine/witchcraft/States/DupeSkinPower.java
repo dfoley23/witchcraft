@@ -1,12 +1,12 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 
 public class DupeSkinPower extends CastSpell {
 	private float lasttime = -150000;
 
-	public DupeSkinPower(StateMachine sm, StateEnum name) {
+	public DupeSkinPower(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 	}
 	
@@ -29,7 +29,7 @@ public class DupeSkinPower extends CastSpell {
 		if ( !sm.dupeSkin.isEmpty() && now - lasttime > 150000) {
 			lasttime = now;
 			sm.animate.switchSkin(sm.dupeSkin);
-			sm.setState(StateEnum.DUPESKIN);
+			sm.setState(PlayerStateEnum.DUPESKIN);
 			sm.animate.bindPose();
 		}
 	}

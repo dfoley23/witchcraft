@@ -1,13 +1,13 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.badlogic.gdx.math.Matrix4;
 
-public class DupeSkin extends State {
+public class DupeSkin extends PlayerState {
 	private float timeout = 10;
 	private float time = 0;
 	
-	public DupeSkin (StateMachine sm , StateEnum name) {
+	public DupeSkin (PlayerStateMachine sm , PlayerStateEnum name) {
 		super(sm,  name);
 	}
 	
@@ -21,7 +21,7 @@ public class DupeSkin extends State {
 		if ( time > timeout ) {
 			time = 0;
 			sm.animate.switchSkin("player");
-			sm.setState(StateEnum.IDLE);
+			sm.setState(PlayerStateEnum.IDLE);
 		} else {
 			sm.animate.bindPose();
 			sm.phyState.stop();
@@ -29,12 +29,12 @@ public class DupeSkin extends State {
 	}
 
 	public void setWalk() {
-		sm.setState(StateEnum.WALKING);
+		sm.setState(PlayerStateEnum.WALKING);
 		sm.state.setParent(this);
 	}
 
 	public void setRun() {
-		sm.setState(StateEnum.RUNNING);
+		sm.setState(PlayerStateEnum.RUNNING);
 		sm.state.setParent(this);
 	}
 
@@ -62,13 +62,13 @@ public class DupeSkin extends State {
 	public void setAttack() {
 		if ( sm.input.is("attack") ) {
 			if (sm.animate.isSkin("archer")) {
-				sm.setState(StateEnum.ATTACKING);
+				sm.setState(PlayerStateEnum.ATTACKING);
 				sm.state.setParent(this);
 				sm.animate.setCurrent("drawbow", true);
 				sm.animate.bindPose();
 				sm.phyState.stop();
 			} else if (!sm.animate.isSkin("player")) {
-				sm.setState(StateEnum.ATTACKING);
+				sm.setState(PlayerStateEnum.ATTACKING);
 				sm.state.setParent(this);
 				sm.animate.setCurrent("swordattack", true);
 				sm.animate.bindPose();

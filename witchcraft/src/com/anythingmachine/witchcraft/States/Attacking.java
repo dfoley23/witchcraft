@@ -1,18 +1,18 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
 
-public class Attacking extends State {
+public class Attacking extends PlayerState {
 		private boolean shotArrow;
 		private Bone arrowBone;
 		private Arrow arrow;
 		
-		public Attacking (StateMachine sm, StateEnum name) {
+		public Attacking (PlayerStateMachine sm, PlayerStateEnum name) {
  			super(sm, name);
  			shotArrow = false;
  			arrow = new Arrow(new Vector3(0, 0, 0), new Vector3(0, 0, 0));

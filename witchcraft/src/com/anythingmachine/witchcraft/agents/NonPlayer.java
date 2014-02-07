@@ -4,12 +4,13 @@ import java.util.Random;
 
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.Goal;
+import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.aiengine.UtilityAI;
-import com.anythingmachine.aiengine.UtilityAI.AIState;
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.States.NPCStateEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.ground.Platform;
@@ -32,8 +33,9 @@ import com.esotericsoftware.spine.Skin;
 public class NonPlayer extends Agent {
 	protected boolean inAir;
 	protected UtilityAI behavior;
+	protected StateMachine sm;
 	protected float aiChoiceTime = 0.f;
-	protected AIState state = AIState.IDLE;
+	protected NPCStateEnum state = NPCStateEnum.IDLE;
 	protected Vector2 bodyScale;
 	protected boolean active;
 	protected AnimationManager animate;
@@ -73,7 +75,7 @@ public class NonPlayer extends Agent {
 
 		aiChoiceTime += dT;
 		if (aiChoiceTime > 7) {
-			AIState old = state;
+			NPCStateEnum old = state;
 			state = behavior.ChooseAction();
 			aiChoiceTime = 0;
 			switch (state) {
@@ -81,7 +83,7 @@ public class NonPlayer extends Agent {
 				body.setVel(-50f, body.getVel().y, 0f);
 				animate.setCurrent("walk", true);
 				facingLeft = true;
-				if (old != AIState.WALKINGLEFT) {
+				if (old != NPCStateEnum.WALKINGLEFT) {
 					animate.bindPose();
 				}
 				break;
@@ -89,14 +91,14 @@ public class NonPlayer extends Agent {
 				body.setVel(50f, body.getVel().y, 0f);
 				animate.setCurrent("walk", true);
 				facingLeft = false;
-				if (old != AIState.WALKINGRIGHT) {
+				if (old != NPCStateEnum.WALKINGRIGHT) {
 					animate.bindPose();
 				}
 				break;
 			case IDLE:
 				body.setVel(0, 0, 0);
 				animate.setCurrent("idle", true);
-				if (old != AIState.IDLE) {
+				if (old != NPCStateEnum.IDLE) {
 					animate.bindPose();
 				}
 				break;
@@ -253,37 +255,37 @@ public class NonPlayer extends Agent {
 		behavior.addGoal(new Goal("Eat", rand.nextInt(5) + 1));
 		behavior.addGoal(new Goal("Sleep", rand.nextInt(5) + 1));
 		behavior.addGoal(new Goal("Hunt", rand.nextInt(20) + 7));
-		Action action = new Action("eatBread", AIState.IDLE);
+		Action action = new Action("eatBread", NPCStateEnum.IDLE);
 		action.addAction(-5f, "Eat");
 		action.addAction(1f, "Sleep");
 		action.addAction(3f, "Hunt");
 		behavior.addAction(action);
-		action = new Action("eatMeat", AIState.IDLE);
+		action = new Action("eatMeat", NPCStateEnum.IDLE);
 		action.addAction(-7f, "Eat");
 		action.addAction(2f, "Sleep");
 		action.addAction(3f, "Hunt");
 		behavior.addAction(action);
-		action = new Action("sleepInHouse", AIState.IDLE);
+		action = new Action("sleepInHouse", NPCStateEnum.IDLE);
 		action.addAction(3f, "Eat");
 		action.addAction(-7f, "Sleep");
 		action.addAction(5f, "Hunt");
 		behavior.addAction(action);
-		action = new Action("sleepInBed", AIState.IDLE);
+		action = new Action("sleepInBed", NPCStateEnum.IDLE);
 		action.addAction(3f, "Eat");
 		action.addAction(-6f, "Sleep");
 		action.addAction(5f, "Hunt");
 		behavior.addAction(action);
-		action = new Action("standIdle", AIState.IDLE);
+		action = new Action("standIdle", NPCStateEnum.IDLE);
 		action.addAction(2f, "Eat");
 		action.addAction(1f, "Sleep");
 		action.addAction(-5f, "Hunt");
 		behavior.addAction(action);
-		action = new Action("walkLeft", AIState.WALKINGLEFT);
+		action = new Action("walkLeft", NPCStateEnum.WALKING);
 		action.addAction(2f, "Eat");
 		action.addAction(1f, "Sleep");
 		action.addAction(-8f, "Hunt");
 		behavior.addAction(action);
-		action = new Action("walkRight", AIState.WALKINGRIGHT);
+		action = new Action("walkRight", NPCStateEnum.WALKING);
 		action.addAction(2f, "Eat");
 		action.addAction(1f, "Sleep");
 		action.addAction(-4f, "Hunt");

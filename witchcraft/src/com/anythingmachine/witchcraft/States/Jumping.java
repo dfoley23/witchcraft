@@ -1,11 +1,11 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.Util.Util;
 
-public class Jumping extends State {
+public class Jumping extends PlayerState {
 
-		public Jumping(StateMachine sm, StateEnum name) {
+		public Jumping(PlayerStateMachine sm, PlayerStateEnum name) {
 			super(sm, name);
 		}
 
@@ -59,7 +59,7 @@ public class Jumping extends State {
 
 		@Override
 		public void setFlying() {
-			sm.setState(StateEnum.FLYING);
+			sm.setState(PlayerStateEnum.FLYING);
 		}
 		
 		

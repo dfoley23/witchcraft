@@ -1,18 +1,18 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.ParticleEngine.Crow;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
-public class ShapeCrow extends State {
+public class ShapeCrow extends PlayerState {
 	private Crow crow;
 	private float time = 0;
 	private float timeout = 7f;
 
-	public ShapeCrow(StateMachine sm, StateEnum name) {
+	public ShapeCrow(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 		crow = new Crow(new Vector3(0, 0, 0), 0);
 	}
@@ -51,7 +51,7 @@ public class ShapeCrow extends State {
 		time += dt;
 		if (time > timeout) {
 			time = 0;
-			sm.setState(StateEnum.FALLING);
+			sm.setState(PlayerStateEnum.FALLING);
 		}
 	}
 

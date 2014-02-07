@@ -1,10 +1,10 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 
-public class Landing extends State {
+public class Landing extends PlayerState {
 
-		public Landing (StateMachine sm, StateEnum name) {
+		public Landing (PlayerStateMachine sm, PlayerStateEnum name) {
  			super(sm, name);
 		}
 

@@ -1,10 +1,10 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 
-public class Idle extends State {
+public class Idle extends PlayerState {
 
-		public Idle (StateMachine sm, StateEnum name) {
+		public Idle (PlayerStateMachine sm, PlayerStateEnum name) {
  			super(sm, name);
 		}
 

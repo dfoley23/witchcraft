@@ -1,15 +1,15 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.math.Matrix4;
 
-public class Invisible extends State {
+public class Invisible extends PlayerState {
 	private float timeout = 7f;
 	private float time = 0;
 	private float lasttime = 0;
 
-	public Invisible(StateMachine sm, StateEnum name) {
+	public Invisible(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 	}
 
@@ -18,7 +18,7 @@ public class Invisible extends State {
 		if (!sm.animate.getSkin().equals("invi")) {
 			float now = System.currentTimeMillis();
 			if (now - lasttime < 150000) {
-				sm.setState(StateEnum.IDLE);
+				sm.setState(PlayerStateEnum.IDLE);
 			} else {
 				lasttime = now;
 				sm.animate.switchSkin("invi");
@@ -52,7 +52,7 @@ public class Invisible extends State {
 		if (time > timeout) {
 			time = 0;
 			sm.animate.switchSkin("player");
-			sm.setState(StateEnum.IDLE);
+			sm.setState(PlayerStateEnum.IDLE);
 		} else {
 			sm.animate.bindPose();
 			sm.phyState.stop();
@@ -61,13 +61,13 @@ public class Invisible extends State {
 
 	@Override
 	public void setWalk() {
-		sm.setState(StateEnum.WALKING);
+		sm.setState(PlayerStateEnum.WALKING);
 		sm.state.setParent(this);
 	}
 
 	@Override
 	public void setRun() {
-		sm.setState(StateEnum.RUNNING);
+		sm.setState(PlayerStateEnum.RUNNING);
 		sm.state.setParent(this);
 	}
 

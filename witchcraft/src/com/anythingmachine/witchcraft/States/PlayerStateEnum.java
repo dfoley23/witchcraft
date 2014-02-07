@@ -1,6 +1,6 @@
 package com.anythingmachine.witchcraft.States;
 
-public enum StateEnum {
+public enum PlayerStateEnum {
 	DEFAULT {
 	},
 	IDLE { 
@@ -28,7 +28,7 @@ public enum StateEnum {
 		}
 		@Override 
 		public int getNextPower() {
-			return StateEnum.MINDCONTROLPOWER.getID();
+			return PlayerStateEnum.MINDCONTROLPOWER.getID();
 		}
 	},
 	FLYING{
@@ -79,7 +79,7 @@ public enum StateEnum {
 		}
 		@Override
 		public int getNextPower() {
-			return StateEnum.SHAPECROWPOWER.getID();
+			return PlayerStateEnum.SHAPECROWPOWER.getID();
 		}
 		@Override
 		public int getPowerIndex() {
@@ -93,7 +93,7 @@ public enum StateEnum {
 		}
 		@Override
 		public int getNextPower() {
-			return StateEnum.INVISIBLEPOWER.getID();
+			return PlayerStateEnum.INVISIBLEPOWER.getID();
 		}
 		@Override
 		public int getPowerIndex() {
@@ -107,7 +107,7 @@ public enum StateEnum {
 		}
 		@Override
 		public int getNextPower() {
-			return StateEnum.DUPESKINPOWER.getID();
+			return PlayerStateEnum.DUPESKINPOWER.getID();
 		}
 		@Override
 		public int getPowerIndex() {
@@ -122,7 +122,7 @@ public enum StateEnum {
 		@Override
 		public int getNextPower() {
 			//TODO link more powers later
-			return StateEnum.JUMPING.getID();
+			return PlayerStateEnum.JUMPING.getID();
 		}
 		@Override
 		public int getPowerIndex() {
@@ -136,7 +136,7 @@ public enum StateEnum {
 		}
 		@Override
 		public int getNextPower() {
-			return StateEnum.INTANGIBLEPOWER.getID();
+			return PlayerStateEnum.INTANGIBLEPOWER.getID();
 		}
 		@Override
 		public int getPowerIndex() {
@@ -150,7 +150,7 @@ public enum StateEnum {
 		}
 		@Override
 		public int getNextPower() {
-			return StateEnum.JUMPING.getID();
+			return PlayerStateEnum.JUMPING.getID();
 		}
 		@Override
 		public int getPowerIndex() {
@@ -163,12 +163,12 @@ public enum StateEnum {
 		return -1;
 	}
 	public int getNextPower() {
-		return StateEnum.JUMPING.getID();
+		return PlayerStateEnum.JUMPING.getID();
 	}
 	public int getPowerIndex() {
 		return 0;
 	}
 	public int getSize() {
-		return StateEnum.values().length;
+		return PlayerStateEnum.values().length;
 	}
 }

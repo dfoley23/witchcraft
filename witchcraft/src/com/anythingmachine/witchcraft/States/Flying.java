@@ -1,6 +1,6 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
@@ -11,7 +11,7 @@ public class Flying extends Jumping {
 	private float hitrooftimeout = 0.5f;
 	private float time = 0f;
 
-	public Flying(StateMachine sm, StateEnum name) {
+	public Flying(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 	}
 
@@ -104,7 +104,7 @@ public class Flying extends Jumping {
 		if (sm.test("facingleft")) {
 			sm.animate.setFlipX(true);
 		}
-		sm.setState(StateEnum.IDLE);
+		sm.setState(PlayerStateEnum.IDLE);
 	}
 
 	@Override

@@ -3,14 +3,15 @@ package com.anythingmachine.aiengine;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.anythingmachine.aiengine.UtilityAI.AIState;
+import com.anythingmachine.witchcraft.States.NPCStateEnum;
+import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 
 public class Action {
 	private Map<String, Float> goalActionValues;
-	private AIState actionState;
-	public String name;
+	private NPCStateEnum actionState;
+	public ActionEnum name;
 	
-	public Action( String name, AIState actionState) {
+	public Action( ActionEnum name, NPCStateEnum actionState) {
 		this.name = name;
 		goalActionValues = new HashMap<String, Float>();
 		this.actionState = actionState;
@@ -29,7 +30,7 @@ public class Action {
 		}
 	}
 	
-	public AIState getAIState() {
+	public NPCStateEnum getAIState() {
 		return actionState;
 	}
 }

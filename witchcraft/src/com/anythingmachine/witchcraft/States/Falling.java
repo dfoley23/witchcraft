@@ -1,11 +1,11 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.badlogic.gdx.math.Vector3;
 
-public class Falling extends State {
+public class Falling extends PlayerState {
 
-		public Falling (StateMachine sm, StateEnum name) {
+		public Falling (PlayerStateMachine sm, PlayerStateEnum name) {
  			super(sm, name);
 		}
 
@@ -61,6 +61,6 @@ public class Falling extends State {
 		@Override
 		public void land() {
 			super.land();
-			sm.setState(StateEnum.IDLE);
+			sm.setState(PlayerStateEnum.IDLE);
 		}
 }

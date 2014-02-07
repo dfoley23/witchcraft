@@ -1,9 +1,9 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 
-public class Dead extends State {
-		public Dead (StateMachine sm, StateEnum name) {
+public class Dead extends PlayerState {
+		public Dead (PlayerStateMachine sm, PlayerStateEnum name) {
  			super(sm, name);
 		}
 		@Override

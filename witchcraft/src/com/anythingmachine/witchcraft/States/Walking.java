@@ -1,10 +1,10 @@
 package com.anythingmachine.witchcraft.States;
 
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 
 public class Walking extends SharedState {
 
-	public Walking(StateMachine sm, StateEnum name) {
+	public Walking(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 	}
 

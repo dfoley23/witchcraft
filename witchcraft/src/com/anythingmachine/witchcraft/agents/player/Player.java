@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.agents.player;
 import java.util.ArrayList;
 
 import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
@@ -22,7 +23,7 @@ import com.anythingmachine.witchcraft.States.Landing;
 import com.anythingmachine.witchcraft.States.MindControlPower;
 import com.anythingmachine.witchcraft.States.Running;
 import com.anythingmachine.witchcraft.States.ShapeCrow;
-import com.anythingmachine.witchcraft.States.StateEnum;
+import com.anythingmachine.witchcraft.States.PlayerStateEnum;
 import com.anythingmachine.witchcraft.States.Walking;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
@@ -50,7 +51,7 @@ import com.esotericsoftware.spine.SkeletonData;
 
 public class Player extends Entity {
 	public Cape cape;
-	private StateMachine state;
+	private PlayerStateMachine state;
 
 	public Player(RK4Integrator rk4) {
 		setupState("player");
@@ -213,26 +214,26 @@ public class Player extends Entity {
 	}
 
 	private void setupStates() {
-		state.addState(StateEnum.IDLE, new Idle(state, StateEnum.IDLE));
-		state.addState(StateEnum.WALKING, new Walking(state, StateEnum.WALKING));
-		state.addState(StateEnum.RUNNING, new Running(state, StateEnum.RUNNING));
-		state.addState(StateEnum.JUMPING, new Jumping(state, StateEnum.JUMPING));
-		state.addState(StateEnum.FLYING, new Flying(state, StateEnum.FLYING));
-		state.addState(StateEnum.FALLING, new Falling(state, StateEnum.FALLING));
-		state.addState(StateEnum.LANDING, new Landing(state, StateEnum.LANDING));
-		state.addState(StateEnum.ATTACKING, new Attacking(state,
-				StateEnum.ATTACKING));
-		state.addState(StateEnum.DEAD, new Dead(state, StateEnum.DEAD));
-		state.addState(StateEnum.CASTSPELL, new CastSpell(state, StateEnum.CASTSPELL));
-		state.addState(StateEnum.DUPESKIN, new DupeSkin(state, StateEnum.DUPESKIN));
+		state.addState(PlayerStateEnum.IDLE, new Idle(state, PlayerStateEnum.IDLE));
+		state.addState(PlayerStateEnum.WALKING, new Walking(state, PlayerStateEnum.WALKING));
+		state.addState(PlayerStateEnum.RUNNING, new Running(state, PlayerStateEnum.RUNNING));
+		state.addState(PlayerStateEnum.JUMPING, new Jumping(state, PlayerStateEnum.JUMPING));
+		state.addState(PlayerStateEnum.FLYING, new Flying(state, PlayerStateEnum.FLYING));
+		state.addState(PlayerStateEnum.FALLING, new Falling(state, PlayerStateEnum.FALLING));
+		state.addState(PlayerStateEnum.LANDING, new Landing(state, PlayerStateEnum.LANDING));
+		state.addState(PlayerStateEnum.ATTACKING, new Attacking(state,
+				PlayerStateEnum.ATTACKING));
+		state.addState(PlayerStateEnum.DEAD, new Dead(state, PlayerStateEnum.DEAD));
+		state.addState(PlayerStateEnum.CASTSPELL, new CastSpell(state, PlayerStateEnum.CASTSPELL));
+		state.addState(PlayerStateEnum.DUPESKIN, new DupeSkin(state, PlayerStateEnum.DUPESKIN));
 		/*power states*/
-		state.addState(StateEnum.DUPESKINPOWER, new DupeSkinPower(state, StateEnum.DUPESKINPOWER));
-		state.addState(StateEnum.MINDCONTROLPOWER, new MindControlPower(state, StateEnum.MINDCONTROLPOWER));
-		state.addState(StateEnum.INVISIBLEPOWER, new Invisible(state, StateEnum.INVISIBLEPOWER));
-		state.addState(StateEnum.SHAPECROWPOWER, new ShapeCrow(state, StateEnum.SHAPECROWPOWER));
+		state.addState(PlayerStateEnum.DUPESKINPOWER, new DupeSkinPower(state, PlayerStateEnum.DUPESKINPOWER));
+		state.addState(PlayerStateEnum.MINDCONTROLPOWER, new MindControlPower(state, PlayerStateEnum.MINDCONTROLPOWER));
+		state.addState(PlayerStateEnum.INVISIBLEPOWER, new Invisible(state, PlayerStateEnum.INVISIBLEPOWER));
+		state.addState(PlayerStateEnum.SHAPECROWPOWER, new ShapeCrow(state, PlayerStateEnum.SHAPECROWPOWER));
 //		state.addState(StateEnum.SHAPECATPOWER, new ShapeCatPower(state, StateEnum.SHAPECATPOWER));
 //		state.addState(StateEnum.INTANGIBLEPOWER, new Intangible(state, StateEnum.INTANGIBLEPOWER));
-		state.setInitialState(StateEnum.IDLE);
+		state.setInitialState(PlayerStateEnum.IDLE);
 		state.animate.bindPose();
 		state.animate.setCurrent("idle", true);
 	}
@@ -300,7 +301,7 @@ public class Player extends Entity {
 
 		KinematicParticle body = new KinematicParticle(new Vector3(256f,128f,0f),Util.GRAVITY * 3);
 
-		state = new StateMachine(name, body.getPos(), new Vector2(0.53f, 0.53f), false, sd);
+		state = new PlayerStateMachine(name, body.getPos(), new Vector2(0.53f, 0.53f), false, sd);
 
 		state.animate.addAnimation("jump", sd.findAnimation("beginfly"));
 		state.animate.addAnimation("idle", sd.findAnimation("idle"));
