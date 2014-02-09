@@ -2,8 +2,11 @@ package com.anythingmachine.aiengine;
 
 import java.util.ArrayList;
 
+import com.anythingmachine.input.InputManager;
+import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.States.PlayerStateEnum;
+import com.anythingmachine.witchcraft.States.Player.PlayerState;
+import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.ground.Curve;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
@@ -15,6 +18,10 @@ import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.SkeletonData;
 
 public class PlayerStateMachine extends StateMachine {
+	public PlayerState state;
+	public InputManager input;
+	protected PlayerState[] states;
+	public PhysicsState phyState;
 	public ArrayList<Sprite> powerUi;
 	public float uiFadein;
 	public PlayerStateEnum power;
@@ -32,6 +39,8 @@ public class PlayerStateMachine extends StateMachine {
 		power = PlayerStateEnum.JUMPING;
 		uiFadein = -5;
 
+		input = new InputManager();
+		states = new PlayerState[PlayerStateEnum.DEAD.getSize()];
 	}
 
 	@Override
@@ -72,6 +81,44 @@ public class PlayerStateMachine extends StateMachine {
 		state.transistionOut();
 		this.state = states[power.getID()];
 		state.transistionIn();
+	}
+
+	public void addState(PlayerStateEnum type, PlayerState s) {
+		states[type.getID()] = s;
+	}
+
+	public void setInitialState(PlayerStateEnum name) {
+		this.state = states[name.getID()];
+	}
+
+	public void setState(PlayerStateEnum name) {
+		state.transistionOut();
+		this.state = states[name.getID()];
+		state.transistionIn();
+	}
+
+	public PlayerState getState(PlayerStateEnum name) {
+		return states[name.getID()];
+	}
+
+	public boolean inState(PlayerStateEnum state) {
+		return this.state.name.getID() == state.getID();
+	}
+
+	public boolean testtesttestOR(String test1, String test2, String test3) {
+		return tests.get(test1) || tests.get(test2) || tests.get(test3);
+	}
+
+	public boolean testANDState(String test, PlayerStateEnum state) {
+		return tests.get(test) && this.state.name == state;
+	}
+
+	public boolean testORState(String test, PlayerStateEnum state) {
+		return tests.get(test) || this.state.name == state;
+	}
+
+	public boolean testORNotState(String test, PlayerStateEnum state) {
+		return tests.get(test) || this.state.name != state;
 	}
 
 }

@@ -94,4 +94,7 @@ public class Particle extends Entity {
 		return stable;
 	}
 	
+	public void setStable(boolean val) {
+		stable = val;
+	}
 }

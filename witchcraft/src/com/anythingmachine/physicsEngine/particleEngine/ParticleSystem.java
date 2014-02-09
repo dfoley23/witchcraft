@@ -20,7 +20,8 @@ public class ParticleSystem implements PhysicsComponent {
 		Iterator<Particle> it = particles.iterator();
 		while( it.hasNext() ) {
 			Particle p = it.next();
-			p.draw(batch);
+			if ( !p.isStable() )
+				p.draw(batch);
 			if ( p.isDestroyed() ) {
 				it.remove();
 			}

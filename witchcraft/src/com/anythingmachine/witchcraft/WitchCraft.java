@@ -16,8 +16,6 @@ import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
 import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.agents.Archer;
-import com.anythingmachine.witchcraft.agents.Knight;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
 import com.anythingmachine.witchcraft.ground.Ground;
@@ -102,6 +100,7 @@ public class WitchCraft implements ApplicationListener {
 		if (ON_ANDROID) {
 			screenWidth = VIRTUAL_WIDTH;
 			screenHeight = VIRTUAL_HEIGHT;
+			dt = 1/20f;
 		} else {
 			screenWidth = Gdx.app.getGraphics().getWidth();
 			screenHeight = Gdx.app.getGraphics().getHeight();
@@ -135,11 +134,11 @@ public class WitchCraft implements ApplicationListener {
 		// ground.readCurveFile("data/groundcurves.txt", -240, -320);
 
 		player = new Player(rk4);
-		npc1 = new Knight("knight2", "characters", new Vector2(354.0f, 3.0f),
+		npc1 = new NonPlayer("knight2", "characters", new Vector2(354.0f, 3.0f),
 				new Vector2(0.6f, 0.7f));
-		npc2 = new Knight("knight1", "characters", new Vector2(800.0f, 3.0f),
+		npc2 = new NonPlayer("knight1", "characters", new Vector2(800.0f, 3.0f),
 				new Vector2(0.6f, 0.7f));
-		npc3 = new Archer("archer", "characters", new Vector2(300.0f, 3.0f),
+		npc3 = new NonPlayer("archer", "characters", new Vector2(300.0f, 3.0f),
 				new Vector2(0.6f, 0.7f));
 		npc4 = new NonPlayer("civmalebrown", "characters", new Vector2(300.0f,
 				3.0f), new Vector2(0.6f, 0.7f));

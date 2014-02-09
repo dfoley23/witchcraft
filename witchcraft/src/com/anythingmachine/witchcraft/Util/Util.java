@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Util {
 
-	public static final boolean DEV_MODE = true;
+	public static final boolean DEV_MODE = false;
 	
 	private Util() {
 		throw new AssertionError();
@@ -48,6 +48,10 @@ public class Util {
 
 	public static Vector3 subVecs(Vector3 v, Vector3 u) {
 		return new Vector3(v.x - u.x, v.y - u.y, v.z - u.z);
+	}
+
+	public static Vector3 subVecs(Vector3 v, Vector2 u) {
+		return new Vector3(v.x - u.x, v.y - u.y, 0);
 	}
 
 	public static Vector3 addVec(Vector3 v, float s) {

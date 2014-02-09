@@ -41,7 +41,6 @@ import com.anythingmachine.witchcraft.ground.Stairs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -257,37 +256,45 @@ public class TiledMapHelper {
 		 * try to push them out.
 		 */
 
-		TiledMapTileLayer layer = (TiledMapTileLayer) getMap().getLayers()
-				.get(3);
+		TiledMapTileLayer layer = (TiledMapTileLayer) getMap().getLayers().get(
+				3);
 
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyType.StaticBody;
 		bodydef.position.set(0, 0);
 		Body body = WitchCraft.world.createBody(bodydef);
-		if ( level == 1 ) {
+		if (level == 1) {
 			body.setUserData(new Entity().setType(EntityType.WALL));
 		} else {
-	        body.setUserData(new LevelWall(level-1));
+			body.setUserData(new LevelWall(level - 1));
 		}
 		EdgeShape mapBounds = new EdgeShape();
-		mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0, layer.getHeight()).scl(Util.PIXELS_PER_METER));
-        body.createFixture(mapBounds, 0);
+		mapBounds.set(new Vector2(0.0f, 0.0f),
+				new Vector2(0, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX));
+		body.createFixture(mapBounds, 0);
 
-        body = WitchCraft.world.createBody(bodydef);
-        body.setUserData(new LevelWall(level+1));
+		body = WitchCraft.world.createBody(bodydef);
+		body.setUserData(new LevelWall(level + 1));
 		EdgeShape mapBounds2 = new EdgeShape();
-		mapBounds.set(new Vector2(layer.getWidth(), 0.0f), new Vector2(0, layer.getHeight()).scl(Util.PIXELS_PER_METER));
-        body.createFixture(mapBounds, 0);
+		mapBounds2.set(new Vector2(layer.getWidth()*32, 0.0f).scl(Util.PIXEL_TO_BOX)
+				,
+				new Vector2(layer.getWidth()*32, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
+						);
+		body.createFixture(mapBounds2, 0);
 
-        body = WitchCraft.world.createBody(bodydef);
-        body.setUserData(new Platform(new Vector2(0.0f, layer.getHeight()), new Vector2(layer.getWidth(), layer.getHeight())));
+		body = WitchCraft.world.createBody(bodydef);
+		body.setUserData(new Platform(new Vector2(0.0f, layer.getHeight()*32), new Vector2(layer.getWidth()*32, layer
+				.getHeight())));
 		EdgeShape mapBounds3 = new EdgeShape();
-		mapBounds3.set(new Vector2(0.0f, layer.getHeight()), new Vector2(layer.getWidth(), layer.getHeight()).scl(Util.PIXELS_PER_METER));
-        body.createFixture(mapBounds, 0);
-		
-		 mapBounds.dispose();
-		 mapBounds2.dispose();
-		 mapBounds3.dispose();
+		mapBounds3.set(new Vector2(0.0f, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
+				,
+				new Vector2(layer.getWidth()*32, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
+						);
+		body.createFixture(mapBounds3, 0);
+
+		mapBounds.dispose();
+		mapBounds2.dispose();
+		mapBounds3.dispose();
 	}
 
 	/**
@@ -338,8 +345,8 @@ public class TiledMapHelper {
 	 */
 	public void prepareCamera(int screenWidth, int screenHeight) {
 		Camera.camera = new OrthographicCamera(screenWidth, screenHeight);
-//		if ( WitchCraft.ON_ANDROID )
-//			Camera.camera.zoom = 0.5f;
+		// if ( WitchCraft.ON_ANDROID )
+		// Camera.camera.zoom = 0.5f;
 		Camera.camera.position.set(screenWidth / 2.0f, screenHeight / 2.0f, 0);
 	}
 

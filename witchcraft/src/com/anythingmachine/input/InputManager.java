@@ -164,13 +164,13 @@ public class InputManager {
 	public boolean up() {
 		if (debugcontrols)
 			return Gdx.input.isKeyPressed(keymap.get("UP"));
-		return controller.getButton(keymap.get("UP")) || axisRange2Y() > 0;
+		return controller.getButton(keymap.get("UP")) || axisRange2Y() < 0;
 	}
 
 	public boolean down() {
 		if (debugcontrols)
 			return Gdx.input.isKeyPressed(keymap.get("down"));
-		return controller.getButton(keymap.get("down")) || axisRange2Y() < 0;
+		return controller.getButton(keymap.get("down")) || axisRange2Y() > 0;
 	}
 
 	public void addInputState(String state, Integer keyValue) {

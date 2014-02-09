@@ -4,13 +4,24 @@ import java.util.Random;
 
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.Goal;
-import com.anythingmachine.aiengine.StateMachine;
+import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.aiengine.UtilityAI;
-import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
+import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.States.NPCStateEnum;
+import com.anythingmachine.witchcraft.States.NPC.Attacking;
+import com.anythingmachine.witchcraft.States.NPC.Drinking;
+import com.anythingmachine.witchcraft.States.NPC.Eating;
+import com.anythingmachine.witchcraft.States.NPC.GoingTo;
+import com.anythingmachine.witchcraft.States.NPC.GoingToQuickly;
+import com.anythingmachine.witchcraft.States.NPC.Idle;
+import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
+import com.anythingmachine.witchcraft.States.NPC.Running;
+import com.anythingmachine.witchcraft.States.NPC.Sleeping;
+import com.anythingmachine.witchcraft.States.NPC.Walking;
+import com.anythingmachine.witchcraft.States.NPC.Working;
+import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.ground.Platform;
@@ -30,135 +41,94 @@ import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.Skin;
 
-public class NonPlayer extends Agent {
-	protected boolean inAir;
-	protected UtilityAI behavior;
-	protected StateMachine sm;
-	protected float aiChoiceTime = 0.f;
-	protected NPCStateEnum state = NPCStateEnum.IDLE;
-	protected Vector2 bodyScale;
+public class NonPlayer extends Entity {
+	protected NPCStateMachine sm;
 	protected boolean active;
-	protected AnimationManager animate;
-	protected boolean facingLeft;
-	protected boolean onGround;
-	protected KinematicParticle body;
-	protected Body collisionBody;
 	protected Fixture feetFixture;
 	protected Fixture hitRadius;
 
 	public NonPlayer(String skinname, String atlasname, Vector2 pos,
 			Vector2 bodyScale) {
-		this.bodyScale = bodyScale;
 		this.type = EntityType.NONPLAYER;
-		this.curGroundSegment = 0;
 		active = true;
-		// ArrayList<Vector2> points = WitchCraft.ground.getCurveBeginPoints();
-		// for (int i = 0; i < points.size(); i++) {
-		// if (pos.x > points.get(i).x) {
-		// this.curGroundSegment = i;
-		// }
-		// }
-		//
-		// curCurve = WitchCraft.ground.getCurve(curGroundSegment);
 
-		this.body = new KinematicParticle(new Vector3(pos.x, 128f, 0f), -50f);
-		WitchCraft.rk4System.addParticle(body);
+		setupAnimations(skinname, atlasname, pos, bodyScale);
 
-		setupAnimations(skinname, atlasname);
-
+		setupTests();
+		
 		setupAI();
-		buildCollisionBody();
 	}
 
 	public void update(float dT) {
-		float delta = Gdx.graphics.getDeltaTime();
-
-		aiChoiceTime += dT;
-		if (aiChoiceTime > 7) {
-			NPCStateEnum old = state;
-			state = behavior.ChooseAction();
-			aiChoiceTime = 0;
-			switch (state) {
-			case WALKINGLEFT:
-				body.setVel(-50f, body.getVel().y, 0f);
-				animate.setCurrent("walk", true);
-				facingLeft = true;
-				if (old != NPCStateEnum.WALKINGLEFT) {
-					animate.bindPose();
-				}
-				break;
-			case WALKINGRIGHT:
-				body.setVel(50f, body.getVel().y, 0f);
-				animate.setCurrent("walk", true);
-				facingLeft = false;
-				if (old != NPCStateEnum.WALKINGRIGHT) {
-					animate.bindPose();
-				}
-				break;
-			case IDLE:
-				body.setVel(0, 0, 0);
-				animate.setCurrent("idle", true);
-				if (old != NPCStateEnum.IDLE) {
-					animate.bindPose();
-				}
-				break;
-			case SWORDATTACK:
-				body.setVel(0, body.getVel().y, 0f);
-				animate.bindPose();
-				animate.setCurrent("swordattack", true);
-				break;
-			default:
-				handleState(state);
-				// body.setVel(50f, body.getVel().y, 0f);
-				// animate.setCurrent("walk", true);
-				// facingLeft = false;
-				// if (old != AIState.WALKINGRIGHT) {
-				// animate.bindPose();
-				// }
-				break;
-			}
-		}
-		checkGround();
-
-		if (active) {
-			animate.setPos(body.getPos(), 0, -16f);
-			if (state == AIState.SWORDATTACK && animate.atEnd()) {
-				animate.applyTotalTime(false, animate.getCurrentAnimTime());
-			} else {
-				animate.update(delta);
-			}
-		}
-		collisionBody.setTransform(Util.addVecsToVec2(body.getPos(), -8, 64).scl(Util.PIXEL_TO_BOX), 0);
+		sm.update(dT);
+		//			switch (sm.state) {
+//			case WALKINGLEFT:
+//				body.setVel(-50f, body.getVel().y, 0f);
+//				sm.animate.setCurrent("walk", true);
+//				facingLeft = true;
+//				if (old != NPCStateEnum.WALKINGLEFT) {
+//					sm.animate.bindPose();
+//				}
+//				break;
+//			case WALKINGRIGHT:
+//				body.setVel(50f, body.getVel().y, 0f);
+//				sm.animate.setCurrent("walk", true);
+//				facingLeft = false;
+//				if (old != NPCStateEnum.WALKINGRIGHT) {
+//					sm.animate.bindPose();
+//				}
+//				break;
+//			case IDLE:
+//				body.setVel(0, 0, 0);
+//				sm.animate.setCurrent("idle", true);
+//				if (old != NPCStateEnum.IDLE) {
+//					sm.animate.bindPose();
+//				}
+//				break;
+//			case SWORDATTACK:
+//				body.setVel(0, body.getVel().y, 0f);
+//				sm.animate.bindPose();
+//				sm.animate.setCurrent("swordattack", true);
+//				break;
+//			default:
+//				handleState(sm.state);
+//				// body.setVel(50f, body.getVel().y, 0f);
+//				// animate.setCurrent("walk", true);
+//				// facingLeft = false;
+//				// if (old != AIState.WALKINGRIGHT) {
+//				// animate.bindPose();
+//				// }
+//				break;
+//			}
+//		}
+//		checkGround();
+//
+//		if (active) {
+//			sm.animate.setPos(body.getPos(), 0, -16f);
+//			if (sm.state == NPCState.SWORDATTACK && sm.animate.atEnd()) {
+//				sm.animate.applyTotalTime(false, sm.animate.getCurrentAnimTime());
+//			} else {
+//				sm.animate.update(delta);
+//			}
+//		}
 
 	}
 
 	public void draw(Batch batch) {
-		animate.setFlipX(facingLeft);
-		animate.draw(batch);
+		sm.animate.setFlipX(sm.test("facingleft"));
+		sm.animate.draw(batch);
 	}
 
 	public Vector3 getPosPixels() {
-		return body.getPos();
-	}
-
-	public int getCurSegment() {
-		return curGroundSegment;
+		return sm.phyState.getPos();
 	}
 
 	public Vector2 getBodyScale() {
-		return bodyScale;
-	}
-
-	public void incrementSegment() {
-		this.curGroundSegment++;
-	}
-
-	public void decrementSegment() {
-		this.curGroundSegment++;
+		return sm.animate.getScale();
 	}
 
 	public Skin getSkin() {
-		return animate.getSkin();
+		return sm.animate.getSkin();
 	}
 
 	@Override
@@ -169,19 +139,35 @@ public class NonPlayer extends Agent {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		Vector3 pos = body.getPos();
-		Vector3 vel = body.getVel();
+		Vector3 pos = sm.phyState.body.getPos();
+		Vector3 vel = sm.phyState.body.getVel();
 		switch (other.type) {
 		case WALL:
 			// System.out.println("hello wall");
-			body.setVel(-vel.x, vel.y, 0);
-			facingLeft = !facingLeft;
+			if ( vel.x < 0 ) {
+				sm.phyState.setVel(-vel.x, vel.y);
+				sm.setTestVal("hitleftwall", true);
+			} else {
+				sm.phyState.setVel(-vel.x, vel.y);
+				sm.setTestVal("hitrightwall", true);				
+			}
+			break;
+		case LEVELWALL:
+			// System.out.println("hello wall");
+			if ( vel.x < 0 ) {
+				sm.phyState.setVel(-vel.x, vel.y);
+				sm.setTestVal("hitleftwall", true);
+			} else {
+				sm.phyState.setVel(-vel.x, vel.y);
+				sm.setTestVal("hitrightwall", true);				
+			}
+
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
-			if (plat.isBetween(facingLeft, pos.x)) {
+			if (plat.isBetween(sm.test("facingleft"), pos.x)) {
 				if (plat.getHeight() - 32 < pos.y)
-					elevatedSegment = plat;
+					sm.elevatedSegment = plat;
 			}
 			break;
 		default:
@@ -189,116 +175,119 @@ public class NonPlayer extends Agent {
 		}
 	}
 
-	protected void checkGround() {
-		Vector3 pos = body.getPos();
-//		if (pos.x > curCurve.lastPointOnCurve().x) {
-//			curGroundSegment++;
-//			if (curGroundSegment >= WitchCraft.ground.getNumCurves()) {
-//				body.setVel(-50, 0, 0);
-//				facingLeft = !facingLeft;
-//			}
-//			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-//		} else if (pos.x < curCurve.firstPointOnCurve().x) {
-//			curGroundSegment--;
-//			if (curGroundSegment == 0) {
-//				body.setVel(50, 0, 0);
-//				facingLeft = !facingLeft;
-//			}
-//			curCurve = WitchCraft.ground.getCurve(curGroundSegment);
-//		}
-//		animate.setFlipX(facingLeft);
-//		Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
-//				curGroundSegment, pos.x);
-//		if (pos.y < groundPoint.y) {
-//			correctHeight(groundPoint.y);
-//			onGround = true;
-//		}
-		onGround = false;
-		if (elevatedSegment != null && elevatedSegment.isBetween(facingLeft, pos.x)) {
-			float groundPoint = elevatedSegment.getHeight(pos.x);
-//			if (pos.y < groundPoint) {
-				body.setPos(pos.x, groundPoint, 0);
-				onGround=true;
-//			}
-		} 
-	}
-
 	public void correctHeight(float y) {
-		body.setPos(body.getX(), y, 0f);
+		sm.phyState.body.setPos(sm.phyState.getX(), y, 0f);
 	}
 
-	protected void handleState(AIState state) {
-	}
-
-	protected void setupAnimations(String skinname, String atlasname) {
+	protected void setupAnimations(String skinname, String atlasname, Vector2 pos, Vector2 scale) {
 		SkeletonBinary sb = new SkeletonBinary(
 				(TextureAtlas) WitchCraft.assetManager
 						.get("data/spine/characters.atlas"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		animate = new AnimationManager(skinname, body.getPos(), new Vector2(
-				0.6f, 0.7f), true, sd);
-		animate.addAnimation("idle", sd.findAnimation("idle"));
-		animate.addAnimation("walk", sd.findAnimation("walk"));
-		animate.addAnimation("run", sd.findAnimation("run"));
-		animate.addAnimation("swordattack", sd.findAnimation("overheadattack"));
+		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, 128f, 0f), -50f);
 
-		animate.setCurrent("idle", true);
+		sm = new NPCStateMachine(skinname, body.getPos(), scale, false, sd);
 
+		sm.animate.addAnimation("idle", sd.findAnimation("idle"));
+		sm.animate.addAnimation("walk", sd.findAnimation("walk"));
+		sm.animate.addAnimation("run", sd.findAnimation("run"));
+		sm.animate.addAnimation("swordattack", sd.findAnimation("overheadattack"));
+		sm.animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
+
+		sm.animate.setCurrent("idle", true);
+				
+		buildPhysics(body);
+		
+		setupStates();
+		sm.setInitialState(NPCStateEnum.IDLE);
 	}
 
+	protected void setupStates() {
+		sm.addState(NPCStateEnum.ATTACKING, new Attacking(sm, NPCStateEnum.ATTACKING, this));
+		sm.addState(NPCStateEnum.WALKING, new Walking(sm, NPCStateEnum.WALKING));
+		sm.addState(NPCStateEnum.RUNNING, new Running(sm, NPCStateEnum.RUNNING));
+		sm.addState(NPCStateEnum.GOINGTOEAT, new GoingTo(sm, NPCStateEnum.GOINGTOEAT, new Vector2(6612, sm.phyState.getY())));
+		sm.addState(NPCStateEnum.GOINGTOSLEEP, new GoingTo(sm, NPCStateEnum.GOINGTOSLEEP, new Vector2(6612, sm.phyState.getY())));
+		sm.addState(NPCStateEnum.GOINGTOWORK, new GoingToQuickly(sm, NPCStateEnum.GOINGTOWORK, new Vector2(4012, sm.phyState.getY())));
+		sm.addState(NPCStateEnum.EATING, new Eating(sm, NPCStateEnum.EATING));
+		sm.addState(NPCStateEnum.SLEEPING, new Sleeping(sm, NPCStateEnum.SLEEPING));
+		sm.addState(NPCStateEnum.DRINKING, new Drinking(sm, NPCStateEnum.DRINKING));
+		sm.addState(NPCStateEnum.IDLE, new Idle(sm, NPCStateEnum.IDLE));
+		sm.addState(NPCStateEnum.WORKING, new Working(sm, NPCStateEnum.WORKING));
+	}
+	
 	protected void setupAI() {
 		Random rand = new Random();
 		// ai goals and actions
-		behavior = new UtilityAI();
-		behavior.addGoal(new Goal("Eat", rand.nextInt(5) + 1));
-		behavior.addGoal(new Goal("Sleep", rand.nextInt(5) + 1));
-		behavior.addGoal(new Goal("Hunt", rand.nextInt(20) + 7));
-		Action action = new Action("eatBread", NPCStateEnum.IDLE);
-		action.addAction(-5f, "Eat");
-		action.addAction(1f, "Sleep");
-		action.addAction(3f, "Hunt");
-		behavior.addAction(action);
-		action = new Action("eatMeat", NPCStateEnum.IDLE);
+		sm.behavior = new UtilityAI(7f);
+		sm.behavior.addGoal(new Goal("Eat", rand.nextInt(5) + 1));
+		sm.behavior.addGoal(new Goal("Sleep", rand.nextInt(5) + 1));
+		sm.behavior.addGoal(new Goal("Hunt", rand.nextInt(20) + 7));
+		sm.behavior.addGoal(new Goal("notidle", rand.nextInt(7) + 7));
+		Action action = new Action(ActionEnum.EAT, NPCStateEnum.EATING);
+		action.addAction(-4f, "Eat");
+		action.addAction(2f, "Sleep");
+		action.addAction(2f, "Hunt");
+		action.addAction(-2f, "notidle");
+		sm.behavior.addAction(action);
+		action = new Action(ActionEnum.EAT, NPCStateEnum.EATING);
 		action.addAction(-7f, "Eat");
 		action.addAction(2f, "Sleep");
 		action.addAction(3f, "Hunt");
-		behavior.addAction(action);
-		action = new Action("sleepInHouse", NPCStateEnum.IDLE);
-		action.addAction(3f, "Eat");
-		action.addAction(-7f, "Sleep");
-		action.addAction(5f, "Hunt");
-		behavior.addAction(action);
-		action = new Action("sleepInBed", NPCStateEnum.IDLE);
-		action.addAction(3f, "Eat");
-		action.addAction(-6f, "Sleep");
-		action.addAction(5f, "Hunt");
-		behavior.addAction(action);
-		action = new Action("standIdle", NPCStateEnum.IDLE);
+		action.addAction(-1f, "notidle");
+		sm.behavior.addAction(action);
+		action = new Action(ActionEnum.DRINK, NPCStateEnum.DRINKING);
+		action.addAction(-3f, "Eat");
+		action.addAction(4f, "Sleep");
+		action.addAction(1f, "Hunt");
+		action.addAction(1f, "notidle");
+		sm.behavior.addAction(action);
+		action = new Action(ActionEnum.GOTOSLEEP, NPCStateEnum.GOINGTOSLEEP);
+		action.addAction(2f, "Eat");
+		action.addAction(1f, "Sleep");
+		action.addAction(2f, "Hunt");
+		action.addAction(-6f, "notidle");
+		sm.behavior.addAction(action);
+		action = new Action(ActionEnum.SLEEP, NPCStateEnum.SLEEPING);
+		action.addAction(4f, "Eat");
+		action.addAction(-10f, "Sleep");
+		action.addAction(3f, "Hunt");
+		action.addAction(1f, "notidle");
+		sm.behavior.addAction(action);
+		action = new Action(ActionEnum.THINK, NPCStateEnum.IDLE);
+		action.addAction(2f, "Eat");
+		action.addAction(1f, "Sleep");
+		action.addAction(-1f, "Hunt");
+		action.addAction(3f, "notidle");
+		sm.behavior.addAction(action);
+		action = new Action(ActionEnum.GO, NPCStateEnum.GOINGTOWORK);
 		action.addAction(2f, "Eat");
 		action.addAction(1f, "Sleep");
 		action.addAction(-5f, "Hunt");
-		behavior.addAction(action);
-		action = new Action("walkLeft", NPCStateEnum.WALKING);
-		action.addAction(2f, "Eat");
-		action.addAction(1f, "Sleep");
-		action.addAction(-8f, "Hunt");
-		behavior.addAction(action);
-		action = new Action("walkRight", NPCStateEnum.WALKING);
-		action.addAction(2f, "Eat");
-		action.addAction(1f, "Sleep");
-		action.addAction(-4f, "Hunt");
-		behavior.addAction(action);
+		action.addAction(-2f, "notidle");
+		sm.behavior.addAction(action);
+		action = new Action(ActionEnum.GO, NPCStateEnum.GOINGTOEAT);
+		action.addAction(1f, "Eat");
+		action.addAction(2f, "Sleep");
+		action.addAction(2f, "Hunt");
+		action.addAction(-6f, "notidle");
+		sm.behavior.addAction(action);
 
 	}
 
-	private void buildCollisionBody() {
+	protected void setupTests() {
+		sm.addTest("facingleft", false);
+		sm.addTest("grounded", true);
+	}
+
+	protected void buildPhysics(KinematicParticle body) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position
-				.set(new Vector2(this.body.getX(), this.body.getY()));
-		collisionBody = WitchCraft.world.createBody(def);
+				.set(new Vector2(body.getX(), body.getY()));
+		Body collisionBody = WitchCraft.world.createBody(def);
 		PolygonShape shape = new PolygonShape();		
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();
@@ -320,5 +309,11 @@ public class NonPlayer extends Agent {
 		feetFixture = collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();
+		
+		WitchCraft.rk4System.addParticle(body);
+		sm.phyState = new PhysicsState(body, collisionBody);
+		sm.phyState.addFixture(feetFixture, "feet");
+		sm.phyState.addFixture(hitRadius, "radius");
+		
 	}
 }

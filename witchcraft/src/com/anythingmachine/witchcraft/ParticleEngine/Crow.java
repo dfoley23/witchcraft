@@ -56,7 +56,7 @@ public class Crow extends KinematicParticle {
 		if ( standTime < 0) {
 			pos.x += vel.x*dt;
 		}
-		collisionBody.setTransform(pos.x+32*Util.PIXEL_TO_BOX, (pos.y+64)*Util.PIXEL_TO_BOX, 0);
+		collisionBody.setTransform((pos.x+32)*Util.PIXEL_TO_BOX, (pos.y+64)*Util.PIXEL_TO_BOX, 0);
 
 	}
 

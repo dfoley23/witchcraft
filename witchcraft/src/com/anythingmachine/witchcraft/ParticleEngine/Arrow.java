@@ -20,13 +20,15 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 public class Arrow extends Particle {
 	private Body collisionBody;
 	private Sprite sprite;
-	
+
 	public Arrow(Vector3 pos, Vector3 vel) {
 		super(pos, vel);
 		this.type = EntityType.ARROW;
 		buildCollisionBody();
 		WitchCraft.rk4System.addParticle(this);
-		sprite = ((TextureAtlas)WitchCraft.assetManager.get("data/spine/characters.atlas")).createSprite("archer_xcf-aroow");
+		sprite = ((TextureAtlas) WitchCraft.assetManager
+				.get("data/spine/characters.atlas"))
+				.createSprite("archer_xcf-aroow");
 		sprite.scale(-0.4f);
 	}
 
@@ -34,22 +36,27 @@ public class Arrow extends Particle {
 		WitchCraft.world.destroyBody(collisionBody);
 	}
 
-	public ArrayList<Particle> getParticles(){
+	public ArrayList<Particle> getParticles() {
 		ArrayList<Particle> list = new ArrayList<Particle>();
 		list.add(this);
 		return list;
 	}
 
-	public void draw(Batch batch) {		
-		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX, 0);
-		sprite.setPosition(pos.x, pos.y);
-		sprite.draw(batch);
+	public void draw(Batch batch) {
+		if (!WitchCraft.cam.inBigBounds(pos)) {
+			stable = true;
+		} else {
+			collisionBody.setTransform(pos.x * Util.PIXEL_TO_BOX, pos.y
+					* Util.PIXEL_TO_BOX, 0);
+			sprite.setPosition(pos.x, pos.y);
+			sprite.draw(batch);
+		}
 	}
-		
+
 	public Vector2 getPos2D() {
 		return new Vector2(pos.x, pos.y);
 	}
-	
+
 	public Vector3 getVel() {
 		return vel;
 	}
@@ -63,24 +70,26 @@ public class Arrow extends Particle {
 	}
 
 	public void pointAtTarget(Vector3 target, float speed) {
-		Vector3 dir = new Vector3(target.x-pos.x, target.y-pos.y, 0);
-		dir.scl(1/dir.len());
-		this.vel.set(dir.x*speed, Math.max(0.125f, dir.y)*speed, 0);
-		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
-		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
+		Vector3 dir = new Vector3(target.x - pos.x, target.y - pos.y, 0);
+		dir.scl(1 / dir.len());
+		this.vel.set(dir.x * speed, Math.max(0.125f, dir.y) * speed, 0);
+		float costheta = Util.dot(vel, new Vector3(1, 0, 0)) / vel.len();
+		sprite.setRotation((float) Math.acos((double) costheta)
+				* Util.RAD_TO_DEG);
 		sprite.setPosition(pos.x, pos.y);
-		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,
-				(float)Math.acos((double)costheta));
+		collisionBody.setTransform(pos.x * Util.PIXEL_TO_BOX, pos.y
+				* Util.PIXEL_TO_BOX, (float) Math.acos((double) costheta));
 	}
 
 	public void setVel(float x, float y, float z) {
 		this.vel.set(x, y, z);
-		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
+		float costheta = Util.dot(vel, new Vector3(1, 0, 0)) / vel.len();
 		sprite.setOrigin(0, 0);
-		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
+		sprite.setRotation((float) Math.acos((double) costheta)
+				* Util.RAD_TO_DEG);
 		sprite.setPosition(pos.x, pos.y);
-		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,
-				(float)Math.acos((double)costheta));
+		collisionBody.setTransform(pos.x * Util.PIXEL_TO_BOX, pos.y
+				* Util.PIXEL_TO_BOX, (float) Math.acos((double) costheta));
 	}
 
 	public void addPos(float x, float y) {
@@ -88,19 +97,19 @@ public class Arrow extends Particle {
 	}
 
 	public void apply2DImpulse(float x, float y) {
-		this.externalForce.set(x, y, 0);	
+		this.externalForce.set(x, y, 0);
 	}
 
 	public void applyImpulse(Vector3 force) {
-		this.externalForce = force;	
+		this.externalForce = force;
 	}
 
 	@Override
 	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {
-		Vector3 result =  new Vector3(0, Util.GRAVITY, 0);
+		Vector3 result = new Vector3(0, Util.GRAVITY, 0);
 		return result;
 	}
-		
+
 	@Override
 	public void integratePos(Vector3 dxdp, float dt) {
 		this.pos.add(Util.sclVec(dxdp, dt));
@@ -108,25 +117,25 @@ public class Arrow extends Particle {
 
 	@Override
 	public void integrateVel(Vector3 dvdp, float dt) {
-		this.vel.add(Util.sclVec(dvdp, dt));		
+		this.vel.add(Util.sclVec(dvdp, dt));
 		externalForce = new Vector3(0, 0, 0);
-		float costheta = Util.dot(vel, new Vector3(1, 0, 0))/vel.len();
+		float costheta = Util.dot(vel, new Vector3(1, 0, 0)) / vel.len();
 		sprite.setPosition(0, 0);
-		sprite.setRotation((float)Math.acos((double)costheta)*Util.RAD_TO_DEG);
+		sprite.setRotation((float) Math.acos((double) costheta)
+				* Util.RAD_TO_DEG);
 		sprite.setPosition(pos.x, pos.y);
-		collisionBody.setTransform(pos.x*Util.PIXEL_TO_BOX, pos.y*Util.PIXEL_TO_BOX,
-				(float)Math.acos((double)costheta));
+		collisionBody.setTransform(pos.x * Util.PIXEL_TO_BOX, pos.y
+				* Util.PIXEL_TO_BOX, (float) Math.acos((double) costheta));
 	}
 
 	public boolean isStable() {
 		return stable;
 	}
-	
+
 	private void buildCollisionBody() {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
-		def.position
-				.set(new Vector2(this.getPos().x, this.getPos().y));
+		def.position.set(new Vector2(this.getPos().x, this.getPos().y));
 		collisionBody = WitchCraft.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 		collisionBody.setBullet(true);

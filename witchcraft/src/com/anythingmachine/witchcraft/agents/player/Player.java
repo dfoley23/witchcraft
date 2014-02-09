@@ -2,29 +2,28 @@ package com.anythingmachine.witchcraft.agents.player;
 
 import java.util.ArrayList;
 
-import com.anythingmachine.aiengine.StateMachine;
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.States.Attacking;
-import com.anythingmachine.witchcraft.States.CastSpell;
-import com.anythingmachine.witchcraft.States.Dead;
-import com.anythingmachine.witchcraft.States.DupeSkin;
-import com.anythingmachine.witchcraft.States.DupeSkinPower;
-import com.anythingmachine.witchcraft.States.Falling;
-import com.anythingmachine.witchcraft.States.Flying;
-import com.anythingmachine.witchcraft.States.Idle;
-import com.anythingmachine.witchcraft.States.Invisible;
-import com.anythingmachine.witchcraft.States.Jumping;
-import com.anythingmachine.witchcraft.States.Landing;
-import com.anythingmachine.witchcraft.States.MindControlPower;
-import com.anythingmachine.witchcraft.States.Running;
-import com.anythingmachine.witchcraft.States.ShapeCrow;
-import com.anythingmachine.witchcraft.States.PlayerStateEnum;
-import com.anythingmachine.witchcraft.States.Walking;
+import com.anythingmachine.witchcraft.States.Player.Attacking;
+import com.anythingmachine.witchcraft.States.Player.CastSpell;
+import com.anythingmachine.witchcraft.States.Player.Dead;
+import com.anythingmachine.witchcraft.States.Player.DupeSkin;
+import com.anythingmachine.witchcraft.States.Player.DupeSkinPower;
+import com.anythingmachine.witchcraft.States.Player.Falling;
+import com.anythingmachine.witchcraft.States.Player.Flying;
+import com.anythingmachine.witchcraft.States.Player.Idle;
+import com.anythingmachine.witchcraft.States.Player.Invisible;
+import com.anythingmachine.witchcraft.States.Player.Jumping;
+import com.anythingmachine.witchcraft.States.Player.Landing;
+import com.anythingmachine.witchcraft.States.Player.MindControlPower;
+import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
+import com.anythingmachine.witchcraft.States.Player.Running;
+import com.anythingmachine.witchcraft.States.Player.ShapeCrow;
+import com.anythingmachine.witchcraft.States.Player.Walking;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
@@ -67,7 +66,7 @@ public class Player extends Entity {
 	/** public functions **/
 
 	public void update(float dT) {
-		 System.out.println(state.state.name);
+//		 System.out.println(state.state.name);
 		state.update(dT);
 		// check if on ground
 
@@ -194,6 +193,7 @@ public class Player extends Entity {
 			state.input.addInputState("Right", 22);
 			state.input.addInputState("UPAxis", 1);
 			state.input.addInputState("UP", 19);
+			state.input.addInputState("down", 20);
 			state.input.addInputState("SwitchPower", 97);
 			state.input.addInputState("SwitchPower1", 105);
 			state.input.addInputState("SwitchPower2", 103);

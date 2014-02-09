@@ -3,7 +3,7 @@ package com.anythingmachine.aiengine;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.anythingmachine.witchcraft.States.NPCStateEnum;
+import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 
 public class Action {
