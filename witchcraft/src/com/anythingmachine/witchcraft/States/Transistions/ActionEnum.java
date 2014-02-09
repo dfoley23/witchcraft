@@ -31,6 +31,20 @@ public enum ActionEnum {
 	WORK {
 		
 	},
+	PATROL {
+		
+	},
+	WANDER {
+		
+	},
+	TURN {
+		
+	},
+	WALK {
+		
+	};
 	
-	
+	public String getName() {
+		return this.toString();
+	}
 }

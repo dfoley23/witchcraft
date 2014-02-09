@@ -303,6 +303,17 @@ public enum NPCStateEnum {
 		public int getID() {
 			return 18;
 		}
+	},
+	GOINGTOPATROL {
+		@Override
+		public NPCStateEnum[] getFollowUpStates() {
+			return new NPCStateEnum[] { WORKING, TALKING, ALARMED, MOBBING };
+		}
+
+		@Override
+		public int getID() {
+			return 25;
+		}
 	};
 
 	public NPCStateEnum[] getFollowUpStates() {
@@ -316,4 +327,9 @@ public enum NPCStateEnum {
 	public int getSize() {
 		return NPCStateEnum.values().length;
 	}
+	
+	public String getName() {
+		return this.toString();
+	}
+
 }

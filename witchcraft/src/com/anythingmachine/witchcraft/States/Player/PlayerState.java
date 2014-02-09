@@ -64,7 +64,7 @@ public class PlayerState {
 		
 		cape.addWindForce(sm.test("facingleft") ? windx : -windx, -400);
 
-		cape.updatePos(sm.neck.getWorldX() + 14, sm.neck.getWorldY()-8);
+		cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
 	}
 
 	public void setAttack() {

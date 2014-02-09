@@ -100,7 +100,7 @@ public class WitchCraft implements ApplicationListener {
 		if (ON_ANDROID) {
 			screenWidth = VIRTUAL_WIDTH;
 			screenHeight = VIRTUAL_HEIGHT;
-			dt = 1/20f;
+			dt = 1/17f;
 		} else {
 			screenWidth = Gdx.app.getGraphics().getWidth();
 			screenHeight = Gdx.app.getGraphics().getHeight();
@@ -135,15 +135,15 @@ public class WitchCraft implements ApplicationListener {
 
 		player = new Player(rk4);
 		npc1 = new NonPlayer("knight2", "characters", new Vector2(354.0f, 3.0f),
-				new Vector2(0.6f, 0.7f));
+				new Vector2(0.6f, 0.7f), "data/npcdata/knights/fredknight");
 		npc2 = new NonPlayer("knight1", "characters", new Vector2(800.0f, 3.0f),
-				new Vector2(0.6f, 0.7f));
+				new Vector2(0.6f, 0.7f), "data/npcdata/knights/fredknight");
 		npc3 = new NonPlayer("archer", "characters", new Vector2(300.0f, 3.0f),
-				new Vector2(0.6f, 0.7f));
+				new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher");
 		npc4 = new NonPlayer("civmalebrown", "characters", new Vector2(300.0f,
-				3.0f), new Vector2(0.6f, 0.7f));
+				3.0f), new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv");
 		npc5 = new NonPlayer("civfemaleblack-hood", "characters", new Vector2(
-				300.0f, 3.0f), new Vector2(0.6f, 0.7f));
+				300.0f, 3.0f), new Vector2(0.6f, 0.7f), "data/npcdata/civs/saraciv");
 
 		cloudE = new CloudEmitter(17);
 		crowE = new CrowEmitter(1);
@@ -283,7 +283,6 @@ public class WitchCraft implements ApplicationListener {
 //		spriteBatch.setProjectionMatrix(Camera.camera.combined);
 //		spriteBatch.begin();
 		cloudE.draw(batch);
-		crowE.draw(batch);
 //		spriteBatch.end();
 	}
 
@@ -315,6 +314,8 @@ public class WitchCraft implements ApplicationListener {
 
 		player.draw(batch);
 
+		crowE.draw(batch);
+		
 		rk4System.draw(batch);
 
 //		spriteBatch.end();

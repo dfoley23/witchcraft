@@ -1,5 +1,6 @@
 package com.anythingmachine.witchcraft.States.NPC;
 
+import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
@@ -30,6 +31,9 @@ public class GoingTo extends NPCState {
 			case GOINGTOWORK:
 				sm.setState(NPCStateEnum.WORKING);
 				break;
+			case GOINGTOPATROL:
+				sm.setState(NPCStateEnum.PATROLLING);
+				break;
 			default:
 				break;
 			}
@@ -54,6 +58,15 @@ public class GoingTo extends NPCState {
 	public void setIdle() {
 		sm.setState(NPCStateEnum.IDLE);
 		sm.state.setParent(this);
+	}
+
+	@Override
+	public void takeAction(float dt) {
+	}
+	
+	@Override
+	public void takeAction(Action action) {
+		
 	}
 	
 }

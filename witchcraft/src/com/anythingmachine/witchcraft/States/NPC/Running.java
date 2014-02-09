@@ -11,6 +11,7 @@ public class Running  extends SharedState {
 
 	@Override
 	public void transistionIn() {
+		super.transistionIn();
 		sm.animate.bindPose();
 		sm.animate.setCurrent("run", true);		
 		if ( !sm.phyState.body.isStable() )

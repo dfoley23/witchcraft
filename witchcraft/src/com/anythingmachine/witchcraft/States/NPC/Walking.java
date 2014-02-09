@@ -11,10 +11,10 @@ public class Walking extends SharedState {
 
 	@Override
 	public void transistionIn() {
+		super.transistionIn();
 		sm.animate.bindPose();
 		sm.animate.setCurrent("walk", true);
 		if ( !sm.phyState.body.isStable() )
 			sm.phyState.body.setVel(sm.test("facingleft") ? -Util.PLAYERWALKSPEED: Util.PLAYERWALKSPEED, 0, 0);
 	}
-	
 }

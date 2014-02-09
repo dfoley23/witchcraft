@@ -49,18 +49,15 @@ public class NPCState {
 		if ( action != null )  {
 			sm.behavior.takeAction(action);
 			sm.setState(action.getAIState());
-			sm.state.setParent(this);
 		}
 	}
 	
 	public void setWalk() {
 		sm.setState(NPCStateEnum.WALKING);
-		sm.state.setParent(this);
 	}
 	
 	public void setRun() {
 		sm.setState(NPCStateEnum.RUNNING);
-		sm.state.setParent(this);
 	}
 
 	public void setParent(NPCState p) {
@@ -72,7 +69,6 @@ public class NPCState {
 	}
 	
 	public void transistionOut() {
-		
 	}
 	
 	public void immediateTransOut() {

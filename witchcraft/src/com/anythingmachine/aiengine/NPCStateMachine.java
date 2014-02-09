@@ -43,6 +43,7 @@
 	
 		public void setInitialState(NPCStateEnum name) {
 			this.state = states[name.getID()];
+			this.state.setParent(getState(NPCStateEnum.IDLE));
 		}
 	
 		public void setState(NPCStateEnum name) {
