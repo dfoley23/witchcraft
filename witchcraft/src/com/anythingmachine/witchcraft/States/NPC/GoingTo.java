@@ -17,8 +17,8 @@ public class GoingTo extends NPCState {
 	@Override
 	public void update(float dt) {
 		checkGround();
-		sm.setTestVal("facingleft", sm.phyState.getVelX() < 0);
-		sm.animate.setFlipX(sm.phyState.getVelX() < 0);
+		sm.facingleft = sm.phyState.getVelX() < 0;
+		sm.animate.setFlipX(sm.facingleft);
 		
 		if ( Util.subVecs(sm.phyState.getPos(), target).len() < 128) {
 			switch(name) {
@@ -49,7 +49,7 @@ public class GoingTo extends NPCState {
 
 	@Override
 	public void transistionIn() {
-		sm.setTestVal("facingleft", target.x < sm.phyState.getX());
+		sm.facingleft = target.x < sm.phyState.getX();
 		sm.setState(NPCStateEnum.WALKING);
 		sm.state.setParent(this);
 	}

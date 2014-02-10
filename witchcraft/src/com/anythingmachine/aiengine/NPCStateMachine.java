@@ -15,7 +15,7 @@
 		public PhysicsState phyState;
 		public UtilityAI behavior;
 		public Platform elevatedSegment;
-	
+
 		public NPCStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 				SkeletonData sd) {
 			super(name, pos, scl, flip, sd);
@@ -58,22 +58,5 @@
 	
 		public boolean inState(NPCStateEnum state) {
 			return this.state.name.getID() == state.getID();
-		}
-	
-		public boolean testtesttestOR(String test1, String test2, String test3) {
-			return tests.get(test1) || tests.get(test2) || tests.get(test3);
-		}
-	
-		public boolean testANDState(String test, NPCStateEnum state) {
-			return tests.get(test) && this.state.name == state;
-		}
-	
-		public boolean testORState(String test, NPCStateEnum state) {
-			return tests.get(test) || this.state.name == state;
-		}
-	
-		public boolean testORNotState(String test, NPCStateEnum state) {
-			return tests.get(test) || this.state.name != state;
-		}
-	
+		}	
 	}

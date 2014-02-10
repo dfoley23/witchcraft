@@ -12,9 +12,9 @@ public class GoingToQuickly extends GoingTo {
 	
 	@Override
 	public void transistionIn() {
-		sm.setTestVal("facingleft", target.x < sm.phyState.getX());
+		sm.facingleft = target.x < sm.phyState.getX();
 		sm.animate.bindPose();
 		sm.animate.setCurrent("run", true);
-		sm.phyState.setVel(sm.test("facingleft") ? -Util.PLAYERRUNSPEED : Util.PLAYERRUNSPEED, 0);
+		sm.phyState.setVel(sm.facingleft ? -Util.PLAYERRUNSPEED : Util.PLAYERRUNSPEED, 0);
 	}
 }

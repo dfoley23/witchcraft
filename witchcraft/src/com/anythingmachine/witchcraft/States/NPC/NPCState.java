@@ -77,7 +77,7 @@ public class NPCState {
 
 	public void checkGround() {
 		Vector3 pos = sm.phyState.body.getPos();
-		if (sm.elevatedSegment != null && sm.elevatedSegment.isBetween(sm.test("facingleft"), pos.x)) {
+		if (sm.elevatedSegment != null && sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
 			float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 				sm.phyState.body.setPos(pos.x, groundPoint-10, 0);
 //				sm.setTestVal("grounded", true);

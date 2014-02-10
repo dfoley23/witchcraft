@@ -23,7 +23,7 @@ public class ShapeCrow extends PlayerState {
 		sm.phyState.body.setPos(pos.x, pos.y + 128, 0);
 		sm.phyState.body.setGravityVal(0);
 		crow.setPos(pos);
-		crow.setFlipX(!sm.test("facingleft"));
+		crow.setFlipX(!sm.facingleft);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class ShapeCrow extends PlayerState {
 
 		crow.update(dt);
 
-		crow.setFlipX(!sm.test("facingleft"));
+		crow.setFlipX(!sm.facingleft);
 
 		sm.phyState.correctCBody(-8, 128, 0);
 
@@ -63,29 +63,28 @@ public class ShapeCrow extends PlayerState {
 	@Override
 	public void setInputSpeed() {
 		Vector3 vel = sm.phyState.body.getVel();
-		if (sm.input.right() && !sm.test("hitrightwall")) {
-			sm.setTestVal("facingleft", false);
-			sm.setTestVal("hitleftwall", false);
-			if (sm.input.up() && !sm.test("hitroof")) {
+		if (sm.input.right() && !sm.hitrightwall) {
+			sm.facingleft = sm.hitleftwall = false;
+			if (sm.input.up() && !sm.hitroof) {
 				sm.phyState.body.setVel(Util.PLAYERRUNSPEED,
 						Util.PLAYERWALKSPEED, 0);
-				sm.setTestVal("grounded", false);
-			} else if (sm.input.down() && !sm.test("grounded")) {
-				sm.setTestVal("hitrooft", false);
+				sm.grounded = false;
+				crow.setStandTime(-1);
+			} else if (sm.input.down() && !sm.grounded) {
+				sm.hitroof = false;
 				sm.phyState.body.setVel(Util.PLAYERRUNSPEED,
 						-Util.PLAYERWALKSPEED, 0);
 			} else {
 				sm.phyState.body.setVel(Util.PLAYERRUNSPEED, vel.y, 0);
 			}
-		} else if (sm.input.left() && !sm.test("hitleftwall")) {
-			sm.setTestVal("facingleft", true);
-			sm.setTestVal("hitrightwall", false);
-			if (sm.input.up() && !sm.test("hitroof")) {
-				sm.setTestVal("grounded", false);
+		} else if (sm.input.left() && !sm.hitleftwall) {
+			sm.facingleft = sm.hitleftwall = false;
+			if (sm.input.up() && !sm.hitroof) {
+				sm.grounded = false;
 				sm.phyState.body.setVel(-Util.PLAYERRUNSPEED,
 						Util.PLAYERWALKSPEED, 0);
-			} else if (sm.input.down() && !sm.test("grounded")) {
-				sm.setTestVal("hitrooft", false);
+			} else if (sm.input.down() && !sm.grounded) {
+				sm.hitroof = false;
 				sm.phyState.body.setVel(-Util.PLAYERRUNSPEED,
 						-Util.PLAYERWALKSPEED, 0);
 			} else {
@@ -130,7 +129,7 @@ public class ShapeCrow extends PlayerState {
 	public void checkGround() {
 		if ( crow.getStandTime() > 0 ) {
 			land();
-			sm.setTestVal("grounded", true);
+			sm.grounded = true;
 		}
 	}
 

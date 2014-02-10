@@ -56,7 +56,6 @@ public class Player extends Entity {
 		setupState("player");
 		setupInput();
 		setupPowers();
-		setupTests();
 
 		cape = new Cape(3, 5, rk4, state.phyState.getPos());
 		type = EntityType.PLAYER;
@@ -114,21 +113,21 @@ public class Player extends Entity {
 //			System.out.println("hello wall");
 			state.phyState.stopOnX();
 			if (sign == -1) {
-				state.setTestVal("hitleftwall", true);
+				state.hitleftwall = true;
 			} else {
-				state.setTestVal("hitrightwall", true);
+				state.hitrightwall = true;
 			}
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
-			if (plat.isBetween(state.test("facingleft"), pos.x)) {
+			if (plat.isBetween(state.facingleft, pos.x)) {
 				if (plat.getHeight() - 32 < pos.y) {
-					state.setTestVal("hitplatform", true);
+					state.hitplatform = true;
 					state.elevatedSegment = plat;
 					state.state.land();
 				} else {
 					state.phyState.stopOnY();
-					state.setTestVal("hitroof", true);
+					state.hitroof = true;
 				}
 			}
 			break;
@@ -138,10 +137,10 @@ public class Player extends Entity {
 					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
 							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
 							+ plat.getPos().y)) {
-				if (plat.isBetween(state.test("facingleft"), pos.x)) {
+				if (plat.isBetween(state.facingleft, pos.x)) {
 					System.out.println("hello");
 					if (plat.getHeight(pos.x) - 8 < pos.y) {
-						state.setTestVal("hitplatform", true);
+						state.hitplatform = true;
 						state.elevatedSegment = plat;
 						state.state.land();
 					}
@@ -153,9 +152,9 @@ public class Player extends Entity {
 			System.out.println("hello wall");
 			state.phyState.stopOnX();
 			if (sign == -1) {
-				state.setTestVal("hitleftwall", true);
+				state.hitleftwall = true;
 			} else {
-				state.setTestVal("hitrightwall", true);
+				state.hitrightwall = true;
 			}
 			break;
 		}
@@ -236,16 +235,6 @@ public class Player extends Entity {
 		state.setInitialState(PlayerStateEnum.IDLE);
 		state.animate.bindPose();
 		state.animate.setCurrent("idle", true);
-	}
-
-	private void setupTests() {
-		state.addTest("grounded", false);
-		state.addTest("hitplatform", false);
-		state.addTest("hitroof", false);
-		state.addTest("facingleft", false);
-		state.addTest("invi", false);
-		state.addTest("hitrightwall", false);
-		state.addTest("hitleftwall", false);
 	}
 
 	private void setupPowers() {

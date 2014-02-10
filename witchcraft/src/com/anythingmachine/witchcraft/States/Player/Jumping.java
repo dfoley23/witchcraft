@@ -39,19 +39,14 @@ public class Jumping extends PlayerState {
 		@Override
 		public void setInputSpeed() {
 			int axisVal = sm.input.axisRange2();
-			boolean facingleft = sm.test("facingleft");
 			if (axisVal > 0) {
-				sm.setTestVal("facingleft", false);
-				facingleft = false;
-				sm.setTestVal("hitleftwall", false);
+				sm.facingleft = sm.hitleftwall = false;
 			} else if (axisVal < 0) {
-				facingleft = true;
-				sm.setTestVal("facingleft", true);
-				sm.setTestVal("hitrightwall", false);
+				sm.facingleft = sm.hitrightwall = false;
 			}
-			if ( facingleft && !sm.test("hitleftwall")) {
+			if ( sm.facingleft && !sm.hitleftwall) {
 				sm.phyState.setXVel(-Util.PLAYERFLYSPEED*0.75f);
-			} else 	if (!sm.test("hitrightwall")) {
+			} else 	if (!sm.facingleft && !sm.hitrightwall) {
 				sm.phyState.setXVel(Util.PLAYERFLYSPEED*0.75f);
 			}
 

@@ -23,11 +23,10 @@ public class Attacking extends PlayerState {
 		public void update(float dt) {
 			super.update(dt);
 			if (sm.animate.isSkin("archer")) {
-				boolean facingleft = sm.test("facingleft");
 				if (!shotArrow && sm.animate.isTImeOverThreeQuarters(0f)) {
-					arrow.setPos(arrowBone.getWorldX() + (facingleft ? -128 : 128),
+					arrow.setPos(arrowBone.getWorldX() + (sm.facingleft ? -128 : 128),
 							arrowBone.getWorldY(), 0);
-					arrow.pointAtTarget(Util.addVecs(sm.phyState.getPos(), facingleft ? -100 : 100, 0), 650);
+					arrow.pointAtTarget(Util.addVecs(sm.phyState.getPos(), sm.facingleft ? -100 : 100, 0), 650);
 					shotArrow = true;
 				}
 			}

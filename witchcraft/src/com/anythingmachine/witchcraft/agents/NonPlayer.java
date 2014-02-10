@@ -60,8 +60,6 @@ public class NonPlayer extends Entity {
 
 		setupAnimations(skinname, atlasname, pos, bodyScale, fileContent);
 
-		setupTests(fileContent);
-
 		setupAI(fileContent);
 	}
 
@@ -121,7 +119,7 @@ public class NonPlayer extends Entity {
 	}
 
 	public void draw(Batch batch) {
-		sm.animate.setFlipX(sm.test("facingleft"));
+		sm.animate.setFlipX(sm.facingleft);
 		sm.animate.draw(batch);
 	}
 
@@ -152,26 +150,26 @@ public class NonPlayer extends Entity {
 			// System.out.println("hello wall");
 			if (vel.x < 0) {
 				sm.phyState.setVel(-vel.x, vel.y);
-				sm.setTestVal("hitleftwall", true);
+				sm.hitleftwall = true;
 			} else {
 				sm.phyState.setVel(-vel.x, vel.y);
-				sm.setTestVal("hitrightwall", true);
+				sm.hitrightwall = true;
 			}
 			break;
 		case LEVELWALL:
 			// System.out.println("hello wall");
 			if (vel.x < 0) {
 				sm.phyState.setVel(-vel.x, vel.y);
-				sm.setTestVal("hitleftwall", true);
+				sm.hitleftwall = true;
 			} else {
 				sm.phyState.setVel(-vel.x, vel.y);
-				sm.setTestVal("hitrightwall", true);
+				sm.hitrightwall = true;
 			}
 
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
-			if (plat.isBetween(sm.test("facingleft"), pos.x)) {
+			if (plat.isBetween(sm.facingleft, pos.x)) {
 				if (plat.getHeight() - 32 < pos.y)
 					sm.elevatedSegment = plat;
 			}
@@ -387,11 +385,6 @@ public class NonPlayer extends Entity {
 			l++;			
 			line = filecontent[l];
 		}
-	}
-
-	protected void setupTests(String[] filecontent) {
-		sm.addTest("facingleft", false);
-		sm.addTest("grounded", true);
 	}
 
 	protected void buildPhysics(KinematicParticle body) {

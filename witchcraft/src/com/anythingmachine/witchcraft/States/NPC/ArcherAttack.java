@@ -21,15 +21,11 @@ public class ArcherAttack extends NPCState {
 	@Override
 	public void update(float dt) {
 		checkGround();
-		if (WitchCraft.player.getX() < sm.phyState.getX()) {
-			sm.setTestVal("facingleft", true);
-		} else {
-			sm.setTestVal("facingleft", false);
-		}
-		sm.animate.setFlipX(sm.test("facingleft"));
+		sm.facingleft = WitchCraft.player.getX() < sm.phyState.getX();
+		sm.animate.setFlipX(sm.facingleft);
 		if (sm.animate.getTime() > sm.animate.getCurrentAnimTime() * 0.75f) {
 			arrow.setPos(arrowBone.getWorldX()
-					+ (sm.test("facingleft") ? -128 : 128),
+					+ (sm.facingleft ? -128 : 128),
 					arrowBone.getWorldY(), 0);
 			arrow.pointAtTarget(WitchCraft.player.getPosPixels(), 650);
 		} else {

@@ -9,11 +9,15 @@ import com.esotericsoftware.spine.SkeletonData;
 
 public class StateMachine {
 	public AnimationManager animate;
-	protected HashMap<String, Boolean> tests;
 	
+	public boolean facingleft;
+	public boolean grounded;
+	public boolean hitleftwall;
+	public boolean hitrightwall;
+
 	public StateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd) {
-		tests = new HashMap<String, Boolean>();
+//		tests = new HashMap<String, Boolean>();
 		animate = new AnimationManager(name, pos, scl, flip, sd);
 	}
 
@@ -21,24 +25,24 @@ public class StateMachine {
 
 	}
 
-	public void addTest(String name, boolean val) {
-		tests.put(name, val);
-	}
-
-	public void setTestVal(String name, boolean val) {
-		tests.put(name, val);
-	}
-
-	public boolean test(String name) {
-		return tests.get(name);
-	}
-
-	public boolean testANDtest(String test1, String test2) {
-		return tests.get(test1) && tests.get(test2);
-	}
-
-	public boolean testORtest(String test1, String test2) {
-		return tests.get(test1) || tests.get(test2);
-	}
+//	public void addTest(String name, boolean val) {
+//		tests.put(name, val);
+//	}
+//
+//	public void setTestVal(String name, boolean val) {
+//		tests.put(name, val);
+//	}
+//
+//	public boolean test(String name) {
+//		return tests.get(name);
+//	}
+//
+//	public boolean testANDtest(String test1, String test2) {
+//		return tests.get(test1) && tests.get(test2);
+//	}
+//
+//	public boolean testORtest(String test1, String test2) {
+//		return tests.get(test1) || tests.get(test2);
+//	}
 
 }

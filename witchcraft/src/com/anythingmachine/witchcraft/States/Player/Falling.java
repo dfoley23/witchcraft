@@ -40,9 +40,9 @@ public class Falling extends PlayerState {
 		@Override
 		public void checkGround() {
 			Vector3 pos = sm.phyState.getPos();
-			sm.setTestVal("grounded", false);
-			if (sm.test("hitplatform")) {
-				if (sm.elevatedSegment.isBetween(sm.test("facingleft"), pos.x)) {
+			sm.grounded = false;
+			if (sm.hitplatform) {
+				if (sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
 					float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 					if (pos.y < groundPoint) {
 						sm.phyState.correctHeight(groundPoint);

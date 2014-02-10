@@ -28,7 +28,7 @@ public class Attacking extends NPCState {
 	public void update(float dt) {
 		swordBody.setTransform((sword.getWorldX())*Util.PIXEL_TO_BOX, 
 				(sword.getWorldY())*Util.PIXEL_TO_BOX, 
-				sm.test("facingleft") ? -sword.getWorldRotation()*Util.DEG_TO_RAD 
+				sm.facingleft ? -sword.getWorldRotation()*Util.DEG_TO_RAD 
 						: sword.getWorldRotation()*Util.DEG_TO_RAD);
 		setIdle();
 	}

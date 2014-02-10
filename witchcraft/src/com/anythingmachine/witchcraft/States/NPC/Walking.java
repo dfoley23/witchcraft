@@ -15,6 +15,6 @@ public class Walking extends SharedState {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("walk", true);
 		if ( !sm.phyState.body.isStable() )
-			sm.phyState.body.setVel(sm.test("facingleft") ? -Util.PLAYERWALKSPEED: Util.PLAYERWALKSPEED, 0, 0);
+			sm.phyState.body.setVel(sm.facingleft ? -Util.PLAYERWALKSPEED: Util.PLAYERWALKSPEED, 0, 0);
 	}
 }

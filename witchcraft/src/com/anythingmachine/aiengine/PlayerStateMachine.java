@@ -30,6 +30,14 @@ public class PlayerStateMachine extends StateMachine {
 	public Curve curCurve;
 	public Platform elevatedSegment;
 	public String dupeSkin;
+
+	public boolean grounded;
+	public boolean hitplatform;
+	public boolean hitroof;
+	public boolean facingleft;
+	public boolean invi;
+	public boolean hitrightwall;
+	public boolean hitleftwall;
 	
 	public PlayerStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd) {
@@ -103,22 +111,6 @@ public class PlayerStateMachine extends StateMachine {
 
 	public boolean inState(PlayerStateEnum state) {
 		return this.state.name.getID() == state.getID();
-	}
-
-	public boolean testtesttestOR(String test1, String test2, String test3) {
-		return tests.get(test1) || tests.get(test2) || tests.get(test3);
-	}
-
-	public boolean testANDState(String test, PlayerStateEnum state) {
-		return tests.get(test) && this.state.name == state;
-	}
-
-	public boolean testORState(String test, PlayerStateEnum state) {
-		return tests.get(test) || this.state.name == state;
-	}
-
-	public boolean testORNotState(String test, PlayerStateEnum state) {
-		return tests.get(test) || this.state.name != state;
 	}
 
 }

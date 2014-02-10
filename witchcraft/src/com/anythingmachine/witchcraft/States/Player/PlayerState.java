@@ -48,7 +48,7 @@ public class PlayerState {
 
 		setAttack();
 
-		sm.animate.setFlipX(sm.test("facingleft"));
+		sm.animate.setFlipX(sm.facingleft);
 
 		Cape cape = WitchCraft.player.cape;
 
@@ -62,7 +62,7 @@ public class PlayerState {
 		}
 		windtimeout-=dt;
 		
-		cape.addWindForce(sm.test("facingleft") ? windx : -windx, -400);
+		cape.addWindForce(sm.facingleft ? windx : -windx, -400);
 
 		cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
 	}
@@ -115,7 +115,7 @@ public class PlayerState {
 	}
 
 	public void land() {
-		sm.setTestVal("grounded", true);
+		sm.grounded = true;
 		sm.phyState.stop();
 	}
 
@@ -143,9 +143,9 @@ public class PlayerState {
 	public void setInputSpeed() {
 		int axisVal = sm.input.axisRange2();
 		if (axisVal > 0) {
-			sm.setTestVal("facingleft", false);
-			if (!sm.test("hitrightwall")) {
-				sm.setTestVal("hitleftwall", false);
+			sm.facingleft = false;
+			if (!sm.hitrightwall) {
+				sm.hitleftwall = false;
 				if (axisVal > 1) {
 					setRun();
 					sm.phyState.setXVel(Util.PLAYERRUNSPEED);
@@ -155,9 +155,9 @@ public class PlayerState {
 				}
 			}
 		} else if (axisVal < 0) {
-			sm.setTestVal("facingleft", true);
-			if (!sm.test("hitleftwall")) {
-				sm.setTestVal("hitrightwall", false);
+			sm.facingleft = true;
+			if (!sm.hitleftwall) {
+				sm.hitrightwall = false;
 				if (axisVal < -1) {
 					setRun();
 					sm.phyState.setXVel(-Util.PLAYERRUNSPEED);
@@ -173,7 +173,7 @@ public class PlayerState {
 
 	protected void checkGround() {
 		Vector3 pos = sm.phyState.getPos();
-		if (sm.test("hitplatform")) {
+		if (sm.hitplatform) {
 			// System.out.println(pos);
 //			if (pos.x > sm.curCurve.lastPointOnCurve().x
 //					&& sm.curGroundSegment + 1 < WitchCraft.ground
@@ -193,15 +193,15 @@ public class PlayerState {
 //				sm.state.land();
 ////			}
 //		} else {
-			sm.setTestVal("grounded", false);
-			if (sm.elevatedSegment.isBetween(sm.test("facingleft"), pos.x)) {
+			sm.grounded = false;
+			if (sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
 				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 //				if (pos.y < groundPoint) {
 					sm.phyState.correctHeight(groundPoint);
 					sm.state.land();
 //				}
 			} else {
-				sm.setTestVal("hitplatform", false);
+				sm.hitplatform = false;
 				sm.setState(PlayerStateEnum.FALLING);
 			}
 		}
