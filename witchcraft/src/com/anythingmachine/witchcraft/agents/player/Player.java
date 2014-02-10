@@ -81,6 +81,13 @@ public class Player extends Entity {
 		state.state.draw(batch);
 	}
 
+	public boolean inHighAlert() {
+		return state.state.isHighAlertState();
+	}
+	
+	public boolean inAlert() {
+		return state.state.isAlertState();
+	}
 	public void drawCape(Matrix4 cam) {
 		state.state.drawCape(cam);
 	}

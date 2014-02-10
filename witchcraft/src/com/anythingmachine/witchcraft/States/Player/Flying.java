@@ -24,7 +24,7 @@ public class Flying extends Jumping {
 	public void transistionIn(){
 		
 	}
-	
+
 	@Override
 	public void update(float dt) {
 		checkGround();

@@ -1,13 +1,14 @@
 	package com.anythingmachine.aiengine;
 	
 	import com.anythingmachine.physicsEngine.PhysicsState;
-	import com.anythingmachine.witchcraft.States.NPC.NPCState;
-	import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
-	import com.anythingmachine.witchcraft.ground.Platform;
-	import com.badlogic.gdx.Gdx;
-	import com.badlogic.gdx.math.Vector2;
-	import com.badlogic.gdx.math.Vector3;
-	import com.esotericsoftware.spine.SkeletonData;
+import com.anythingmachine.witchcraft.States.NPC.NPCState;
+import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
+import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.ground.Platform;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.esotericsoftware.spine.SkeletonData;
 	
 	public class NPCStateMachine extends StateMachine {
 		public NPCState state;
@@ -15,12 +16,18 @@
 		public PhysicsState phyState;
 		public UtilityAI behavior;
 		public Platform elevatedSegment;
-
+		public NonPlayer me;
+		public boolean canseeplayer;
+		public boolean active;
+		
+		
 		public NPCStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
-				SkeletonData sd) {
+				SkeletonData sd, NonPlayer me) {
 			super(name, pos, scl, flip, sd);
-
+			this.me = me;
+			canseeplayer = false;
 			states = new NPCState[NPCStateEnum.IDLE.getSize()];
+			active = true;
 			
 		}
 	

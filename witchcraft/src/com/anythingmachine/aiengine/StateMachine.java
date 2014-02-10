@@ -1,15 +1,16 @@
 package com.anythingmachine.aiengine;
 
-import java.util.HashMap;
-
 import com.anythingmachine.animations.AnimationManager;
+import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonData;
 
 public class StateMachine {
 	public AnimationManager animate;
-	
+	public NonPlayer npc;
+
+	public boolean hitnpc;
 	public boolean facingleft;
 	public boolean grounded;
 	public boolean hitleftwall;

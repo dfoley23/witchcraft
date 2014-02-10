@@ -18,9 +18,15 @@ public class Working extends NPCState {
 	
 	@Override
 	public ActionEnum[] getPossibleActions() {
-		return new ActionEnum[] {ActionEnum.PATROL, ActionEnum.TURN, ActionEnum.WALK};
+		return new ActionEnum[] {ActionEnum.TURN, ActionEnum.WALK};
 	}
 
+	@Override
+	public void setIdle() {
+		sm.animate.bindPose();
+		sm.animate.setCurrent("idle", true);
+		sm.phyState.stop();
+	}
 	
 	@Override
 	public void setWalk() {

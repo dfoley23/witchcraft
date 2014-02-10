@@ -78,7 +78,8 @@ public class ShapeCrow extends PlayerState {
 				sm.phyState.body.setVel(Util.PLAYERRUNSPEED, vel.y, 0);
 			}
 		} else if (sm.input.left() && !sm.hitleftwall) {
-			sm.facingleft = sm.hitleftwall = false;
+			sm.facingleft = true;
+			sm.hitrightwall = false;
 			if (sm.input.up() && !sm.hitroof) {
 				sm.grounded = false;
 				sm.phyState.body.setVel(-Util.PLAYERRUNSPEED,

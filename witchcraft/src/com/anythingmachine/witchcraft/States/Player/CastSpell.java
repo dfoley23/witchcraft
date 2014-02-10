@@ -16,6 +16,11 @@ public class CastSpell extends PlayerState {
 	}
 
 	@Override
+	public boolean isAlertState() {
+		return true;
+	}
+
+	@Override
 	public void nextPower() {
 		
 	}

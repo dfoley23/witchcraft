@@ -19,6 +19,11 @@ public class Jumping extends PlayerState {
 		}
 		
 		@Override
+		public boolean isHighAlertState() {
+			return false;
+		}
+
+		@Override
 		public void transistionIn() {
 			sm.animate.bindPose();
 			sm.animate.setCurrent("jump", true);
@@ -42,7 +47,8 @@ public class Jumping extends PlayerState {
 			if (axisVal > 0) {
 				sm.facingleft = sm.hitleftwall = false;
 			} else if (axisVal < 0) {
-				sm.facingleft = sm.hitrightwall = false;
+				sm.facingleft = true;
+				sm.hitrightwall = false;
 			}
 			if ( sm.facingleft && !sm.hitleftwall) {
 				sm.phyState.setXVel(-Util.PLAYERFLYSPEED*0.75f);

@@ -4,6 +4,7 @@ import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.badlogic.gdx.math.Vector3;
 
 public class NPCState {
@@ -28,6 +29,14 @@ public class NPCState {
 
 	}
 	
+	public void setAttack() {
+		sm.setState(NPCStateEnum.ATTACKING);
+	}
+
+	public void setAlert() {
+		sm.setState(NPCStateEnum.ALARMED);
+	}
+	
 	public void takeAction(float dt) {
 		if (aiChoiceTime > sm.behavior.getActionTime()) {
 			sm.state.takeAction(sm.behavior.ChooseAction(sm.state));
@@ -35,6 +44,11 @@ public class NPCState {
 		}
 	}
 		
+	public void setTalking(NonPlayer npc) {
+		sm.npc = npc;
+		sm.setState(NPCStateEnum.TALKING);
+	}
+	
 	public void setIdle() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("idle", true);

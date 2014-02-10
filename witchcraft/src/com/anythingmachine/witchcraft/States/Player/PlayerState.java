@@ -29,6 +29,14 @@ public class PlayerState {
 		sm.nextPower();
 	}
 	
+	public boolean isAlertState() {
+		return false;
+	}
+	
+	public boolean isHighAlertState() {
+		return false;
+	}
+	
 	public void setParent(PlayerState parent) {
 		this.parent = parent;
 	}

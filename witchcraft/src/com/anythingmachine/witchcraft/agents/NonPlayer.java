@@ -11,6 +11,7 @@ import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.States.NPC.Attacking;
+import com.anythingmachine.witchcraft.States.NPC.Clean;
 import com.anythingmachine.witchcraft.States.NPC.Drinking;
 import com.anythingmachine.witchcraft.States.NPC.Eating;
 import com.anythingmachine.witchcraft.States.NPC.GoingTo;
@@ -44,7 +45,6 @@ import com.esotericsoftware.spine.Skin;
 
 public class NonPlayer extends Entity {
 	protected NPCStateMachine sm;
-	protected boolean active;
 	protected Fixture feetFixture;
 	protected Fixture hitRadius;
 	protected String datafile;
@@ -53,7 +53,6 @@ public class NonPlayer extends Entity {
 			Vector2 bodyScale, String datafile) {
 		this.type = EntityType.NONPLAYER;
 		this.datafile = datafile;
-		active = true;
 
 		FileHandle handle = Gdx.files.internal(datafile);
 		String[] fileContent = handle.readString().split("\n");
@@ -64,6 +63,14 @@ public class NonPlayer extends Entity {
 	}
 
 	public void update(float dT) {
+		if ( sm.active ) {
+			sm.canseeplayer = sm.facingleft == WitchCraft.player.getX() < sm.phyState.getX();
+			if ( WitchCraft.player.inHighAlert() ) {
+				sm.state.setAttack();
+			} else if ( WitchCraft.player.inAlert() ) {
+				sm.state.setAlert();
+			}
+		}
 		sm.update(dT);
 		// switch (sm.state) {
 		// case WALKINGLEFT:
@@ -118,6 +125,9 @@ public class NonPlayer extends Entity {
 
 	}
 
+	public void setTalking(NonPlayer npc) {
+		sm.state.setTalking(npc);
+	}
 	public void draw(Batch batch) {
 		sm.animate.setFlipX(sm.facingleft);
 		sm.animate.draw(batch);
@@ -146,6 +156,10 @@ public class NonPlayer extends Entity {
 		Vector3 pos = sm.phyState.body.getPos();
 		Vector3 vel = sm.phyState.body.getVel();
 		switch (other.type) {
+		case NONPLAYER:
+			sm.hitnpc = true;
+			sm.npc = (NonPlayer) other;
+			break;
 		case WALL:
 			// System.out.println("hello wall");
 			if (vel.x < 0) {
@@ -194,7 +208,7 @@ public class NonPlayer extends Entity {
 		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, 128f,
 				0f), -50f);
 
-		sm = new NPCStateMachine(skinname, body.getPos(), scale, false, sd);
+		sm = new NPCStateMachine(skinname, body.getPos(), scale, false, sd, this);
 
 		String[] animations = fileContent[1].split(",");
 
@@ -263,6 +277,8 @@ public class NonPlayer extends Entity {
 					case TALKING:
 						break;
 					case CLEANING:
+						sm.addState(NPCStateEnum.CLEANING, new Clean(sm,
+								NPCStateEnum.CLEANING));
 						break;
 					case HUNTING:
 						break;
