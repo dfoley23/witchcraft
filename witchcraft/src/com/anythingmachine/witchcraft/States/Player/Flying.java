@@ -74,7 +74,8 @@ public class Flying extends Jumping {
 		if (axisVal > 0) {
 			sm.facingleft = sm.hitleftwall = false;
 		} else if (axisVal < 0) {
-			sm.facingleft = sm.hitleftwall = true;
+			sm.facingleft = true;
+			sm.hitleftwall = false;
 		}
 		if (sm.facingleft && !sm.hitleftwall) {
 			if (rotation == 0)
@@ -115,6 +116,11 @@ public class Flying extends Jumping {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean isHighAlertState() {
+		return true;
 	}
 
 	@Override

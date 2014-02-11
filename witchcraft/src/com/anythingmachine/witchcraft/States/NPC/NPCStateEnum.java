@@ -1,5 +1,8 @@
 package com.anythingmachine.witchcraft.States.NPC;
 
+import com.anythingmachine.aiengine.NPCStateMachine;
+import com.badlogic.gdx.math.Vector2;
+
 
 public enum NPCStateEnum {
 	WALKING {
@@ -7,10 +10,9 @@ public enum NPCStateEnum {
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { ATTACKING, MOBBING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 0;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Walking(sm, NPCStateEnum.WALKING);
 		}
 	},
 	RUNNING {
@@ -18,10 +20,9 @@ public enum NPCStateEnum {
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { ATTACKING, MOBBING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 1;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Running(sm, NPCStateEnum.RUNNING);
 		}
 	},
 	IDLE {
@@ -31,21 +32,15 @@ public enum NPCStateEnum {
 					GOINGTOSLEEP, GOINGTOEAT, GOINGTOWORK, HUNTING, MOBBING,
 					ALARMED };
 		}
-
-		@Override
-		public int getID() {
-			return 2;
-		}
 	},
 	DEAD {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { DEAD };
 		}
-
 		@Override
-		public int getID() {
-			return 23;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Dead(sm, NPCStateEnum.DEAD);
 		}
 	},
 	ATTACKING {
@@ -53,10 +48,9 @@ public enum NPCStateEnum {
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { DEAD, IDLE };
 		}
-
 		@Override
-		public int getID() {
-			return 3;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Attacking(sm, NPCStateEnum.ATTACKING);
 		}
 	},
 	EATING {
@@ -65,10 +59,9 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, TALKING, TIRED,
 					GOINGTOSLEEP, HUNTING, MOBBING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 4;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Eating(sm, NPCStateEnum.EATING);
 		}
 	},
 	SLEEPING {
@@ -77,10 +70,24 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { GOINGTOWORK, GOINGTOEAT, CLEANING,
 					HUNTING, MOBBING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 5;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Sleeping(sm, NPCStateEnum.SLEEPING);
+		}
+	},
+	GOINGTOTALK {
+		@Override
+		public NPCStateEnum[] getFollowUpStates() {
+			return new NPCStateEnum[] { ATTACKING, TIRED, GOINGTOEAT, MOBBING,
+					ALARMED };
+		}
+		@Override
+		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
+			return new GoingTo(sm, NPCStateEnum.GOINGTOTALK, target);
+		}
+		@Override
+		public NPCStateEnum goingTo() {
+			return NPCStateEnum.TALKING;
 		}
 	},
 	TALKING {
@@ -89,10 +96,9 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, TIRED, GOINGTOEAT, MOBBING,
 					ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 6;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Talking(sm, NPCStateEnum.TALKING);
 		}
 	},
 	CLEANING {
@@ -101,10 +107,9 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, TALKING, TIRED, GOINGTOEAT,
 					GOINGTOSLEEP, MOBBING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 7;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Cleaning(sm, NPCStateEnum.CLEANING);
 		}
 	},
 	HUNTING {
@@ -113,10 +118,9 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, TALKING, TIRED, GOINGTOEAT,
 					GOINGTOSLEEP, SLEEPING, EATING, MOBBING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 8;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Hunting(sm, NPCStateEnum.HUNTING);
 		}
 	},
 	GUARDING {
@@ -125,12 +129,10 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, TALKING, TIRED, GOINGTOEAT,
 					ALARMED, MOBBING };
 		}
-
 		@Override
-		public int getID() {
-			return 9;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Guarding(sm, NPCStateEnum.GUARDING);
 		}
-
 	},
 	PATROLLING {
 		@Override
@@ -138,72 +140,64 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, TALKING, TIRED, GOINGTOEAT,
 					ALARMED, GUARDING, MOBBING };
 		}
-
 		@Override
-		public int getID() {
-			return 10;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Patrolling(sm, NPCStateEnum.PATROLLING);
 		}
-
 	},
 	FOLLOWING {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { GOINGTOEAT, TALKING, MOBBING };
 		}
-
 		@Override
-		public int getID() {
-			return 11;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Following(sm, NPCStateEnum.FOLLOWING);
 		}
-
 	},
 	LEADING {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { ATTACKING, MOBBING };
 		}
-
 		@Override
-		public int getID() {
-			return 12;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Leading(sm, NPCStateEnum.LEADING);
 		}
-
 	},
 	GOINGTOEAT {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { EATING, TALKING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 20;
+		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
+			return new GoingTo(sm, NPCStateEnum.EATING, target);
 		}
-
+		@Override
+		public NPCStateEnum goingTo() {
+			return NPCStateEnum.EATING;
+		}
 	},
 	MOBBING {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { ATTACKING, GOINGTOEAT };
 		}
-
 		@Override
-		public int getID() {
-			return 13;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Mobbing(sm, NPCStateEnum.MOBBING);
 		}
-
 	},
 	DRINKING {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { DRUNK };
 		}
-
 		@Override
-		public int getID() {
-			return 19;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Drinking(sm, NPCStateEnum.DRINKING);
 		}
-
 	},
 	DRUNK {
 		@Override
@@ -211,12 +205,10 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { TIRED, SLEEPING, WALKING, GOINGTOSLEEP,
 					GOINGTOEAT, TALKING, ALARMED, MOBBING };
 		}
-
 		@Override
-		public int getID() {
-			return 14;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Drunk(sm, NPCStateEnum.DRUNK);
 		}
-
 	},
 	ALARMED {
 		@Override
@@ -224,12 +216,10 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, WALKING, GOINGTOEAT,
 					GOINGTOSLEEP, TALKING };
 		}
-
 		@Override
-		public int getID() {
-			return 15;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Alarmed(sm, NPCStateEnum.ALARMED);
 		}
-
 	},
 	TIRED {
 		@Override
@@ -237,22 +227,19 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { WALKING, GOINGTOEAT, GOINGTOSLEEP,
 					TALKING, ALARMED };
 		}
-
 		@Override
-		public int getID() {
-			return 16;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Tired(sm, NPCStateEnum.TIRED);
 		}
-
 	},
 	THEIVING {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { WALKING, ALARMED, FOLLOWING, RUNNING };
 		}
-
 		@Override
-		public int getID() {
-			return 17;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Theiving(sm, NPCStateEnum.THEIVING);
 		}
 	},
 	GOINGTOWORK {
@@ -260,24 +247,24 @@ public enum NPCStateEnum {
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { WORKING, TALKING, ALARMED, MOBBING };
 		}
-
 		@Override
-		public int getID() {
-			return 21;
+		public NPCStateEnum goingTo() {
+			return NPCStateEnum.WORKING;
 		}
-
 	},
 	GOINGTOSLEEP {
 		@Override
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { SLEEPING, ALARMED, TALKING, TIRED };
 		}
-
 		@Override
-		public int getID() {
-			return 22;
+		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
+			return new GoingTo(sm, NPCStateEnum.GOINGTOSLEEP, target);
 		}
-
+		@Override
+		public NPCStateEnum goingTo() {
+			return NPCStateEnum.SLEEPING;
+		}
 	},
 	RETURNFROMWORK {
 		@Override
@@ -285,12 +272,14 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { GOINGTOEAT, GOINGTOSLEEP, ALARMED,
 					FOLLOWING, MOBBING, CLEANING, TALKING, IDLE };
 		}
-
 		@Override
-		public int getID() {
-			return 24;
+		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
+			return new GoingTo(sm, NPCStateEnum.RETURNFROMWORK, target);
 		}
-
+		@Override
+		public NPCStateEnum goingTo() {
+			return NPCStateEnum.IDLE;
+		}
 	},
 	WORKING {
 		@Override
@@ -298,10 +287,9 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { TIRED, ALARMED, FOLLOWING, MOBBING,
 					CLEANING, TALKING, IDLE };
 		}
-
 		@Override
-		public int getID() {
-			return 18;
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Working(sm, NPCStateEnum.WORKING);
 		}
 	},
 	GOINGTOPATROL {
@@ -309,19 +297,41 @@ public enum NPCStateEnum {
 		public NPCStateEnum[] getFollowUpStates() {
 			return new NPCStateEnum[] { WORKING, TALKING, ALARMED, MOBBING };
 		}
-
 		@Override
-		public int getID() {
-			return 25;
+		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
+			return new GoingTo(sm, NPCStateEnum.GOINGTOPATROL, target);
+		}
+		@Override
+		public NPCStateEnum goingTo() {
+			return NPCStateEnum.PATROLLING;
+		}
+	},
+	ARCHERATTACK {
+		@Override
+		public NPCStateEnum[] getFollowUpStates() {
+			return new NPCStateEnum[] { DEAD, IDLE };
+		}
+		@Override
+		public NPCState constructState(NPCStateMachine sm) {
+			return new ArcherAttack(sm, NPCStateEnum.ARCHERATTACK);
 		}
 	};
 
-	public NPCStateEnum[] getFollowUpStates() {
-		return NPCStateEnum.values();
+
+	public NPCState constructState(NPCStateMachine sm) {
+		return new Idle(sm, NPCStateEnum.IDLE);
+	}
+	
+	public NPCState constructState(NPCStateMachine sm, Vector2 target) {
+		return new GoingTo(sm, NPCStateEnum.GOINGTOWORK, target);
 	}
 
-	public int getID() {
-		return -1;
+	public NPCStateEnum goingTo() {
+		return NPCStateEnum.IDLE;
+	}
+	
+	public NPCStateEnum[] getFollowUpStates() {
+		return NPCStateEnum.values();
 	}
 
 	public int getSize() {

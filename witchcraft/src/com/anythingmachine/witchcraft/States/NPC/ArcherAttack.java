@@ -35,16 +35,15 @@ public class ArcherAttack extends NPCState {
 			float costheta = Util.dot(dir, new Vector3(1, 0, 0)) / dir.len();
 			sm.animate.rotate((float) Math.acos(costheta));
 		}
+		if ( !sm.active ) {
+			super.setIdle();
+		}
 	}
 
 	@Override
 	public void transistionIn() {
-		if (arrow.isStable() ) {
-			sm.animate.bindPose();
-			sm.animate.setCurrent("drawbow", true);
-		} else {
-			super.setIdle();
-		}
+		sm.animate.bindPose();
+		sm.animate.setCurrent("drawbow", true);
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -17,20 +16,54 @@ public class Attacking extends NPCState {
 	private Bone sword;
 	private Body swordBody;
 	
-	public Attacking(NPCStateMachine sm, NPCStateEnum name, NonPlayer npc ) {
+	public Attacking(NPCStateMachine sm, NPCStateEnum name ) {
 		super(sm,name);
 		sword = sm.animate.findBone("right hand");
-		buildSwordBody(npc);
+		buildSwordBody();
 
 	}
 	
 	@Override
 	public void update(float dt) {
-		swordBody.setTransform((sword.getWorldX())*Util.PIXEL_TO_BOX, 
-				(sword.getWorldY())*Util.PIXEL_TO_BOX, 
-				sm.facingleft ? -sword.getWorldRotation()*Util.DEG_TO_RAD 
-						: sword.getWorldRotation()*Util.DEG_TO_RAD);
+		checkGround();
+		setAttack();
 		setIdle();
+
+		if ( sm.inState(NPCStateEnum.ATTACKING) ) {
+			swordBody.setTransform((sword.getWorldX())*Util.PIXEL_TO_BOX, 
+					(sword.getWorldY())*Util.PIXEL_TO_BOX, 
+					sm.facingleft ? -sword.getWorldRotation()*Util.DEG_TO_RAD 
+							: sword.getWorldRotation()*Util.DEG_TO_RAD);
+			if ( Math.abs(WitchCraft.player.getX() - sm.phyState.getX()) > 64 ) {
+				sm.facingleft = WitchCraft.player.getX() < sm.phyState.getX();
+				setRun();
+			}
+		}
+		if ( !sm.active) {
+			super.setIdle();
+		}
+	}
+	
+	public void takeAction(float dt) {
+	}
+
+	@Override
+	public void setAttack() {
+		if ( Math.abs(WitchCraft.player.getX() - sm.phyState.getX()) < 32 && !sm.inState(NPCStateEnum.ATTACKING )) {
+			sm.setState(NPCStateEnum.ATTACKING);
+		}
+	}
+	
+	@Override
+	public void transistionIn() {
+		if ( Math.abs(WitchCraft.player.getX() - sm.phyState.getX()) < 32 ) {
+			sm.phyState.stop();
+			sm.animate.bindPose();
+			sm.animate.setCurrent("overheadattack", true);
+		} else {
+			sm.facingleft = WitchCraft.player.getX() < sm.phyState.getX();
+			sm.state.setRun();
+		}
 	}
 	
 	@Override
@@ -40,12 +73,12 @@ public class Attacking extends NPCState {
 	
 	@Override
 	public void setIdle() {
-		if ( sm.animate.atEnd() ) {
+		if ( !sm.active || (WitchCraft.player.dead()) ) {
 			super.setIdle();
 		}
 	}
 	
-	private void buildSwordBody(NonPlayer npc) {
+	private void buildSwordBody() {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position
@@ -63,7 +96,7 @@ public class Attacking extends NPCState {
 		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
 		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
 		swordBody.createFixture(fixture);
-		swordBody.setUserData(npc);
+		swordBody.setUserData(sm.me);
 		shape.dispose();
 	}
 

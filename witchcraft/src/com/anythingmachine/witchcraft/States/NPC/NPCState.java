@@ -30,7 +30,7 @@ public class NPCState {
 	}
 	
 	public void setAttack() {
-		sm.setState(NPCStateEnum.ATTACKING);
+		sm.setState(sm.me.npctype.getAttackState());
 	}
 
 	public void setAlert() {
@@ -43,16 +43,14 @@ public class NPCState {
 			aiChoiceTime = 0;
 		}
 	}
-		
+	
 	public void setTalking(NonPlayer npc) {
 		sm.npc = npc;
 		sm.setState(NPCStateEnum.TALKING);
 	}
 	
 	public void setIdle() {
-		sm.animate.bindPose();
-		sm.animate.setCurrent("idle", true);
-		sm.phyState.stop();
+		sm.setState(NPCStateEnum.IDLE);
 	}
 	
 	public ActionEnum[] getPossibleActions() {
@@ -68,10 +66,12 @@ public class NPCState {
 	
 	public void setWalk() {
 		sm.setState(NPCStateEnum.WALKING);
+		sm.state.setParent(this);
 	}
 	
 	public void setRun() {
 		sm.setState(NPCStateEnum.RUNNING);
+		sm.state.setParent(this);
 	}
 
 	public void setParent(NPCState p) {

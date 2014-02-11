@@ -2,9 +2,9 @@ package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.NPCStateMachine;
 
-public class Clean extends NPCState {
+public class Cleaning extends NPCState {
 	
-	public Clean(NPCStateMachine sm, NPCStateEnum name) {
+	public Cleaning(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
 	}
 	

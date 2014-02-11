@@ -77,6 +77,10 @@ public class Player extends Entity {
 		// System.out.println(state.state);
 	}
 
+	public boolean dead() {
+		return state.inState(PlayerStateEnum.DEAD);
+	}
+	
 	public void draw(Batch batch) {
 		state.state.draw(batch);
 	}
@@ -113,7 +117,12 @@ public class Player extends Entity {
 		float sign;
 		switch (other.type) {
 		case NONPLAYER:
-			state.state.hitNPC((NonPlayer) other);
+			NonPlayer npc = (NonPlayer) other;
+			if ( npc.isCritcalAttacking() ) {
+				state.setState(PlayerStateEnum.DEAD);
+			} else {
+				state.state.hitNPC(npc);
+			}
 			break;
 		case WALL:
 			sign = Math.signum(vel.x);
@@ -307,7 +316,7 @@ public class Player extends Entity {
 		state.animate.addAnimation("swordattack",
 				sd.findAnimation("overheadattack"));
 		state.animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
-		state.animate.addAnimation("dead", sd.findAnimation("ded"));
+		state.animate.addAnimation("ded", sd.findAnimation("ded"));
 
 		setupStates();
 

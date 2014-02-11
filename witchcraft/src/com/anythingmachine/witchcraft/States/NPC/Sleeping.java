@@ -1,6 +1,5 @@
 package com.anythingmachine.witchcraft.States.NPC;
 
-import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 

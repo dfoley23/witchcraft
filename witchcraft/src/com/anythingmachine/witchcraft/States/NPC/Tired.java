@@ -2,10 +2,9 @@ package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.NPCStateMachine;
 
-public class Patrol extends Working {
+public class Tired extends NPCState {
 
-	public Patrol(NPCStateMachine sm, NPCStateEnum name) {
+	public Tired(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
 	}
-
 }

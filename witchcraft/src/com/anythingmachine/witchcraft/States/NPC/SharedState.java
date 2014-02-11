@@ -26,6 +26,11 @@ public class SharedState extends NPCState {
 	}
 	
 	@Override
+	public void setAttack() {
+		parent.setAttack();
+	}
+
+	@Override
 	public void takeAction(float dt) {
 		parent.takeAction(dt);
 	}
@@ -35,6 +40,11 @@ public class SharedState extends NPCState {
 		if ( parent == null ) {
 			parent = sm.getState(NPCStateEnum.IDLE);
 		}
+	}
+	
+	@Override
+	public void setIdle() {
+		parent.setIdle();
 	}
 	
 }
