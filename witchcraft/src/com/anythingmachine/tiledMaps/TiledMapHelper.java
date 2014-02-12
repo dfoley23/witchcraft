@@ -268,20 +268,23 @@ public class TiledMapHelper {
 		} else {
 			body.setUserData(new LevelWall(level - 1));
 		}
+		//left wall
 		EdgeShape mapBounds = new EdgeShape();
 		mapBounds.set(new Vector2(0.0f, 0.0f),
 				new Vector2(0, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX));
 		body.createFixture(mapBounds, 0);
 
+		//right wall
 		body = WitchCraft.world.createBody(bodydef);
 		body.setUserData(new LevelWall(level + 1));
 		EdgeShape mapBounds2 = new EdgeShape();
-		mapBounds2.set(new Vector2(layer.getWidth()*32, 0.0f).scl(Util.PIXEL_TO_BOX)
+		mapBounds2.set(new Vector2((layer.getWidth()*32)-960, 0.0f).scl(Util.PIXEL_TO_BOX)
 				,
-				new Vector2(layer.getWidth()*32, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
+				new Vector2((layer.getWidth()*32)-960, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
 						);
 		body.createFixture(mapBounds2, 0);
 
+		//roof
 		body = WitchCraft.world.createBody(bodydef);
 		body.setUserData(new Platform(new Vector2(0.0f, layer.getHeight()*32), new Vector2(layer.getWidth()*32, layer
 				.getHeight())));
