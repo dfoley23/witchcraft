@@ -103,7 +103,7 @@ public class Player extends Entity {
 	public float getX() {
 		return state.phyState.getX();
 	}
-	
+		
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -124,6 +124,9 @@ public class Player extends Entity {
 				state.state.hitNPC(npc);
 			}
 			break;
+		case ARROW:
+			state.setState(PlayerStateEnum.DEAD);
+			break;
 		case WALL:
 			sign = Math.signum(vel.x);
 //			System.out.println("hello wall");
@@ -133,11 +136,12 @@ public class Player extends Entity {
 			} else {
 				state.hitrightwall = true;
 			}
+			state.phyState.body.setPos(state.phyState.getX()-(sign*16), state.phyState.getY(), 0);
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
 			if (plat.isBetween(state.facingleft, pos.x)) {
-				if (plat.getHeight() - 32 < pos.y) {
+				if (plat.getHeight()-16 < pos.y) {
 					state.hitplatform = true;
 					state.elevatedSegment = plat;
 					state.state.land();
@@ -184,13 +188,9 @@ public class Player extends Entity {
 		} else {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
-		// if (other.equals(elevatedSegment) && other.type ==
-		// EntityType.PLATFORM) {
-		// state.setTestVal("hitplatform", false);
-		// if (!state.state.canLand()) {
-		// state.setState(State.FALLING);
-		// }
-		// }
+		if (other.type == EntityType.WALL) {
+		    state.hitleftwall = state.hitrightwall = false;
+		}
 	}
 
 	public void drawUI(Batch batch) {

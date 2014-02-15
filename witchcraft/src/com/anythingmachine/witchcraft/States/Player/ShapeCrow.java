@@ -23,6 +23,7 @@ public class ShapeCrow extends PlayerState {
 		sm.phyState.body.setPos(pos.x, pos.y + 128, 0);
 		sm.phyState.body.setGravityVal(0);
 		crow.setPos(pos);
+		crow.setStandTime(-1);
 		crow.setFlipX(!sm.facingleft);
 	}
 
@@ -47,6 +48,7 @@ public class ShapeCrow extends PlayerState {
 		if (time > timeout) {
 			time = 0;
 			sm.setState(PlayerStateEnum.FALLING);
+			sm.state.setParent(sm.getState(PlayerStateEnum.IDLE));
 		}
 	}
 
@@ -126,11 +128,11 @@ public class ShapeCrow extends PlayerState {
 		crow.setStandTime(-1);
 		sm.phyState.body.setGravityVal(Util.GRAVITY * 3);
 	}
+	
 	@Override
 	public void checkGround() {
 		if ( crow.getStandTime() > 0 ) {
 			land();
-			sm.grounded = true;
 		}
 	}
 

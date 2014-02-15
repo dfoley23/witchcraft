@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 import com.anythingmachine.LuaEngine.LoadScript;
 import com.anythingmachine.collisionEngine.MyContactListener;
@@ -13,6 +14,7 @@ import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
 import com.anythingmachine.tiledMaps.Camera;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
+import com.anythingmachine.witchcraft.GameStates.Screen;
 import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
 import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
 import com.anythingmachine.witchcraft.Util.Util;
@@ -30,7 +32,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
@@ -55,12 +56,13 @@ public class WitchCraft implements ApplicationListener {
 	public static float dt = 1f / 30f;
 	public Rectangle viewport;
 	public float scale = 0.5f;
+	public static HashMap<String, Screen> screens;
+	public static String currentScreen;
 
 	private long lastRender;
 	private TiledMapHelper tiledMapHelper;
 	private Batch spriteBatch;
 	private float xGrid;
-	private int camWorldSize;
 	private Calendar cal;
 	private float dawnDuskProgress = 0;
 	private int screenWidth;
@@ -73,7 +75,6 @@ public class WitchCraft implements ApplicationListener {
 
 	// test fields
 	private Box2DDebugRenderer debugRenderer;
-	private ShapeRenderer shapeRenderer;
 	private NonPlayer npc1;
 	private NonPlayer npc2;
 	private NonPlayer npc3;
@@ -107,6 +108,10 @@ public class WitchCraft implements ApplicationListener {
 			screenHeight = Gdx.app.getGraphics().getHeight();
 		}
 
+		screens = new HashMap<String, Screen>();
+		
+		addScreens();
+		
 		Date date = new Date();
 		cal = GregorianCalendar.getInstance();
 		cal.setTime(date);
@@ -115,7 +120,7 @@ public class WitchCraft implements ApplicationListener {
 		rk4System = new ParticleSystem(rk4);
 
 		contactListener = new MyContactListener();
-		world = new World(new Vector2(0.0f, -10.0f), false);
+		world = new World(new Vector2(0.0f, 0.0f), false);
 		world.setContactListener(contactListener);
 
 		loadAssets();
@@ -126,7 +131,6 @@ public class WitchCraft implements ApplicationListener {
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
 
 		spriteBatch = new SpriteBatch();
-		shapeRenderer = new ShapeRenderer();
 
 		// script = new LoadScript("helloworld.lua");
 
@@ -234,8 +238,6 @@ public class WitchCraft implements ApplicationListener {
 			if (yGrid < screenHeight * (scale)) {
 				Camera.camera.position.y = screenHeight * (scale);
 			}
-
-			camWorldSize = (int) (screenWidth * 1);
 
 			cam.update();
 		}
@@ -366,5 +368,9 @@ public class WitchCraft implements ApplicationListener {
 				new InternalFileHandleResolver()));
 		assetManager.load("data/world/level1/level1.tmx", TiledMap.class);
 		assetManager.finishLoading();
+	}
+		
+	private void addScreens() {
+		
 	}
 }

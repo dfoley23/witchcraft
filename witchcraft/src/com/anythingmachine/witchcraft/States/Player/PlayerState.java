@@ -43,7 +43,7 @@ public class PlayerState {
 
 	public void update(float dt) {
 		checkGround();
-
+		
 		setInputSpeed();
 
 		switchPower();
@@ -211,6 +211,7 @@ public class PlayerState {
 			} else {
 				sm.hitplatform = false;
 				sm.setState(PlayerStateEnum.FALLING);
+				sm.state.setParent(sm.getState(PlayerStateEnum.IDLE));
 			}
 		}
 	}

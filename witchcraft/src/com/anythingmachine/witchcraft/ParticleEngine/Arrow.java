@@ -67,12 +67,13 @@ public class Arrow extends Particle {
 
 	public void setPos(float x, float y, float z) {
 		this.pos.set(x, y, z);
+		this.stable = false;
 	}
 
 	public void pointAtTarget(Vector3 target, float speed) {
 		Vector3 dir = new Vector3(target.x - pos.x, target.y - pos.y, 0);
 		dir.scl(1 / dir.len());
-		this.vel.set(dir.x * speed, Math.max(0.125f, dir.y) * speed, 0);
+		this.vel.set(dir.x * speed, Math.max(0.05f, dir.y) * speed, 0);
 		float costheta = Util.dot(vel, new Vector3(1, 0, 0)) / vel.len();
 		sprite.setRotation((float) Math.acos((double) costheta)
 				* Util.RAD_TO_DEG);

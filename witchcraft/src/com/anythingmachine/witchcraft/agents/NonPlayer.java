@@ -124,8 +124,7 @@ public class NonPlayer extends Entity {
 	}
 
 	public void draw(Batch batch) {
-		sm.animate.setFlipX(sm.facingleft);
-		sm.animate.draw(batch);
+		sm.state.draw(batch);
 	}
 
 	public Vector3 getPosPixels() {

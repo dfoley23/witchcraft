@@ -46,6 +46,7 @@ public class PhysicsState {
 	}
 
 	public void correctCBody(float x, float y, float theta) {
+		collisionBody.setAwake(true);
 		collisionBody.setTransform(Util.addVecsToVec2(body.getPos(), x, y).scl(Util.PIXEL_TO_BOX), theta);
 	}
 	

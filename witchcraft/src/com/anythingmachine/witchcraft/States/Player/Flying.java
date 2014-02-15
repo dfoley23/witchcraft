@@ -21,26 +21,24 @@ public class Flying extends Jumping {
 	}
 
 	@Override
-	public void transistionIn(){
-		
+	public void transistionIn() {
+
 	}
 
 	@Override
 	public void update(float dt) {
 		checkGround();
-		
+
 		setInputSpeed();
 
 		usePower();
 
 		if (WitchCraft.ON_ANDROID) {
 			if (sm.facingleft) {
-				sm.phyState.correctCBody(-8, 64, -rotation
-						+ (120 * Util.DEG_TO_RAD));
+				sm.phyState.correctCBody(-8, 64, Util.HALF_PI);
 				sm.animate.rotate((-rotation * Util.RAD_TO_DEG) + 120);
 			} else {
-				sm.phyState.correctCBody(-8, 64, rotation
-						+ (120 * Util.DEG_TO_RAD));
+				sm.phyState.correctCBody(-8, 64, Util.HALF_PI);
 				sm.animate.rotate((rotation * Util.RAD_TO_DEG) + 120);
 			}
 			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
@@ -51,18 +49,17 @@ public class Flying extends Jumping {
 
 		sm.animate.setFlipX(sm.facingleft);
 
-		time += dt;
-		if (time > hitrooftimeout) {
-			sm.hitroof = false;
-			time = 0;
+		if (sm.hitroof) {
+			time += dt;
+			if (time > hitrooftimeout) {
+				sm.hitroof = false;
+				time = 0;
+			} 
+			sm.phyState.setVel(sm.phyState.getVelX(), Util.GRAVITY);
 		}
 
 		Cape cape = WitchCraft.player.cape;
-		if (sm.facingleft) {
-			cape.addWindForce(500, 0);
-		} else {
-			cape.addWindForce(-500, 0);
-		}
+		cape.addWindForce(-sm.phyState.getVelX(), -sm.phyState.getVelY());
 
 		cape.updatePos(sm.neck.getWorldX() + 14, sm.neck.getWorldY());
 	}
@@ -71,11 +68,11 @@ public class Flying extends Jumping {
 	public void setInputSpeed() {
 		rotation = -sm.input.axisDegree();
 		int axisVal = sm.input.axisRange2();
-		if (axisVal > 0) {
+		if (axisVal > 0 && !sm.hitrightwall) {
 			sm.facingleft = sm.hitleftwall = false;
-		} else if (axisVal < 0) {
+		} else if (axisVal < 0 && !sm.hitleftwall) {
 			sm.facingleft = true;
-			sm.hitleftwall = false;
+			sm.hitrightwall = false;
 		}
 		if (sm.facingleft && !sm.hitleftwall) {
 			if (rotation == 0)

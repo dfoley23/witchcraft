@@ -5,6 +5,7 @@ import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
 public class NPCState {
@@ -29,6 +30,11 @@ public class NPCState {
 
 	}
 	
+	public void draw(Batch batch) {
+		sm.animate.setFlipX(sm.facingleft);
+		sm.animate.draw(batch);
+	}
+
 	public void setAttack() {
 		sm.setState(sm.me.npctype.getAttackState());
 	}

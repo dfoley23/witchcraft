@@ -2,8 +2,7 @@ package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 public class Dead extends PlayerState {
 		private float fadeout;
@@ -14,7 +13,10 @@ public class Dead extends PlayerState {
 
 		@Override
 		public void update(float dt) {
+			sm.phyState.correctCBody(-8, 64, 0);
+			
 			checkGround();
+			
 			if ( sm.animate.testOverTime(0, .75f) ) {
 				fadeout-=dt;
 			}
@@ -64,6 +66,16 @@ public class Dead extends PlayerState {
 			
 		}
 		
+		@Override
+		protected void checkGround() {
+			if ( sm.hitplatform || sm.grounded ) {
+				Vector3 pos = sm.phyState.getPos();
+				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
+				if (pos.y < groundPoint+16 ) 
+					sm.phyState.correctHeight(groundPoint);
+			}
+		}
+
 		@Override
 		public void transistionIn() {
 			sm.animate.bindPose();
