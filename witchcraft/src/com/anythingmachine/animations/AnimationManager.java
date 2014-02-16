@@ -27,7 +27,6 @@ public class AnimationManager {
 	private boolean loop;
 	private boolean isFlipped = false;
 	private Array<Event> events;
-	private Vector2 bodyScale;
 	
 	public AnimationManager(String name, Vector3 pos, Vector2 scl,
 			boolean flip, SkeletonData sd) {

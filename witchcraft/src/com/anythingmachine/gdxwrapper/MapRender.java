@@ -1,6 +1,6 @@
 package com.anythingmachine.gdxwrapper;
 
-import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 
@@ -33,7 +33,7 @@ public interface MapRender {
 	/**
 	 * Renders all the layers of a map.
 	 */
-	public void render(WitchCraft main);
+	public void render(GamePlayManager main);
 	
 	/** Renders the given layers of a map.
 	 * 

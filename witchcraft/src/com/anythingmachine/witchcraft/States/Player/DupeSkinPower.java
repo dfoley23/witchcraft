@@ -26,7 +26,8 @@ public class DupeSkinPower extends CastSpell {
 	@Override
 	public void setDupeSkin() {
 		float now = System.currentTimeMillis();		
-		if ( !sm.dupeSkin.isEmpty() && now - lasttime > 150000) {
+		System.out.println(now);
+		if ( !sm.dupeSkin.isEmpty() && now*.00001 - lasttime*.00001 > 10 || true ) {
 			lasttime = now;
 			sm.animate.switchSkin(sm.dupeSkin);
 			sm.setState(PlayerStateEnum.DUPESKIN);

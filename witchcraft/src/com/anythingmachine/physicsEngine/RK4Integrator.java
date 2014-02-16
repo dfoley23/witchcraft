@@ -8,13 +8,15 @@ import com.badlogic.gdx.math.Vector3;
 public class RK4Integrator {
 	private ArrayList<PhysicsComponent> components;
 	private float t;
-
-	public RK4Integrator() {
+	private float dt;
+	
+	public RK4Integrator(float dt) {
+		this.dt = dt;
 		components = new ArrayList<PhysicsComponent>();
 		t = 0f;
 	}
 
-	public void step(float dt) {
+	public void step() {
 		for (PhysicsComponent c : components) {
 			for (Particle p : c.getParticles()) {
 				if (!p.isStable())

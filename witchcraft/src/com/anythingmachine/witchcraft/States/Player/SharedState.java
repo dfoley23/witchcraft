@@ -27,6 +27,7 @@ public class SharedState extends PlayerState {
 	@Override
 	public void setIdle() {
 		parent.setIdle();
+		sm.setState(parent.name);
 	}
 	
 	@Override

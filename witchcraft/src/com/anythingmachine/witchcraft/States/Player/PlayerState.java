@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
@@ -54,11 +55,9 @@ public class PlayerState {
 		
 		sm.phyState.correctCBody(-8, 64, 0);
 
-		setAttack();
-
 		sm.animate.setFlipX(sm.facingleft);
 
-		Cape cape = WitchCraft.player.cape;
+		Cape cape = GamePlayManager.player.cape;
 
 		int windx = 0;		
 		if ( windtimeout > 0 ) {
@@ -83,7 +82,7 @@ public class PlayerState {
 	}
 	
 	public void drawCape(Matrix4 cam) {
-		WitchCraft.player.cape.draw(cam, 1f);
+		GamePlayManager.player.cape.draw(cam, 1f);
 	}
 	
 	public void switchPower() {

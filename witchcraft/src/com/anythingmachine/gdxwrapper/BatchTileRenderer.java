@@ -1,8 +1,6 @@
 package com.anythingmachine.gdxwrapper;
 
-import com.anythingmachine.witchcraft.WitchCraft;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -85,7 +83,7 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 	}
 
 	@Override
-	public void render (WitchCraft main) {
+	public void render (GamePlayManager main) {
 		boolean drewBG = false;
 		beginRender();
 		for (MapLayer layer : map.getLayers()) {

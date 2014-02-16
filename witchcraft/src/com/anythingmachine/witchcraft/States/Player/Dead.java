@@ -1,7 +1,7 @@
 package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
-import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.math.Vector3;
 
 public class Dead extends PlayerState {
@@ -20,7 +20,7 @@ public class Dead extends PlayerState {
 			if ( sm.animate.testOverTime(0, .75f) ) {
 				fadeout-=dt;
 			}
-			WitchCraft.player.cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
+			GamePlayManager.player.cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
 			if ( fadeout < -3 ) {
 				super.setIdle();
 			}

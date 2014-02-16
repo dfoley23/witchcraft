@@ -16,6 +16,20 @@ public class DupeSkin extends PlayerState {
 		time += dt;
 	}
 	
+	public void update(float dt) {
+		checkGround();
+		
+		setInputSpeed();
+		
+		updatePower(dt);
+		
+		sm.phyState.correctCBody(-8, 64, 0);
+
+		setAttack();
+
+		sm.animate.setFlipX(sm.facingleft);
+	}
+
 	@Override
 	public void setIdle() {
 		if ( time > timeout ) {
@@ -27,16 +41,6 @@ public class DupeSkin extends PlayerState {
 			sm.animate.setCurrent("idle", true);
 			sm.phyState.stop();
 		}
-	}
-
-	public void setWalk() {
-		sm.setState(PlayerStateEnum.WALKING);
-		sm.state.setParent(this);
-	}
-
-	public void setRun() {
-		sm.setState(PlayerStateEnum.RUNNING);
-		sm.state.setParent(this);
 	}
 
 	@Override

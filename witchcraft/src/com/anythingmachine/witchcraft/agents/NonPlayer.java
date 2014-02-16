@@ -10,6 +10,7 @@ import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
@@ -55,12 +56,12 @@ public class NonPlayer extends Entity {
 
 	public void update(float dT) {
 		if (sm.active) {
-			sm.canseeplayer = sm.facingleft == WitchCraft.player.getX() < sm.phyState
+			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState
 					.getX();
 			if (sm.canseeplayer) {
-				if (WitchCraft.player.inHighAlert()) {
+				if (GamePlayManager.player.inHighAlert()) {
 					sm.state.setAttack();
-				} else if (WitchCraft.player.inAlert()) {
+				} else if (GamePlayManager.player.inAlert()) {
 					sm.state.setAlert();
 				}
 			}
@@ -299,7 +300,7 @@ public class NonPlayer extends Entity {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position.set(new Vector2(body.getX(), body.getY()));
-		Body collisionBody = WitchCraft.world.createBody(def);
+		Body collisionBody = GamePlayManager.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();
@@ -322,7 +323,7 @@ public class NonPlayer extends Entity {
 		collisionBody.setUserData(this);
 		shape.dispose();
 
-		WitchCraft.rk4System.addParticle(body);
+		GamePlayManager.rk4System.addParticle(body);
 		sm.phyState = new PhysicsState(body, collisionBody);
 		sm.phyState.addFixture(feetFixture, "feet");
 		sm.phyState.addFixture(hitRadius, "radius");

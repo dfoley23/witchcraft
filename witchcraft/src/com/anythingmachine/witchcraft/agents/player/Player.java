@@ -8,6 +8,7 @@ import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Player.Attacking;
 import com.anythingmachine.witchcraft.States.Player.CastSpell;
 import com.anythingmachine.witchcraft.States.Player.Dead;
@@ -327,7 +328,7 @@ public class Player extends Entity {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position.set(new Vector2(body.getPos().x, body.getPos().y));
-		Body collisionBody = WitchCraft.world.createBody(def);
+		Body collisionBody = GamePlayManager.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();
@@ -350,7 +351,7 @@ public class Player extends Entity {
 		Fixture hitRadius = collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();
-		WitchCraft.rk4System.addParticle(body);
+		GamePlayManager.rk4System.addParticle(body);
 
 		state.phyState = new PhysicsState(body, collisionBody);
 		state.phyState.addFixture(feetFixture, "feet");

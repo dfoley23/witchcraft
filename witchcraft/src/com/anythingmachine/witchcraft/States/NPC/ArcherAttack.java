@@ -2,7 +2,7 @@ package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
-import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -23,16 +23,16 @@ public class ArcherAttack extends NPCState {
 	@Override
 	public void update(float dt) {
 		checkGround();
-		sm.facingleft = WitchCraft.player.getX() < sm.phyState.getX();
+		sm.facingleft = GamePlayManager.player.getX() < sm.phyState.getX();
 		sm.animate.setFlipX(sm.facingleft);
 		if (sm.animate.getTime() > sm.animate.getCurrentAnimTime() * 0.75 && !shotArrow) {
 			shotArrow = true;
 			arrow.setPos(arrowBone.getWorldX()
 					+ (sm.facingleft ? -128 : 128),
 					arrowBone.getWorldY(), 0);
-			arrow.pointAtTarget(WitchCraft.player.getPosPixels(), 650);
+			arrow.pointAtTarget(GamePlayManager.player.getPosPixels(), 650);
 		} else if ( !shotArrow ){
-			Vector3 target = WitchCraft.player.getPosPixels();
+			Vector3 target = GamePlayManager.player.getPosPixels();
 			Vector3 pos = sm.phyState.getPos();
 			Vector3 dir = new Vector3(target.x - pos.x, target.y - pos.y, 0);
 			float costheta = Util.dot(dir, new Vector3(1, 0, 0)) / dir.len();
@@ -42,7 +42,7 @@ public class ArcherAttack extends NPCState {
 				transistionIn();
 			}
 		}
-		if ( !sm.active || WitchCraft.player.dead() ) {
+		if ( !sm.active || GamePlayManager.player.dead() ) {
 			super.setIdle();
 		}
 	}
@@ -57,6 +57,7 @@ public class ArcherAttack extends NPCState {
 	public void transistionIn() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("drawbow", true);
+		sm.phyState.stop();
 		shotArrow = false;
 	}
 

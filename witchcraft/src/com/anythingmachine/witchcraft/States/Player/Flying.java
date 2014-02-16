@@ -2,6 +2,7 @@ package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.badlogic.gdx.math.Vector3;
@@ -58,7 +59,7 @@ public class Flying extends Jumping {
 			sm.phyState.setVel(sm.phyState.getVelX(), Util.GRAVITY);
 		}
 
-		Cape cape = WitchCraft.player.cape;
+		Cape cape = GamePlayManager.player.cape;
 		cape.addWindForce(-sm.phyState.getVelX(), -sm.phyState.getVelY());
 
 		cape.updatePos(sm.neck.getWorldX() + 14, sm.neck.getWorldY());

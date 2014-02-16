@@ -33,6 +33,7 @@ import java.util.HashMap;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.gdxwrapper.OrthoTileRenderer;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.ground.LevelWall;
@@ -58,7 +59,7 @@ public class TiledMapHelper {
 	/**
 	 * Renders the part of the map that should be visible to the user.
 	 */
-	public void render(WitchCraft main) {
+	public void render(GamePlayManager main) {
 		tileMapRenderer.setView(Camera.camera);// .getProjectionMatrix().set(Camera.camera.combined);
 
 		// Vector3 tmp = new Vector3();
@@ -222,7 +223,7 @@ public class TiledMapHelper {
 			BodyDef groundBodyDef = new BodyDef();
 			groundBodyDef.type = BodyDef.BodyType.StaticBody;
 			groundBodyDef.position.set(0, 0);
-			Body groundBody = WitchCraft.world.createBody(groundBodyDef);
+			Body groundBody = GamePlayManager.world.createBody(groundBodyDef);
 			if (lineSegment.type.equals("STAIRS")) {
 				groundBody.setUserData(new Stairs(lineSegment.start(),
 						lineSegment.end()));
@@ -262,7 +263,7 @@ public class TiledMapHelper {
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyType.StaticBody;
 		bodydef.position.set(0, 0);
-		Body body = WitchCraft.world.createBody(bodydef);
+		Body body = GamePlayManager.world.createBody(bodydef);
 		if (level == 1) {
 			body.setUserData(new Entity().setType(EntityType.WALL));
 		} else {
@@ -275,7 +276,7 @@ public class TiledMapHelper {
 		body.createFixture(mapBounds, 0);
 
 		//right wall
-		body = WitchCraft.world.createBody(bodydef);
+		body = GamePlayManager.world.createBody(bodydef);
 		body.setUserData(new LevelWall(level + 1));
 		EdgeShape mapBounds2 = new EdgeShape();
 		mapBounds2.set(new Vector2((layer.getWidth()*32)-960, 0.0f).scl(Util.PIXEL_TO_BOX)
@@ -285,7 +286,7 @@ public class TiledMapHelper {
 		body.createFixture(mapBounds2, 0);
 
 		//roof
-		body = WitchCraft.world.createBody(bodydef);
+		body = GamePlayManager.world.createBody(bodydef);
 		body.setUserData(new Platform(new Vector2(0.0f, layer.getHeight()*32), new Vector2(layer.getWidth()*32, layer
 				.getHeight())));
 		EdgeShape mapBounds3 = new EdgeShape();

@@ -2,6 +2,7 @@ package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.ParticleEngine.MindBeamParticle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -27,7 +28,7 @@ public class MindControlPower extends CastSpell {
 			timeout--;
 			if (timeout < 0) {
 				Vector3 pos = sm.phyState.getPos();
-				WitchCraft.rk4System.addParticle(particle.copy(new Vector3(
+				GamePlayManager.rk4System.addParticle(particle.copy(new Vector3(
 						sm.animate.isFlipped() ? pos.x - 48f : pos.x + 8,
 						pos.y + 32, 0), new Vector3(
 						sm.animate.isFlipped() ? -70 : 70, 0, 0)));

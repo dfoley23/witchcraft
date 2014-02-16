@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.anythingmachine.physicsEngine.Particle;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -25,7 +26,7 @@ public class Arrow extends Particle {
 		super(pos, vel);
 		this.type = EntityType.ARROW;
 		buildCollisionBody();
-		WitchCraft.rk4System.addParticle(this);
+		GamePlayManager.rk4System.addParticle(this);
 		sprite = ((TextureAtlas) WitchCraft.assetManager
 				.get("data/spine/characters.atlas"))
 				.createSprite("archer_xcf-aroow");
@@ -33,7 +34,7 @@ public class Arrow extends Particle {
 	}
 
 	public void destroy() {
-		WitchCraft.world.destroyBody(collisionBody);
+		GamePlayManager.world.destroyBody(collisionBody);
 	}
 
 	public ArrayList<Particle> getParticles() {
@@ -137,7 +138,7 @@ public class Arrow extends Particle {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.position.set(new Vector2(this.getPos().x, this.getPos().y));
-		collisionBody = WitchCraft.world.createBody(def);
+		collisionBody = GamePlayManager.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 		collisionBody.setBullet(true);
 		shape.setAsBox(32 * Util.PIXEL_TO_BOX, 16 * Util.PIXEL_TO_BOX);

@@ -1,6 +1,7 @@
 package com.anythingmachine.witchcraft.GameStates;
 
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Screen {
 
@@ -12,15 +13,26 @@ public class Screen {
 		
 	}
 	
-	public void drawUi() {
+	public void draw(Batch batch) {
+		
+	}
+		
+	public void switchScreen(String name) {
+		Screen current = WitchCraft.currentScreen;
+		current.transistionOut();
+		WitchCraft.currentScreen = WitchCraft.screens.get(name);
+		WitchCraft.screens.get(name).transistionIn();
+	}
+	
+	public void setParent(String name) {
 		
 	}
 	
-	public void switchScreen(String name) {
-		String current = WitchCraft.currentScreen;
-		WitchCraft.screens.get(current).transistionOut();
-		WitchCraft.currentScreen = name;
-		WitchCraft.screens.get(current).transistionIn();
+	public void loadLevel(String name) {
+		
+	}
+	
+	public void loadMenuAssets() {
 	}
 
 	public void transistionIn() {
@@ -28,6 +40,13 @@ public class Screen {
 	}
 	
 	public void transistionOut() {
+		
+	}
+	
+	public void drawBackground(Batch batch) {
+		
+	}
+	public void drawPlayerLayer(Batch batch) {
 		
 	}
 }

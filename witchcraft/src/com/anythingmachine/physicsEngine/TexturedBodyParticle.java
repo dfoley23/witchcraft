@@ -1,6 +1,7 @@
 package com.anythingmachine.physicsEngine;
 
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -33,7 +34,7 @@ public class TexturedBodyParticle extends TexturedParticle {
 	@Override
 	public void destroy() {
 		super.destroy();
-		WitchCraft.world.destroyBody(collisionBody);
+		GamePlayManager.world.destroyBody(collisionBody);
 	}
 
 	@Override
@@ -46,15 +47,15 @@ public class TexturedBodyParticle extends TexturedParticle {
 		def.type = BodyType.DynamicBody;
 		def.position
 				.set(new Vector2(pos.x, pos.y));
-		collisionBody = WitchCraft.world.createBody(def);
+		collisionBody = GamePlayManager.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(sprite.getWidth() * Util.PIXEL_TO_BOX, sprite.getHeight() * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();
 		fixture.shape = shape;
 		fixture.isSensor = true;
 		fixture.density = 1f;
-		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
-		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
+		fixture.filter.categoryBits = Util.CATEGORY_PARTICLES;
+		fixture.filter.maskBits = ~Util.CATEGORY_PARTICLES;
 		collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();	

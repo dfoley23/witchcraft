@@ -43,7 +43,8 @@ public class CastSpell extends PlayerState {
 	@Override
 	public void setInputSpeed() {
 		int axisVal = sm.input.axisRange2();
-		sm.facingleft = axisVal < 0;
+		if ( axisVal != 0 )
+			sm.facingleft = axisVal < 0;
 		setIdle();
 	}
 

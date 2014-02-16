@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.ParticleEngine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -149,7 +150,7 @@ public class Crow extends KinematicParticle {
 		def.type = BodyType.DynamicBody;
 		def.position
 				.set(new Vector2(this.getPos().x, this.getPos().y));
-		collisionBody = WitchCraft.world.createBody(def);
+		collisionBody = GamePlayManager.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(32 * Util.PIXEL_TO_BOX, 32 * Util.PIXEL_TO_BOX);
 		FixtureDef fixture = new FixtureDef();
