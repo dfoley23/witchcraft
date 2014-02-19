@@ -61,7 +61,7 @@ public class PlayerStateMachine extends StateMachine {
 		if (state.canAnimate())
 			animate.applyTotalTime(true, delta);
 
-		animate.setPos(phyState.getPos(), -8f, 0f);
+		animate.setPos(phyState.body.getPos(), -8f, 0f);
 		animate.updateSkel(dt);
 
 	}

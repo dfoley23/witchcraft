@@ -23,7 +23,8 @@ public class ArcherAttack extends NPCState {
 	@Override
 	public void update(float dt) {
 		checkGround();
-		sm.facingleft = GamePlayManager.player.getX() < sm.phyState.getX();
+		checkInBounds();
+		sm.facingleft = GamePlayManager.player.getX() < sm.phyState.body.getX();
 		sm.animate.setFlipX(sm.facingleft);
 		if (sm.animate.getTime() > sm.animate.getCurrentAnimTime() * 0.75 && !shotArrow) {
 			shotArrow = true;
@@ -33,7 +34,7 @@ public class ArcherAttack extends NPCState {
 			arrow.pointAtTarget(GamePlayManager.player.getPosPixels(), 650);
 		} else if ( !shotArrow ){
 			Vector3 target = GamePlayManager.player.getPosPixels();
-			Vector3 pos = sm.phyState.getPos();
+			Vector3 pos = sm.phyState.body.getPos();
 			Vector3 dir = new Vector3(target.x - pos.x, target.y - pos.y, 0);
 			float costheta = Util.dot(dir, new Vector3(1, 0, 0)) / dir.len();
 			sm.animate.rotate((float) Math.acos(costheta));
@@ -57,7 +58,7 @@ public class ArcherAttack extends NPCState {
 	public void transistionIn() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("drawbow", true);
-		sm.phyState.stop();
+		sm.phyState.body.stop();
 		shotArrow = false;
 	}
 

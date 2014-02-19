@@ -13,7 +13,7 @@ public class Working extends NPCState {
 	public void transistionIn() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("idle", true);
-		sm.phyState.stop();
+		sm.phyState.body.stop();
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public class Working extends NPCState {
 	public void setIdle() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("idle", true);
-		sm.phyState.stop();
+		sm.phyState.body.stop();
 	}
 	
 	@Override

@@ -26,7 +26,7 @@ public class Attacking extends PlayerState {
 				if (!shotArrow && sm.animate.isTImeOverThreeQuarters(0f)) {
 					arrow.setPos(arrowBone.getWorldX() + (sm.facingleft ? -128 : 128),
 							arrowBone.getWorldY(), 0);
-					arrow.pointAtTarget(Util.addVecs(sm.phyState.getPos(), sm.facingleft ? -100 : 100, 0), 650);
+					arrow.pointAtTarget(Util.addVecs(sm.phyState.body.getPos(), sm.facingleft ? -100 : 100, 0), 650);
 					shotArrow = true;
 				}
 			}
@@ -39,7 +39,7 @@ public class Attacking extends PlayerState {
 				sm.animate.bindPose();
 				sm.animate.setCurrent("idle", true);
 				sm.setState(parent.name);
-				sm.phyState.stop();
+				sm.phyState.body.stop();
 			}
 		}
 		

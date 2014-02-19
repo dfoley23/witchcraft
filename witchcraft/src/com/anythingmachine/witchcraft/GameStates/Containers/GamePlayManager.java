@@ -1,5 +1,6 @@
 package com.anythingmachine.witchcraft.GameStates.Containers;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -35,12 +37,14 @@ public class GamePlayManager extends Screen {
 	public static World world;
 	private static RK4Integrator rk4;
 	public static ParticleSystem rk4System;
-	private TiledMapHelper tiledMapHelper;
+	private static TiledMapHelper tiledMapHelper;
 	private float xGrid;
 	private Calendar cal;
 	private MyContactListener contactListener;
 	private LoadScript script;
-	private String currentlevel;
+	public static int level = -1;
+	private static int currentlevel;
+	public static ArrayList<Float> levels;
 
 	private CloudEmitter cloudE;
 	private CrowEmitter crowE;
@@ -58,30 +62,33 @@ public class GamePlayManager extends Screen {
 		cal = GregorianCalendar.getInstance();
 		cal.setTime(date);
 
-		if ( WitchCraft.ON_ANDROID )	
-			rk4 = new RK4Integrator(1f /17f);			
+		if (WitchCraft.ON_ANDROID)
+			rk4 = new RK4Integrator(1f / 15f);
 		else
-			rk4 = new RK4Integrator(1f /30f);
+			rk4 = new RK4Integrator(1f / 30f);
 		rk4System = new ParticleSystem(rk4);
 
 		contactListener = new MyContactListener();
 		world = new World(new Vector2(0.0f, 0.0f), false);
 		world.setContactListener(contactListener);
 
-		currentlevel = "level1";
+		currentlevel = 1;
 		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
-		WitchCraft.assetManager.load("data/world/"+currentlevel+"/"+currentlevel+".tmx", TiledMap.class);
+		WitchCraft.assetManager.load("data/world/level1/level" + currentlevel
+				+ ".tmx", TiledMap.class);
 		WitchCraft.assetManager.finishLoading();
 
 		tiledMapHelper = new TiledMapHelper();
-		tiledMapHelper.loadMap();
+		tiledMapHelper.loadMap("level1");
 		tiledMapHelper.prepareCamera(WitchCraft.screenWidth,
 				WitchCraft.screenHeight);
 
 		debugRenderer = new Box2DDebugRenderer();
 		// ground = new Ground(world);
 		// ground.readCurveFile("data/groundcurves.txt", -240, -320);
+
+		levels = new ArrayList<Float>();
 
 		player = new Player(rk4);
 		npc1 = new NonPlayer("knight2", "characters",
@@ -110,12 +117,43 @@ public class GamePlayManager extends Screen {
 
 	@Override
 	public void update(float dt) {
+		if (level > 0) {
+			switchLevel(level);
+			float diff = 0;
+			if (level < currentlevel) {
+				TiledMapTileLayer layer = (TiledMapTileLayer) tiledMapHelper
+						.getMap().getLayers().get(0);
+				diff = (layer.getWidth() * 32 - 638 - 48) - player.getX();
+				player.setX((layer.getWidth() * 32) - 638);
+			} else {
+				diff -= player.getX() - (638);
+				player.setX(683 + 48);
+			}
+			currentlevel = level;
+			level = -1;
+			cloudE.moveByX(diff);
+			Vector3 playerPos = player.getPosPixels();
+			xGrid = Camera.camera.position.x = playerPos.x;
+			float yGrid = Camera.camera.position.y = playerPos.y;
+			if (xGrid < WitchCraft.screenWidth * (WitchCraft.scale)) {
+				xGrid = Camera.camera.position.x = WitchCraft.screenWidth
+						* (WitchCraft.scale);
+			}
+			if (yGrid < WitchCraft.screenHeight * (WitchCraft.scale)) {
+				Camera.camera.position.y = WitchCraft.screenHeight
+						* (WitchCraft.scale);
+			}
+
+			WitchCraft.cam.update();
+
+		}
 		world.step(dt, 1, 1);
 
 		rk4.step();
 
-		Gdx.gl.glViewport((int) WitchCraft.viewport.x, (int) WitchCraft.viewport.y,
-				(int) WitchCraft.viewport.width, (int) WitchCraft.viewport.height);
+		Gdx.gl.glViewport((int) WitchCraft.viewport.x,
+				(int) WitchCraft.viewport.y, (int) WitchCraft.viewport.width,
+				(int) WitchCraft.viewport.height);
 
 		player.update(dt);
 		npc1.update(dt);
@@ -126,7 +164,7 @@ public class GamePlayManager extends Screen {
 
 		cloudE.update(dt);
 		crowE.update(dt);
-		
+
 		Vector3 playerPos = player.getPosPixels();
 		xGrid = Camera.camera.position.x = playerPos.x;
 		float yGrid = Camera.camera.position.y = playerPos.y;
@@ -140,7 +178,6 @@ public class GamePlayManager extends Screen {
 		}
 
 		WitchCraft.cam.update();
-
 
 	}
 
@@ -191,10 +228,26 @@ public class GamePlayManager extends Screen {
 	public Color getTimeOfDay() {
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		hour = hour > 19 || hour < 5 ? 0 : hour;
-		float val = Math.min(hour > 12 ? 2 -((float) hour / 12f)
+		float val = Math.min(hour > 12 ? 2 - ((float) hour / 12f)
 				: ((float) hour / 12f), 0.9f);
-//		System.out.println(hour+" : "+val);
+		// System.out.println(hour+" : "+val);
 		return new Color(val, val, val, 1);
 	}
 
+	public static void switchLevel(int l) {
+		if (!world.isLocked()) {
+			String levelstr = "level" + l;
+			WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
+					new InternalFileHandleResolver()));
+			WitchCraft.assetManager.load("data/world/level1/" + levelstr
+					+ ".tmx", TiledMap.class);
+			WitchCraft.assetManager.finishLoading();
+			tiledMapHelper.destroyMap();
+			tiledMapHelper.loadMap(levelstr);
+			tiledMapHelper.loadCollisions("data/collisions.txt", world,
+					Util.PIXELS_PER_METER, l);
+		} else {
+			level = l;
+		}
+	}
 }

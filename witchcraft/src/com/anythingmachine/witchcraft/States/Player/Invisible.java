@@ -78,7 +78,7 @@ public class Invisible extends PlayerState {
 			sm.setState(PlayerStateEnum.IDLE);
 		} else {
 			sm.animate.bindPose();
-			sm.phyState.stop();
+			sm.phyState.body.stop();
 		}
 	}
 

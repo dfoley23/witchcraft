@@ -17,10 +17,11 @@ public class GoingTo extends NPCState {
 	@Override
 	public void update(float dt) {
 		checkGround();
-		sm.facingleft = sm.phyState.getVelX() < 0;
+		checkInBounds();
+		sm.facingleft = sm.phyState.body.getVelX() < 0;
 		sm.animate.setFlipX(sm.facingleft);
 		
-		if ( Util.subVecs(sm.phyState.getPos(), target).len() < 128) {
+		if ( Util.subVecs(sm.phyState.body.getPos(), target).len() < 128) {
 			switch(name) {
 			case GOINGTOEAT:
 				sm.setState(NPCStateEnum.EATING);
@@ -43,13 +44,18 @@ public class GoingTo extends NPCState {
 	}
 	
 	@Override
+	public void setGoingTo() {
+		sm.phyState.body.setPos(target);
+	}
+
+	@Override
 	public ActionEnum[] getPossibleActions() {
 		return new ActionEnum[] {};
 	}
 
 	@Override
 	public void transistionIn() {
-		sm.facingleft = target.x < sm.phyState.getX();
+		sm.facingleft = target.x < sm.phyState.body.getX();
 		sm.setState(NPCStateEnum.WALKING);
 		sm.state.setParent(this);
 	}

@@ -12,7 +12,7 @@ public class Cleaning extends NPCState {
 	public void transistionIn() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("clean", true);
-		sm.phyState.stop();
+		sm.phyState.body.stop();
 	}
 	
 	@Override

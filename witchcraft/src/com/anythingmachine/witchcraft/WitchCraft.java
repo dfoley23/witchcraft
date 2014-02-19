@@ -54,11 +54,14 @@ public class WitchCraft implements ApplicationListener {
 		if (ON_ANDROID) {
 			screenWidth = VIRTUAL_WIDTH;
 			screenHeight = VIRTUAL_HEIGHT;
-			dt = 1f/17f;
+			dt = 1f/15f;
 		} else {
 			screenWidth = Gdx.app.getGraphics().getWidth();
 			screenHeight = Gdx.app.getGraphics().getHeight();
 		}
+
+		if ( viewport == null )
+			viewport = new Rectangle(0, 0, screenWidth, screenHeight);
 
 		cam = new Camera(screenWidth, screenHeight);
 

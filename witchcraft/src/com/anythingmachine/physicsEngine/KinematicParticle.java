@@ -27,6 +27,18 @@ public class KinematicParticle extends Particle {
 		this.vel.z = z;
 	}
 	
+	public void setYVel(float y) {
+		vel.y = y;
+	}
+	
+	public void setXVel(float x) {
+		vel.x = x;
+	}
+	
+	public void setX(float x) {
+		this.pos.x = x;
+	}
+	
 	public void addVel(float x, float y, float z) {
 		this.vel.x += x;
 		this.vel.y += y;

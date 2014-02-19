@@ -29,6 +29,7 @@ package com.anythingmachine.tiledMaps;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.gdxwrapper.OrthoTileRenderer;
@@ -52,6 +53,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 public class TiledMapHelper {
 	private int[] layersList;
@@ -91,9 +93,10 @@ public class TiledMapHelper {
 	 * 
 	 * @param tmxFile
 	 */
-	public void loadMap() {
+	public void loadMap(String level) {
 
-		map = WitchCraft.assetManager.get("data/world/level1/level1.tmx");
+		map = WitchCraft.assetManager
+				.get("data/world/level1/" + level + ".tmx");
 		// tileAtlas = new TileAtlas(map, packFileDirectory);
 
 		tileMapRenderer = new OrthoTileRenderer(map, 1);
@@ -102,6 +105,25 @@ public class TiledMapHelper {
 		layersList = new int[size];
 		for (int i = 0; i < size; i++) {
 			layersList[i] = i;
+		}
+	}
+
+	public void destroyMap() {
+		Array<Body> bodies = new Array<Body>();
+		GamePlayManager.world.getBodies(bodies);
+		Iterator it = bodies.iterator();
+		while (it.hasNext()) {
+			Body b = (Body) it.next();
+			Object dat = b.getUserData();
+			if (dat != null && dat instanceof Entity) {
+				Entity e = (Entity) dat;
+				if (e.type == EntityType.PLATFORM || e.type == EntityType.WALL
+						|| e.type == EntityType.LEVELWALL
+						|| e.type == EntityType.STAIRS) {
+					GamePlayManager.world.destroyBody(b);
+				}
+			}
+			it.remove();
 		}
 	}
 
@@ -264,36 +286,38 @@ public class TiledMapHelper {
 		bodydef.type = BodyType.StaticBody;
 		bodydef.position.set(0, 0);
 		Body body = GamePlayManager.world.createBody(bodydef);
+		// left wall
+		EdgeShape mapBounds = new EdgeShape();
 		if (level == 1) {
+			mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0,
+					layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new Entity().setType(EntityType.WALL));
 		} else {
+			mapBounds.set(new Vector2((638)*Util.PIXEL_TO_BOX, 0.0f), new Vector2((638),
+					layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new LevelWall(level - 1));
 		}
-		//left wall
-		EdgeShape mapBounds = new EdgeShape();
-		mapBounds.set(new Vector2(0.0f, 0.0f),
-				new Vector2(0, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX));
 		body.createFixture(mapBounds, 0);
 
-		//right wall
+		// right wall
 		body = GamePlayManager.world.createBody(bodydef);
 		body.setUserData(new LevelWall(level + 1));
 		EdgeShape mapBounds2 = new EdgeShape();
-		mapBounds2.set(new Vector2((layer.getWidth()*32)-960, 0.0f).scl(Util.PIXEL_TO_BOX)
-				,
-				new Vector2((layer.getWidth()*32)-960, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
-						);
+		mapBounds2.set(new Vector2((layer.getWidth() * 32) - 638+48, 0.0f)
+				.scl(Util.PIXEL_TO_BOX), new Vector2(
+				(layer.getWidth() * 32) - 638+48, layer.getHeight() * 32)
+				.scl(Util.PIXEL_TO_BOX));
 		body.createFixture(mapBounds2, 0);
 
-		//roof
+		// roof
 		body = GamePlayManager.world.createBody(bodydef);
-		body.setUserData(new Platform(new Vector2(0.0f, layer.getHeight()*32), new Vector2(layer.getWidth()*32, layer
-				.getHeight())));
+		body.setUserData(new Platform(
+				new Vector2(0.0f, layer.getHeight() * 32), new Vector2(layer
+						.getWidth() * 32, layer.getHeight())));
 		EdgeShape mapBounds3 = new EdgeShape();
-		mapBounds3.set(new Vector2(0.0f, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
-				,
-				new Vector2(layer.getWidth()*32, layer.getHeight()*32).scl(Util.PIXEL_TO_BOX)
-						);
+		mapBounds3.set(new Vector2(0.0f, layer.getHeight() * 32)
+				.scl(Util.PIXEL_TO_BOX), new Vector2(layer.getWidth() * 32,
+				layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
 		body.createFixture(mapBounds3, 0);
 
 		mapBounds.dispose();

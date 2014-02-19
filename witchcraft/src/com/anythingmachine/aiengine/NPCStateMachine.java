@@ -40,13 +40,17 @@ import com.esotericsoftware.spine.SkeletonData;
 	
 				animate.applyTotalTime(true, delta);
 	
-				animate.setPos(phyState.getPos(), -8f, 0f);
+				animate.setPos(phyState.body.getPos(), -8f, 0f);
 				animate.updateSkel(dt);
 			}	
 		}
 	
 		public void addState(NPCStateEnum type, NPCState s) {
 			states.put(type, s);
+		}
+		
+		public boolean stateExists(NPCStateEnum type) {
+			return states.containsKey(type);
 		}
 	
 		public void setInitialState(NPCStateEnum name) {

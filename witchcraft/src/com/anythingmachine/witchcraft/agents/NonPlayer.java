@@ -38,6 +38,7 @@ public class NonPlayer extends Entity {
 	protected Fixture feetFixture;
 	protected Fixture hitRadius;
 	protected String datafile;
+	public int level;
 	public NPCType npctype;
 
 	public NonPlayer(String skinname, String atlasname, Vector2 pos,
@@ -55,17 +56,6 @@ public class NonPlayer extends Entity {
 	}
 
 	public void update(float dT) {
-		if (sm.active) {
-			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState
-					.getX();
-			if (sm.canseeplayer) {
-				if (GamePlayManager.player.inHighAlert()) {
-					sm.state.setAttack();
-				} else if (GamePlayManager.player.inAlert()) {
-					sm.state.setAlert();
-				}
-			}
-		}
 		sm.update(dT);
 		// switch (sm.state) {
 		// case WALKINGLEFT:
@@ -129,7 +119,7 @@ public class NonPlayer extends Entity {
 	}
 
 	public Vector3 getPosPixels() {
-		return sm.phyState.getPos();
+		return sm.phyState.body.getPos();
 	}
 
 	public Vector2 getBodyScale() {
@@ -141,9 +131,10 @@ public class NonPlayer extends Entity {
 	}
 
 	public boolean isCritcalAttacking() {
-		return sm.inState(NPCStateEnum.ATTACKING) && sm.animate.isTimeOverAQuarter(0);
+		return sm.inState(NPCStateEnum.ATTACKING)
+				&& sm.animate.isTimeOverAQuarter(0);
 	}
-	
+
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -162,20 +153,20 @@ public class NonPlayer extends Entity {
 		case WALL:
 			// System.out.println("hello wall");
 			if (vel.x < 0) {
-				sm.phyState.setVel(-vel.x, vel.y);
+				sm.phyState.body.setXVel(-vel.x);
 				sm.hitleftwall = true;
 			} else {
-				sm.phyState.setVel(-vel.x, vel.y);
+				sm.phyState.body.setXVel(-vel.x);
 				sm.hitrightwall = true;
 			}
 			break;
 		case LEVELWALL:
 			// System.out.println("hello wall");
 			if (vel.x < 0) {
-				sm.phyState.setVel(-vel.x, vel.y);
+				sm.phyState.body.setXVel(-vel.x);
 				sm.hitleftwall = true;
 			} else {
-				sm.phyState.setVel(-vel.x, vel.y);
+				sm.phyState.body.setXVel(-vel.x);
 				sm.hitrightwall = true;
 			}
 
@@ -190,10 +181,6 @@ public class NonPlayer extends Entity {
 		default:
 			break;
 		}
-	}
-
-	public void correctHeight(float y) {
-		sm.phyState.body.setPos(sm.phyState.getX(), y, 0f);
 	}
 
 	protected void setupAnimations(String skinname, String atlasname,
@@ -242,19 +229,27 @@ public class NonPlayer extends Entity {
 		String[] states = filecontent[3].split(",");
 		for (int i = 1; i < states.length; i++) {
 			for (NPCStateEnum state : NPCStateEnum.DEAD.values()) {
-				String statename = states[i];
-				if (states[i].contains(";")) {
-					statename = states[i].split(";")[0];
-				}
-				if (state.getName().equals(statename)) {
+				if (!sm.stateExists(state)) {
+					String statename = states[i];
 					if (states[i].contains(";")) {
-						String[] pos = states[i].split(";");
-						sm.addState(state, state.constructState(
-								sm,
-								new Vector2(Float.parseFloat(pos[1]), pos[2]
-										.equals("Y") ? sm.phyState.getY()
-										: Float.parseFloat(pos[2]))));
-					} else {
+						statename = states[i].split(";")[0];
+					}
+					if (state.getName().equals(statename)) {
+						if (states[i].contains(";")) {
+							String[] pos = states[i].split(";");
+							sm.addState(
+									state,
+									state.constructState(
+											sm,
+											new Vector2(
+													Float.parseFloat(pos[1]),
+													pos[2].equals("Y") ? sm.phyState.body
+															.getY() : Float
+															.parseFloat(pos[2]))));
+						} else {
+							sm.addState(state, state.constructState(sm));
+						}
+					} else if (state.isGlobal()) {
 						sm.addState(state, state.constructState(sm));
 					}
 				}

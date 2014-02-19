@@ -26,6 +26,7 @@ public class Attacking extends NPCState {
 	@Override
 	public void update(float dt) {
 		checkGround();
+		checkInBounds();
 		setAttack();
 		setIdle();
 
@@ -34,8 +35,8 @@ public class Attacking extends NPCState {
 					(sword.getWorldY())*Util.PIXEL_TO_BOX, 
 					sm.facingleft ? -sword.getWorldRotation()*Util.DEG_TO_RAD 
 							: sword.getWorldRotation()*Util.DEG_TO_RAD);
-			if ( Math.abs(GamePlayManager.player.getX() - sm.phyState.getX()) > 64 ) {
-				sm.facingleft = GamePlayManager.player.getX() < sm.phyState.getX();
+			if ( Math.abs(GamePlayManager.player.getX() - sm.phyState.body.getX()) > 64 ) {
+				sm.facingleft = GamePlayManager.player.getX() < sm.phyState.body.getX();
 				setRun();
 			}
 		}
@@ -49,19 +50,19 @@ public class Attacking extends NPCState {
 
 	@Override
 	public void setAttack() {
-		if ( Math.abs(GamePlayManager.player.getX() - sm.phyState.getX()) < 32 && !sm.inState(NPCStateEnum.ATTACKING )) {
+		if ( Math.abs(GamePlayManager.player.getX() - sm.phyState.body.getX()) < 32 && !sm.inState(NPCStateEnum.ATTACKING )) {
 			sm.setState(NPCStateEnum.ATTACKING);
 		}
 	}
 	
 	@Override
 	public void transistionIn() {
-		if ( Math.abs(GamePlayManager.player.getX() - sm.phyState.getX()) < 32 ) {
-			sm.phyState.stop();
+		if ( Math.abs(GamePlayManager.player.getX() - sm.phyState.body.getX()) < 32 ) {
+			sm.phyState.body.stop();
 			sm.animate.bindPose();
 			sm.animate.setCurrent("overheadattack", true);
 		} else {
-			sm.facingleft = GamePlayManager.player.getX() < sm.phyState.getX();
+			sm.facingleft = GamePlayManager.player.getX() < sm.phyState.body.getX();
 			sm.state.setRun();
 		}
 	}

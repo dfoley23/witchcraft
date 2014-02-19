@@ -3,6 +3,7 @@ package com.anythingmachine.physicsEngine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class Particle extends Entity {
@@ -46,12 +47,29 @@ public class Particle extends Entity {
 		return vel;
 	}
 	
+	public void stop() {
+		vel.x = 0;
+		vel.y = 0;
+	}
+	
+	public void stopOnX() {
+		vel.x = 0;
+	}
+	
+	public void stopOnY() {
+		vel.y = 0;
+	}
+	
 	public float getX() {
 		return pos.x;
 	}
 	
 	public float getY() {
 		return pos.y;
+	}
+	
+	public void setY(float y) {
+		pos.y = y;
 	}
 	
 	public float getVelX(){
@@ -63,9 +81,15 @@ public class Particle extends Entity {
 	}
 
 	public void setPos(float x, float y, float z) {
-		this.pos.set(x, y, z);
+		pos.x = x;
+		pos.y = y;
+		pos.z = z;
 	}
 	
+	public void setPos(Vector2 target) {
+		pos.x = target.x;
+		pos.y = target.y;
+	}
 	public void addPos(float x, float y) {
 		this.pos.add(x, y, 0);
 	}

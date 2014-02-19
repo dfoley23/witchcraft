@@ -16,7 +16,7 @@ public class Sleeping extends NPCState {
 	public void transistionIn() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("idle", true);
-		sm.phyState.stop();
+		sm.phyState.body.stop();
 		time = 0;
 	}
 	

@@ -123,7 +123,7 @@ public class PlayerState {
 
 	public void land() {
 		sm.grounded = true;
-		sm.phyState.stop();
+		sm.phyState.body.stop();
 	}
 
 	public void transistionIn() {
@@ -155,10 +155,10 @@ public class PlayerState {
 				sm.hitleftwall = false;
 				if (axisVal > 1) {
 					setRun();
-					sm.phyState.setXVel(Util.PLAYERRUNSPEED);
+					sm.phyState.body.setXVel(Util.PLAYERRUNSPEED);
 				} else {
 					setWalk();
-					sm.phyState.setXVel(Util.PLAYERWALKSPEED);
+					sm.phyState.body.setXVel(Util.PLAYERWALKSPEED);
 				}
 			}
 		} else if (axisVal < 0) {
@@ -167,10 +167,10 @@ public class PlayerState {
 				sm.hitrightwall = false;
 				if (axisVal < -1) {
 					setRun();
-					sm.phyState.setXVel(-Util.PLAYERRUNSPEED);
+					sm.phyState.body.setXVel(-Util.PLAYERRUNSPEED);
 				} else {
 					setWalk();
-					sm.phyState.setXVel(-Util.PLAYERWALKSPEED);
+					sm.phyState.body.setXVel(-Util.PLAYERWALKSPEED);
 				}
 			}
 		} else {
@@ -179,7 +179,7 @@ public class PlayerState {
 	}
 
 	protected void checkGround() {
-		Vector3 pos = sm.phyState.getPos();
+		Vector3 pos = sm.phyState.body.getPos();
 		if (sm.hitplatform) {
 			// System.out.println(pos);
 //			if (pos.x > sm.curCurve.lastPointOnCurve().x
@@ -204,7 +204,7 @@ public class PlayerState {
 			if (sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
 				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 //				if (pos.y < groundPoint) {
-					sm.phyState.correctHeight(groundPoint);
+					sm.phyState.body.setY(groundPoint);
 					sm.state.land();
 //				}
 			} else {

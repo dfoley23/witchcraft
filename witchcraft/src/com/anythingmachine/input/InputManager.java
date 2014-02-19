@@ -130,13 +130,7 @@ public class InputManager {
 					return (int) Math.signum(val);
 				}
 			}
-		} else {
-			if (left()) {
-				return -1;
-			} else if (right()) {
-				return 1;
-			}
-		}
+		} 
 		return 0;
 	}
 

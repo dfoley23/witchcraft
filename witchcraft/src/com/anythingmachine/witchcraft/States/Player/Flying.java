@@ -56,11 +56,11 @@ public class Flying extends Jumping {
 				sm.hitroof = false;
 				time = 0;
 			} 
-			sm.phyState.setVel(sm.phyState.getVelX(), Util.GRAVITY);
+			sm.phyState.body.setYVel(Util.GRAVITY);
 		}
 
 		Cape cape = GamePlayManager.player.cape;
-		cape.addWindForce(-sm.phyState.getVelX(), -sm.phyState.getVelY());
+		cape.addWindForce(-sm.phyState.body.getVelX(), -sm.phyState.body.getVelY());
 
 		cape.updatePos(sm.neck.getWorldX() + 14, sm.neck.getWorldY());
 	}
@@ -87,7 +87,7 @@ public class Flying extends Jumping {
 			float y = (float) -Math.sin(rotation) * Util.PLAYERFLYSPEED;
 			sm.phyState.body.setVel(x, y, 0);
 		} else {
-			sm.phyState.stop();
+			sm.phyState.body.stop();
 		}
 
 	}
@@ -105,7 +105,7 @@ public class Flying extends Jumping {
 	public void usePower() {
 		if (sm.input.is("UsePower")) {
 			if (!sm.hitroof) {
-				sm.phyState.setYVel(150f);
+				sm.phyState.body.setYVel(150f);
 			} else {
 				time += WitchCraft.dt;
 				if (time > hitrooftimeout) {
@@ -123,13 +123,13 @@ public class Flying extends Jumping {
 
 	@Override
 	public void checkGround() {
-		Vector3 pos = sm.phyState.getPos();
+		Vector3 pos = sm.phyState.body.getPos();
 		sm.grounded = false;
 		if (sm.hitplatform) {
 			if (sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
 				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 				if (pos.y < groundPoint) {
-					sm.phyState.correctHeight(groundPoint);
+					sm.phyState.body.setY(groundPoint);
 					sm.state.land();
 				}
 			}

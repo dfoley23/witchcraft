@@ -69,17 +69,17 @@ public class Dead extends PlayerState {
 		@Override
 		protected void checkGround() {
 			if ( sm.hitplatform || sm.grounded ) {
-				Vector3 pos = sm.phyState.getPos();
+				Vector3 pos = sm.phyState.body.getPos();
 				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 				if (pos.y < groundPoint+16 ) 
-					sm.phyState.correctHeight(groundPoint);
+					sm.phyState.body.setY(groundPoint);
 			}
 		}
 
 		@Override
 		public void transistionIn() {
 			sm.animate.bindPose();
-			sm.phyState.stopOnX();
+			sm.phyState.body.stopOnX();
 			sm.animate.setCurrent("ded", true);
 			fadeout = 1;
 			setParent(sm.getState(PlayerStateEnum.IDLE));

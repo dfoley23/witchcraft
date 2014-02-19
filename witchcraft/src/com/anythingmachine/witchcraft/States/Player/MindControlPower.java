@@ -27,7 +27,7 @@ public class MindControlPower extends CastSpell {
 			System.out.println("hello mind power");
 			timeout--;
 			if (timeout < 0) {
-				Vector3 pos = sm.phyState.getPos();
+				Vector3 pos = sm.phyState.body.getPos();
 				GamePlayManager.rk4System.addParticle(particle.copy(new Vector3(
 						sm.animate.isFlipped() ? pos.x - 48f : pos.x + 8,
 						pos.y + 32, 0), new Vector3(

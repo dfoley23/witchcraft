@@ -27,13 +27,13 @@ public class Jumping extends PlayerState {
 		public void transistionIn() {
 			sm.animate.bindPose();
 			sm.animate.setCurrent("jump", true);
-			sm.phyState.setYVel(150f);
+			sm.phyState.body.setYVel(150f);
 		}
 				
 		@Override
 		public void usePower() {
 			if( sm.input.is("UsePower"))
-				sm.phyState.setYVel(150f);			
+				sm.phyState.body.setYVel(150f);			
 		}
 		
 		@Override 
@@ -51,9 +51,9 @@ public class Jumping extends PlayerState {
 				sm.hitrightwall = false;
 			}
 			if ( sm.facingleft && !sm.hitleftwall) {
-				sm.phyState.setXVel(-Util.PLAYERFLYSPEED*0.75f);
+				sm.phyState.body.setXVel(-Util.PLAYERFLYSPEED*0.75f);
 			} else 	if (!sm.facingleft && !sm.hitrightwall) {
-				sm.phyState.setXVel(Util.PLAYERFLYSPEED*0.75f);
+				sm.phyState.body.setXVel(Util.PLAYERFLYSPEED*0.75f);
 			}
 
 		}

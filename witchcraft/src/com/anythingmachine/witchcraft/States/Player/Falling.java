@@ -39,13 +39,13 @@ public class Falling extends SharedState {
 				
 		@Override
 		public void checkGround() {
-			Vector3 pos = sm.phyState.getPos();
+			Vector3 pos = sm.phyState.body.getPos();
 			sm.grounded = false;
 			if (sm.hitplatform) {
 				if (sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
 					float groundPoint = sm.elevatedSegment.getHeight(pos.x);
 					if (pos.y < groundPoint) {
-						sm.phyState.correctHeight(groundPoint);
+						sm.phyState.body.setY(groundPoint);
 						sm.state.land();
 					}
 				}

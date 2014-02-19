@@ -10,7 +10,7 @@ public class Idle extends PlayerState {
 
 		@Override
 		public void transistionIn() {
-			sm.phyState.stop();
+			sm.phyState.body.stop();
 			sm.animate.bindPose();
 			sm.animate.setCurrent("idle", true);			
 		}

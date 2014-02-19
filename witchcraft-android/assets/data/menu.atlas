@@ -1,0 +1,25 @@
+menu.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+begin
+  rotate: false
+  xy: 2, 2
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+continue
+  rotate: false
+  xy: 2, 68
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+board
+  rotate: false
+  xy: 132, 2
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1

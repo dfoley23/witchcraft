@@ -14,6 +14,10 @@ public enum NPCStateEnum {
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Walking(sm, NPCStateEnum.WALKING);
 		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
 	},
 	RUNNING {
 		@Override
@@ -24,6 +28,10 @@ public enum NPCStateEnum {
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Running(sm, NPCStateEnum.RUNNING);
 		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
 	},
 	IDLE {
 		@Override
@@ -31,6 +39,10 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { ATTACKING, TALKING, TIRED,
 					GOINGTOSLEEP, GOINGTOEAT, GOINGTOWORK, HUNTING, MOBBING,
 					ALARMED };
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	},
 	DEAD {
@@ -41,6 +53,10 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Dead(sm, NPCStateEnum.DEAD);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	},
 	ATTACKING {
@@ -63,6 +79,10 @@ public enum NPCStateEnum {
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Eating(sm, NPCStateEnum.EATING);
 		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
 	},
 	SLEEPING {
 		@Override
@@ -73,6 +93,10 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Sleeping(sm, NPCStateEnum.SLEEPING);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	},
 	GOINGTOTALK {
@@ -99,6 +123,10 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Talking(sm, NPCStateEnum.TALKING);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	},
 	CLEANING {
@@ -154,6 +182,10 @@ public enum NPCStateEnum {
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Following(sm, NPCStateEnum.FOLLOWING);
 		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
 	},
 	LEADING {
 		@Override
@@ -163,6 +195,10 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Leading(sm, NPCStateEnum.LEADING);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	},
 	GOINGTOEAT {
@@ -187,6 +223,10 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Mobbing(sm, NPCStateEnum.MOBBING);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	},
 	DRINKING {
@@ -220,6 +260,10 @@ public enum NPCStateEnum {
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Alarmed(sm, NPCStateEnum.ALARMED);
 		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
 	},
 	TIRED {
 		@Override
@@ -230,6 +274,10 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Tired(sm, NPCStateEnum.TIRED);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	},
 	THEIVING {
@@ -291,6 +339,10 @@ public enum NPCStateEnum {
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Working(sm, NPCStateEnum.WORKING);
 		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
 	},
 	GOINGTOPATROL {
 		@Override
@@ -314,6 +366,26 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new ArcherAttack(sm, NPCStateEnum.ARCHERATTACK);
+		}
+	},
+	INACTIVE {
+		@Override
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Inactive(sm, this);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
+	},
+	INOTHERLEVEL {
+		@Override
+		public NPCState constructState(NPCStateMachine sm) {
+			return new InOtherLevel(sm, this);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
 	};
 
@@ -340,6 +412,10 @@ public enum NPCStateEnum {
 	
 	public String getName() {
 		return this.toString();
+	}
+	
+	public boolean isGlobal() {
+		return false;
 	}
 
 }

@@ -39,7 +39,7 @@ public class DupeSkin extends PlayerState {
 		} else {
 			sm.animate.bindPose();
 			sm.animate.setCurrent("idle", true);
-			sm.phyState.stop();
+			sm.phyState.body.stop();
 		}
 	}
 
@@ -71,13 +71,13 @@ public class DupeSkin extends PlayerState {
 				sm.state.setParent(this);
 				sm.animate.setCurrent("drawbow", true);
 				sm.animate.bindPose();
-				sm.phyState.stop();
+				sm.phyState.body.stop();
 			} else if (!sm.animate.isSkin("player")) {
 				sm.setState(PlayerStateEnum.ATTACKING);
 				sm.state.setParent(this);
 				sm.animate.setCurrent("swordattack", true);
 				sm.animate.bindPose();
-				sm.phyState.stop();
+				sm.phyState.body.stop();
 			}
 		}
 	}

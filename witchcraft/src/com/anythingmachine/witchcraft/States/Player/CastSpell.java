@@ -11,7 +11,7 @@ public class CastSpell extends PlayerState {
 	@Override
 	public void transistionIn() {
 		sm.animate.bindPose();
-		sm.phyState.stopOnX();
+		sm.phyState.body.stopOnX();
 		sm.animate.setCurrent("castspell", true);
 	}
 

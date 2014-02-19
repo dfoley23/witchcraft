@@ -29,6 +29,7 @@ import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
+import com.anythingmachine.witchcraft.ground.LevelWall;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -52,13 +53,13 @@ import com.esotericsoftware.spine.SkeletonData;
 public class Player extends Entity {
 	public Cape cape;
 	private PlayerStateMachine state;
-
+	
 	public Player(RK4Integrator rk4) {
 		setupState("player");
 		setupInput();
 		setupPowers();
 
-		cape = new Cape(3, 5, rk4, state.phyState.getPos());
+		cape = new Cape(3, 5, rk4, state.phyState.body.getPos());
 		type = EntityType.PLAYER;
 
 	}
@@ -98,11 +99,11 @@ public class Player extends Entity {
 	}
 
 	public Vector3 getPosPixels() {
-		return state.phyState.getPos();
+		return state.phyState.body.getPos();
 	}
 
 	public float getX() {
-		return state.phyState.getX();
+		return state.phyState.body.getX();
 	}
 		
 	@Override
@@ -131,23 +132,23 @@ public class Player extends Entity {
 		case WALL:
 			sign = Math.signum(vel.x);
 //			System.out.println("hello wall");
-			state.phyState.stopOnX();
+			state.phyState.body.stopOnX();
 			if (sign == -1) {
 				state.hitleftwall = true;
 			} else {
 				state.hitrightwall = true;
 			}
-			state.phyState.body.setPos(state.phyState.getX()-(sign*16), state.phyState.getY(), 0);
+			state.phyState.body.setX(state.phyState.body.getX()-(sign*16));
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
 			if (plat.isBetween(state.facingleft, pos.x)) {
-				if (plat.getHeight()-16 < pos.y) {
+				if (plat.getHeight()-10 < pos.y) {
 					state.hitplatform = true;
 					state.elevatedSegment = plat;
 					state.state.land();
 				} else {
-					state.phyState.stopOnY();
+					state.phyState.body.stopOnY();
 					state.hitroof = true;
 				}
 			}
@@ -170,13 +171,8 @@ public class Player extends Entity {
 			break;
 		case LEVELWALL:
 			sign = Math.signum(vel.x);
-			System.out.println("hello wall");
-			state.phyState.stopOnX();
-			if (sign == -1) {
-				state.hitleftwall = true;
-			} else {
-				state.hitrightwall = true;
-			}
+			LevelWall wall = (LevelWall)other;
+			GamePlayManager.switchLevel(wall.getLevel());
 			break;
 		}
 	}
@@ -194,6 +190,10 @@ public class Player extends Entity {
 		}
 	}
 
+	public void setX(float x) {
+		state.phyState.body.setX(x);
+	}
+	
 	public void drawUI(Batch batch) {
 		state.drawUI(batch);
 	}
@@ -255,8 +255,8 @@ public class Player extends Entity {
 	}
 
 	private void setupPowers() {
-		float width = WitchCraft.cam.camera.viewportWidth/2f;
-		float height = WitchCraft.cam.camera.viewportHeight;
+		float width = WitchCraft.viewport.width/2f;
+		float height = WitchCraft.viewport.height;
 		state.powerUi = new ArrayList<Sprite>();
 		Sprite sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager

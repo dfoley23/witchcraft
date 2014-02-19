@@ -19,7 +19,7 @@ public class ShapeCrow extends PlayerState {
 
 	@Override
 	public void transistionIn() {
-		Vector3 pos = sm.phyState.getPos();
+		Vector3 pos = sm.phyState.body.getPos();
 		sm.phyState.body.setPos(pos.x, pos.y + 128, 0);
 		sm.phyState.body.setGravityVal(0);
 		crow.setPos(pos);
@@ -54,7 +54,7 @@ public class ShapeCrow extends PlayerState {
 
 	@Override
 	public void draw(Batch batch) {
-		crow.setPos(sm.phyState.getPos());
+		crow.setPos(sm.phyState.body.getPos());
 		crow.draw(batch);
 	}
 
@@ -94,13 +94,13 @@ public class ShapeCrow extends PlayerState {
 				sm.phyState.body.setVel(-Util.PLAYERRUNSPEED, vel.y, 0);
 			}
 		} else {
-			sm.phyState.stop();
+			sm.phyState.body.stop();
 		}
 	}
 
 	@Override
 	public void land() {
-		sm.phyState.stop();
+		sm.phyState.body.stop();
 		crow.setStandTime(6);
 	}
 

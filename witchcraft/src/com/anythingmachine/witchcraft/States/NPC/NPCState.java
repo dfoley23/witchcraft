@@ -2,6 +2,8 @@ package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
+import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
@@ -22,6 +24,10 @@ public class NPCState {
 	public void update(float dt) {
 		aiChoiceTime += dt;
 
+		checkInBounds();
+		
+		checkAttack();
+		
 		takeAction(dt);
 
 		checkGround();
@@ -34,7 +40,31 @@ public class NPCState {
 		sm.animate.setFlipX(sm.facingleft);
 		sm.animate.draw(batch);
 	}
-
+	
+	public void checkInBounds() {
+		if( !WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
+			sm.setState(NPCStateEnum.INACTIVE);
+		}
+	}
+	
+	public void setGoingTo() {
+		
+	}
+	
+	public void checkAttack() {
+		if (sm.active) {
+			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState
+					.body.getX();
+			if (sm.canseeplayer) {
+				if (GamePlayManager.player.inHighAlert()) {
+					sm.state.setAttack();
+				} else if (GamePlayManager.player.inAlert()) {
+					sm.state.setAlert();
+				}
+			}
+		}
+	}
+	
 	public void setAttack() {
 		sm.setState(sm.me.npctype.getAttackState());
 	}

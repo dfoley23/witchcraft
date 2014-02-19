@@ -63,6 +63,12 @@ public class CloudEmitter {
 		}
 	}
 
+	public void moveByX(float x) {
+		for(CloudParticle c: clouds) {
+			c.addPos(x, 0);
+		}
+	}
+	
 	public void draw(Batch batch) {
 		for (CloudParticle c : clouds) {
 			c.draw(batch);
