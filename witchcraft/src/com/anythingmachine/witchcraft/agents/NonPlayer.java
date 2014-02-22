@@ -49,7 +49,9 @@ public class NonPlayer extends Entity {
 
 		FileHandle handle = Gdx.files.internal(datafile);
 		String[] fileContent = handle.readString().split("\n");
-
+		
+		level = Integer.parseInt(fileContent[0].split(",")[1])-1;
+		
 		setupAnimations(skinname, atlasname, pos, bodyScale, fileContent);
 
 		setupAI(fileContent);
@@ -162,13 +164,13 @@ public class NonPlayer extends Entity {
 			break;
 		case LEVELWALL:
 			// System.out.println("hello wall");
-			if (vel.x < 0) {
-				sm.phyState.body.setXVel(-vel.x);
-				sm.hitleftwall = true;
-			} else {
-				sm.phyState.body.setXVel(-vel.x);
-				sm.hitrightwall = true;
-			}
+//			if (vel.x < 0) {
+//				sm.phyState.body.setXVel(-vel.x);
+//				sm.hitleftwall = true;
+//			} else {
+//				sm.phyState.body.setXVel(-vel.x);
+//				sm.hitrightwall = true;
+//			}
 
 			break;
 		case PLATFORM:

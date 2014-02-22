@@ -52,7 +52,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -122,6 +121,7 @@ public class TiledMapHelper {
 				if (e.type == EntityType.PLATFORM || e.type == EntityType.WALL
 						|| e.type == EntityType.LEVELWALL
 						|| e.type == EntityType.STAIRS) {
+					System.out.println(e.type);
 					GamePlayManager.world.destroyBody(b);
 				}
 			}
@@ -297,51 +297,24 @@ public class TiledMapHelper {
 					new Vector2(0, layer.getHeight() * 32)
 							.scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new Entity().setType(EntityType.WALL));
+			body.createFixture(mapBounds, 0);
 		} else {
-			mapBounds.set(new Vector2((638) * Util.PIXEL_TO_BOX, 0.0f),
-					new Vector2((638), layer.getHeight() * 32)
+			mapBounds.set(new Vector2(0f * Util.PIXEL_TO_BOX, 0.0f),
+					new Vector2(0f, layer.getHeight() * 32)
 							.scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new LevelWall(level - 1));
-			Fixture fix = body.createFixture(mapBounds, 0);
-			filter.categoryBits = Util.CATEGORY_NPCMASK;
-			filter.maskBits = ~Util.CATEGORY_NPC;
-			fix.setFilterData(filter);
-
-			// NPC left wall
-			body = GamePlayManager.world.createBody(bodydef);
-			body.setUserData(new LevelWall(level - 1));
-			EdgeShape mapBounds2 = new EdgeShape();
-			mapBounds2.set(new Vector2(0.0f, 0.0f).scl(Util.PIXEL_TO_BOX),
-					new Vector2(0.0f, layer.getHeight() * 32)
-							.scl(Util.PIXEL_TO_BOX));
-			fix = body.createFixture(mapBounds2, 0);
-			filter.categoryBits = Util.CATEGORY_PLAYER;
-			filter.maskBits = Util.CATEGORY_NPC;
-			fix.setFilterData(filter);
+			body.createFixture(mapBounds, 0);
 		}
 
 		// right wall
 		body = GamePlayManager.world.createBody(bodydef);
 		body.setUserData(new LevelWall(level + 1));
 		EdgeShape mapBounds2 = new EdgeShape();
-		mapBounds2.set(new Vector2((layer.getWidth() * 32) - 638 + 48, 0.0f)
-				.scl(Util.PIXEL_TO_BOX), new Vector2(
-				(layer.getWidth() * 32) - 638 + 48, layer.getHeight() * 32)
-				.scl(Util.PIXEL_TO_BOX));
-		Fixture fix = body.createFixture(mapBounds2, 0);
-		fix.setFilterData(filter);
-
-		// NPC Right Wall
-		body = GamePlayManager.world.createBody(bodydef);
-		body.setUserData(new LevelWall(level + 1));
-		mapBounds2 = new EdgeShape();
 		mapBounds2.set(new Vector2((layer.getWidth() * 32), 0.0f)
-				.scl(Util.PIXEL_TO_BOX), new Vector2((layer.getWidth() * 32),
-				layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
-		fix = body.createFixture(mapBounds2, 0);
-		filter.categoryBits = Util.CATEGORY_PLAYER;
-		filter.maskBits = Util.CATEGORY_NPC;
-		fix.setFilterData(filter);
+				.scl(Util.PIXEL_TO_BOX), new Vector2(
+				(layer.getWidth() * 32), layer.getHeight() * 32)
+				.scl(Util.PIXEL_TO_BOX));
+		body.createFixture(mapBounds2, 0);
 
 		// roof
 		body = GamePlayManager.world.createBody(bodydef);

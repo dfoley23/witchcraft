@@ -15,12 +15,12 @@ import com.esotericsoftware.spine.Bone;
 public class Attacking extends NPCState {
 	private Bone sword;
 	private Body swordBody;
+	private NPCState childState;
 	
 	public Attacking(NPCStateMachine sm, NPCStateEnum name ) {
 		super(sm,name);
 		sword = sm.animate.findBone("right hand");
 		buildSwordBody();
-
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class Attacking extends NPCState {
 							: sword.getWorldRotation()*Util.DEG_TO_RAD);
 			if ( Math.abs(GamePlayManager.player.getX() - sm.phyState.body.getX()) > 64 ) {
 				sm.facingleft = GamePlayManager.player.getX() < sm.phyState.body.getX();
-				setRun();
+				childState.setRun();
 			}
 		}
 		if ( !sm.active) {
@@ -64,6 +64,7 @@ public class Attacking extends NPCState {
 		} else {
 			sm.facingleft = GamePlayManager.player.getX() < sm.phyState.body.getX();
 			sm.state.setRun();
+			childState = sm.getState(NPCStateEnum.RUNNING);
 		}
 	}
 	

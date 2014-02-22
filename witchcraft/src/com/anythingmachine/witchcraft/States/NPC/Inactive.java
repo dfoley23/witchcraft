@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.States.NPC;
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -18,22 +19,50 @@ public class Inactive extends NPCState {
 	public void update(float dt) {
 		aiChoiceTime += dt;
 
-		checkGround();
+		checkInLevel();
 		
 		checkInBounds();
+
+		checkAttack();
+		
+		checkGround();
+
+		takeAction(dt);
 		
 		childState.checkTarget();
 
 		fixCBody();
 		
 	}
-	
+
+	@Override
+	public void setChildState(NPCStateEnum state) {
+		childState = sm.getState(state);
+	}
+
 	public void draw(Batch batch) {
 
 	}
 	
+	@Override
 	public void checkAttack() {
+		if (WitchCraft.cam.inBigBounds(sm.phyState.body.getPos())) {
+			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
+					.getX();
+			if (sm.canseeplayer) {
+				if (GamePlayManager.player.inHighAlert()) {
+					childState = sm.getState(NPCStateEnum.ATTACKING);
+				} else if (GamePlayManager.player.inAlert()) {
+					sm.state.setAlert();
+				}
+			}
+		}
+	}
 
+	public void checkInLevel() {
+		onScreen = true;
+		super.checkInLevel();
+		onScreen = false;
 	}
 	
 	public void setAttack() {

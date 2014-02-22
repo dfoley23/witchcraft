@@ -16,6 +16,7 @@ public class GoingTo extends NPCState {
 	
 	@Override
 	public void update(float dt) {
+		checkInLevel();
 		checkGround();
 		checkInBounds();
 		sm.facingleft = sm.phyState.body.getVelX() < 0;
@@ -30,16 +31,16 @@ public class GoingTo extends NPCState {
 		if ( Util.subVecs(sm.phyState.body.getPos(), target).len() < 128) {
 			switch(name) {
 			case GOINGTOEAT:
-				sm.setState(NPCStateEnum.EATING);
+				sm.state.setChildState(NPCStateEnum.EATING);
 				break;
 			case GOINGTOSLEEP:
-				sm.setState(NPCStateEnum.SLEEPING);
+				sm.state.setChildState(NPCStateEnum.SLEEPING);
 				break;
 			case GOINGTOWORK:
-				sm.setState(NPCStateEnum.WORKING);
+				sm.state.setChildState(NPCStateEnum.WORKING);
 				break;
 			case GOINGTOPATROL:
-				sm.setState(NPCStateEnum.PATROLLING);
+				sm.state.setChildState(NPCStateEnum.PATROLLING);
 				break;
 			default:
 				break;
@@ -59,8 +60,7 @@ public class GoingTo extends NPCState {
 	@Override
 	public void transistionIn() {
 		sm.facingleft = target.x < sm.phyState.body.getX();
-		sm.setState(NPCStateEnum.WALKING);
-		sm.state.setParent(this);
+		sm.getState(NPCStateEnum.WALKING).transistionIn();
 	}
 	
 	@Override

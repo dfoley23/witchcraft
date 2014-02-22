@@ -131,7 +131,7 @@ public class Player extends Entity {
 			break;
 		case WALL:
 			sign = Math.signum(vel.x);
-//			System.out.println("hello wall");
+			System.out.println("hello wall");
 			state.phyState.body.stopOnX();
 			if (sign == -1) {
 				state.hitleftwall = true;

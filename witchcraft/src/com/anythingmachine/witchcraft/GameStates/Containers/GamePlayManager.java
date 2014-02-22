@@ -21,6 +21,7 @@ import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -43,7 +44,7 @@ public class GamePlayManager extends Screen {
 	private MyContactListener contactListener;
 	private LoadScript script;
 	public static int level = -1;
-	private static int currentlevel;
+	public static int currentlevel;
 	public static ArrayList<Float> levels;
 
 	private CloudEmitter cloudE;
@@ -72,15 +73,19 @@ public class GamePlayManager extends Screen {
 		world = new World(new Vector2(0.0f, 0.0f), false);
 		world.setContactListener(contactListener);
 
-		currentlevel = 1;
+		FileHandle handle = Gdx.files.internal("data/levelstate.txt");
+		String[] fileContent = handle.readString().split("\n");
+
+		currentlevel = Integer.parseInt(fileContent[3]) - 1;
+
 		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
-		WitchCraft.assetManager.load("data/world/level1/level" + currentlevel
-				+ ".tmx", TiledMap.class);
+		WitchCraft.assetManager.load("data/world/level1/level"
+				+ (currentlevel + 1) + ".tmx", TiledMap.class);
 		WitchCraft.assetManager.finishLoading();
 
 		tiledMapHelper = new TiledMapHelper();
-		tiledMapHelper.loadMap("level1");
+		tiledMapHelper.loadMap("level" + (currentlevel + 1));
 		tiledMapHelper.prepareCamera(WitchCraft.screenWidth,
 				WitchCraft.screenHeight);
 
@@ -89,29 +94,36 @@ public class GamePlayManager extends Screen {
 		// ground.readCurveFile("data/groundcurves.txt", -240, -320);
 
 		levels = new ArrayList<Float>();
+		String[] levelstr = fileContent[1].split(":");
+		for (String s : levelstr) {
+			levels.add(Float.parseFloat(s));
+		}
 
 		player = new Player(rk4);
 		npc1 = new NonPlayer("knight2", "characters",
 				new Vector2(354.0f, 3.0f), new Vector2(0.6f, 0.7f),
 				"data/npcdata/knights/fredknight", NPCType.KNIGHT);
-		npc2 = new NonPlayer("knight1", "characters",
-				new Vector2(800.0f, 3.0f), new Vector2(0.6f, 0.7f),
-				"data/npcdata/knights/fredknight", NPCType.KNIGHT);
-		npc3 = new NonPlayer("archer", "characters", new Vector2(300.0f, 3.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
-				NPCType.ARCHER);
-		npc4 = new NonPlayer("civmalebrown", "characters", new Vector2(300.0f,
-				3.0f), new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
-				NPCType.CIV);
-		npc5 = new NonPlayer("civfemaleblack-hood", "characters", new Vector2(
-				300.0f, 3.0f), new Vector2(0.6f, 0.7f),
-				"data/npcdata/civs/saraciv", NPCType.CIV);
+		// npc2 = new NonPlayer("knight1", "characters",
+		// new Vector2(800.0f, 3.0f), new Vector2(0.6f, 0.7f),
+		// "data/npcdata/knights/fredknight", NPCType.KNIGHT);
+		// npc3 = new NonPlayer("archer", "characters", new Vector2(300.0f,
+		// 3.0f),
+		// new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
+		// NPCType.ARCHER);
+		// npc4 = new NonPlayer("civmalebrown", "characters", new
+		// Vector2(300.0f,
+		// 3.0f), new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
+		// NPCType.CIV);
+		// npc5 = new NonPlayer("civfemaleblack-hood", "characters", new
+		// Vector2(
+		// 300.0f, 3.0f), new Vector2(0.6f, 0.7f),
+		// "data/npcdata/civs/saraciv", NPCType.CIV);
 
 		cloudE = new CloudEmitter(17);
 		crowE = new CrowEmitter(1);
 
 		tiledMapHelper.loadCollisions("data/collisions.txt", world,
-				Util.PIXELS_PER_METER, 1);
+				Util.PIXELS_PER_METER, currentlevel + 1);
 
 	}
 
@@ -120,31 +132,18 @@ public class GamePlayManager extends Screen {
 		if (level > 0) {
 			switchLevel(level);
 			float diff = 0;
-			if (level < currentlevel) {
+			if (level < currentlevel + 1) {
 				TiledMapTileLayer layer = (TiledMapTileLayer) tiledMapHelper
 						.getMap().getLayers().get(0);
-				diff = (layer.getWidth() * 32 - 638 - 48) - player.getX();
-				player.setX((layer.getWidth() * 32) - 638);
+				diff = (layer.getWidth() * 32) - player.getX();
+				player.setX((layer.getWidth() * 32) - 64);
 			} else {
-				diff -= player.getX() - (638);
-				player.setX(683 + 48);
+				diff -= player.getX();
+				player.setX(64);
 			}
-			currentlevel = level;
+			currentlevel = level - 1;
 			level = -1;
 			cloudE.moveByX(diff);
-			Vector3 playerPos = player.getPosPixels();
-			xGrid = Camera.camera.position.x = playerPos.x;
-			float yGrid = Camera.camera.position.y = playerPos.y;
-			if (xGrid < WitchCraft.screenWidth * (WitchCraft.scale)) {
-				xGrid = Camera.camera.position.x = WitchCraft.screenWidth
-						* (WitchCraft.scale);
-			}
-			if (yGrid < WitchCraft.screenHeight * (WitchCraft.scale)) {
-				Camera.camera.position.y = WitchCraft.screenHeight
-						* (WitchCraft.scale);
-			}
-
-			WitchCraft.cam.update();
 
 		}
 		world.step(dt, 1, 1);
@@ -157,16 +156,18 @@ public class GamePlayManager extends Screen {
 
 		player.update(dt);
 		npc1.update(dt);
-		npc2.update(dt);
-		npc3.update(dt);
-		npc4.update(dt);
-		npc5.update(dt);
+		// npc2.update(dt);
+		// npc3.update(dt);
+		// npc4.update(dt);
+		// npc5.update(dt);
 
 		cloudE.update(dt);
 		crowE.update(dt);
 
 		Vector3 playerPos = player.getPosPixels();
-		xGrid = Camera.camera.position.x = playerPos.x;
+		xGrid = Camera.camera.position.x = Math.min(playerPos.x,
+				levels.get(currentlevel)
+				- (WitchCraft.screenWidth * WitchCraft.scale));
 		float yGrid = Camera.camera.position.y = playerPos.y;
 		if (xGrid < WitchCraft.screenWidth * (WitchCraft.scale)) {
 			xGrid = Camera.camera.position.x = WitchCraft.screenWidth
@@ -206,11 +207,11 @@ public class GamePlayManager extends Screen {
 
 	public void drawPlayerLayer(Batch batch) {
 
-		npc2.draw(batch);
 		npc1.draw(batch);
-		npc3.draw(batch);
-		npc4.draw(batch);
-		npc5.draw(batch);
+		// npc2.draw(batch);
+		// npc3.draw(batch);
+		// npc4.draw(batch);
+		// npc5.draw(batch);
 
 		player.draw(batch);
 
@@ -227,21 +228,16 @@ public class GamePlayManager extends Screen {
 
 	public Color getTimeOfDay() {
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		float val = Math.min(hour > 12 ? 1- ((float) (hour-12) / 8f)
-				: ((float) (hour-4) / 8f), 0.9f);
+		float val = Math.min(hour > 12 ? 1 - ((float) (hour - 12) / 8f)
+				: ((float) (hour - 4) / 8f), 0.9f);
 		hour = hour > 19 || hour < 5 ? 0 : hour;
-//		 System.out.println(hour+" : "+val);
+		// System.out.println(hour+" : "+val);
 		return new Color(val, val, val, 1);
 	}
 
 	public static void switchLevel(int l) {
 		if (!world.isLocked()) {
 			String levelstr = "level" + l;
-			WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
-					new InternalFileHandleResolver()));
-			WitchCraft.assetManager.load("data/world/level1/" + levelstr
-					+ ".tmx", TiledMap.class);
-			WitchCraft.assetManager.finishLoading();
 			tiledMapHelper.destroyMap();
 			tiledMapHelper.loadMap(levelstr);
 			tiledMapHelper.loadCollisions("data/collisions.txt", world,

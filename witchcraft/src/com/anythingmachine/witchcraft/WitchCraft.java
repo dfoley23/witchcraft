@@ -12,10 +12,13 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -142,6 +145,11 @@ public class WitchCraft implements ApplicationListener {
 		assetManager.load("data/spine/characters.atlas", TextureAtlas.class);
 		assetManager.load("data/world/otherart.atlas", TextureAtlas.class);
 		assetManager.load("data/dust.png", Texture.class);
+
+		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
+				new InternalFileHandleResolver()));
+		WitchCraft.assetManager.load("data/world/level1/level1.tmx", TiledMap.class);
+		WitchCraft.assetManager.load("data/world/level1/level2.tmx", TiledMap.class);
 
 		assetManager.finishLoading();
 	}
