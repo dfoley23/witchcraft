@@ -120,7 +120,7 @@ public class Util {
 	 * Collision Categories and masks for every object that needs them
 	 */
 	public static final short CATEGORY_PLAYER = 0x0002;
-	public static final short CATEGORY_SUBPLAYER = 0x0004;
+	public static final short CATEGORY_NPCMASK = 0x0004;
 	public static final short CATEGORY_NPC = 0x0008;
 	public static final short CATEGORY_PARTICLES= 0x0010;
 	public static final short CATEGORY_IGNORE = 0x1000;

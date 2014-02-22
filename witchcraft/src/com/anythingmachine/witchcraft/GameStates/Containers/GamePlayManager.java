@@ -227,10 +227,10 @@ public class GamePlayManager extends Screen {
 
 	public Color getTimeOfDay() {
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		float val = Math.min(hour > 12 ? 1- ((float) (hour-12) / 8f)
+				: ((float) (hour-4) / 8f), 0.9f);
 		hour = hour > 19 || hour < 5 ? 0 : hour;
-		float val = Math.min(hour > 12 ? 2 - ((float) hour / 12f)
-				: ((float) hour / 12f), 0.9f);
-		// System.out.println(hour+" : "+val);
+//		 System.out.println(hour+" : "+val);
 		return new Color(val, val, val, 1);
 	}
 

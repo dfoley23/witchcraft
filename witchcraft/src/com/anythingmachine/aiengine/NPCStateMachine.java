@@ -59,9 +59,10 @@ import com.esotericsoftware.spine.SkeletonData;
 		}
 	
 		public void setState(NPCStateEnum name) {
-			state.transistionOut();
+			if ( state.transistionOut() ) {
 			this.state = states.get(name);
 			state.transistionIn();
+			}
 		}
 	
 		public NPCState getState(NPCStateEnum name) {

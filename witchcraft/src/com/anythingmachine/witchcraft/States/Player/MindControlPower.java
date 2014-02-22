@@ -24,7 +24,6 @@ public class MindControlPower extends CastSpell {
 	@Override
 	public void usePower() {
 		if (sm.input.is("UsePower")) {
-			System.out.println("hello mind power");
 			timeout--;
 			if (timeout < 0) {
 				Vector3 pos = sm.phyState.body.getPos();

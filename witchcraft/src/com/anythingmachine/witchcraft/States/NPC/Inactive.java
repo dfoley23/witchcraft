@@ -9,13 +9,23 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Inactive extends NPCState {
 	public NPCState childState;
+	private boolean onScreen = false;
 	
 	public Inactive(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
 	}
 	
 	public void update(float dt) {
-		childState.update(dt);
+		aiChoiceTime += dt;
+
+		checkGround();
+		
+		checkInBounds();
+		
+		childState.checkTarget();
+
+		fixCBody();
+		
 	}
 	
 	public void draw(Batch batch) {
@@ -37,6 +47,7 @@ public class Inactive extends NPCState {
 	
 	public void checkInBounds() {
 		if( WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
+			onScreen = true;
 			sm.setState(childState.name);
 		}
 	}
@@ -86,6 +97,14 @@ public class Inactive extends NPCState {
 		childState = p;
 	}
 	
+	public void transistionIn() {
+		onScreen = false;
+	}
+	
+	public boolean transistionOut() {
+		return onScreen;
+	}
+
 	public void immediateTransOut() {
 		
 	}

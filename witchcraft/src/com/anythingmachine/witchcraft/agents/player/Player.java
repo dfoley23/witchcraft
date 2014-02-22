@@ -160,7 +160,6 @@ public class Player extends Entity {
 							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
 							+ plat.getPos().y)) {
 				if (plat.isBetween(state.facingleft, pos.x)) {
-					System.out.println("hello");
 					if (plat.getHeight(pos.x) - 8 < pos.y) {
 						state.hitplatform = true;
 						state.elevatedSegment = plat;

@@ -32,8 +32,7 @@ public class NPCState {
 
 		checkGround();
 
-		sm.phyState.collisionBody.setTransform(Util.addVecsToVec2(sm.phyState.body.getPos(), -8, 64).scl(Util.PIXEL_TO_BOX), 0);
-
+		fixCBody();
 	}
 	
 	public void draw(Batch batch) {
@@ -43,7 +42,9 @@ public class NPCState {
 	
 	public void checkInBounds() {
 		if( !WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
+			NPCState temp = sm.state;
 			sm.setState(NPCStateEnum.INACTIVE);
+			sm.state.setParent(temp);
 		}
 	}
 	
@@ -63,6 +64,14 @@ public class NPCState {
 				}
 			}
 		}
+	}
+	
+	public void checkTarget() {
+		
+	}
+	
+	public void fixCBody() {
+		sm.phyState.collisionBody.setTransform(Util.addVecsToVec2(sm.phyState.body.getPos(), -8, 64).scl(Util.PIXEL_TO_BOX), 0);
 	}
 	
 	public void setAttack() {
@@ -118,7 +127,8 @@ public class NPCState {
 		
 	}
 	
-	public void transistionOut() {
+	public boolean transistionOut() {
+		return true;
 	}
 	
 	public void immediateTransOut() {

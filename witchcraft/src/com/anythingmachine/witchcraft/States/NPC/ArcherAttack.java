@@ -48,6 +48,11 @@ public class ArcherAttack extends NPCState {
 		}
 	}
 
+	@Override
+	public void checkInBounds() {
+		
+	}
+	
 	@Override 
 	public void draw(Batch batch) {
 		super.draw(batch);

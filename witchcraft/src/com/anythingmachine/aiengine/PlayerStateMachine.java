@@ -82,7 +82,6 @@ public class PlayerStateMachine extends StateMachine {
 
 	public void nextPower() {
 		power = states[power.getNextPower()].name;
-		System.out.println(power);
 	}
 
 	public void usePower() {

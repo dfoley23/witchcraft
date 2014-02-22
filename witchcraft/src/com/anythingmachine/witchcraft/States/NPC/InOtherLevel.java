@@ -105,10 +105,11 @@ public class InOtherLevel extends NPCState {
 		sm.active = false;
 	}
 
-	public void transistionOut() {
+	public boolean transistionOut() {
 		sm.phyState.body.setGravityVal(Util.GRAVITY);
 		sm.phyState.collisionBody.setAwake(false);
 		sm.active = true;
+		return true;
 	}
 
 	public void immediateTransOut() {

@@ -302,8 +302,8 @@ public class NonPlayer extends Entity {
 		fixture.shape = shape;
 		fixture.isSensor = true;
 		fixture.density = 1f;
-		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
-		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
+		fixture.filter.categoryBits = Util.CATEGORY_NPC;
+		fixture.filter.maskBits = ~Util.CATEGORY_NPCMASK;
 		feetFixture = collisionBody.createFixture(fixture);
 
 		shape = new PolygonShape();
@@ -312,8 +312,8 @@ public class NonPlayer extends Entity {
 		fixture.shape = shape;
 		fixture.isSensor = true;
 		fixture.density = 1f;
-		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
-		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
+		fixture.filter.categoryBits = Util.CATEGORY_NPC;
+		fixture.filter.maskBits = ~Util.CATEGORY_NPCMASK;
 		feetFixture = collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();

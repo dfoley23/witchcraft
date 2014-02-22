@@ -21,6 +21,12 @@ public class GoingTo extends NPCState {
 		sm.facingleft = sm.phyState.body.getVelX() < 0;
 		sm.animate.setFlipX(sm.facingleft);
 		
+		fixCBody();		
+	}
+	
+	
+	@Override
+	public void checkTarget() {
 		if ( Util.subVecs(sm.phyState.body.getPos(), target).len() < 128) {
 			switch(name) {
 			case GOINGTOEAT:
@@ -39,10 +45,7 @@ public class GoingTo extends NPCState {
 				break;
 			}
 		}
-		sm.phyState.collisionBody.setTransform(Util.addVecsToVec2(sm.phyState.body.getPos(), -8, 64).scl(Util.PIXEL_TO_BOX), 0);
-		
 	}
-	
 	@Override
 	public void setGoingTo() {
 		sm.phyState.body.setPos(target);
