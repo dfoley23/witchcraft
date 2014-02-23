@@ -3,8 +3,6 @@ package com.anythingmachine.physicsEngine;
 import java.util.HashMap;
 
 import com.anythingmachine.witchcraft.Util.Util;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
@@ -24,7 +22,6 @@ public class PhysicsState {
 	}
 	
 	public void correctCBody(float x, float y, float theta) {
-		collisionBody.setAwake(true);
 		collisionBody.setTransform(Util.addVecsToVec2(body.getPos(), x, y).scl(Util.PIXEL_TO_BOX), theta);
 	}
 	

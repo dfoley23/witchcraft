@@ -18,5 +18,10 @@ public class Running  extends SharedState {
 			sm.phyState.body.setVel(sm.facingleft ? -Util.PLAYERRUNSPEED: Util.PLAYERRUNSPEED, 0, 0);
 
 	}
+	
+	@Override
+	public void setRun() {
+		
+	}
 		
 }

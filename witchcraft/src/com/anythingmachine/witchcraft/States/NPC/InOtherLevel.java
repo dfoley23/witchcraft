@@ -6,7 +6,6 @@ import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class InOtherLevel extends NPCState {
@@ -16,10 +15,15 @@ public class InOtherLevel extends NPCState {
 		super(sm, name);
 	}
 
+	@Override
 	public void update(float dt) {
+		aiChoiceTime += dt;
+
 		childState.checkTarget();
 
-		setGoingTo();
+		takeAction(dt);
+
+		checkInLevel();
 	}
 
 	@Override
@@ -27,7 +31,8 @@ public class InOtherLevel extends NPCState {
 		childState = sm.getState(state);
 	}
 
-	public void setGoingTo() {
+	@Override
+	public void checkInLevel() {
 		float levelwidth = GamePlayManager.levels.get(sm.npc.level);
 		if (sm.phyState.body.getX() > levelwidth) {
 			if (sm.npc.level != GamePlayManager.levels.size() - 1) {
@@ -49,20 +54,22 @@ public class InOtherLevel extends NPCState {
 							.get(sm.npc.level);
 					sm.phyState.body.setX(activelevelwidth);
 					sm.setState(childState.name);
-				} 
-			}else {
-					sm.hitleftwall = true;
-					sm.phyState.body.stopOnX();
+				}
+			} else {
+				sm.hitleftwall = true;
+				sm.phyState.body.stopOnX();
 			}
-		}  else if ( sm.npc.level == GamePlayManager.currentlevel ) {
+		} else if (sm.npc.level == GamePlayManager.currentlevel) {
 			sm.setState(childState.name);
 		}
 	}
 
+	@Override
 	public void draw(Batch batch) {
 
 	}
 
+	@Override
 	public void takeAction(float dt) {
 		if (aiChoiceTime > sm.behavior.getActionTime()) {
 			takeAction(sm.behavior.ChooseAction(sm.state));
@@ -70,16 +77,19 @@ public class InOtherLevel extends NPCState {
 		}
 	}
 
+	@Override
 	public void setTalking(NonPlayer npc) {
 		sm.npc = npc;
 		childState = sm.getState(NPCStateEnum.TALKING);
 	}
 
+	@Override
 	public void setIdle() {
 		sm.phyState.body.stop();
 		childState = sm.getState(NPCStateEnum.IDLE);
 	}
 
+	@Override
 	public void takeAction(Action action) {
 		if (action != null) {
 			sm.behavior.takeAction(action);
@@ -88,47 +98,58 @@ public class InOtherLevel extends NPCState {
 		}
 	}
 
+	@Override
 	public ActionEnum[] getPossibleActions() {
 		return childState.getPossibleActions();
 	}
 
+	@Override
 	public void setWalk() {
 		NPCState temp = childState;
 		childState = sm.getState(NPCStateEnum.WALKING);
 		childState.setParent(temp);
 	}
 
+	@Override
 	public void setRun() {
 		NPCState temp = childState;
 		childState = sm.getState(NPCStateEnum.RUNNING);
 		childState.setParent(temp);
 	}
 
+	@Override
 	public void setParent(NPCState p) {
 		childState = p;
 	}
 
+	@Override
 	public void transistionIn() {
-		Gdx.app.log("set out of level", this.toString());
-		if ( childState == null ) {
-			childState = sm.getState(NPCStateEnum.IDLE);
-		}
 		sm.phyState.body.setGravityVal(0);
 		sm.phyState.collisionBody.setAwake(true);
-		sm.active = false;
+		sm.inlevel = false;
+		sm.onscreen = false;
+		// sm.active = false;
 	}
 
+	@Override
 	public boolean transistionOut() {
-		sm.phyState.body.setGravityVal(Util.GRAVITY);
-		sm.phyState.collisionBody.setAwake(false);
-		sm.active = true;
-		return true;
+		if (sm.npc.level == GamePlayManager.currentlevel) {
+			System.out.println("in same level");
+			sm.phyState.body.setGravityVal(Util.GRAVITY);
+			sm.phyState.collisionBody.setAwake(false);
+			sm.inlevel = true;
+			// sm.active = true;
+			return true;
+		}
+		return false;
 	}
 
+	@Override
 	public void immediateTransOut() {
 
 	}
 
+	@Override
 	public void checkGround() {
 	}
 

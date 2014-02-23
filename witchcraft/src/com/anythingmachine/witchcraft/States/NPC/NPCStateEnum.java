@@ -106,8 +106,8 @@ public enum NPCStateEnum {
 					ALARMED };
 		}
 		@Override
-		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
-			return new GoingTo(sm, NPCStateEnum.GOINGTOTALK, target);
+		public NPCState constructState(NPCStateMachine sm, Vector2 target, int level) {
+			return new GoingTo(sm, NPCStateEnum.GOINGTOTALK, target, level);
 		}
 		@Override
 		public NPCStateEnum goingTo() {
@@ -207,8 +207,8 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { EATING, TALKING, ALARMED };
 		}
 		@Override
-		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
-			return new GoingTo(sm, NPCStateEnum.EATING, target);
+		public NPCState constructState(NPCStateMachine sm, Vector2 target, int level) {
+			return new GoingTo(sm, NPCStateEnum.EATING, target,level);
 		}
 		@Override
 		public NPCStateEnum goingTo() {
@@ -306,8 +306,8 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { SLEEPING, ALARMED, TALKING, TIRED };
 		}
 		@Override
-		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
-			return new GoingTo(sm, NPCStateEnum.GOINGTOSLEEP, target);
+		public NPCState constructState(NPCStateMachine sm, Vector2 target, int level) {
+			return new GoingTo(sm, NPCStateEnum.GOINGTOSLEEP, target,level);
 		}
 		@Override
 		public NPCStateEnum goingTo() {
@@ -321,8 +321,8 @@ public enum NPCStateEnum {
 					FOLLOWING, MOBBING, CLEANING, TALKING, IDLE };
 		}
 		@Override
-		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
-			return new GoingTo(sm, NPCStateEnum.RETURNFROMWORK, target);
+		public NPCState constructState(NPCStateMachine sm, Vector2 target, int level) {
+			return new GoingTo(sm, NPCStateEnum.RETURNFROMWORK, target, level);
 		}
 		@Override
 		public NPCStateEnum goingTo() {
@@ -350,8 +350,8 @@ public enum NPCStateEnum {
 			return new NPCStateEnum[] { WORKING, TALKING, ALARMED, MOBBING };
 		}
 		@Override
-		public NPCState constructState(NPCStateMachine sm, Vector2 target) {
-			return new GoingTo(sm, NPCStateEnum.GOINGTOPATROL, target);
+		public NPCState constructState(NPCStateMachine sm, Vector2 target, int level) {
+			return new GoingTo(sm, NPCStateEnum.GOINGTOPATROL, target, level);
 		}
 		@Override
 		public NPCStateEnum goingTo() {
@@ -394,8 +394,8 @@ public enum NPCStateEnum {
 		return new Idle(sm, NPCStateEnum.IDLE);
 	}
 	
-	public NPCState constructState(NPCStateMachine sm, Vector2 target) {
-		return new GoingTo(sm, NPCStateEnum.GOINGTOWORK, target);
+	public NPCState constructState(NPCStateMachine sm, Vector2 target, int level) {
+		return new GoingTo(sm, NPCStateEnum.GOINGTOWORK, target, level);
 	}
 
 	public NPCStateEnum goingTo() {

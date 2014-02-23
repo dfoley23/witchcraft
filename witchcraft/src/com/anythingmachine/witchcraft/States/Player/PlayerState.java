@@ -1,7 +1,5 @@
 package com.anythingmachine.witchcraft.States.Player;
 
-import java.util.Random;
-
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
@@ -16,14 +14,11 @@ public class PlayerState {
 	protected PlayerStateMachine sm;
 	public PlayerStateEnum name;
 	public PlayerState parent;
-	private Random rand;
-	private float windtimeout = 1.5f;
 
 	public PlayerState(PlayerStateMachine sm, PlayerStateEnum name) {
 		this.sm = sm;
 		this.name = name;
 		parent = this;
-		rand = new Random();
 	}
 	
 	public void nextPower() {
@@ -57,23 +52,27 @@ public class PlayerState {
 
 		sm.animate.setFlipX(sm.facingleft);
 
+		addWindToCape(dt);
+	}
+
+	public void addWindToCape(float dt) {
 		Cape cape = GamePlayManager.player.cape;
 
 		int windx = 0;		
-		if ( windtimeout > 0 ) {
-			windx = rand.nextInt(1500);
+		if ( sm.windtimeout > 0 ) {
+			windx = sm.rand.nextInt(1500);
 			if ( windx > 600 ) 
 				windx = 0;
-		} else if ( windtimeout < -1 ) {
-			windtimeout = 1.5f;
+		} else if ( sm.windtimeout < -1 ) {
+			sm.windtimeout = 1.5f;
 		}
-		windtimeout-=dt;
+		sm.windtimeout-=dt;
 		
 		cape.addWindForce(sm.facingleft ? windx : -windx, -400);
 
 		cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
 	}
-
+	
 	public void setAttack() {
 	}
 

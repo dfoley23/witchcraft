@@ -17,4 +17,9 @@ public class Walking extends SharedState {
 		if ( !sm.phyState.body.isStable() )
 			sm.phyState.body.setVel(sm.facingleft ? -Util.PLAYERWALKSPEED: Util.PLAYERWALKSPEED, 0, 0);
 	}
+	
+	@Override
+	public void setWalk() {
+		
+	}
 }

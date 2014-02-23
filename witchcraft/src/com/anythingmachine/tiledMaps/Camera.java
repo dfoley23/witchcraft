@@ -53,4 +53,5 @@ public class Camera {
 	public Rectangle getBounds() {
 		return bounds;
 	}
+	
 }

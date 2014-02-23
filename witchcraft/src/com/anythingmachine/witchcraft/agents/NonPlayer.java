@@ -15,6 +15,7 @@ import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.anythingmachine.witchcraft.ground.LevelWall;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -41,7 +42,7 @@ public class NonPlayer extends Entity {
 	public int level;
 	public NPCType npctype;
 
-	public NonPlayer(String skinname, String atlasname, Vector2 pos,
+	public NonPlayer(String skinname, Vector2 pos,
 			Vector2 bodyScale, String datafile, NPCType npctype) {
 		this.type = EntityType.NONPLAYER;
 		this.datafile = datafile;
@@ -52,7 +53,7 @@ public class NonPlayer extends Entity {
 		
 		level = Integer.parseInt(fileContent[0].split(",")[1])-1;
 		
-		setupAnimations(skinname, atlasname, pos, bodyScale, fileContent);
+		setupAnimations(skinname, pos, bodyScale, fileContent);
 
 		setupAI(fileContent);
 	}
@@ -164,14 +165,8 @@ public class NonPlayer extends Entity {
 			break;
 		case LEVELWALL:
 			// System.out.println("hello wall");
-//			if (vel.x < 0) {
-//				sm.phyState.body.setXVel(-vel.x);
-//				sm.hitleftwall = true;
-//			} else {
-//				sm.phyState.body.setXVel(-vel.x);
-//				sm.hitrightwall = true;
-//			}
-
+			LevelWall wall = (LevelWall)other;
+			sm.state.switchLevel(wall.getLevel());
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
@@ -185,7 +180,7 @@ public class NonPlayer extends Entity {
 		}
 	}
 
-	protected void setupAnimations(String skinname, String atlasname,
+	protected void setupAnimations(String skinname,
 			Vector2 pos, Vector2 scale, String[] fileContent) {
 		SkeletonBinary sb = new SkeletonBinary(
 				(TextureAtlas) WitchCraft.assetManager
@@ -247,7 +242,7 @@ public class NonPlayer extends Entity {
 													Float.parseFloat(pos[1]),
 													pos[2].equals("Y") ? sm.phyState.body
 															.getY() : Float
-															.parseFloat(pos[2]))));
+															.parseFloat(pos[2])), Integer.parseInt(pos[3])));
 						} else {
 							sm.addState(state, state.constructState(sm));
 						}
@@ -305,7 +300,7 @@ public class NonPlayer extends Entity {
 		fixture.isSensor = true;
 		fixture.density = 1f;
 		fixture.filter.categoryBits = Util.CATEGORY_NPC;
-		fixture.filter.maskBits = ~Util.CATEGORY_NPCMASK;
+		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
 		feetFixture = collisionBody.createFixture(fixture);
 
 		shape = new PolygonShape();
@@ -315,7 +310,7 @@ public class NonPlayer extends Entity {
 		fixture.isSensor = true;
 		fixture.density = 1f;
 		fixture.filter.categoryBits = Util.CATEGORY_NPC;
-		fixture.filter.maskBits = ~Util.CATEGORY_NPCMASK;
+		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
 		feetFixture = collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();

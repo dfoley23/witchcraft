@@ -23,7 +23,6 @@ public class ArcherAttack extends NPCState {
 	@Override
 	public void update(float dt) {
 		checkGround();
-		checkInBounds();
 		sm.facingleft = GamePlayManager.player.getX() < sm.phyState.body.getX();
 		sm.animate.setFlipX(sm.facingleft);
 		if (sm.animate.getTime() > sm.animate.getCurrentAnimTime() * 0.75 && !shotArrow) {
@@ -43,7 +42,7 @@ public class ArcherAttack extends NPCState {
 				transistionIn();
 			}
 		}
-		if ( !sm.active || GamePlayManager.player.dead() ) {
+		if (GamePlayManager.player.dead() ) {
 			super.setIdle();
 		}
 	}

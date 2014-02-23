@@ -44,7 +44,7 @@ public class Flying extends Jumping {
 			}
 			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
 		} else {
-			sm.phyState.correctCBody(-8, -64, -Util.HALF_PI);
+			sm.phyState.correctCBody(-8, 32, sm.facingleft ? Util.HALF_PI: -Util.HALF_PI);
 			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
 		}
 

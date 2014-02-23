@@ -146,8 +146,8 @@ public class Arrow extends Particle {
 		fixture.shape = shape;
 		fixture.isSensor = true;
 		fixture.density = 1f;
-		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
-		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
+		fixture.filter.categoryBits = Util.CATEGORY_PARTICLES;
+		fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER | Util.CATEGORY_ANIMALS;
 		collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();

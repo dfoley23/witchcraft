@@ -29,7 +29,7 @@ public class NPCState {
 		checkInBounds();
 
 		checkGround();
-		
+
 		checkAttack();
 
 		takeAction(dt);
@@ -56,21 +56,23 @@ public class NPCState {
 	}
 
 	public void checkAttack() {
-		if (sm.active) {
-			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
-					.getX();
-			if (sm.canseeplayer) {
-				if (GamePlayManager.player.inHighAlert()) {
-					sm.state.setAttack();
-				} else if (GamePlayManager.player.inAlert()) {
-					sm.state.setAlert();
-				}
+		sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
+				.getX();
+		if (sm.canseeplayer) {
+			if (GamePlayManager.player.inHighAlert()) {
+				sm.state.setAttack();
+			} else if (GamePlayManager.player.inAlert()) {
+				sm.state.setAlert();
 			}
 		}
 	}
 
 	public void checkTarget() {
 
+	}
+
+	public void switchLevel(int level) {
+		checkInLevel();
 	}
 
 	public void fixCBody() {
@@ -82,7 +84,7 @@ public class NPCState {
 	public void setChildState(NPCStateEnum state) {
 		sm.setState(state);
 	}
-	
+
 	public void setAttack() {
 		sm.setState(sm.me.npctype.getAttackState());
 	}
@@ -105,13 +107,15 @@ public class NPCState {
 
 	public void checkInLevel() {
 		float x = sm.phyState.body.getX();
-		if ( sm.npc.level != GamePlayManager.currentlevel ) {
-				sm.setState(NPCStateEnum.INOTHERLEVEL);
+		if (sm.npc.level != GamePlayManager.currentlevel) {
+			sm.setState(NPCStateEnum.INOTHERLEVEL);
+			sm.state.setParent(this);
 		} else if (x > GamePlayManager.levels.get(sm.npc.level)) {
 			if (sm.npc.level != GamePlayManager.levels.size() - 1) {
 				sm.npc.level += 1;
 				sm.phyState.body.setX(0);
 				sm.setState(NPCStateEnum.INOTHERLEVEL);
+				sm.state.setParent(this);
 			} else {
 				sm.hitrightwall = true;
 				sm.phyState.body.stopOnX();
@@ -123,6 +127,7 @@ public class NPCState {
 						.get(sm.npc.level);
 				sm.phyState.body.setX(activelevelwidth);
 				sm.setState(NPCStateEnum.INOTHERLEVEL);
+				sm.state.setParent(this);
 			} else {
 				sm.hitleftwall = true;
 				sm.phyState.body.stopOnX();
@@ -147,12 +152,12 @@ public class NPCState {
 
 	public void setWalk() {
 		sm.getState(NPCStateEnum.WALKING).transistionIn();
-//		sm.state.setParent(this);
+		// sm.state.setParent(this);
 	}
 
 	public void setRun() {
 		sm.getState(NPCStateEnum.RUNNING).transistionIn();
-//		sm.state.setParent(this);
+		// sm.state.setParent(this);
 	}
 
 	public void setParent(NPCState p) {

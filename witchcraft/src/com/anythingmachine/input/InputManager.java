@@ -105,8 +105,14 @@ public class InputManager {
 			}
 		} else {
 			if (left()) {
+				if ( is("shift")) {
+					return -2;
+				}
 				return -1;
 			} else if (right()) {
+				if ( is("shift")) {
+					return 2;
+				}
 				return 1;
 			}
 		}

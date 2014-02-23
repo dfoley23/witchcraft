@@ -1,6 +1,7 @@
 package com.anythingmachine.aiengine;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.PhysicsState;
@@ -30,6 +31,8 @@ public class PlayerStateMachine extends StateMachine {
 	public Curve curCurve;
 	public Platform elevatedSegment;
 	public String dupeSkin;
+	public float windtimeout = 1.5f;
+	public Random rand;	
 
 	public boolean grounded;
 	public boolean hitplatform;
@@ -46,6 +49,8 @@ public class PlayerStateMachine extends StateMachine {
 		dupeSkin = "";
 		power = PlayerStateEnum.JUMPING;
 		uiFadein = -5;
+
+		rand = new Random();
 
 		input = new InputManager();
 		states = new PlayerState[PlayerStateEnum.DEAD.getSize()];

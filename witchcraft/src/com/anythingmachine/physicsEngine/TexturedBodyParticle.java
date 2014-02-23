@@ -55,7 +55,7 @@ public class TexturedBodyParticle extends TexturedParticle {
 		fixture.isSensor = true;
 		fixture.density = 1f;
 		fixture.filter.categoryBits = Util.CATEGORY_PARTICLES;
-		fixture.filter.maskBits = ~Util.CATEGORY_PARTICLES;
+		fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
 		collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();	

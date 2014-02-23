@@ -20,7 +20,8 @@ public class NPCStateMachine extends StateMachine {
 	public Platform elevatedSegment;
 	public NonPlayer me;
 	public boolean canseeplayer;
-	public boolean active;
+	public boolean onscreen;
+	public boolean inlevel;
 
 	public NPCStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd, NonPlayer me) {
@@ -28,8 +29,6 @@ public class NPCStateMachine extends StateMachine {
 		this.me = me;
 		canseeplayer = false;
 		states = new HashMap<NPCStateEnum, NPCState>();
-		active = true;
-
 	}
 
 	public void update(float dt) {

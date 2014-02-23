@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Inactive extends NPCState {
 	public NPCState childState;
-	private boolean onScreen = false;
 	
 	public Inactive(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
@@ -60,9 +59,9 @@ public class Inactive extends NPCState {
 	}
 
 	public void checkInLevel() {
-		onScreen = true;
+		sm.onscreen = true;
 		super.checkInLevel();
-		onScreen = false;
+		sm.onscreen = false;
 	}
 	
 	public void setAttack() {
@@ -76,7 +75,7 @@ public class Inactive extends NPCState {
 	
 	public void checkInBounds() {
 		if( WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
-			onScreen = true;
+			sm.onscreen = true;
 			sm.setState(childState.name);
 		}
 	}
@@ -127,11 +126,11 @@ public class Inactive extends NPCState {
 	}
 	
 	public void transistionIn() {
-		onScreen = false;
+		sm.onscreen = false;
 	}
 	
 	public boolean transistionOut() {
-		return onScreen;
+		return sm.onscreen;
 	}
 
 	public void immediateTransOut() {

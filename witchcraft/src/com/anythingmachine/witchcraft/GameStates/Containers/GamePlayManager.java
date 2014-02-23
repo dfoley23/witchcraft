@@ -16,6 +16,7 @@ import com.anythingmachine.witchcraft.GameStates.Screen;
 import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
 import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.agents.NPCStaticAnimation;
 import com.anythingmachine.witchcraft.agents.NPCType;
 import com.anythingmachine.witchcraft.agents.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
@@ -26,7 +27,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -57,6 +57,7 @@ public class GamePlayManager extends Screen {
 	private NonPlayer npc3;
 	private NonPlayer npc4;
 	private NonPlayer npc5;
+	private NPCStaticAnimation shackled;
 
 	public GamePlayManager() {
 		Date date = new Date();
@@ -100,9 +101,8 @@ public class GamePlayManager extends Screen {
 		}
 
 		player = new Player(rk4);
-		npc1 = new NonPlayer("knight2", "characters",
-				new Vector2(354.0f, 3.0f), new Vector2(0.6f, 0.7f),
-				"data/npcdata/knights/fredknight", NPCType.KNIGHT);
+		npc1 = new NonPlayer("knight2", new Vector2(354.0f, 3.0f), new Vector2(
+				0.6f, 0.7f), "data/npcdata/knights/fredknight", NPCType.KNIGHT);
 		// npc2 = new NonPlayer("knight1", "characters",
 		// new Vector2(800.0f, 3.0f), new Vector2(0.6f, 0.7f),
 		// "data/npcdata/knights/fredknight", NPCType.KNIGHT);
@@ -116,10 +116,11 @@ public class GamePlayManager extends Screen {
 		// NPCType.CIV);
 		// npc5 = new NonPlayer("civfemaleblack-hood", "characters", new
 		// Vector2(
-		// 300.0f, 3.0f), new Vector2(0.6f, 0.7f),
+		// 300.0f, 3.0f), new Vector2(0.6f, 0.7f),   
 		// "data/npcdata/civs/saraciv", NPCType.CIV);
+		shackled = new NPCStaticAnimation("shackledmale1", new Vector3(1696, 118, 0), new Vector2(0.75f, 0.8f), "data/npcdata/static/shackledfred" );
 
-		cloudE = new CloudEmitter(17);
+		cloudE = new CloudEmitter(25);
 		crowE = new CrowEmitter(1);
 
 		tiledMapHelper.loadCollisions("data/collisions.txt", world,
@@ -129,23 +130,6 @@ public class GamePlayManager extends Screen {
 
 	@Override
 	public void update(float dt) {
-		if (level > 0) {
-			switchLevel(level);
-			float diff = 0;
-			if (level < currentlevel + 1) {
-				TiledMapTileLayer layer = (TiledMapTileLayer) tiledMapHelper
-						.getMap().getLayers().get(0);
-				diff = (layer.getWidth() * 32) - player.getX();
-				player.setX((layer.getWidth() * 32) - 64);
-			} else {
-				diff -= player.getX();
-				player.setX(64);
-			}
-			currentlevel = level - 1;
-			level = -1;
-			cloudE.moveByX(diff);
-
-		}
 		world.step(dt, 1, 1);
 
 		rk4.step();
@@ -160,14 +144,34 @@ public class GamePlayManager extends Screen {
 		// npc3.update(dt);
 		// npc4.update(dt);
 		// npc5.update(dt);
-
+		shackled.update(dt);
+		
 		cloudE.update(dt);
 		crowE.update(dt);
 
+		if (level > 0) {
+			float diff = 0;
+			if (level < currentlevel + 1) {
+				diff = levels.get(level - 1) - WitchCraft.screenWidth * 0.5f;
+				player.setX(diff - 64);
+			} else {
+				diff -= levels.get(currentlevel) - WitchCraft.screenWidth
+						* 0.5f;
+				;
+				player.setX(64);
+			}
+			cloudE.moveByX(diff);
+			player.switchLevel();
+
+			switchLevel(level);
+			currentlevel = level - 1;
+			level = -1;
+
+		}
 		Vector3 playerPos = player.getPosPixels();
 		xGrid = Camera.camera.position.x = Math.min(playerPos.x,
 				levels.get(currentlevel)
-				- (WitchCraft.screenWidth * WitchCraft.scale));
+						- (WitchCraft.screenWidth * WitchCraft.scale));
 		float yGrid = Camera.camera.position.y = playerPos.y;
 		if (xGrid < WitchCraft.screenWidth * (WitchCraft.scale)) {
 			xGrid = Camera.camera.position.x = WitchCraft.screenWidth
@@ -206,7 +210,8 @@ public class GamePlayManager extends Screen {
 	}
 
 	public void drawPlayerLayer(Batch batch) {
-
+		shackled.draw(batch);
+		
 		npc1.draw(batch);
 		// npc2.draw(batch);
 		// npc3.draw(batch);

@@ -106,6 +106,11 @@ public class Player extends Entity {
 		return state.phyState.body.getX();
 	}
 		
+	public void switchLevel() {
+		state.hitleftwall = false;
+		state.hitrightwall = false;
+		state.phyState.correctCBody(-8, 64, 0);		
+	}
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -169,7 +174,6 @@ public class Player extends Entity {
 			}
 			break;
 		case LEVELWALL:
-			sign = Math.signum(vel.x);
 			LevelWall wall = (LevelWall)other;
 			GamePlayManager.switchLevel(wall.getLevel());
 			break;
@@ -217,6 +221,7 @@ public class Player extends Entity {
 			state.input.addInputState("attack", 99);
 
 		} else {
+			state.input.addInputState("shift", Keys.SHIFT_LEFT);
 			state.input.addInputState("Left", Keys.LEFT);
 			state.input.addInputState("Right", Keys.RIGHT);
 			state.input.addInputState("UP", Keys.UP);

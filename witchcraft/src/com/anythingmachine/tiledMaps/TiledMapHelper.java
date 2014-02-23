@@ -52,6 +52,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -121,7 +122,7 @@ public class TiledMapHelper {
 				if (e.type == EntityType.PLATFORM || e.type == EntityType.WALL
 						|| e.type == EntityType.LEVELWALL
 						|| e.type == EntityType.STAIRS) {
-					System.out.println(e.type);
+//					System.out.println(e.type);
 					GamePlayManager.world.destroyBody(b);
 				}
 			}
@@ -263,15 +264,11 @@ public class TiledMapHelper {
 					lineSegment.end().scl(1 / pixelsPerMeter));
 			FixtureDef fixture = new FixtureDef();
 			fixture.shape = environmentShape;
-			// fixture.isSensor = true;
+			 fixture.isSensor = true;
 			fixture.density = 0;
+			fixture.filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+			fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
 			groundBody.createFixture(fixture);
-			// for( Fixture fix: groundBody.getFixtureList() ) {
-			// Filter filter = new Filter();
-			// filter.categoryBits = Util.CATEGORY_TILES;
-			// filter.maskBits = ~Util.CATEGORY_CAPE;
-			// fix.setFilterData(filter);
-			// }
 			environmentShape.dispose();
 		}
 
@@ -289,7 +286,6 @@ public class TiledMapHelper {
 		bodydef.position.set(0, 0);
 		Body body = GamePlayManager.world.createBody(bodydef);
 
-		Filter filter = new Filter();
 		// left wall
 		EdgeShape mapBounds = new EdgeShape();
 		if (level == 1) {
@@ -297,13 +293,21 @@ public class TiledMapHelper {
 					new Vector2(0, layer.getHeight() * 32)
 							.scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new Entity().setType(EntityType.WALL));
-			body.createFixture(mapBounds, 0);
+			Fixture fixture = body.createFixture(mapBounds, 0);
+			Filter filter = new Filter();
+			filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+			filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
+			fixture.setFilterData(filter);
 		} else {
 			mapBounds.set(new Vector2(0f * Util.PIXEL_TO_BOX, 0.0f),
 					new Vector2(0f, layer.getHeight() * 32)
 							.scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new LevelWall(level - 1));
-			body.createFixture(mapBounds, 0);
+			Fixture fixture = body.createFixture(mapBounds, 0);
+			Filter filter = new Filter();
+			filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+			filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
+			fixture.setFilterData(filter);
 		}
 
 		// right wall
@@ -314,7 +318,11 @@ public class TiledMapHelper {
 				.scl(Util.PIXEL_TO_BOX), new Vector2(
 				(layer.getWidth() * 32), layer.getHeight() * 32)
 				.scl(Util.PIXEL_TO_BOX));
-		body.createFixture(mapBounds2, 0);
+		Fixture fixture = body.createFixture(mapBounds2, 0);
+		Filter filter = new Filter();
+		filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+		filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
+		fixture.setFilterData(filter);
 
 		// roof
 		body = GamePlayManager.world.createBody(bodydef);
@@ -325,7 +333,8 @@ public class TiledMapHelper {
 		mapBounds3.set(new Vector2(0.0f, layer.getHeight() * 32)
 				.scl(Util.PIXEL_TO_BOX), new Vector2(layer.getWidth() * 32,
 				layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
-		body.createFixture(mapBounds3, 0);
+		fixture = body.createFixture(mapBounds3, 0);
+		fixture.setFilterData(filter);
 
 		mapBounds.dispose();
 		mapBounds2.dispose();

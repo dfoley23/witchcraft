@@ -28,10 +28,10 @@ public class CloudEmitter {
 
 	public void update(float dt) {
 		Rectangle rect = WitchCraft.cam.getBounds();
-		rect.x -= 400;
-		rect.y -= 400;
-		rect.width += 400;
-		rect.height += 400;
+		rect.x -= 700;
+		rect.y -= 700;
+		rect.width += 700;
+		rect.height += 700;
 		for (CloudParticle c : clouds) {
 			Vector3 pos = c.getPos();
 			if (pos.x < rect.x) {
