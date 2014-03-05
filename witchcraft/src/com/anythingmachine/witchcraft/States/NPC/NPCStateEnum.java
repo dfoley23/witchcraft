@@ -159,7 +159,7 @@ public enum NPCStateEnum {
 		}
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
-			return new Guarding(sm, NPCStateEnum.GUARDING);
+			return new Guarding(sm, this);
 		}
 	},
 	PATROLLING {
@@ -170,7 +170,7 @@ public enum NPCStateEnum {
 		}
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
-			return new Patrolling(sm, NPCStateEnum.PATROLLING);
+			return new Patrolling(sm, this);
 		}
 	},
 	FOLLOWING {
@@ -180,7 +180,7 @@ public enum NPCStateEnum {
 		}
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
-			return new Following(sm, NPCStateEnum.FOLLOWING);
+			return new Following(sm, this);
 		}
 		@Override
 		public boolean isGlobal() {
@@ -194,7 +194,7 @@ public enum NPCStateEnum {
 		}
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
-			return new Leading(sm, NPCStateEnum.LEADING);
+			return new Leading(sm, this);
 		}
 		@Override
 		public boolean isGlobal() {
@@ -208,7 +208,7 @@ public enum NPCStateEnum {
 		}
 		@Override
 		public NPCState constructState(NPCStateMachine sm, Vector2 target, int level) {
-			return new GoingTo(sm, NPCStateEnum.EATING, target,level);
+			return new GoingTo(sm, this, target,level);
 		}
 		@Override
 		public NPCStateEnum goingTo() {
@@ -222,7 +222,21 @@ public enum NPCStateEnum {
 		}
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
-			return new Mobbing(sm, NPCStateEnum.MOBBING);
+			return new Mobbing(sm, this);
+		}
+		@Override
+		public boolean isGlobal() {
+			return true;
+		}
+	},
+	TORCHMOBBING {
+		@Override
+		public NPCStateEnum[] getFollowUpStates() {
+			return new NPCStateEnum[] { ATTACKING, GOINGTOEAT };
+		}
+		@Override
+		public NPCState constructState(NPCStateMachine sm) {
+			return new TorchMobbing(sm, this);
 		}
 		@Override
 		public boolean isGlobal() {
@@ -236,7 +250,7 @@ public enum NPCStateEnum {
 		}
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
-			return new Drinking(sm, NPCStateEnum.DRINKING);
+			return new Drinking(sm, this);
 		}
 	},
 	DRUNK {

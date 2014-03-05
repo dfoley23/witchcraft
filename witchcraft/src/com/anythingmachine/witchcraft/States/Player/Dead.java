@@ -24,6 +24,8 @@ public class Dead extends PlayerState {
 			if ( fadeout < -3 ) {
 				super.setIdle();
 			}
+			
+			addWindToCape(dt);
 		}
 
 		@Override
@@ -81,6 +83,7 @@ public class Dead extends PlayerState {
 			sm.animate.bindPose();
 			sm.phyState.body.stopOnX();
 			sm.animate.setCurrent("ded", true);
+			GamePlayManager.player.cape.addWindForce(0, -400);
 			fadeout = 1;
 			setParent(sm.getState(PlayerStateEnum.IDLE));
 		}

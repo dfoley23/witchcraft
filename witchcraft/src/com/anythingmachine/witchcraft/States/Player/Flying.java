@@ -36,17 +36,15 @@ public class Flying extends Jumping {
 
 		if (WitchCraft.ON_ANDROID) {
 			if (sm.facingleft) {
-				sm.phyState.correctCBody(-8, 64, Util.HALF_PI);
 				sm.animate.rotate((-rotation * Util.RAD_TO_DEG) + 120);
 			} else {
-				sm.phyState.correctCBody(-8, 64, Util.HALF_PI);
 				sm.animate.rotate((rotation * Util.RAD_TO_DEG) + 120);
 			}
 			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
 		} else {
-			sm.phyState.correctCBody(-8, 32, sm.facingleft ? Util.HALF_PI: -Util.HALF_PI);
 			sm.phyState.body.addVel(0, Util.GRAVITY, 0);
 		}
+		sm.phyState.correctCBody(-8, 32, sm.facingleft ? Util.HALF_PI: -Util.HALF_PI);
 
 		sm.animate.setFlipX(sm.facingleft);
 

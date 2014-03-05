@@ -25,9 +25,10 @@ import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.States.Player.Running;
 import com.anythingmachine.witchcraft.States.Player.ShapeCrow;
 import com.anythingmachine.witchcraft.States.Player.Walking;
+import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.anythingmachine.witchcraft.ground.LevelWall;
 import com.anythingmachine.witchcraft.ground.Platform;
@@ -67,15 +68,7 @@ public class Player extends Entity {
 	/** public functions **/
 
 	public void update(float dT) {
-//		 System.out.println(state.state.name);
 		state.update(dT);
-		// check if on ground
-
-		// handle user power state.input
-
-		// update skeletal animation
-
-		// rotate collision box when flying
 		// System.out.println(state.state);
 	}
 
@@ -124,19 +117,14 @@ public class Player extends Entity {
 		float sign;
 		switch (other.type) {
 		case NONPLAYER:
-			NonPlayer npc = (NonPlayer) other;
-			if ( npc.isCritcalAttacking() ) {
-				state.setState(PlayerStateEnum.DEAD);
-			} else {
-				state.state.hitNPC(npc);
-			}
+			NonPlayer npc = (NonPlayer) other;			
+			state.state.hitNPC(npc);
 			break;
 		case ARROW:
 			state.setState(PlayerStateEnum.DEAD);
 			break;
 		case WALL:
 			sign = Math.signum(vel.x);
-			System.out.println("hello wall");
 			state.phyState.body.stopOnX();
 			if (sign == -1) {
 				state.hitleftwall = true;
@@ -160,12 +148,15 @@ public class Player extends Entity {
 			break;
 		case STAIRS:
 			plat = (Platform) other;
+			System.out.println("hello staris");
 			if (state.input.is("UP")
 					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
 							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
 							+ plat.getPos().y)) {
+
+				System.out.println("up stairs");
 				if (plat.isBetween(state.facingleft, pos.x)) {
-					if (plat.getHeight(pos.x) - 8 < pos.y) {
+					if (plat.getHeight(pos.x) - 12 < pos.y) {
 						state.hitplatform = true;
 						state.elevatedSegment = plat;
 						state.state.land();
@@ -176,6 +167,13 @@ public class Player extends Entity {
 		case LEVELWALL:
 			LevelWall wall = (LevelWall)other;
 			GamePlayManager.switchLevel(wall.getLevel());
+			break;
+		case SWORD:
+			npc = (NonPlayer) ((Pointer)other).obj;
+			if ( npc.isCritcalAttacking() ) {
+				state.setState(PlayerStateEnum.DEAD);
+				npc.switchBloodSword();
+			}
 			break;
 		}
 	}

@@ -1,7 +1,5 @@
 package com.anythingmachine.witchcraft.States.Player;
 
-import java.util.Random;
-
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;

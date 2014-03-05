@@ -2,6 +2,7 @@ package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
+import com.badlogic.gdx.Gdx;
 
 public class Sleeping extends NPCState {
 	private float time;
@@ -28,6 +29,14 @@ public class Sleeping extends NPCState {
 		if ( time > timeout ) {
 			sm.setState(NPCStateEnum.IDLE);
 		}
+		
+		float delta = Gdx.graphics.getDeltaTime();
+
+		sm.animate.applyTotalTime(true, delta);
+
+		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+		sm.animate.updateSkel(dt);
+
 	}
 	
 	@Override

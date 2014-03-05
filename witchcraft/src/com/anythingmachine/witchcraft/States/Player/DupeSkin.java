@@ -14,6 +14,10 @@ public class DupeSkin extends PlayerState {
 	@Override
 	public void updatePower(float dt) {
 		time += dt;
+		if ( time > timeout ) {
+			sm.animate.switchSkin("player");
+			sm.setState(parent.name);
+		}
 	}
 	
 	public void update(float dt) {
@@ -37,6 +41,7 @@ public class DupeSkin extends PlayerState {
 			sm.animate.switchSkin("player");
 			sm.setState(PlayerStateEnum.IDLE);
 		} else {
+			parent = this;
 			sm.animate.bindPose();
 			sm.animate.setCurrent("idle", true);
 			sm.phyState.body.stop();
@@ -61,6 +66,27 @@ public class DupeSkin extends PlayerState {
 	@Override
 	public void nextPower() {
 		
+	}
+
+	@Override
+	public void transistionOut() {
+		sm.animate.switchSkin("player");
+	}
+
+	@Override
+	public void setRun() {
+		if ( parent.name != PlayerStateEnum.RUNNING ) {
+			parent = sm.getState(PlayerStateEnum.RUNNING);
+			parent.transistionIn();
+		}
+	}
+	
+	@Override
+	public void setWalk() {
+		if ( parent.name != PlayerStateEnum.WALKING ) {
+			parent = sm.getState(PlayerStateEnum.WALKING);
+			parent.transistionIn();
+		}
 	}
 
 	@Override

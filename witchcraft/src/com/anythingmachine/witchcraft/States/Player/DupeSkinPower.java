@@ -1,7 +1,7 @@
 package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 
 public class DupeSkinPower extends CastSpell {
 	private float lasttime = -150000;

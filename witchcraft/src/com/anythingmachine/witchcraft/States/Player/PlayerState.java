@@ -4,7 +4,7 @@ import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
@@ -207,6 +207,7 @@ public class PlayerState {
 					sm.state.land();
 //				}
 			} else {
+				System.out.println(sm.elevatedSegment);
 				sm.hitplatform = false;
 				sm.setState(PlayerStateEnum.FALLING);
 				sm.state.setParent(sm.getState(PlayerStateEnum.IDLE));

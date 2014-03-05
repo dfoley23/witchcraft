@@ -18,7 +18,6 @@ public class Talking extends SharedState {
 	
 	@Override
 	public void update(float dt) {
-		super.update(dt);
 		time += dt;
 		if ( sm.hitnpc ) {
 			sm.npc.setTalking(sm.me);
@@ -26,5 +25,6 @@ public class Talking extends SharedState {
 		} else if ( time > timeout ) {
 			sm.setState(parent.name);
 		}
+		super.update(dt);
 	}
 }

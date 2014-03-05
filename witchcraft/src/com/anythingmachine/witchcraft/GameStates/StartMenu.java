@@ -27,8 +27,8 @@ public class StartMenu extends Menu {
 		logo.setPosition(WitchCraft.viewport.x+logo.getWidth()*0.25f, WitchCraft.viewport.y+32);
 
 		lighting = new Sprite(WitchCraft.assetManager.get("data/light.png", Texture.class));
-		lighting.setScale(WitchCraft.viewport.width / logo.getWidth(), WitchCraft.viewport.height / logo.getHeight());
-		lighting.setPosition(WitchCraft.viewport.x+logo.getWidth()*0.25f, WitchCraft.viewport.y+32);
+		lighting.setScale(WitchCraft.viewport.width / lighting.getWidth(), WitchCraft.viewport.height / lighting.getHeight());
+		lighting.setPosition(WitchCraft.viewport.x+lighting.getWidth()*0.0f, WitchCraft.viewport.y+32);
 
 		buildMenu();
 	}

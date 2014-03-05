@@ -6,7 +6,8 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
@@ -24,34 +25,43 @@ public class NPCState {
 	public void update(float dt) {
 		aiChoiceTime += dt;
 
-		checkInLevel();
-
-		checkInBounds();
-
 		checkGround();
 
-		checkAttack();
+		if ( sm.me.npctype.canAttack() )
+			checkAttack();
+		else
+			checkInBounds();
 
 		takeAction(dt);
-
+		
 		fixCBody();
 
+		updateSkel(dt);
 	}
 
+	public void updateSkel(float dt) {
+		float delta = Gdx.graphics.getDeltaTime();
+
+		sm.animate.applyTotalTime(true, delta);
+
+		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+		sm.animate.updateSkel(dt);
+	}
+	
 	public void draw(Batch batch) {
 		sm.animate.setFlipX(sm.facingleft);
 		sm.animate.draw(batch);
 	}
 
 	public void checkInBounds() {
-		if (!WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
+		if ( sm.inlevel && !WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
 			NPCState temp = sm.state;
 			sm.setState(NPCStateEnum.INACTIVE);
 			sm.state.setParent(temp);
 		}
 	}
 
-	public void setGoingTo() {
+	public void setGoingTo(float dt) {
 
 	}
 
@@ -71,8 +81,17 @@ public class NPCState {
 
 	}
 
-	public void switchLevel(int level) {
-		checkInLevel();
+	public void switchLevel(int level) {	
+		if ( level-1 > sm.me.level ) {
+			sm.phyState.body.setX(64);
+		} else {
+			sm.phyState.body.setX(GamePlayManager.levels.get(level-1)-64);
+		}
+		sm.me.level = level-1;
+		if ( sm.me.level != GamePlayManager.currentlevel ) {
+			sm.setState(NPCStateEnum.INOTHERLEVEL);			
+			sm.state.setParent(this);
+		}
 	}
 
 	public void fixCBody() {
@@ -106,32 +125,10 @@ public class NPCState {
 	}
 
 	public void checkInLevel() {
-		float x = sm.phyState.body.getX();
-		if (sm.npc.level != GamePlayManager.currentlevel) {
+		if ( GamePlayManager.currentlevel != sm.me.level ) {
+			NPCState temp = sm.state;
 			sm.setState(NPCStateEnum.INOTHERLEVEL);
-			sm.state.setParent(this);
-		} else if (x > GamePlayManager.levels.get(sm.npc.level)) {
-			if (sm.npc.level != GamePlayManager.levels.size() - 1) {
-				sm.npc.level += 1;
-				sm.phyState.body.setX(0);
-				sm.setState(NPCStateEnum.INOTHERLEVEL);
-				sm.state.setParent(this);
-			} else {
-				sm.hitrightwall = true;
-				sm.phyState.body.stopOnX();
-			}
-		} else if (x <= 0) {
-			if (sm.npc.level != 0) {
-				sm.npc.level -= 1;
-				float activelevelwidth = GamePlayManager.levels
-						.get(sm.npc.level);
-				sm.phyState.body.setX(activelevelwidth);
-				sm.setState(NPCStateEnum.INOTHERLEVEL);
-				sm.state.setParent(this);
-			} else {
-				sm.hitleftwall = true;
-				sm.phyState.body.stopOnX();
-			}
+			sm.state.setParent(temp);
 		}
 	}
 

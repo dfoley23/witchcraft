@@ -9,8 +9,10 @@ public class Platform extends Entity {
 	protected float posy;
 	protected float width;
 	protected float height;
+	protected String name;
 	
-	public Platform( float x, float y, int w, int h) {
+	public Platform( String name, float x, float y, int w, int h) {
+		this.name = name;
 		this.posx = x;
 		this.posy = y;
 		this.width = w;
@@ -18,7 +20,8 @@ public class Platform extends Entity {
 		type = EntityType.PLATFORM;
 	}
 
-	public Platform( Vector2 start, Vector2 end) {
+	public Platform( String name, Vector2 start, Vector2 end) {
+		this.name = name;		
 		this.posx = start.x;
 		this.posy = end.y<start.y ? end.y : start.y;
 		this.width = end.x-start.x;
@@ -38,15 +41,20 @@ public class Platform extends Entity {
 		return new Vector2(posx, posy);
 	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public float getHeightLocal() {
 		return height;
 	}
+	
 	public float getWidth() {
 		return posx+width+34;
 	}
 	
 	public boolean isBetween(boolean facingLeft, float x) {
-		return x > posx && x < posx+width;			
+		return x > posx && x < posx+width+3;			
 	}
 
 }

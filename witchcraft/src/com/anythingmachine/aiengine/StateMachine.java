@@ -1,7 +1,7 @@
 package com.anythingmachine.aiengine;
 
 import com.anythingmachine.animations.AnimationManager;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonData;

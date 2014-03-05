@@ -1,4 +1,4 @@
-package com.anythingmachine.witchcraft.agents;
+package com.anythingmachine.witchcraft.agents.npcs;
 
 import com.anythingmachine.animations.AnimationManager;
 import com.anythingmachine.witchcraft.WitchCraft;

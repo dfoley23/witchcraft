@@ -21,7 +21,6 @@ public class Running  extends SharedState {
 	
 	@Override
 	public void setRun() {
-		
 	}
 		
 }

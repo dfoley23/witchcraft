@@ -1,4 +1,4 @@
-package com.anythingmachine.witchcraft.agents;
+package com.anythingmachine.witchcraft.agents.npcs;
 
 import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
 
@@ -7,6 +7,10 @@ public enum NPCType {
 		@Override
 		public NPCStateEnum getAttackState() {
 			return NPCStateEnum.IDLE;
+		}
+		@Override
+		public boolean canAttack(){
+			return false;
 		}
 	},
 	KNIGHT {
@@ -30,5 +34,8 @@ public enum NPCType {
 	}
 	public NPCStateEnum getWorkingState() {
 		return NPCStateEnum.WORKING;
+	}
+	public boolean canAttack(){
+		return true;
 	}
 }

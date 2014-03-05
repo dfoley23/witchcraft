@@ -5,7 +5,7 @@ import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Inactive extends NPCState {
@@ -15,21 +15,21 @@ public class Inactive extends NPCState {
 		super(sm, name);
 	}
 	
+	@Override
 	public void update(float dt) {
 		aiChoiceTime += dt;
 
-		checkInLevel();
+		childState.checkTarget();
 		
-		checkInBounds();
-
-		checkAttack();
+		if ( sm.me.npctype.canAttack() )
+			checkAttack();
+		else
+			checkInBounds();
 		
 		checkGround();
 
 		takeAction(dt);
 		
-		childState.checkTarget();
-
 		fixCBody();
 		
 	}
@@ -39,6 +39,7 @@ public class Inactive extends NPCState {
 		childState = sm.getState(state);
 	}
 
+	@Override
 	public void draw(Batch batch) {
 
 	}
@@ -46,6 +47,7 @@ public class Inactive extends NPCState {
 	@Override
 	public void checkAttack() {
 		if (WitchCraft.cam.inBigBounds(sm.phyState.body.getPos())) {
+			checkInBounds();
 			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
 					.getX();
 			if (sm.canseeplayer) {
@@ -58,21 +60,24 @@ public class Inactive extends NPCState {
 		}
 	}
 
+	@Override
 	public void checkInLevel() {
 		sm.onscreen = true;
 		super.checkInLevel();
 		sm.onscreen = false;
 	}
 	
+	@Override
 	public void setAttack() {
 
 	}
 
+	@Override
 	public void setAlert() {
 
 	}
-	
-	
+
+	@Override
 	public void checkInBounds() {
 		if( WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
 			sm.onscreen = true;
@@ -80,23 +85,29 @@ public class Inactive extends NPCState {
 		}
 	}
 
+	@Override
 	public void takeAction(float dt) {
 		if (aiChoiceTime > sm.behavior.getActionTime()) {
-			takeAction(sm.behavior.ChooseAction(sm.state));
+			takeAction(sm.behavior.ChooseAction(childState));
 			aiChoiceTime = 0;
 		}
 	}
 	
+	@Override
 	public void setTalking(NonPlayer npc) {
 		sm.npc = npc;
 		childState = sm.getState(NPCStateEnum.TALKING);
+		childState.transistionIn();
 	}
 	
+	@Override
 	public void setIdle() {
 		sm.phyState.body.stop();
 		childState = sm.getState(NPCStateEnum.IDLE);
+		childState.transistionIn();
 	}
 		
+	@Override
 	public void takeAction(Action action) {
 		if ( action != null )  {
 			sm.behavior.takeAction(action);
@@ -105,34 +116,28 @@ public class Inactive extends NPCState {
 		}
 	}
 	
+	@Override
 	public ActionEnum[] getPossibleActions() {
 		return childState.getPossibleActions();
 	}
 	
-	public void setWalk() {
-		NPCState temp = childState;
-		childState = sm.getState(NPCStateEnum.WALKING);
-		childState.setParent(temp);
-	}
-	
-	public void setRun() {
-		NPCState temp = childState;
-		childState = sm.getState(NPCStateEnum.RUNNING);
-		childState.setParent(temp);
-	}
-	
+	@Override
 	public void setParent(NPCState p) {
 		childState = p;
+		System.out.println(sm.me.npctype+" "+p.name);
 	}
 	
+	@Override	
 	public void transistionIn() {
 		sm.onscreen = false;
 	}
-	
+
+	@Override	
 	public boolean transistionOut() {
 		return sm.onscreen;
 	}
 
+	@Override
 	public void immediateTransOut() {
 		
 	}

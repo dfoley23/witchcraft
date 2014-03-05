@@ -3,9 +3,10 @@ package com.anythingmachine.aiengine;
 import java.util.HashMap;
 
 import com.anythingmachine.physicsEngine.PhysicsState;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.NPC.NPCState;
 import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -27,21 +28,14 @@ public class NPCStateMachine extends StateMachine {
 			SkeletonData sd, NonPlayer me) {
 		super(name, pos, scl, flip, sd);
 		this.me = me;
+		this.npc = me;
+		inlevel = me.level == GamePlayManager.currentlevel;
 		canseeplayer = false;
 		states = new HashMap<NPCStateEnum, NPCState>();
 	}
 
 	public void update(float dt) {
 		state.update(dt);
-
-		if (!phyState.body.isStable()) {
-			float delta = Gdx.graphics.getDeltaTime();
-
-			animate.applyTotalTime(true, delta);
-
-			animate.setPos(phyState.body.getPos(), -8f, 0f);
-			animate.updateSkel(dt);
-		}
 	}
 
 	public void addState(NPCStateEnum type, NPCState s) {
@@ -59,7 +53,7 @@ public class NPCStateMachine extends StateMachine {
 
 	public void setState(NPCStateEnum name) {
 		if (state.transistionOut()) {
-			System.out.println("set state:"+name);
+			System.out.println(me.npctype+" set state:"+name);
 			this.state = states.get(name);
 			state.transistionIn();
 		} else {

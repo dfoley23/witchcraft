@@ -5,6 +5,7 @@ import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
@@ -16,8 +17,9 @@ public class ArcherAttack extends NPCState {
 
 	public ArcherAttack(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
-		arrow = new Arrow(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+		arrow = new Arrow(new Vector3(-5, 0, 0), new Vector3(0, 0, 0));
 		arrowBone = sm.animate.findBone("right hand");
+		arrow.setStable(true);
 	}
 
 	@Override
@@ -27,6 +29,7 @@ public class ArcherAttack extends NPCState {
 		sm.animate.setFlipX(sm.facingleft);
 		if (sm.animate.getTime() > sm.animate.getCurrentAnimTime() * 0.75 && !shotArrow) {
 			shotArrow = true;
+			arrow.setStable(false);
 			arrow.setPos(arrowBone.getWorldX()
 					+ (sm.facingleft ? -128 : 128),
 					arrowBone.getWorldY(), 0);
@@ -45,6 +48,14 @@ public class ArcherAttack extends NPCState {
 		if (GamePlayManager.player.dead() ) {
 			super.setIdle();
 		}
+		
+		float delta = Gdx.graphics.getDeltaTime();
+
+		sm.animate.applyTotalTime(true, delta);
+
+		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+		sm.animate.updateSkel(dt);
+
 	}
 
 	@Override
@@ -59,12 +70,20 @@ public class ArcherAttack extends NPCState {
 	}
 	
 	@Override
+	public boolean transistionOut() {
+		arrow.setActive(false);
+		arrow.setX(-20);
+		return true;
+	}
+	
+	@Override
 	public void transistionIn() {
 		sm.animate.bindPose();
 		sm.animate.setCurrent("drawbow", true);
 		sm.phyState.body.stop();
 		shotArrow = false;
 	}
+
 
 	@Override
 	public void takeAction(Action action) {

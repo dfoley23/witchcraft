@@ -1,4 +1,4 @@
-package com.anythingmachine.witchcraft.agents;
+package com.anythingmachine.witchcraft.agents.npcs;
 
 import java.util.Random;
 
@@ -60,59 +60,12 @@ public class NonPlayer extends Entity {
 
 	public void update(float dT) {
 		sm.update(dT);
-		// switch (sm.state) {
-		// case WALKINGLEFT:
-		// body.setVel(-50f, body.getVel().y, 0f);
-		// sm.animate.setCurrent("walk", true);
-		// facingLeft = true;
-		// if (old != NPCStateEnum.WALKINGLEFT) {
-		// sm.animate.bindPose();
-		// }
-		// break;
-		// case WALKINGRIGHT:
-		// body.setVel(50f, body.getVel().y, 0f);
-		// sm.animate.setCurrent("walk", true);
-		// facingLeft = false;
-		// if (old != NPCStateEnum.WALKINGRIGHT) {
-		// sm.animate.bindPose();
-		// }
-		// break;
-		// case IDLE:
-		// body.setVel(0, 0, 0);
-		// sm.animate.setCurrent("idle", true);
-		// if (old != NPCStateEnum.IDLE) {
-		// sm.animate.bindPose();
-		// }
-		// break;
-		// case SWORDATTACK:
-		// body.setVel(0, body.getVel().y, 0f);
-		// sm.animate.bindPose();
-		// sm.animate.setCurrent("swordattack", true);
-		// break;
-		// default:
-		// handleState(sm.state);
-		// // body.setVel(50f, body.getVel().y, 0f);
-		// // animate.setCurrent("walk", true);
-		// // facingLeft = false;
-		// // if (old != AIState.WALKINGRIGHT) {
-		// // animate.bindPose();
-		// // }
-		// break;
-		// }
-		// }
-		// checkGround();
-		//
-		// if (active) {
-		// sm.animate.setPos(body.getPos(), 0, -16f);
-		// if (sm.state == NPCState.SWORDATTACK && sm.animate.atEnd()) {
-		// sm.animate.applyTotalTime(false, sm.animate.getCurrentAnimTime());
-		// } else {
-		// sm.animate.update(delta);
-		// }
-		// }
-
 	}
 
+	public void checkInLevel() {
+		sm.state.checkInLevel();
+	}
+	
 	public void setTalking(NonPlayer npc) {
 		sm.state.setTalking(npc);
 	}
@@ -121,6 +74,9 @@ public class NonPlayer extends Entity {
 		sm.state.draw(batch);
 	}
 
+	public void switchBloodSword() {
+		sm.animate.setRegion("right hand item", "sworda");
+	}
 	public Vector3 getPosPixels() {
 		return sm.phyState.body.getPos();
 	}
@@ -151,7 +107,7 @@ public class NonPlayer extends Entity {
 		switch (other.type) {
 		case NONPLAYER:
 			sm.hitnpc = true;
-			sm.npc = (NonPlayer) other;
+//			sm.npc = (NonPlayer) other;
 			break;
 		case WALL:
 			// System.out.println("hello wall");
@@ -201,12 +157,6 @@ public class NonPlayer extends Entity {
 					sd.findAnimation(animations[i]));
 
 		}
-		// sm.animate.addAnimation("idle", sd.findAnimation("idle"));
-		// sm.animate.addAnimation("walk", sd.findAnimation("walk"));
-		// sm.animate.addAnimation("run", sd.findAnimation("run"));
-		// sm.animate.addAnimation("swordattack",
-		// sd.findAnimation("overheadattack"));
-		// sm.animate.addAnimation("drawbow", sd.findAnimation("drawbow"));
 
 		sm.animate.setCurrent(fileContent[2].split(",")[1], true);
 
@@ -217,7 +167,13 @@ public class NonPlayer extends Entity {
 		String initState = fileContent[4].split(",")[1];
 		for (NPCStateEnum state : NPCStateEnum.DEAD.values()) {
 			if (state.getName().equals(initState)) {
-				sm.setInitialState(state);
+				if ( this.level != GamePlayManager.currentlevel ) {
+					sm.setInitialState(state);
+					sm.setInitialState(NPCStateEnum.INOTHERLEVEL);
+					sm.state.setParent(sm.getState(state));
+				} else {
+					sm.setInitialState(state);
+				}
 			}
 		}
 	}

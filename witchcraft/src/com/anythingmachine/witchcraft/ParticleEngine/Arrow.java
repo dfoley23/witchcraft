@@ -37,6 +37,10 @@ public class Arrow extends Particle {
 		GamePlayManager.world.destroyBody(collisionBody);
 	}
 
+	public void setActive(boolean val) {
+		collisionBody.setActive(val);
+		stable = !val;
+	}
 	public ArrayList<Particle> getParticles() {
 		ArrayList<Particle> list = new ArrayList<Particle>();
 		list.add(this);
@@ -64,6 +68,12 @@ public class Arrow extends Particle {
 
 	public Vector2 getVel2D() {
 		return new Vector2(vel.x, vel.y);
+	}
+
+	@Override
+	public void setStable(boolean val) {
+		stable = val;
+		this.collisionBody.setActive(!val);
 	}
 
 	public void setPos(float x, float y, float z) {

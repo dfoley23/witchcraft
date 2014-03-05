@@ -3,9 +3,9 @@ package com.anythingmachine.witchcraft.Util;
 import com.anythingmachine.collisionEngine.Entity;
 
 public class Pointer extends Entity {
-	public int value;
+	public Object obj;
 	
-	public Pointer( int value ) {
-		this.value = value;
+	public Pointer( Object obj ) {
+		this.obj = obj;
 	}
 }

@@ -16,9 +16,9 @@ import com.anythingmachine.witchcraft.GameStates.Screen;
 import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
 import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.agents.NPCStaticAnimation;
-import com.anythingmachine.witchcraft.agents.NPCType;
-import com.anythingmachine.witchcraft.agents.NonPlayer;
+import com.anythingmachine.witchcraft.agents.npcs.NPCStaticAnimation;
+import com.anythingmachine.witchcraft.agents.npcs.NPCType;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -52,12 +52,9 @@ public class GamePlayManager extends Screen {
 
 	// test fields
 	private Box2DDebugRenderer debugRenderer;
-	private NonPlayer npc1;
-	private NonPlayer npc2;
-	private NonPlayer npc3;
-	private NonPlayer npc4;
-	private NonPlayer npc5;
+	private ArrayList<NonPlayer> npcs;
 	private NPCStaticAnimation shackled;
+	private NPCStaticAnimation tied;
 
 	public GamePlayManager() {
 		Date date = new Date();
@@ -101,24 +98,26 @@ public class GamePlayManager extends Screen {
 		}
 
 		player = new Player(rk4);
-		npc1 = new NonPlayer("knight2", new Vector2(354.0f, 3.0f), new Vector2(
-				0.6f, 0.7f), "data/npcdata/knights/fredknight", NPCType.KNIGHT);
-		// npc2 = new NonPlayer("knight1", "characters",
-		// new Vector2(800.0f, 3.0f), new Vector2(0.6f, 0.7f),
-		// "data/npcdata/knights/fredknight", NPCType.KNIGHT);
-		// npc3 = new NonPlayer("archer", "characters", new Vector2(300.0f,
-		// 3.0f),
-		// new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
-		// NPCType.ARCHER);
-		// npc4 = new NonPlayer("civmalebrown", "characters", new
-		// Vector2(300.0f,
-		// 3.0f), new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
-		// NPCType.CIV);
-		// npc5 = new NonPlayer("civfemaleblack-hood", "characters", new
-		// Vector2(
-		// 300.0f, 3.0f), new Vector2(0.6f, 0.7f),   
-		// "data/npcdata/civs/saraciv", NPCType.CIV);
+		npcs = new ArrayList<NonPlayer>();
+		npcs.add(new NonPlayer("knight2", new Vector2(354.0f, 3.0f), new Vector2(
+				0.6f, 0.7f), "data/npcdata/knights/fredknight", NPCType.KNIGHT));
+		 npcs.add(new NonPlayer("knight1",
+		 new Vector2(800.0f, 3.0f), new Vector2(0.6f, 0.7f),
+		 "data/npcdata/knights/fredknight", NPCType.KNIGHT));
+		 npcs.add(new NonPlayer("archer", new Vector2(300.0f,
+		 3.0f),
+		 new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
+		 NPCType.ARCHER));
+		 npcs.add(new NonPlayer("civmalebrown", new
+		 Vector2(300.0f,
+		 3.0f), new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
+		 NPCType.CIV));
+		 npcs.add(new NonPlayer("civfemaleblack-hood", new
+		 Vector2(
+		 300.0f, 3.0f), new Vector2(0.6f, 0.7f),   
+		 "data/npcdata/civs/saraciv", NPCType.CIV));
 		shackled = new NPCStaticAnimation("shackledmale1", new Vector3(1696, 118, 0), new Vector2(0.75f, 0.8f), "data/npcdata/static/shackledfred" );
+		tied = new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350, 0), new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch" );
 
 		cloudE = new CloudEmitter(25);
 		crowE = new CrowEmitter(1);
@@ -139,12 +138,14 @@ public class GamePlayManager extends Screen {
 				(int) WitchCraft.viewport.height);
 
 		player.update(dt);
-		npc1.update(dt);
+		for ( NonPlayer npc: npcs) 
+			npc.update(dt);
 		// npc2.update(dt);
 		// npc3.update(dt);
 		// npc4.update(dt);
 		// npc5.update(dt);
 		shackled.update(dt);
+		tied.update(dt);
 		
 		cloudE.update(dt);
 		crowE.update(dt);
@@ -162,11 +163,13 @@ public class GamePlayManager extends Screen {
 			}
 			cloudE.moveByX(diff);
 			player.switchLevel();
-
 			switchLevel(level);
 			currentlevel = level - 1;
 			level = -1;
 
+			for( NonPlayer npc: npcs) {
+				npc.checkInLevel();
+			}
 		}
 		Vector3 playerPos = player.getPosPixels();
 		xGrid = Camera.camera.position.x = Math.min(playerPos.x,
@@ -211,8 +214,10 @@ public class GamePlayManager extends Screen {
 
 	public void drawPlayerLayer(Batch batch) {
 		shackled.draw(batch);
+		tied.draw(batch);
 		
-		npc1.draw(batch);
+		for( NonPlayer npc: npcs )
+			npc.draw(batch);
 		// npc2.draw(batch);
 		// npc3.draw(batch);
 		// npc4.draw(batch);

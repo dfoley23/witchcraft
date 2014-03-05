@@ -52,6 +52,10 @@ public class Particle extends Entity {
 		vel.y = 0;
 	}
 	
+	public void setX(float x) {
+		pos.x = x;
+	}
+	
 	public void stopOnX() {
 		vel.x = 0;
 	}

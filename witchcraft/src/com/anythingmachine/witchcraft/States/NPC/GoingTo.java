@@ -5,6 +5,7 @@ import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 public class GoingTo extends NPCState {
@@ -19,13 +20,25 @@ public class GoingTo extends NPCState {
 	
 	@Override
 	public void update(float dt) {
-		checkInLevel();
 		checkGround();
-		checkInBounds();
+		if ( sm.me.npctype.canAttack() )
+			checkAttack();
+		else
+			checkInBounds();
+
+		checkTarget();
 		sm.facingleft = sm.phyState.body.getVelX() < 0;
 		sm.animate.setFlipX(sm.facingleft);
 		
-		fixCBody();		
+		fixCBody();	
+		
+		float delta = Gdx.graphics.getDeltaTime();
+
+		sm.animate.applyTotalTime(true, delta);
+
+		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+		sm.animate.updateSkel(dt);
+
 	}
 	
 	
@@ -52,9 +65,9 @@ public class GoingTo extends NPCState {
 	}
 	
 	@Override
-	public void setGoingTo() {
+	public void setGoingTo(float dt) {
 		if ( level == GamePlayManager.currentlevel) {
-			sm.state.switchLevel(GamePlayManager.currentlevel);
+			sm.state.switchLevel(GamePlayManager.currentlevel+1);
 		} else {
 			sm.phyState.body.setPos(target);
 		}

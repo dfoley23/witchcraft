@@ -1,7 +1,6 @@
 package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
-import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.badlogic.gdx.math.Matrix4;
@@ -30,6 +29,8 @@ public class Invisible extends PlayerState {
 
 		sm.animate.setFlipX(sm.facingleft);
 
+		parent.addWindToCape(dt);
+		
 		Cape cape = GamePlayManager.player.cape;
 
 		cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
@@ -58,6 +59,10 @@ public class Invisible extends PlayerState {
 	@Override
 	public void updatePower(float dt) {
 		time += dt;
+		if ( time > timeout ) {
+			sm.animate.switchSkin("player");
+			sm.setState(parent.name);
+		}
 	}
 
 	@Override
@@ -71,6 +76,31 @@ public class Invisible extends PlayerState {
 	}
 
 	@Override
+	public void setRun() {
+		if ( parent.name == PlayerStateEnum.RUNNING ) {
+			parent.setRun();
+		} else {
+			parent = sm.getState(PlayerStateEnum.RUNNING);
+			parent.transistionIn();
+		}
+	}
+	
+	@Override
+	public void setWalk() {
+		if ( parent.name == PlayerStateEnum.WALKING ) {
+			parent.setWalk();
+		} else {
+			parent = sm.getState(PlayerStateEnum.WALKING);
+			parent.transistionIn();
+		}
+	}
+
+	@Override
+	public void transistionOut() {
+		sm.animate.switchSkin("player");
+	}
+	
+	@Override
 	public void setIdle() {
 		if (time > timeout) {
 			time = 0;
@@ -79,6 +109,7 @@ public class Invisible extends PlayerState {
 		} else {
 			sm.animate.bindPose();
 			sm.phyState.body.stop();
+			parent = this;
 		}
 	}
 

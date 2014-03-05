@@ -2,7 +2,9 @@ package com.anythingmachine.animations;
 
 import java.util.HashMap;
 
+import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -14,6 +16,7 @@ import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonRenderer;
 import com.esotericsoftware.spine.Skin;
 import com.esotericsoftware.spine.Slot;
+import com.esotericsoftware.spine.attachments.RegionAttachment;
 
 public class AnimationManager {
 	private HashMap<String, Animation> animations;
@@ -83,7 +86,20 @@ public class AnimationManager {
 	public void applyTotalTime(boolean val, float delta) {
 		animations.get(currentAnim).apply(skel, totalTime, totalTime+delta, val, events);
 	}
+	
+	public void mix(String anim, float time, float alpha) {
+		animations.get(anim).mix(skel, time, time, false, events, alpha);
+	}
 
+	public Animation getAnim(String anim) {
+		return animations.get(anim);
+	}
+
+	public void setRegion(String slot, String attach) {
+		RegionAttachment ra = ((RegionAttachment)skel.getAttachment(slot, attach));
+		ra.setRegion(WitchCraft.assetManager.get("data/spine/characters.atlas", TextureAtlas.class).findRegion("bloodyswordA"));	
+	}
+	
 	public void draw(Batch batch) {
 		renderer.draw(batch, skel);
 	}
@@ -120,7 +136,15 @@ public class AnimationManager {
 	public boolean isTimeOverAQuarter(float delta) {
 		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.25f;
 	}
-	
+
+	public boolean isTimeOverAThird(float delta) {
+		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.33f;
+	}
+
+	public boolean isTimeOverAHalf(float delta) {
+		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.5f;
+	}
+
 	public boolean isTImeOverThreeQuarters(float delta) {
 		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.75f;
 	}
@@ -141,7 +165,6 @@ public class AnimationManager {
 	}
 
 	public boolean atEnd() {
-//		System.out.println(currentAnim);
 		return totalTime > animations.get(currentAnim).getDuration();
 	}
 

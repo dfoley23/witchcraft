@@ -42,6 +42,8 @@ public class UtilityAI {
 			}
 			if ( bestValue > 0 ) 
 				return bestAction;
+		} else {
+			System.out.println("no possible actions");
 		}
 		return null;
 	}

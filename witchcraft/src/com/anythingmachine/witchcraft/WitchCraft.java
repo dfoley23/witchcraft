@@ -21,6 +21,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.spine.Animation;
+import com.esotericsoftware.spine.Event;
+import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.SkeletonRenderer;
+import com.esotericsoftware.spine.SkeletonRendererDebug;
 
 public class WitchCraft implements ApplicationListener {
 	public static Camera cam;
@@ -39,6 +46,19 @@ public class WitchCraft implements ApplicationListener {
 	public static Screen currentScreen;
 	private long lastRender;
 	private Batch spriteBatch;
+
+	/**** miX test ****/
+//	SpriteBatch batch;
+//	float time;
+//	Array<Event> events = new Array();
+//
+//	SkeletonRenderer renderer;
+//	SkeletonRendererDebug debugRenderer;
+//
+//	SkeletonData skeletonData;
+//	Skeleton skeleton;
+//	Animation walkAnimation;
+//	Animation jumpAnimation;
 
 
 	public WitchCraft() {
@@ -82,6 +102,25 @@ public class WitchCraft implements ApplicationListener {
 		lastRender = System.nanoTime();
 
 		
+		/******************************* MIX TEST *******************/
+//		batch = new SpriteBatch();
+//		renderer = new SkeletonRenderer();
+//		debugRenderer = new SkeletonRendererDebug();
+//
+//
+//		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("data/spine/characters.atlas"));
+//
+//			SkeletonBinary binary = new SkeletonBinary(atlas);
+//			// binary.setScale(2);
+//			skeletonData = binary.readSkeletonData(Gdx.files.internal("data/spine/characters.skel"));
+//		walkAnimation = skeletonData.findAnimation("walk");
+//		jumpAnimation = skeletonData.findAnimation("drawbow");
+//
+//		skeleton = new Skeleton(skeletonData);
+//		skeleton.updateWorldTransform();
+//		skeleton.setX(150);
+//		skeleton.setY(120);
+
 	}
 
 	@Override
@@ -92,15 +131,67 @@ public class WitchCraft implements ApplicationListener {
 	public void render() {
 		float dT = Gdx.graphics.getDeltaTime();
 
-		// if ( ON_ANDROID ) {
-		// Gdx.app.log("***************************frames per sec: ", ""
-		// + Gdx.app.getGraphics().getFramesPerSecond());
-		// }
+		 if ( ON_ANDROID ) {
+		 Gdx.app.log("***************************frames per sec: ", ""
+		 + Gdx.app.getGraphics().getFramesPerSecond());
+		 }
 		long now = System.nanoTime();
 		if (now - lastRender > 30000000) { // 30 ms, ~33FPS
 			currentScreen.update(dT);
 		}
 		currentScreen.draw(spriteBatch);
+		
+		/* mix test*/
+//		float delta = Gdx.graphics.getDeltaTime() * 0.25f; // Reduced to make mixing easier to see.
+//
+//		float jump = jumpAnimation.getDuration();
+//		float beforeJump = 1f;
+//		float blendIn = 0.4f;
+//		float blendOut = 0.4f;
+//		float blendOutStart = beforeJump + jump - blendOut;
+//		float total = 3.75f;
+//
+//		time += delta;
+//
+//		float speed = 180;
+//		if (time > beforeJump + blendIn && time < blendOutStart) speed = 360;
+//		skeleton.setX(skeleton.getX() + speed * delta);
+//
+//		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+//
+//		// This shows how to manage state manually. See AnimationStatesTest.
+//		if (time > total) {
+//			// restart
+//			time = 0;
+//			skeleton.setX(-50);
+//		} else if (time > beforeJump + jump) {
+//			// just walk after jump
+//			walkAnimation.apply(skeleton, time, time, true, events);
+//		} else if (time > blendOutStart) {
+//			// blend out jump
+//			walkAnimation.apply(skeleton, time, time, true, events);
+//			jumpAnimation.mix(skeleton, time - beforeJump, time - beforeJump, false, events, 1 - (time - blendOutStart) / blendOut);
+//		} else if (time > beforeJump + blendIn) {
+//			// just jump
+//			jumpAnimation.apply(skeleton, time - beforeJump, time - beforeJump, false, events);
+//		} else if (time > beforeJump) {
+//			// blend in jump
+//			walkAnimation.apply(skeleton, time, time, true, events);
+//			jumpAnimation.mix(skeleton, time - beforeJump, time - beforeJump, false, events, (time - beforeJump) / blendIn);
+//		} else {
+//			// just walk before jump
+//			walkAnimation.apply(skeleton, time, time, true, events);
+//		}
+//
+//		skeleton.updateWorldTransform();
+//		skeleton.update(Gdx.graphics.getDeltaTime());
+//
+//		batch.begin();
+//		renderer.draw(batch, skeleton);
+//		batch.end();
+//
+//		debugRenderer.draw(skeleton);
+
 	}
 
 	@Override
