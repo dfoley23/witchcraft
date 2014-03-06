@@ -222,9 +222,7 @@ public class Skeleton {
 			Attachment attachment = skin.getAttachment(slotIndex, attachmentName);
 			if (attachment != null) {
 				return attachment;
-			} else {
-				System.out.println("attachment is null");
-			}
+			} 
 		}
 		if (data.defaultSkin != null) return data.defaultSkin.getAttachment(slotIndex, attachmentName);
 		return null;

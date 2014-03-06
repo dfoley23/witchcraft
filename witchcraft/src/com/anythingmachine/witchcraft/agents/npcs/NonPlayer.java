@@ -75,7 +75,7 @@ public class NonPlayer extends Entity {
 	}
 
 	public void switchBloodSword() {
-		sm.animate.setRegion("right hand item", "sworda", "bloodswordb");
+		sm.animate.setRegion("right hand item", "sworda", "bloodysworda");
 	}
 	public Vector3 getPosPixels() {
 		return sm.phyState.body.getPos();

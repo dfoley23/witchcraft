@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -96,7 +97,7 @@ public class AnimationManager {
 	}
 
 	public void setRegion(String slot, String attach, String set) {
-		RegionAttachment ra = ((RegionAttachment)skel.getAttachment(slot, attach));
+		RegionAttachment ra = ((RegionAttachment)skel.getAttachment(slot, slot));
 		ra.setRegion(WitchCraft.assetManager.get("data/spine/characters.atlas", TextureAtlas.class).findRegion(set));
 	}
 	
