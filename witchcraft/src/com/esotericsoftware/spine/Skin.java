@@ -58,6 +58,11 @@ public class Skin {
 	public Attachment getAttachment (int slotIndex, String name) {
 		if (slotIndex < 0) throw new IllegalArgumentException("slotIndex must be >= 0.");
 		lookup.set(slotIndex, name);
+		for( Attachment a: attachments.values()) {
+			System.out.println(a);
+		}
+		System.out.println(lookup);
+		System.out.println(attachments.get(lookup));
 		return attachments.get(lookup);
 	}
 

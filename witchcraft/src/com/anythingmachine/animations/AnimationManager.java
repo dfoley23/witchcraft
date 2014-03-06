@@ -95,9 +95,9 @@ public class AnimationManager {
 		return animations.get(anim);
 	}
 
-	public void setRegion(String slot, String attach) {
+	public void setRegion(String slot, String attach, String set) {
 		RegionAttachment ra = ((RegionAttachment)skel.getAttachment(slot, attach));
-		ra.setRegion(WitchCraft.assetManager.get("data/spine/characters.atlas", TextureAtlas.class).findRegion("bloodyswordA"));	
+		ra.setRegion(WitchCraft.assetManager.get("data/spine/characters.atlas", TextureAtlas.class).findRegion(set));
 	}
 	
 	public void draw(Batch batch) {

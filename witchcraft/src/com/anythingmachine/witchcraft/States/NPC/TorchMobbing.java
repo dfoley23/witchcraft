@@ -12,7 +12,7 @@ public class TorchMobbing extends Mobbing {
 	public TorchMobbing(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
 		mixAnim = "torch";
-		mixAnimTime = sm.animate.getAnim(mixAnim).getDuration();
+//		mixAnimTime = sm.animate.getAnim(mixAnim).getDuration();
 		holdTime = mixAnimTime*0.5f;
 		time = 0;
 	}

@@ -105,8 +105,10 @@ public class SkeletonData {
 	public int findSlotIndex (String slotName) {
 		if (slotName == null) throw new IllegalArgumentException("slotName cannot be null.");
 		Array<SlotData> slots = this.slots;
-		for (int i = 0, n = slots.size; i < n; i++)
+		for (int i = 0, n = slots.size; i < n; i++) {
+			System.out.println(i);
 			if (slots.get(i).name.equals(slotName)) return i;
+		}
 		return -1;
 	}
 

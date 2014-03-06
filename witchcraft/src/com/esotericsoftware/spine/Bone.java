@@ -39,7 +39,6 @@ public class Bone {
 	float x, y;
 	float rotation;
 	float scaleX, scaleY;
-	float flipX, flipY;
 
 	float m00, m01, worldX; // a b x
 	float m10, m11, worldY; // c d y
@@ -73,8 +72,6 @@ public class Bone {
 		if (parent != null) {
 			worldX = x * parent.m00 + y * parent.m01 + parent.worldX;
 			worldY = x * parent.m10 + y * parent.m11 + parent.worldY;
-			this.flipX = flipX ? -1 : 1;
-			this.flipY = flipY ? -1 : 1;
 			if (data.inheritScale) {
 				worldScaleX = parent.worldScaleX * scaleX;
 				worldScaleY = parent.worldScaleY * scaleY;
@@ -84,13 +81,11 @@ public class Bone {
 			}
 			worldRotation = data.inheritRotation ? parent.worldRotation + rotation : rotation;
 		} else {
-			worldX = x;
-			worldY = y;
+			worldX = flipX ? -x : x;
+			worldY = flipY ? -y : y;
 			worldScaleX = scaleX;
 			worldScaleY = scaleY;
 			worldRotation = rotation;
-			this.flipX = flipX ? -1 : 1;
-			this.flipY = flipY ? -1 : 1;
 		}
 		float cos = MathUtils.cosDeg(worldRotation);
 		float sin = MathUtils.sinDeg(worldRotation);
@@ -204,10 +199,10 @@ public class Bone {
 	public Matrix3 getWorldTransform (Matrix3 worldTransform) {
 		if (worldTransform == null) throw new IllegalArgumentException("worldTransform cannot be null.");
 		float[] val = worldTransform.val;
-		val[M00] = m00 * flipX;
+		val[M00] = m00;
 		val[M01] = m01;
 		val[M10] = m10;
-		val[M11] = m11 * flipY;
+		val[M11] = m11;
 		val[M02] = worldX;
 		val[M12] = worldY;
 		val[M20] = 0;
