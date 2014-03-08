@@ -34,13 +34,10 @@ public class PlayerStateMachine extends StateMachine {
 	public float windtimeout = 1.5f;
 	public Random rand;	
 
-	public boolean grounded;
 	public boolean hitplatform;
 	public boolean hitroof;
-	public boolean facingleft;
 	public boolean invi;
-	public boolean hitrightwall;
-	public boolean hitleftwall;
+	public boolean killedbehind = false;
 	
 	public PlayerStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd) {

@@ -104,10 +104,15 @@ public class GamePlayManager extends Screen {
 		 npcs.add(new NonPlayer("knight1",
 		 new Vector2(800.0f, 3.0f), new Vector2(0.6f, 0.7f),
 		 "data/npcdata/knights/fredknight", NPCType.KNIGHT));
-		 npcs.add(new NonPlayer("archer", new Vector2(300.0f,
+		 npcs.add(new NonPlayer("archer", new Vector2(3000.0f,
 		 3.0f),
 		 new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
 		 NPCType.ARCHER));
+		 npcs.add(new NonPlayer("archer", new Vector2(300.0f,
+		 3.0f),
+		 new Vector2(0.6f, 0.7f), "data/npcdata/other/joearcher",
+		 NPCType.ARCHER));
+
 		 npcs.add(new NonPlayer("civmalebrown", new
 		 Vector2(300.0f,
 		 3.0f), new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",

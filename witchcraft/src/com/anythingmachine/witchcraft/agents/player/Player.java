@@ -9,6 +9,8 @@ import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
+import com.anythingmachine.witchcraft.States.Player.ArrowDead;
 import com.anythingmachine.witchcraft.States.Player.Attacking;
 import com.anythingmachine.witchcraft.States.Player.CastSpell;
 import com.anythingmachine.witchcraft.States.Player.Dead;
@@ -73,7 +75,7 @@ public class Player extends Entity {
 	}
 
 	public boolean dead() {
-		return state.inState(PlayerStateEnum.DEAD);
+		return state.inState(PlayerStateEnum.DEAD) || state.inState(PlayerStateEnum.ARROWDEAD);
 	}
 	
 	public void draw(Batch batch) {
@@ -119,9 +121,6 @@ public class Player extends Entity {
 		case NONPLAYER:
 			NonPlayer npc = (NonPlayer) other;			
 			state.state.hitNPC(npc);
-			break;
-		case ARROW:
-			state.setState(PlayerStateEnum.DEAD);
 			break;
 		case WALL:
 			sign = Math.signum(vel.x);
@@ -171,9 +170,15 @@ public class Player extends Entity {
 		case SWORD:
 			npc = (NonPlayer) ((Pointer)other).obj;
 			if ( npc.isCritcalAttacking() ) {
+				state.killedbehind = npc.getX() < state.phyState.body.getX();
 				state.setState(PlayerStateEnum.DEAD);
 				npc.switchBloodSword();
 			}
+			break;
+		case ARROW:
+			Arrow arrow = (Arrow)other;
+			state.killedbehind = arrow.getVelX() < 0 == state.facingleft;
+			state.setState(PlayerStateEnum.ARROWDEAD);
 			break;
 		}
 	}
@@ -242,6 +247,7 @@ public class Player extends Entity {
 		state.addState(PlayerStateEnum.ATTACKING, new Attacking(state,
 				PlayerStateEnum.ATTACKING));
 		state.addState(PlayerStateEnum.DEAD, new Dead(state, PlayerStateEnum.DEAD));
+		state.addState(PlayerStateEnum.ARROWDEAD, new ArrowDead(state, PlayerStateEnum.ARROWDEAD));
 		state.addState(PlayerStateEnum.CASTSPELL, new CastSpell(state, PlayerStateEnum.CASTSPELL));
 		state.addState(PlayerStateEnum.DUPESKIN, new DupeSkin(state, PlayerStateEnum.DUPESKIN));
 		/*power states*/

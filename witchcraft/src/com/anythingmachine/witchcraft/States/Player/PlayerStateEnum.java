@@ -4,79 +4,33 @@ public enum PlayerStateEnum {
 	DEFAULT {
 	},
 	IDLE { 
-		@Override
-		public int getID() {
-			return 8;
-		}
 	},
 	WALKING {
-		@Override
-		public int getID() {
-			return 0;
-		}
 	}, 
 	RUNNING{
-		@Override
-		public int getID() {
-			return 1;
-		}
 	}, 
 	JUMPING{
-		@Override
-		public int getID() {
-			return 2;
-		}
 		@Override 
 		public int getNextPower() {
 			return PlayerStateEnum.MINDCONTROLPOWER.getID();
 		}
 	},
 	FLYING{
-		@Override
-		public int getID() {
-			return 3;
-		}
 	},
 	LANDING{
-		@Override
-		public int getID() {
-			return 4;
-		}
 	},FALLING{
-		@Override
-		public int getID() {
-			return 5;
-		}
 	},
 	ATTACKING{
-		@Override
-		public int getID() {
-			return 6;
-		}
 	},
 	DEAD{
-		@Override
-		public int getID() {
-			return 7;
-		}
+	},
+	ARROWDEAD{
 	},
 	DUPESKIN{
-		@Override
-		public int getID() {
-			return 9;
-		}
 	},
 	CASTSPELL {
-		@Override
-		public int getID() {
-			return 10;
-		}
 	},	/*POWERS*/
 	DUPESKINPOWER{
-		@Override
-		public int getID() {
-			return 11;
-		}
 		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.SHAPECROWPOWER.getID();
@@ -88,10 +42,6 @@ public enum PlayerStateEnum {
 	},
 	MINDCONTROLPOWER{
 		@Override
-		public int getID() {
-			return 12;
-		}
-		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.INVISIBLEPOWER.getID();
 		}
@@ -102,10 +52,6 @@ public enum PlayerStateEnum {
 	},
 	INVISIBLEPOWER {
 		@Override
-		public int getID() {
-			return 13;
-		}
-		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.DUPESKINPOWER.getID();
 		}
@@ -115,10 +61,6 @@ public enum PlayerStateEnum {
 		}
 	},
 	SHAPECROWPOWER {
-		@Override
-		public int getID() {
-			return 14;
-		}
 		@Override
 		public int getNextPower() {
 			//TODO link more powers later
@@ -131,10 +73,6 @@ public enum PlayerStateEnum {
 	},
 	SHAPECATPOWER {
 		@Override
-		public int getID() {
-			return 15;
-		}
-		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.INTANGIBLEPOWER.getID();
 		}
@@ -144,10 +82,6 @@ public enum PlayerStateEnum {
 		}
 	},
 	INTANGIBLEPOWER {
-		@Override
-		public int getID() {
-			return 16;
-		}
 		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.JUMPING.getID();
@@ -160,8 +94,9 @@ public enum PlayerStateEnum {
 
 	
 	public int getID() {
-		return -1;
+		return this.ordinal();
 	}
+	
 	public int getNextPower() {
 		return PlayerStateEnum.JUMPING.getID();
 	}

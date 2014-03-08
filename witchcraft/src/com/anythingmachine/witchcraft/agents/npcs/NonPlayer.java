@@ -75,7 +75,7 @@ public class NonPlayer extends Entity {
 	}
 
 	public void switchBloodSword() {
-		sm.animate.setRegion("right hand item", "sworda", "bloodysworda");
+		sm.animate.setRegion("right hand item", "sworda", "bloodysworda", false, 1, 1);
 	}
 	public Vector3 getPosPixels() {
 		return sm.phyState.body.getPos();
@@ -94,6 +94,10 @@ public class NonPlayer extends Entity {
 				&& sm.animate.isTimeOverAQuarter(0);
 	}
 
+	public float getX() {
+		return sm.phyState.body.getX();
+	}
+	
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;

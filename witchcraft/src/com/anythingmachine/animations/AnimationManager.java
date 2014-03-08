@@ -96,8 +96,12 @@ public class AnimationManager {
 		return animations.get(anim);
 	}
 
-	public void setRegion(String slot, String attach, String set) {
+	public void setRegion(String slot, String attach, String set, boolean updatesize, float width, float height) {
 		RegionAttachment ra = ((RegionAttachment)skel.getAttachment(slot, slot));
+		if ( updatesize ) {
+			ra.setWidth(width);
+			ra.setHeight(height);
+		}
 		ra.setRegion(WitchCraft.assetManager.get("data/spine/characters.atlas", TextureAtlas.class).findRegion(set));
 	}
 	
