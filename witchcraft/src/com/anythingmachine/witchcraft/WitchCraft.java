@@ -241,6 +241,7 @@ public class WitchCraft implements ApplicationListener {
 				new InternalFileHandleResolver()));
 		WitchCraft.assetManager.load("data/world/level1/level1.tmx", TiledMap.class);
 		WitchCraft.assetManager.load("data/world/level1/level2.tmx", TiledMap.class);
+		WitchCraft.assetManager.load("data/world/level1/level3.tmx", TiledMap.class);
 
 		assetManager.finishLoading();
 	}
