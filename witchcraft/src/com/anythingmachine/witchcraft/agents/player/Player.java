@@ -26,6 +26,7 @@ import com.anythingmachine.witchcraft.States.Player.MindControlPower;
 import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.States.Player.Running;
 import com.anythingmachine.witchcraft.States.Player.ShapeCrow;
+import com.anythingmachine.witchcraft.States.Player.ShapeShiftIntermediate;
 import com.anythingmachine.witchcraft.States.Player.Walking;
 import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
@@ -255,6 +256,7 @@ public class Player extends Entity {
 		state.addState(PlayerStateEnum.MINDCONTROLPOWER, new MindControlPower(state, PlayerStateEnum.MINDCONTROLPOWER));
 		state.addState(PlayerStateEnum.INVISIBLEPOWER, new Invisible(state, PlayerStateEnum.INVISIBLEPOWER));
 		state.addState(PlayerStateEnum.SHAPECROWPOWER, new ShapeCrow(state, PlayerStateEnum.SHAPECROWPOWER));
+		state.addState(PlayerStateEnum.SHAPESHIFTINTERCROW, new ShapeShiftIntermediate(state, PlayerStateEnum.SHAPESHIFTINTERCROW, PlayerStateEnum.SHAPECROWPOWER));
 //		state.addState(StateEnum.SHAPECATPOWER, new ShapeCatPower(state, StateEnum.SHAPECATPOWER));
 //		state.addState(StateEnum.INTANGIBLEPOWER, new Intangible(state, StateEnum.INTANGIBLEPOWER));
 		state.setInitialState(PlayerStateEnum.IDLE);

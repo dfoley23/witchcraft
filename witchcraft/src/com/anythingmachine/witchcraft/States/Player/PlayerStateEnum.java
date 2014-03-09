@@ -26,6 +26,27 @@ public enum PlayerStateEnum {
 	},
 	ARROWDEAD{
 	},
+	SHAPESHIFTINTERCROW {
+		@Override
+		public int getNextPower() {
+			//TODO link more powers later
+			return PlayerStateEnum.JUMPING.getID();
+		}
+		@Override
+		public int getPowerIndex() {
+			return 4;
+		}
+	},
+	SHAPESHIFTINTERCAT {
+		@Override
+		public int getNextPower() {
+			return PlayerStateEnum.INTANGIBLEPOWER.getID();
+		}
+		@Override
+		public int getPowerIndex() {
+			return 4;
+		}
+	},
 	DUPESKIN{
 	},
 	CASTSPELL {
@@ -33,7 +54,7 @@ public enum PlayerStateEnum {
 	DUPESKINPOWER{
 		@Override
 		public int getNextPower() {
-			return PlayerStateEnum.SHAPECROWPOWER.getID();
+			return PlayerStateEnum.SHAPESHIFTINTERCROW.getID();
 		}
 		@Override
 		public int getPowerIndex() {
@@ -61,25 +82,8 @@ public enum PlayerStateEnum {
 		}
 	},
 	SHAPECROWPOWER {
-		@Override
-		public int getNextPower() {
-			//TODO link more powers later
-			return PlayerStateEnum.JUMPING.getID();
-		}
-		@Override
-		public int getPowerIndex() {
-			return 4;
-		}
 	},
 	SHAPECATPOWER {
-		@Override
-		public int getNextPower() {
-			return PlayerStateEnum.INTANGIBLEPOWER.getID();
-		}
-		@Override
-		public int getPowerIndex() {
-			return 4;
-		}
 	},
 	INTANGIBLEPOWER {
 		@Override

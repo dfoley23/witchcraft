@@ -1,6 +1,7 @@
 package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
+import com.anythingmachine.animations.SpriteAnimation;
 import com.anythingmachine.physicsEngine.TexturedParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
@@ -9,11 +10,14 @@ import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class Dead extends PlayerState {
 	private float fadeout;
 	private TexturedParticle head;
+	private SpriteAnimation bloodpool;
+	private boolean headhitground;
 
 	public Dead(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
@@ -23,6 +27,7 @@ public class Dead extends PlayerState {
 	public void update(float dt) {
 		sm.phyState.correctCBody(-8, 64, 0);
 
+		bloodpool.update(dt);
 		checkGround();
 
 		if (sm.animate.testOverTime(0, .75f)) {
@@ -47,6 +52,7 @@ public class Dead extends PlayerState {
 
 	@Override
 	public void draw(Batch batch) {
+		bloodpool.draw(batch);
 		sm.animate.draw(batch);
 		head.draw(batch);
 	}
@@ -93,6 +99,14 @@ public class Dead extends PlayerState {
 			if (head.getY() < groundPoint + 4) {
 				head.setY(groundPoint);
 				head.setVel(0, 0, 0);
+				if (!headhitground) {
+					for (int i = 1; i < 50; i += 4) {
+						String img = "morph" + i;
+						bloodpool.addFrame("data/world/otherart.atlas", img, -0.65f);
+					}
+					bloodpool.setPos(Util.addVecs(head.getPos(), new Vector3(36, 22, 0)));
+					headhitground = true;
+				}
 			}
 
 		}
@@ -117,10 +131,13 @@ public class Dead extends PlayerState {
 				new Vector3(0, Util.GRAVITY * 2, 0));
 		head.setVel(sm.facingleft ? -60 : 60, 90, 0);
 		GamePlayManager.rk4System.addParticle(head);
+		headhitground = false;
+		bloodpool = new SpriteAnimation(10f / 60f, false);
 	}
 
 	@Override
 	public void transistionOut() {
+		bloodpool = null;
 		head.destroy();
 		sm.animate.setRegion("hood", "hood", "witch-hood", false, 1, 1);
 	}
