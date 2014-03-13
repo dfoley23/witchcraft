@@ -15,7 +15,6 @@ import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.anythingmachine.witchcraft.ground.LevelWall;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -42,17 +41,17 @@ public class NonPlayer extends Entity {
 	public int level;
 	public NPCType npctype;
 
-	public NonPlayer(String skinname, Vector2 pos,
-			Vector2 bodyScale, String datafile, NPCType npctype) {
+	public NonPlayer(String skinname, Vector2 pos, Vector2 bodyScale,
+			String datafile, NPCType npctype) {
 		this.type = EntityType.NONPLAYER;
 		this.datafile = datafile;
 		this.npctype = npctype;
 
 		FileHandle handle = Gdx.files.internal(datafile);
 		String[] fileContent = handle.readString().split("\n");
-		
-		level = Integer.parseInt(fileContent[0].split(",")[1])-1;
-		
+
+		level = Integer.parseInt(fileContent[0].split(",")[1]) - 1;
+
 		setupAnimations(skinname, pos, bodyScale, fileContent);
 
 		setupAI(fileContent);
@@ -65,7 +64,7 @@ public class NonPlayer extends Entity {
 	public void checkInLevel() {
 		sm.state.checkInLevel();
 	}
-	
+
 	public void setTalking(NonPlayer npc) {
 		sm.state.setTalking(npc);
 	}
@@ -75,8 +74,10 @@ public class NonPlayer extends Entity {
 	}
 
 	public void switchBloodSword() {
-		sm.animate.setRegion("right hand item", "sworda", "bloodysworda", false, 1, 1);
+		sm.animate.setRegion("right hand item", "sworda", "bloodysworda",
+				false, 1, 1);
 	}
+
 	public Vector3 getPosPixels() {
 		return sm.phyState.body.getPos();
 	}
@@ -97,51 +98,14 @@ public class NonPlayer extends Entity {
 	public float getX() {
 		return sm.phyState.body.getX();
 	}
-	
+
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
-		Entity other;
-		if (isFixture1) {
-			other = (Entity) contact.getFixtureB().getBody().getUserData();
-		} else {
-			other = (Entity) contact.getFixtureA().getBody().getUserData();
-		}
-		Vector3 pos = sm.phyState.body.getPos();
-		Vector3 vel = sm.phyState.body.getVel();
-		switch (other.type) {
-		case NONPLAYER:
-			sm.hitnpc = true;
-//			sm.npc = (NonPlayer) other;
-			break;
-		case WALL:
-			// System.out.println("hello wall");
-			if (vel.x < 0) {
-				sm.phyState.body.setXVel(-vel.x);
-				sm.hitleftwall = true;
-			} else {
-				sm.phyState.body.setXVel(-vel.x);
-				sm.hitrightwall = true;
-			}
-			break;
-		case LEVELWALL:
-			// System.out.println("hello wall");
-			LevelWall wall = (LevelWall)other;
-			sm.state.switchLevel(wall.getLevel());
-			break;
-		case PLATFORM:
-			Platform plat = (Platform) other;
-			if (plat.isBetween(sm.facingleft, pos.x)) {
-				if (plat.getHeight() - 32 < pos.y)
-					sm.elevatedSegment = plat;
-			}
-			break;
-		default:
-			break;
-		}
+		sm.state.handleContact(contact, isFixture1);
 	}
 
-	protected void setupAnimations(String skinname,
-			Vector2 pos, Vector2 scale, String[] fileContent) {
+	protected void setupAnimations(String skinname, Vector2 pos, Vector2 scale,
+			String[] fileContent) {
 		SkeletonBinary sb = new SkeletonBinary(
 				(TextureAtlas) WitchCraft.assetManager
 						.get("data/spine/characters.atlas"));
@@ -171,12 +135,14 @@ public class NonPlayer extends Entity {
 		String initState = fileContent[4].split(",")[1];
 		for (NPCStateEnum state : NPCStateEnum.DEAD.values()) {
 			if (state.getName().equals(initState)) {
-				if ( this.level != GamePlayManager.currentlevel ) {
+				if (this.level != GamePlayManager.currentlevel) {
 					sm.setInitialState(state);
-					sm.setInitialState(NPCStateEnum.INOTHERLEVEL);
+					sm.setState(NPCStateEnum.INOTHERLEVEL);
 					sm.state.setParent(sm.getState(state));
+					break;
 				} else {
 					sm.setInitialState(state);
+					break;
 				}
 			}
 		}
@@ -184,8 +150,8 @@ public class NonPlayer extends Entity {
 
 	protected void setupStates(String[] filecontent) {
 		String[] states = filecontent[3].split(",");
-		for (int i = 1; i < states.length; i++) {
-			for (NPCStateEnum state : NPCStateEnum.DEAD.values()) {
+		for (NPCStateEnum state : NPCStateEnum.DEAD.values()) {
+			for (int i = 1; i < states.length; i++) {
 				if (!sm.stateExists(state)) {
 					String statename = states[i];
 					if (states[i].contains(";")) {
@@ -202,7 +168,8 @@ public class NonPlayer extends Entity {
 													Float.parseFloat(pos[1]),
 													pos[2].equals("Y") ? sm.phyState.body
 															.getY() : Float
-															.parseFloat(pos[2])), Integer.parseInt(pos[3])));
+															.parseFloat(pos[2])),
+											Integer.parseInt(pos[3])));
 						} else {
 							sm.addState(state, state.constructState(sm));
 						}

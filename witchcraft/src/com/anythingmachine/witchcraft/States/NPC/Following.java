@@ -1,6 +1,7 @@
 package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.NPCStateMachine;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 
 public class Following extends NPCState {
 
@@ -8,4 +9,9 @@ public class Following extends NPCState {
 		super(sm, name);
 	}
 	
+	@Override
+	public void handleNPCContact(NonPlayer npc) {
+		
+	}
+
 }

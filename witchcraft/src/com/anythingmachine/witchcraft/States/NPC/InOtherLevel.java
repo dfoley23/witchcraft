@@ -39,6 +39,7 @@ public class InOtherLevel extends NPCState {
 	@Override
 	public void checkInLevel() {
 		if (sm.me.level == GamePlayManager.currentlevel) {
+			System.out.println(sm.me.level+" switch level to current");
 			sm.setState(childState.name);
 		}
 	}
@@ -108,7 +109,7 @@ public class InOtherLevel extends NPCState {
 	public void transistionIn() {
 		sm.phyState.body.stop();
 		sm.phyState.body.setGravityVal(0);
-		sm.phyState.collisionBody.setAwake(true);
+		sm.phyState.collisionBody.setAwake(false);
 		sm.inlevel = false;
 		sm.onscreen = false;
 		// sm.active = false;
@@ -118,8 +119,9 @@ public class InOtherLevel extends NPCState {
 	public boolean transistionOut() {
 		if (sm.me.level == GamePlayManager.currentlevel) {
 			sm.phyState.body.setGravityVal(Util.GRAVITY);
-			sm.phyState.collisionBody.setAwake(false);
+			sm.phyState.collisionBody.setAwake(true);
 			sm.inlevel = true;
+//			sm.phyState.body.setY(500);
 			// sm.active = true;
 			return true;
 		}

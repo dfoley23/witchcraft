@@ -206,7 +206,7 @@ public class TiledMapHelper {
 							int tileID = tile.getTile().getId();
 
 							int start = 0;
-							System.out.println(tileID);
+//							System.out.println(tileID);
 							if (tileCollisionJoints.containsKey(tileID)) {
 								int tileCollisionSegments = tileCollisionJoints
 										.get(tileID).size();

@@ -7,4 +7,5 @@ public class Leading extends NPCState {
 	public Leading(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
 	}
+	
 }

@@ -2,14 +2,18 @@ package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
+import com.anythingmachine.witchcraft.ground.LevelWall;
+import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Contact;
 
 public class NPCState {
 	protected NPCStateMachine sm;
@@ -27,13 +31,13 @@ public class NPCState {
 
 		checkGround();
 
-		if ( sm.me.npctype.canAttack() )
+		if (sm.me.npctype.canAttack())
 			checkAttack();
 		else
 			checkInBounds();
 
 		takeAction(dt);
-		
+
 		fixCBody();
 
 		updateSkel(dt);
@@ -47,14 +51,15 @@ public class NPCState {
 		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
 		sm.animate.updateSkel(dt);
 	}
-	
+
 	public void draw(Batch batch) {
 		sm.animate.setFlipX(sm.facingleft);
 		sm.animate.draw(batch);
 	}
 
 	public void checkInBounds() {
-		if ( sm.inlevel && !WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
+		if (sm.inlevel
+				&& !WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
 			NPCState temp = sm.state;
 			sm.setState(NPCStateEnum.INACTIVE);
 			sm.state.setParent(temp);
@@ -63,6 +68,48 @@ public class NPCState {
 
 	public void setGoingTo(float dt) {
 
+	}
+
+	public void handleNPCContact(NonPlayer npc) {
+		sm.hitnpc = true;
+		// sm.npc = (NonPlayer) other;
+	}
+
+	public void handleContact(Contact contact, boolean isFixture1) {
+		Entity other;
+		if (isFixture1) {
+			other = (Entity) contact.getFixtureB().getBody().getUserData();
+		} else {
+			other = (Entity) contact.getFixtureA().getBody().getUserData();
+		}
+
+		Vector3 pos = sm.phyState.body.getPos();
+		Vector3 vel = sm.phyState.body.getVel();
+		switch (other.type) {
+		case PLATFORM:
+			Platform plat = (Platform) other;
+			if (plat.isBetween(sm.facingleft, pos.x)) {
+				if (plat.getHeight() - 32 < pos.y)
+					sm.elevatedSegment = plat;
+			}
+			break;
+		case WALL:
+			if (vel.x < 0) {
+				sm.phyState.body.setXVel(-vel.x);
+				sm.hitleftwall = true;
+			} else {
+				sm.phyState.body.setXVel(-vel.x);
+				sm.hitrightwall = true;
+			}
+			break;
+		case LEVELWALL:
+			LevelWall wall = (LevelWall) other;
+			sm.state.switchLevel(wall.getLevel());
+			break;
+		case NONPLAYER:
+			handleNPCContact((NonPlayer) other);
+			break;
+		}
 	}
 
 	public void checkAttack() {
@@ -81,15 +128,15 @@ public class NPCState {
 
 	}
 
-	public void switchLevel(int level) {	
-		if ( level-1 > sm.me.level ) {
+	public void switchLevel(int level) {
+		if (level - 1 > sm.me.level) {
 			sm.phyState.body.setX(64);
 		} else {
-			sm.phyState.body.setX(GamePlayManager.levels.get(level-1)-64);
+			sm.phyState.body.setX(GamePlayManager.levels.get(level - 1) - 64);
 		}
-		sm.me.level = level-1;
-		if ( sm.me.level != GamePlayManager.currentlevel ) {
-			sm.setState(NPCStateEnum.INOTHERLEVEL);			
+		sm.me.level = level - 1;
+		if (sm.me.level != GamePlayManager.currentlevel) {
+			sm.setState(NPCStateEnum.INOTHERLEVEL);
 			sm.state.setParent(this);
 		}
 	}
@@ -125,7 +172,7 @@ public class NPCState {
 	}
 
 	public void checkInLevel() {
-		if ( GamePlayManager.currentlevel != sm.me.level ) {
+		if (GamePlayManager.currentlevel != sm.me.level) {
 			NPCState temp = sm.state;
 			sm.setState(NPCStateEnum.INOTHERLEVEL);
 			sm.state.setParent(temp);

@@ -40,6 +40,10 @@ public class SpriteAnimation {
 		}
 	}
 	
+	public int getSize() {
+		return sprites.size();
+	}
+	
 	public boolean atEnd() {
 		return frame == sprites.size()-1;
 	}

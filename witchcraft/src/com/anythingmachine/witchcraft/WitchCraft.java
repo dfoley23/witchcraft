@@ -125,8 +125,8 @@ public class WitchCraft implements ApplicationListener {
 		float dT = Gdx.graphics.getDeltaTime();
 
 		 if ( ON_ANDROID ) {
-		 Gdx.app.log("***************************frames per sec: ", ""
-		 + Gdx.app.getGraphics().getFramesPerSecond());
+//		 Gdx.app.log("***************************frames per sec: ", ""
+//		 + Gdx.app.getGraphics().getFramesPerSecond());
 		 }
 		long now = System.nanoTime();
 		if (now - lastRender > 30000000) { // 30 ms, ~33FPS

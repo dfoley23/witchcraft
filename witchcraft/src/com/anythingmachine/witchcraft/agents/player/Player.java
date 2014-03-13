@@ -57,7 +57,7 @@ import com.esotericsoftware.spine.SkeletonData;
 public class Player extends Entity {
 	public Cape cape;
 	private PlayerStateMachine state;
-	
+
 	public Player(RK4Integrator rk4) {
 		setupState("player");
 		setupInput();
@@ -76,9 +76,10 @@ public class Player extends Entity {
 	}
 
 	public boolean dead() {
-		return state.inState(PlayerStateEnum.DEAD) || state.inState(PlayerStateEnum.ARROWDEAD);
+		return state.inState(PlayerStateEnum.DEAD)
+				|| state.inState(PlayerStateEnum.ARROWDEAD);
 	}
-	
+
 	public void draw(Batch batch) {
 		state.state.draw(batch);
 	}
@@ -86,10 +87,11 @@ public class Player extends Entity {
 	public boolean inHighAlert() {
 		return state.state.isHighAlertState();
 	}
-	
+
 	public boolean inAlert() {
 		return state.state.isAlertState();
 	}
+
 	public void drawCape(Matrix4 cam) {
 		state.state.drawCape(cam);
 	}
@@ -101,12 +103,13 @@ public class Player extends Entity {
 	public float getX() {
 		return state.phyState.body.getX();
 	}
-		
+
 	public void switchLevel() {
 		state.hitleftwall = false;
 		state.hitrightwall = false;
-		state.phyState.correctCBody(-8, 64, 0);		
+		state.phyState.correctCBody(-8, 64, 0);
 	}
+
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -120,7 +123,7 @@ public class Player extends Entity {
 		float sign;
 		switch (other.type) {
 		case NONPLAYER:
-			NonPlayer npc = (NonPlayer) other;			
+			NonPlayer npc = (NonPlayer) other;
 			state.state.hitNPC(npc);
 			break;
 		case WALL:
@@ -131,12 +134,12 @@ public class Player extends Entity {
 			} else {
 				state.hitrightwall = true;
 			}
-			state.phyState.body.setX(state.phyState.body.getX()-(sign*16));
+			state.phyState.body.setX(state.phyState.body.getX() - (sign * 16));
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
 			if (plat.isBetween(state.facingleft, pos.x)) {
-				if (plat.getHeight()-10 < pos.y) {
+				if (plat.getHeight() - 10 < pos.y) {
 					state.hitplatform = true;
 					state.elevatedSegment = plat;
 					state.state.land();
@@ -148,13 +151,12 @@ public class Player extends Entity {
 			break;
 		case STAIRS:
 			plat = (Platform) other;
-			System.out.println("hello staris");
+			// System.out.println("hello staris");
 			if (state.input.is("UP")
 					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
 							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
 							+ plat.getPos().y)) {
-
-				System.out.println("up stairs");
+				// System.out.println("up stairs");
 				if (plat.isBetween(state.facingleft, pos.x)) {
 					if (plat.getHeight(pos.x) - 12 < pos.y) {
 						state.hitplatform = true;
@@ -165,19 +167,19 @@ public class Player extends Entity {
 			}
 			break;
 		case LEVELWALL:
-			LevelWall wall = (LevelWall)other;
+			LevelWall wall = (LevelWall) other;
 			GamePlayManager.switchLevel(wall.getLevel());
 			break;
 		case SWORD:
-			npc = (NonPlayer) ((Pointer)other).obj;
-			if ( npc.isCritcalAttacking() ) {
+			npc = (NonPlayer) ((Pointer) other).obj;
+			if (npc.isCritcalAttacking()) {
 				state.killedbehind = npc.getX() < state.phyState.body.getX();
 				state.setState(PlayerStateEnum.DEAD);
 				npc.switchBloodSword();
 			}
 			break;
 		case ARROW:
-			Arrow arrow = (Arrow)other;
+			Arrow arrow = (Arrow) other;
 			state.killedbehind = arrow.getVelX() < 0 == state.facingleft;
 			state.setState(PlayerStateEnum.ARROWDEAD);
 			break;
@@ -193,14 +195,14 @@ public class Player extends Entity {
 			other = (Entity) contact.getFixtureA().getBody().getUserData();
 		}
 		if (other.type == EntityType.WALL) {
-		    state.hitleftwall = state.hitrightwall = false;
+			state.hitleftwall = state.hitrightwall = false;
 		}
 	}
 
 	public void setX(float x) {
 		state.phyState.body.setX(x);
 	}
-	
+
 	public void drawUI(Batch batch) {
 		state.drawUI(batch);
 	}
@@ -238,69 +240,94 @@ public class Player extends Entity {
 	}
 
 	private void setupStates() {
-		state.addState(PlayerStateEnum.IDLE, new Idle(state, PlayerStateEnum.IDLE));
-		state.addState(PlayerStateEnum.WALKING, new Walking(state, PlayerStateEnum.WALKING));
-		state.addState(PlayerStateEnum.RUNNING, new Running(state, PlayerStateEnum.RUNNING));
-		state.addState(PlayerStateEnum.JUMPING, new Jumping(state, PlayerStateEnum.JUMPING));
-		state.addState(PlayerStateEnum.FLYING, new Flying(state, PlayerStateEnum.FLYING));
-		state.addState(PlayerStateEnum.FALLING, new Falling(state, PlayerStateEnum.FALLING));
-		state.addState(PlayerStateEnum.LANDING, new Landing(state, PlayerStateEnum.LANDING));
+		state.addState(PlayerStateEnum.IDLE, new Idle(state,
+				PlayerStateEnum.IDLE));
+		state.addState(PlayerStateEnum.WALKING, new Walking(state,
+				PlayerStateEnum.WALKING));
+		state.addState(PlayerStateEnum.RUNNING, new Running(state,
+				PlayerStateEnum.RUNNING));
+		state.addState(PlayerStateEnum.JUMPING, new Jumping(state,
+				PlayerStateEnum.JUMPING));
+		state.addState(PlayerStateEnum.FLYING, new Flying(state,
+				PlayerStateEnum.FLYING));
+		state.addState(PlayerStateEnum.FALLING, new Falling(state,
+				PlayerStateEnum.FALLING));
+		state.addState(PlayerStateEnum.LANDING, new Landing(state,
+				PlayerStateEnum.LANDING));
 		state.addState(PlayerStateEnum.ATTACKING, new Attacking(state,
 				PlayerStateEnum.ATTACKING));
-		state.addState(PlayerStateEnum.DEAD, new Dead(state, PlayerStateEnum.DEAD));
-		state.addState(PlayerStateEnum.ARROWDEAD, new ArrowDead(state, PlayerStateEnum.ARROWDEAD));
-		state.addState(PlayerStateEnum.CASTSPELL, new CastSpell(state, PlayerStateEnum.CASTSPELL));
-		state.addState(PlayerStateEnum.DUPESKIN, new DupeSkin(state, PlayerStateEnum.DUPESKIN));
-		/*power states*/
-		state.addState(PlayerStateEnum.DUPESKINPOWER, new DupeSkinPower(state, PlayerStateEnum.DUPESKINPOWER));
-		state.addState(PlayerStateEnum.MINDCONTROLPOWER, new MindControlPower(state, PlayerStateEnum.MINDCONTROLPOWER));
-		state.addState(PlayerStateEnum.INVISIBLEPOWER, new Invisible(state, PlayerStateEnum.INVISIBLEPOWER));
-		state.addState(PlayerStateEnum.SHAPECROWPOWER, new ShapeCrow(state, PlayerStateEnum.SHAPECROWPOWER));
-		state.addState(PlayerStateEnum.SHAPESHIFTINTERCROW, new ShapeShiftIntermediate(state, PlayerStateEnum.SHAPESHIFTINTERCROW, PlayerStateEnum.SHAPECROWPOWER));
-//		state.addState(StateEnum.SHAPECATPOWER, new ShapeCatPower(state, StateEnum.SHAPECATPOWER));
-//		state.addState(StateEnum.INTANGIBLEPOWER, new Intangible(state, StateEnum.INTANGIBLEPOWER));
+		state.addState(PlayerStateEnum.DEAD, new Dead(state,
+				PlayerStateEnum.DEAD));
+		state.addState(PlayerStateEnum.ARROWDEAD, new ArrowDead(state,
+				PlayerStateEnum.ARROWDEAD));
+		state.addState(PlayerStateEnum.CASTSPELL, new CastSpell(state,
+				PlayerStateEnum.CASTSPELL));
+		state.addState(PlayerStateEnum.DUPESKIN, new DupeSkin(state,
+				PlayerStateEnum.DUPESKIN));
+		/* power states */
+		state.addState(PlayerStateEnum.DUPESKINPOWER, new DupeSkinPower(state,
+				PlayerStateEnum.DUPESKINPOWER));
+		state.addState(PlayerStateEnum.MINDCONTROLPOWER, new MindControlPower(
+				state, PlayerStateEnum.MINDCONTROLPOWER));
+		state.addState(PlayerStateEnum.INVISIBLEPOWER, new Invisible(state,
+				PlayerStateEnum.INVISIBLEPOWER));
+		state.addState(PlayerStateEnum.SHAPECROWPOWER, new ShapeCrow(state,
+				PlayerStateEnum.SHAPECROWPOWER));
+		state.addState(PlayerStateEnum.SHAPESHIFTINTERCROW,
+				new ShapeShiftIntermediate(state,
+						PlayerStateEnum.SHAPESHIFTINTERCROW,
+						PlayerStateEnum.SHAPECROWPOWER));
+		// state.addState(StateEnum.SHAPECATPOWER, new ShapeCatPower(state,
+		// StateEnum.SHAPECATPOWER));
+		// state.addState(StateEnum.INTANGIBLEPOWER, new Intangible(state,
+		// StateEnum.INTANGIBLEPOWER));
 		state.setInitialState(PlayerStateEnum.IDLE);
 		state.animate.bindPose();
 		state.animate.setCurrent("idle", true);
 	}
 
 	private void setupPowers() {
-		float width = WitchCraft.viewport.width/2f;
+		float width = WitchCraft.viewport.width / 2f;
 		float height = WitchCraft.viewport.height;
 		state.powerUi = new ArrayList<Sprite>();
 		Sprite sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas")).findRegion("FUGE"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f,
+				height - sprite.getHeight());
 		state.powerUi.add(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
 						.findRegion("ANIMIMPERI"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f,
+				height - sprite.getHeight());
 		state.powerUi.add(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
 						.findRegion("INVISIBIL"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f,
+				height - sprite.getHeight());
 		state.powerUi.add(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
 						.findRegion("EFFINGO"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f,
+				height - sprite.getHeight());
 		state.powerUi.add(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
 						.findRegion("MUTATIO"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
-		sprite.setPosition(width - sprite.getWidth() * 0.5f, height	- sprite.getHeight());
+		sprite.setPosition(width - sprite.getWidth() * 0.5f,
+				height - sprite.getHeight());
 		state.powerUi.add(sprite);
 		// powers.put("intangible", new IntangibilityPower());
 		// powers.put("convert", new ConvertPower());
@@ -315,9 +342,11 @@ public class Player extends Entity {
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		KinematicParticle body = new KinematicParticle(new Vector3(256f,128f,0f),Util.GRAVITY * 3);
+		KinematicParticle body = new KinematicParticle(new Vector3(256f, 128f,
+				0f), Util.GRAVITY * 3);
 
-		state = new PlayerStateMachine(name, body.getPos(), new Vector2(0.53f, 0.53f), false, sd);
+		state = new PlayerStateMachine(name, body.getPos(), new Vector2(0.53f,
+				0.53f), false, sd);
 
 		state.animate.addAnimation("jump", sd.findAnimation("beginfly"));
 		state.animate.addAnimation("idle", sd.findAnimation("idle"));
