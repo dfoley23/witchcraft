@@ -19,9 +19,11 @@ public class InOtherLevel extends NPCState {
 	@Override
 	public void update(float dt) {
 		aiChoiceTime += dt;
-		waittime += dt;
-		
+		if ( sm.phyState.collisionBody.isAwake() ) {
+			sm.phyState.collisionBody.setAwake(false);
+		}
 		childState.setGoingTo(waittime);
+		waittime += dt;
 		
 		childState.checkTarget();
 
@@ -50,16 +52,13 @@ public class InOtherLevel extends NPCState {
 	}
 
 	@Override
-	public void switchLevel(int level) {	
-		if ( level-1 > sm.me.level ) {
-			sm.phyState.body.setX(64);
-		} else {
-			sm.phyState.body.setX(GamePlayManager.levels.get(level-1)-64);
+	public void switchLevel(int level) {
+		if ( level > sm.me.level ) {
+			sm.phyState.body.setX(128);
+		} else if ( level < sm.me.level){
+			sm.phyState.body.setX(GamePlayManager.levels.get(level)-64);
 		}
-		sm.me.level = level-1;
-		if ( sm.me.level == GamePlayManager.currentlevel ) {
-			sm.setState(childState.name);			
-		}
+		sm.me.level = level;
 	}
 
 	@Override
@@ -109,7 +108,9 @@ public class InOtherLevel extends NPCState {
 	public void transistionIn() {
 		sm.phyState.body.stop();
 		sm.phyState.body.setGravityVal(0);
-		sm.phyState.collisionBody.setAwake(false);
+		if ( !GamePlayManager.world.isLocked() ) {
+			sm.phyState.collisionBody.setAwake(false);
+		}
 		sm.inlevel = false;
 		sm.onscreen = false;
 		// sm.active = false;

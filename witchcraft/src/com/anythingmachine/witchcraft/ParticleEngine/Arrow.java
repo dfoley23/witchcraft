@@ -36,11 +36,7 @@ public class Arrow extends Particle {
 	public void destroy() {
 		GamePlayManager.world.destroyBody(collisionBody);
 	}
-
-	public void setActive(boolean val) {
-		collisionBody.setActive(val);
-		stable = !val;
-	}
+	
 	public ArrayList<Particle> getParticles() {
 		ArrayList<Particle> list = new ArrayList<Particle>();
 		list.add(this);
@@ -50,7 +46,11 @@ public class Arrow extends Particle {
 	public void draw(Batch batch) {
 		if (!WitchCraft.cam.inBigBounds(pos)) {
 			stable = true;
+			if ( collisionBody.isAwake() )
+				collisionBody.setAwake(false);
 		} else {
+			if ( !collisionBody.isAwake() )
+				collisionBody.setAwake(true);
 			collisionBody.setTransform(pos.x * Util.PIXEL_TO_BOX, pos.y
 					* Util.PIXEL_TO_BOX, 0);
 			sprite.setPosition(pos.x, pos.y);
@@ -73,7 +73,7 @@ public class Arrow extends Particle {
 	@Override
 	public void setStable(boolean val) {
 		stable = val;
-		this.collisionBody.setActive(!val);
+		collisionBody.setActive(!val);
 	}
 
 	public void setPos(float x, float y, float z) {

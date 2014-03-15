@@ -11,17 +11,19 @@ import com.badlogic.gdx.math.Vector2;
 public class GoingTo extends NPCState {
 	protected Vector2 target;
 	private int level;
-	
-	public GoingTo(NPCStateMachine sm, NPCStateEnum name, Vector2 target, int level) {
+	private float waittime = 0;
+
+	public GoingTo(NPCStateMachine sm, NPCStateEnum name, Vector2 target,
+			int level) {
 		super(sm, name);
 		this.target = target;
-		this.level = level-1;
+		this.level = level - 1;
 	}
-	
+
 	@Override
 	public void update(float dt) {
 		checkGround();
-		if ( sm.me.npctype.canAttack() )
+		if (sm.me.npctype.canAttack())
 			checkAttack();
 		else
 			checkInBounds();
@@ -29,9 +31,9 @@ public class GoingTo extends NPCState {
 		checkTarget();
 		sm.facingleft = sm.phyState.body.getVelX() < 0;
 		sm.animate.setFlipX(sm.facingleft);
-		
-		fixCBody();	
-		
+
+		fixCBody();
+
 		float delta = Gdx.graphics.getDeltaTime();
 
 		sm.animate.applyTotalTime(true, delta);
@@ -40,12 +42,11 @@ public class GoingTo extends NPCState {
 		sm.animate.updateSkel(dt);
 
 	}
-	
-	
+
 	@Override
 	public void checkTarget() {
-		if ( Util.subVecs(sm.phyState.body.getPos(), target).len() < 128) {
-			switch(name) {
+		if (Util.subVecs(sm.phyState.body.getPos(), target).len() < 128) {
+			switch (name) {
 			case GOINGTOEAT:
 				sm.state.setChildState(NPCStateEnum.EATING);
 				break;
@@ -63,13 +64,14 @@ public class GoingTo extends NPCState {
 			}
 		}
 	}
-	
+
 	@Override
 	public void setGoingTo(float dt) {
-		if ( level == GamePlayManager.currentlevel) {
-			sm.state.switchLevel(GamePlayManager.currentlevel+1);
-		} else {
-			sm.phyState.body.setPos(target);
+		waittime += dt;
+		if (waittime > sm.behavior.getActionTime() * 2) {
+			sm.state.switchLevel(level);
+			if (level != GamePlayManager.currentlevel)
+				sm.phyState.body.setPos(target);
 		}
 	}
 
@@ -83,7 +85,7 @@ public class GoingTo extends NPCState {
 		sm.facingleft = target.x < sm.phyState.body.getX();
 		sm.getState(NPCStateEnum.WALKING).transistionIn();
 	}
-	
+
 	@Override
 	public void setIdle() {
 		sm.setState(NPCStateEnum.IDLE);
@@ -93,10 +95,10 @@ public class GoingTo extends NPCState {
 	@Override
 	public void takeAction(float dt) {
 	}
-	
+
 	@Override
 	public void takeAction(Action action) {
-		
+
 	}
-	
+
 }

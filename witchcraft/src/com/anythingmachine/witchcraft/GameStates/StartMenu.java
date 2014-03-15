@@ -62,6 +62,16 @@ public class StartMenu extends Menu {
 		WitchCraft.assetManager.unload("data/menu.atlas");
 	}
 	
+	@Override
+	public void resize(int width, int height) {
+		logo.setScale(WitchCraft.viewport.width / logo.getWidth(), WitchCraft.viewport.height / logo.getHeight());
+		logo.scale(-0.05f);
+		logo.setPosition(WitchCraft.viewport.x+logo.getWidth()*0.5f+64, WitchCraft.viewport.y+logo.getHeight()*0.5f-64);
+
+		lighting.setScale(WitchCraft.viewport.width / lighting.getWidth(), WitchCraft.viewport.height / lighting.getHeight());
+		lighting.setPosition(WitchCraft.viewport.x+lighting.getWidth()*0.15f, WitchCraft.viewport.y+(WitchCraft.viewport.height*0.33f));
+	}
+
 	private void buildMenu() {
 		Sprite sprite = new Sprite(WitchCraft.assetManager.get("data/menu.atlas", TextureAtlas.class).findRegion("begin"));
 		sprite.setPosition(300, 300);

@@ -1,40 +1,82 @@
 package com.anythingmachine.witchcraft.States.Player;
 
+import com.anythingmachine.aiengine.PlayerStateMachine;
+
 public enum PlayerStateEnum {
-	DEFAULT {
-	},
-	IDLE { 
+	IDLE {
 	},
 	WALKING {
-	}, 
-	RUNNING{
-	}, 
-	JUMPING{
-		@Override 
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Walking(sm, this);
+		}
+	},
+	RUNNING {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Running(sm, this);
+		}
+	},
+	JUMPING {
+		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.MINDCONTROLPOWER.getID();
 		}
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Jumping(sm, this);
+		}
 	},
-	FLYING{
+	FLYING {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Flying(sm, this);
+		}
 	},
-	LANDING{
-	},FALLING{
+	LANDING {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Landing(sm, this);
+		}
 	},
-	ATTACKING{
+	FALLING {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Falling(sm, this);
+		}
 	},
-	DEAD{
+	ATTACKING {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Attacking(sm, this);
+		}
 	},
-	ARROWDEAD{
+	DEAD {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Dead(sm, this);
+		}
+	},
+	ARROWDEAD {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new ArrowDead(sm, this);
+		}
 	},
 	SHAPESHIFTINTERCROW {
 		@Override
 		public int getNextPower() {
-			//TODO link more powers later
+			// TODO link more powers later
 			return PlayerStateEnum.JUMPING.getID();
 		}
+
 		@Override
 		public int getPowerIndex() {
 			return 4;
+		}
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new ShapeShiftIntermediate(sm, this, PlayerStateEnum.SHAPECROWPOWER);
 		}
 	},
 	SHAPESHIFTINTERCAT {
@@ -42,33 +84,56 @@ public enum PlayerStateEnum {
 		public int getNextPower() {
 			return PlayerStateEnum.INTANGIBLEPOWER.getID();
 		}
+
 		@Override
 		public int getPowerIndex() {
 			return 4;
 		}
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new LoadingState(sm, this);
+		}
 	},
-	DUPESKIN{
+	DUPESKIN {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new LoadingState(sm, this);
+		}
 	},
 	CASTSPELL {
-	},	/*POWERS*/
-	DUPESKINPOWER{
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new CastSpell(sm, this);
+		}
+	}, /* POWERS */
+	DUPESKINPOWER {
 		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.SHAPESHIFTINTERCROW.getID();
 		}
+
 		@Override
 		public int getPowerIndex() {
 			return 3;
 		}
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new DupeSkinPower(sm, this);
+		}
 	},
-	MINDCONTROLPOWER{
+	MINDCONTROLPOWER {
 		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.INVISIBLEPOWER.getID();
 		}
+
 		@Override
 		public int getPowerIndex() {
 			return 1;
+		}
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new MindControlPower(sm, this);
 		}
 	},
 	INVISIBLEPOWER {
@@ -76,37 +141,67 @@ public enum PlayerStateEnum {
 		public int getNextPower() {
 			return PlayerStateEnum.DUPESKINPOWER.getID();
 		}
+
 		@Override
 		public int getPowerIndex() {
 			return 2;
 		}
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Invisible(sm, this);
+		}
 	},
 	SHAPECROWPOWER {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new ShapeCrow(sm, this);
+		}
 	},
 	SHAPECATPOWER {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new LoadingState(sm, this);
+		}
 	},
 	INTANGIBLEPOWER {
 		@Override
 		public int getNextPower() {
 			return PlayerStateEnum.JUMPING.getID();
 		}
+
 		@Override
 		public int getPowerIndex() {
 			return 6;
 		}
+
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new LoadingState(sm, this);
+		}
+	},
+	LOADINGSTATE {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new LoadingState(sm, this);
+		}
 	};
 
-	
 	public int getID() {
 		return this.ordinal();
 	}
-	
+
 	public int getNextPower() {
 		return PlayerStateEnum.JUMPING.getID();
 	}
+
 	public int getPowerIndex() {
 		return 0;
 	}
+
+	public PlayerState constructState(PlayerStateMachine sm) {
+		return new Idle(sm, PlayerStateEnum.IDLE);
+	}
+
 	public int getSize() {
 		return PlayerStateEnum.values().length;
 	}

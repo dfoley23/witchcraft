@@ -22,6 +22,7 @@ import com.anythingmachine.witchcraft.States.Player.Idle;
 import com.anythingmachine.witchcraft.States.Player.Invisible;
 import com.anythingmachine.witchcraft.States.Player.Jumping;
 import com.anythingmachine.witchcraft.States.Player.Landing;
+import com.anythingmachine.witchcraft.States.Player.LoadingState;
 import com.anythingmachine.witchcraft.States.Player.MindControlPower;
 import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.States.Player.Running;
@@ -84,6 +85,13 @@ public class Player extends Entity {
 		state.state.draw(batch);
 	}
 
+	public void setState(PlayerStateEnum name) {
+		state.setState(name);
+	}
+	
+	public PlayerStateEnum getState() {
+		return state.state.name;
+	}
 	public boolean inHighAlert() {
 		return state.state.isHighAlertState();
 	}
@@ -240,6 +248,9 @@ public class Player extends Entity {
 	}
 
 	private void setupStates() {
+//		for( PlayerStateEnum s: PlayerStateEnum.DEAD.values() ) {
+//			state.addState(s, s.constructState(state));
+//		}
 		state.addState(PlayerStateEnum.IDLE, new Idle(state,
 				PlayerStateEnum.IDLE));
 		state.addState(PlayerStateEnum.WALKING, new Walking(state,
@@ -264,6 +275,7 @@ public class Player extends Entity {
 				PlayerStateEnum.CASTSPELL));
 		state.addState(PlayerStateEnum.DUPESKIN, new DupeSkin(state,
 				PlayerStateEnum.DUPESKIN));
+		state.addState(PlayerStateEnum.LOADINGSTATE, new LoadingState(state, PlayerStateEnum.LOADINGSTATE));
 		/* power states */
 		state.addState(PlayerStateEnum.DUPESKINPOWER, new DupeSkinPower(state,
 				PlayerStateEnum.DUPESKINPOWER));

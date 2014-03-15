@@ -4,252 +4,252 @@ filter: Linear,Linear
 repeat: none
 morph9
   rotate: false
-  xy: 510, 284
-  size: 105, 48
-  orig: 105, 48
+  xy: 284, 496
+  size: 113, 66
+  orig: 113, 66
   offset: 0, 0
   index: -1
 crowstand
   rotate: false
-  xy: 958, 431
-  size: 64, 46
+  xy: 948, 100
+  size: 64, 80
   orig: 64, 80
-  offset: 0, 34
+  offset: 0, 0
   index: -1
 INVISIBIL
   rotate: false
-  xy: 2, 2
+  xy: 381, 978
   size: 331, 41
   orig: 331, 41
   offset: 0, 0
   index: -1
 ANIMIMPERI
   rotate: false
-  xy: 2, 45
+  xy: 714, 2
   size: 277, 41
   orig: 277, 41
   offset: 0, 0
   index: -1
 crow3fly
   rotate: false
-  xy: 510, 427
-  size: 64, 56
+  xy: 948, 264
+  size: 64, 80
   orig: 64, 80
-  offset: 0, 24
+  offset: 0, 0
   index: -1
 MUTATIO
   rotate: false
-  xy: 576, 493
+  xy: 316, 185
   size: 200, 41
   orig: 200, 41
   offset: 0, 0
   index: -1
 ss-10-crow
   rotate: false
-  xy: 874, 227
+  xy: 316, 271
   size: 121, 69
   orig: 121, 69
   offset: 0, 0
   index: -1
 crow2fly
   rotate: false
-  xy: 510, 485
-  size: 64, 52
+  xy: 938, 346
+  size: 64, 80
   orig: 64, 80
-  offset: 0, 0
-  index: -1
-morph13
-  rotate: false
-  xy: 324, 562
-  size: 107, 53
-  orig: 107, 53
   offset: 0, 0
   index: -1
 ss-1-crow
   rotate: false
-  xy: 335, 2
+  xy: 2, 448
   size: 280, 280
   orig: 280, 280
   offset: 0, 0
   index: -1
 ss-6-crow
   rotate: false
-  xy: 2, 354
+  xy: 316, 2
   size: 207, 181
   orig: 207, 181
   offset: 0, 0
   index: -1
-morph17
+morph2
   rotate: false
-  xy: 434, 539
-  size: 108, 55
-  orig: 108, 55
+  xy: 507, 622
+  size: 104, 46
+  orig: 104, 46
+  offset: 0, 0
+  index: -1
+morph6
+  rotate: false
+  xy: 397, 567
+  size: 108, 58
+  orig: 108, 58
   offset: 0, 0
   index: -1
 ss-3-crow
   rotate: false
-  xy: 617, 2
+  xy: 276, 730
   size: 255, 246
   orig: 255, 246
   offset: 0, 0
   index: -1
-morph33
-  rotate: false
-  xy: 879, 552
-  size: 113, 66
-  orig: 113, 66
-  offset: 0, 0
-  index: -1
 ss-8-crow
   rotate: false
-  xy: 841, 298
+  xy: 533, 2
   size: 174, 131
   orig: 174, 131
   offset: 0, 0
   index: -1
 ss-9-crow
   rotate: false
-  xy: 874, 88
+  xy: 533, 374
   size: 135, 94
   orig: 135, 94
   offset: 0, 0
   index: -1
 MORS
   rotate: false
-  xy: 874, 2
+  xy: 533, 288
   size: 143, 41
   orig: 143, 41
   offset: 0, 0
   index: -1
 crow4fly
   rotate: false
-  xy: 958, 479
-  size: 64, 28
+  xy: 948, 182
+  size: 64, 80
   orig: 64, 80
-  offset: 0, 21
+  offset: 0, 0
   index: -1
-morph37
+morph10
   rotate: false
-  xy: 762, 628
+  xy: 399, 496
   size: 112, 69
   orig: 112, 69
   offset: 0, 0
   index: -1
-GELO
+morph3
   rotate: false
-  xy: 874, 45
-  size: 136, 41
-  orig: 136, 41
+  xy: 513, 513
+  size: 105, 48
+  orig: 105, 48
   offset: 0, 0
   index: -1
-morph25
+morph7
   rotate: false
-  xy: 211, 502
+  xy: 284, 630
   size: 111, 60
   orig: 111, 60
   offset: 0, 0
   index: -1
-morph21
+GELO
   rotate: false
-  xy: 324, 502
-  size: 108, 58
-  orig: 108, 58
+  xy: 533, 331
+  size: 136, 41
+  orig: 136, 41
   offset: 0, 0
   index: -1
 ss-2-crow
   rotate: false
-  xy: 2, 88
+  xy: 2, 730
   size: 272, 264
   orig: 272, 264
   offset: 0, 0
   index: -1
+dust
+  rotate: false
+  xy: 2, 2
+  size: 312, 444
+  orig: 312, 444
+  offset: 0, 0
+  index: -1
 FUGE
   rotate: false
-  xy: 874, 184
+  xy: 533, 470
   size: 134, 41
   orig: 134, 41
   offset: 0, 0
   index: -1
-morph29
+morph11
   rotate: false
-  xy: 876, 693
-  size: 111, 64
-  orig: 111, 64
-  offset: 0, 0
-  index: -1
-EFFINGO
-  rotate: false
-  xy: 778, 509
-  size: 193, 41
-  orig: 193, 41
-  offset: 0, 0
-  index: -1
-morph45
-  rotate: false
-  xy: 762, 552
+  xy: 316, 420
   size: 115, 74
   orig: 115, 74
   offset: 0, 0
   index: -1
+EFFINGO
+  rotate: false
+  xy: 316, 228
+  size: 193, 41
+  orig: 193, 41
+  offset: 0, 0
+  index: -1
+morph4
+  rotate: false
+  xy: 507, 567
+  size: 107, 53
+  orig: 107, 53
+  offset: 0, 0
+  index: -1
+morph8
+  rotate: false
+  xy: 284, 564
+  size: 111, 64
+  orig: 111, 64
+  offset: 0, 0
+  index: -1
 ss-4-crow
   rotate: false
-  xy: 276, 284
+  xy: 714, 88
   size: 232, 216
   orig: 232, 216
   offset: 0, 0
   index: -1
-morph41
-  rotate: false
-  xy: 879, 620
-  size: 112, 71
-  orig: 112, 71
-  offset: 0, 0
-  index: -1
 ss-5-crow
   rotate: false
-  xy: 617, 293
+  xy: 714, 306
   size: 222, 198
   orig: 222, 198
   offset: 0, 0
   index: -1
 mindbeam
   rotate: false
-  xy: 281, 45
-  size: 14, 96
-  orig: 16, 96
+  xy: 993, 2
+  size: 21, 96
+  orig: 21, 96
   offset: 0, 0
   index: -1
-morph49
+morph12
   rotate: false
-  xy: 841, 431
+  xy: 316, 342
   size: 115, 76
   orig: 115, 76
   offset: 0, 0
   index: -1
 morph1
   rotate: false
-  xy: 510, 382
+  xy: 276, 978
   size: 103, 43
   orig: 103, 43
   offset: 0, 0
   index: -1
 INTACTILUS
   rotate: false
-  xy: 617, 250
+  xy: 714, 45
   size: 243, 41
   orig: 243, 41
   offset: 0, 0
   index: -1
 morph5
   rotate: false
-  xy: 510, 334
-  size: 104, 46
-  orig: 104, 46
+  xy: 397, 627
+  size: 108, 55
+  orig: 108, 55
   offset: 0, 0
   index: -1
 ss-7-crow
   rotate: false
-  xy: 576, 536
+  xy: 525, 135
   size: 184, 151
   orig: 184, 151
   offset: 0, 0

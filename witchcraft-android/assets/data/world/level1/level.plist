@@ -1850,6 +1850,71 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
+            <key>0143.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{448,128},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>0144.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{480,128},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>0146.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{512,128},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>0147.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{544,128},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>0148.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{576,128},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -1858,9 +1923,9 @@
             <key>realTextureFileName</key>
             <string>level.png</string>
             <key>size</key>
-            <string>{1024,1024}</string>
+            <string>{1024,2048}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:293dc969110b6fca2481a93bb7a0ac74$</string>
+            <string>$TexturePacker:SmartUpdate:da0f07441c9980b049984324b532fb31$</string>
             <key>textureFileName</key>
             <string>level.png</string>
         </dict>

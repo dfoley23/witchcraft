@@ -2,9 +2,9 @@ package com.anythingmachine.witchcraft.ParticleEngine;
 
 import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 
 public class CloudParticle extends KinematicParticle {
@@ -13,7 +13,7 @@ public class CloudParticle extends KinematicParticle {
 	public CloudParticle(Vector3 pos, float scale, float rot, float speed) {
 		super(pos, 0);
 		this.setVel(speed, 0, 0);
-		sprite = new Sprite(WitchCraft.assetManager.get("data/dust.png", Texture.class));
+		sprite = new Sprite(WitchCraft.assetManager.get("data/world/otherart.atlas", TextureAtlas.class).findRegion("dust"));
 		sprite.setRotation(rot);
 		sprite.scale(scale);
 	}

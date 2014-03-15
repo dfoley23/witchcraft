@@ -130,6 +130,9 @@ public class Inactive extends NPCState {
 	@Override	
 	public void transistionIn() {
 		sm.onscreen = false;
+		if ( childState == null || childState == this) {
+			childState = sm.getState(NPCStateEnum.IDLE);
+		}
 	}
 
 	@Override	

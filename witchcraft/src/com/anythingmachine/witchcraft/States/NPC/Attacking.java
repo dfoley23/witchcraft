@@ -64,12 +64,13 @@ public class Attacking extends NPCState {
 
 	@Override
 	public void setGoingTo(float dt) {
-		if ((sm.me.level + 1 == GamePlayManager.currentlevel && (sm.phyState.body
-				.getX() + Util.PLAYERRUNSPEED * dt) > GamePlayManager.levels
-				.get(sm.me.level))
-				|| (sm.me.level - 1 == GamePlayManager.currentlevel && sm.phyState.body
-						.getX() + (-Util.PLAYERRUNSPEED * dt) < 0)) {
-			sm.state.switchLevel(GamePlayManager.currentlevel + 1);
+		System.out.println(sm.me.level);
+		if (sm.me.level < GamePlayManager.currentlevel && (sm.phyState.body.getX() + Util.PLAYERRUNSPEED * dt) > GamePlayManager.levels
+				.get(sm.me.level) && sm.me.level < GamePlayManager.levels.size()-1) {
+			sm.state.switchLevel(sm.me.level + 1);
+		} else if (sm.me.level > GamePlayManager.currentlevel && (sm.phyState.body
+						.getX() + (-Util.PLAYERRUNSPEED * dt) < 64) && sm.me.level > 0) {
+			sm.state.switchLevel(sm.me.level-1);
 		}
 	}
 

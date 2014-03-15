@@ -38,6 +38,11 @@ public class Falling extends SharedState {
 		}
 				
 		@Override
+		public void updatePower(float dt) {
+			
+		}
+		
+		@Override
 		public void checkGround() {
 			Vector3 pos = sm.phyState.body.getPos();
 			sm.grounded = false;
@@ -54,6 +59,7 @@ public class Falling extends SharedState {
 		
 		@Override
 		public void transistionIn() {
+			super.transistionIn();
 			sm.animate.setCurrent("idle", true);
 			sm.animate.bindPose();
 		}

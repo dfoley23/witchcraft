@@ -71,8 +71,8 @@ public class ArcherAttack extends NPCState {
 	
 	@Override
 	public boolean transistionOut() {
-		arrow.setActive(false);
-		arrow.setX(-20);
+		arrow.setStable(true);
+		arrow.setX(-1000);
 		return true;
 	}
 	

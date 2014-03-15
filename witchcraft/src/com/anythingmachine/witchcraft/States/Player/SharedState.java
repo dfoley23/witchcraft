@@ -35,5 +35,12 @@ public class SharedState extends PlayerState {
 		parent.updatePower(dt);
 	}
 	
+	@Override
+	public void transistionIn() {
+		if ( parent == null ) {
+			parent = sm.getState(PlayerStateEnum.IDLE);
+		}
+	}
+	
 
 }

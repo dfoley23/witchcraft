@@ -15,6 +15,7 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Screen;
 import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
 import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
+import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.npcs.NPCStaticAnimation;
 import com.anythingmachine.witchcraft.agents.npcs.NPCType;
@@ -46,7 +47,8 @@ public class GamePlayManager extends Screen {
 	public static int level = -1;
 	public static int currentlevel;
 	public static ArrayList<Float> levels;
-
+	public static boolean initworld = true;
+	
 	private CloudEmitter cloudE;
 	private CrowEmitter crowE;
 
@@ -99,11 +101,11 @@ public class GamePlayManager extends Screen {
 
 		player = new Player(rk4);
 		npcs = new ArrayList<NonPlayer>();
-		npcs.add(new NonPlayer("knight2", new Vector2(354.0f, 3.0f), new Vector2(
+		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 3.0f), new Vector2(
 				0.6f, 0.7f), "data/npcdata/knights/fredknight", NPCType.KNIGHT));
 		 npcs.add(new NonPlayer("knight1",
 		 new Vector2(800.0f, 3.0f), new Vector2(0.6f, 0.7f),
-		 "data/npcdata/knights/fredknight", NPCType.KNIGHT));
+		 "data/npcdata/knights/joeknight", NPCType.KNIGHT));
 		 npcs.add(new NonPlayer("archer", new Vector2(3000.0f,
 		 3.0f),
 		 new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
@@ -137,10 +139,6 @@ public class GamePlayManager extends Screen {
 		world.step(dt, 1, 1);
 
 		rk4.step();
-
-		Gdx.gl.glViewport((int) WitchCraft.viewport.x,
-				(int) WitchCraft.viewport.y, (int) WitchCraft.viewport.width,
-				(int) WitchCraft.viewport.height);
 
 		player.update(dt);
 		for ( NonPlayer npc: npcs) 
@@ -190,12 +188,12 @@ public class GamePlayManager extends Screen {
 					* (WitchCraft.scale);
 		}
 
-		WitchCraft.cam.update();
 
 	}
 
 	@Override
 	public void draw(Batch batch) {
+		if ( !initworld ) {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Color dayColor = getTimeOfDay();
 		Gdx.gl.glClearColor(dayColor.r, dayColor.g, dayColor.b, 1f);
@@ -208,6 +206,7 @@ public class GamePlayManager extends Screen {
 			debugRenderer.render(world, Camera.camera.combined.scale(
 					Util.PIXELS_PER_METER, Util.PIXELS_PER_METER,
 					Util.PIXELS_PER_METER));
+		}
 	}
 
 	public void drawBackGround(Batch batch) {
@@ -259,6 +258,15 @@ public class GamePlayManager extends Screen {
 					Util.PIXELS_PER_METER, l);
 		} else {
 			level = l;
+		}
+	}
+	
+	@Override
+	public void transistionIn() {
+		float accum = 0;
+		player.setState(PlayerStateEnum.LOADINGSTATE);
+		while( player.getState() != PlayerStateEnum.LOADINGSTATE ) {
+			update(WitchCraft.dt);
 		}
 	}
 }

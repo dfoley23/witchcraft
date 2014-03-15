@@ -99,7 +99,7 @@ public class Dead extends PlayerState {
 				head.setY(groundPoint);
 				head.setVel(0, 0, 0);
 				if (!headhitground) {
-					for (int i = 1; i < 50; i += 4) {
+					for (int i = 1; i < 13; i ++) {
 						String img = "morph" + i;
 						bloodpool.addFrame("data/world/otherart.atlas", img, -0.65f);
 					}
