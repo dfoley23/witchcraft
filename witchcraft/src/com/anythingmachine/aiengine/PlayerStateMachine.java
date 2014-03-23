@@ -58,13 +58,13 @@ public class PlayerStateMachine extends StateMachine {
 		input.update(dt);
 
 		state.update(dt);
-
+		
 		float delta = Gdx.graphics.getDeltaTime();
 		if (state.canAnimate())
 			animate.applyTotalTime(true, delta);
 
 		animate.setPos(phyState.body.getPos(), -8f, 0f);
-		animate.updateSkel(dt);
+		animate.updateSkel(delta);
 
 	}
 

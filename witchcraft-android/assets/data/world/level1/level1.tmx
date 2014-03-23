@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="203" height="50" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="tiles32" tilewidth="32" tileheight="32">
-  <image source="level.png" width="1024" height="1024"/>
+  <image source="level.png" width="1024" height="2048"/>
   <tile id="4">
    <properties>
     <property name="type" value="STAIRS"/>
@@ -18,10 +18,10 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="1025" name="tiles128" tilewidth="128" tileheight="128">
+ <tileset firstgid="2049" name="tiles128" tilewidth="128" tileheight="128">
   <image source="level128.png" width="1024" height="2048"/>
  </tileset>
- <tileset firstgid="1153" name="tilesBGF" tilewidth="128" tileheight="128">
+ <tileset firstgid="2177" name="tilesBGF" tilewidth="128" tileheight="128">
   <image source="level800.png" width="2048" height="2048"/>
  </tileset>
  <layer name="back800" width="203" height="50">
@@ -30,7 +30,7 @@
    <property name="bg" value=""/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt1lVPnEEcRnEgs3W371t3C9Tdgbo7UHcH6u5A6u5pMnMxJ92U3rzZtud3888Jm5B9bnaqqiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiT9C0aGvEeFX38uGY2/j0GPRY9Dj0dPQE9ET0JPRk9BT0VPQ09Hz0DP/M33rw35ZnXBzcptlnaqjTftVFfm80XvJEmSpMo3C2+42eg56Lnoeej56AXohehF6MXoJeil6GXo5egV6JXoVejV6DXo+pBv1hDyzRqDm6XN0k718aadGuJNOzXGW/ROkiRJqnxr8YZbh16P3oDeiN6E3ozegt6K3obejt6B3onehd6N3oPei96H3o9uCvlmzSHfrCW4Wdos7dQUb9qpOd60U0u8Re8kSZKkyncAb7iD6EPow+gj6KPoY+jj6BPok+hT6NPoM+iz6HPo8+gL6IvoS+jWkG/WFvLN2oObpc3STq3xpp3a4k07tcdb9E6SJEmqfJfxhruCvoq+hr6OvoG+ib6Fvo2+g76Lvoe+j36Afoh+hH6MfoJ+iu4I+WadId+sK7hZ2izt1BFv2qkz3rRTV7xF7yRJ0v/kjb+Df8zNuqfonZ7h/z1Hv0C/RL9Cv0bz+7xFv0O/R39Af0R/Qn9Gf0F/RX9Df+f+pTyrS/lmNSU3K7dZ2qk6dtqpJnbRO0mSJOnvE/AeL6F7oHuie6F7o/ug+6L7ofujB6AHogehB6OHoIeih6GHo0egf3KzvLuzmaTK9gOITfBe
+   eJzt1lVPnEEcRnEgldm6f9+6W6DuDtTdgbo7UHcHUndPk5mLOemm9ObNtj2/m39O2ITsc7NTVSVJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiTpXzAy5D0q/PpzyWj8fQx6LHocejx6AnoiehJ6MnoKeip6Gno6egZ65m++f23IN6sLblZus7RTbbxpp7oyny96J0mSJFW+WXjDzUbPQc9Fz0PPRy9AL0QvQi9GL0EvRS9DL0evQK9Er0KvRq9B14d8s4aQb9YY3Cxtlnaqjzft1BBv2qkx3qJ3kiRJUuVbizfcOvR69Ab0RvQm9Gb0FvRW9Db0dvQO9E70LvRu9B70XvQ+9H50U8g3aw75Zi3BzdJmaaemeNNOzfGmnVriLXonSZIkVb4DeMMdRB9CH0YfQR9FH0MfR59An0SfQp9Gn0GfRZ9Dn0dfQF9EX0K3hnyztpBv1h7cLG2WdmqNN+3UFm/aqT3eoneSJElS5buMN9wV9FX0NfR19A30TfQt9G30HfRd9D30ffQD9EP0I/Rj9BP0U3RHyDfrDPlmXcHN0mZpp454006d8aaduuIteidJkv4nb/wd/GNu1j1F7/QM/+85+gX6JfoV+jWa3+ct+h36PfoD+iP6E/oz+gv6K/ob+jv3L+VZXco3qym5WbnN0k7VsdNONbGL3kmSJEl/nx54j/dE90L3Rgd0Cd0H3RfdD90fPQA9ED0IPRg9BD0UPQw9HD0C/ZOb5d2dzSRVth/Yf/Xq
   </data>
  </layer>
  <layer name="backbackground" width="203" height="50">
@@ -46,7 +46,7 @@
    <property name="128" value=""/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztzgEJAAAIA7Aj9s9sDEG3BEsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG6r3h4AAAAA3w0CYwAH
+   eJztzkENAAAIBKCbL/snNoabQgISAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDbqrcHAAAAwHcDRN8ACw==
   </data>
  </layer>
  <layer name="uninteractable" width="203" height="50">

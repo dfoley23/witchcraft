@@ -1,11 +1,19 @@
 package com.anythingmachine.witchcraft.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
+import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
+import com.anythingmachine.witchcraft.ground.LevelWall;
+import com.anythingmachine.witchcraft.ground.Platform;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Contact;
 
 public class Flying extends Jumping {
 	private float rotation;
@@ -23,7 +31,15 @@ public class Flying extends Jumping {
 
 	@Override
 	public void transistionIn() {
+		GamePlayManager.currentsound.stop();
+		GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/wind.wav");
+		GamePlayManager.currentsound.loop(1);
+	}
 
+	@Override
+	public void transistionOut() {
+		GamePlayManager.currentsound.stop();
+		GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/crickets.ogg");
 	}
 
 	@Override
@@ -133,5 +149,82 @@ public class Flying extends Jumping {
 			}
 		}
 	}
+	
+	@Override
+	public void handleContact(Contact contact, boolean isFixture1) {
+		Entity other;
+		if (isFixture1) {
+			other = (Entity) contact.getFixtureB().getBody().getUserData();
+		} else {
+			other = (Entity) contact.getFixtureA().getBody().getUserData();
+		}
+		Vector3 pos = sm.phyState.body.getPos();
+		Vector3 vel = sm.phyState.body.getVel();
+		float sign;
+		switch (other.type) {
+		case NONPLAYER:
+			NonPlayer npc = (NonPlayer) other;
+			sm.state.hitNPC(npc);
+			break;
+		case WALL:
+			sign = Math.signum(vel.x);
+			sm.phyState.body.stopOnX();
+			if (sign == -1) {
+				sm.hitleftwall = true;
+			} else {
+				sm.hitrightwall = true;
+			}
+			sm.phyState.body.setX(sm.phyState.body.getX() - (sign * 16));
+			break;
+		case PLATFORM:
+			Platform plat = (Platform) other;
+			if (plat.isBetween(sm.facingleft, pos.x)) {
+				if (plat.getHeight() - 35 < pos.y) {
+					sm.hitplatform = true;
+					sm.elevatedSegment = plat;
+					sm.state.land();
+				} else {
+					sm.phyState.body.stopOnY();
+					sm.hitroof = true;
+				}
+			}
+			break;
+		case STAIRS:
+			plat = (Platform) other;
+			// System.out.println("hello staris");
+			if (sm.input.is("UP")
+					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
+							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
+							+ plat.getPos().y)) {
+				// System.out.println("up stairs");
+				if (plat.isBetween(sm.facingleft, pos.x)) {
+					if (plat.getHeight(pos.x) - 12 < pos.y) {
+						sm.hitplatform = true;
+						sm.elevatedSegment = plat;
+						sm.state.land();
+					}
+				}
+			}
+			break;
+		case LEVELWALL:
+			LevelWall wall = (LevelWall) other;
+			GamePlayManager.switchLevel(wall.getLevel());
+			break;
+		case SWORD:
+			npc = (NonPlayer) ((Pointer) other).obj;
+			if (npc.isCritcalAttacking()) {
+				sm.killedbehind = npc.getX() < sm.phyState.body.getX();
+				sm.setState(PlayerStateEnum.DEAD);
+				npc.switchBloodSword();
+			}
+			break;
+		case ARROW:
+			Arrow arrow = (Arrow) other;
+			sm.killedbehind = arrow.getVelX() < 0 == sm.facingleft;
+			sm.setState(PlayerStateEnum.ARROWDEAD);
+			break;
+		}
+	}
 
+	
 }

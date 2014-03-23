@@ -120,78 +120,7 @@ public class Player extends Entity {
 
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
-		Entity other;
-		if (isFixture1) {
-			other = (Entity) contact.getFixtureB().getBody().getUserData();
-		} else {
-			other = (Entity) contact.getFixtureA().getBody().getUserData();
-		}
-		Vector3 pos = state.phyState.body.getPos();
-		Vector3 vel = state.phyState.body.getVel();
-		float sign;
-		switch (other.type) {
-		case NONPLAYER:
-			NonPlayer npc = (NonPlayer) other;
-			state.state.hitNPC(npc);
-			break;
-		case WALL:
-			sign = Math.signum(vel.x);
-			state.phyState.body.stopOnX();
-			if (sign == -1) {
-				state.hitleftwall = true;
-			} else {
-				state.hitrightwall = true;
-			}
-			state.phyState.body.setX(state.phyState.body.getX() - (sign * 16));
-			break;
-		case PLATFORM:
-			Platform plat = (Platform) other;
-			if (plat.isBetween(state.facingleft, pos.x)) {
-				if (plat.getHeight() - 10 < pos.y) {
-					state.hitplatform = true;
-					state.elevatedSegment = plat;
-					state.state.land();
-				} else {
-					state.phyState.body.stopOnY();
-					state.hitroof = true;
-				}
-			}
-			break;
-		case STAIRS:
-			plat = (Platform) other;
-			// System.out.println("hello staris");
-			if (state.input.is("UP")
-					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
-							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
-							+ plat.getPos().y)) {
-				// System.out.println("up stairs");
-				if (plat.isBetween(state.facingleft, pos.x)) {
-					if (plat.getHeight(pos.x) - 12 < pos.y) {
-						state.hitplatform = true;
-						state.elevatedSegment = plat;
-						state.state.land();
-					}
-				}
-			}
-			break;
-		case LEVELWALL:
-			LevelWall wall = (LevelWall) other;
-			GamePlayManager.switchLevel(wall.getLevel());
-			break;
-		case SWORD:
-			npc = (NonPlayer) ((Pointer) other).obj;
-			if (npc.isCritcalAttacking()) {
-				state.killedbehind = npc.getX() < state.phyState.body.getX();
-				state.setState(PlayerStateEnum.DEAD);
-				npc.switchBloodSword();
-			}
-			break;
-		case ARROW:
-			Arrow arrow = (Arrow) other;
-			state.killedbehind = arrow.getVelX() < 0 == state.facingleft;
-			state.setState(PlayerStateEnum.ARROWDEAD);
-			break;
-		}
+		state.state.handleContact(contact, isFixture1);
 	}
 
 	@Override

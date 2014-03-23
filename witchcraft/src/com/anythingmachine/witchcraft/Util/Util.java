@@ -111,10 +111,10 @@ public class Util {
 	public static final float SIXTH_PI = PI / 6;
 	public static final float MIN_VALUE = 0x0.000002P-126f; // 1.4e-45f
 
-	public static final int GRAVITY = -50;
-	public static final float PLAYERWALKSPEED = 90f;
-	public static final float PLAYERRUNSPEED = 260f;
-	public static final float PLAYERFLYSPEED = 600f;
+	public static final int GRAVITY = -70;
+	public static final float PLAYERWALKSPEED = 105f;
+	public static final float PLAYERRUNSPEED = 280f;
+	public static final float PLAYERFLYSPEED = 500f;
 
 	/**
 	 * Collision Categories and masks for every object that needs them

@@ -220,7 +220,7 @@ public class Cloth implements PhysicsComponent {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   vec3 normal = normalize(a_normal);\n" //
-			+ "   vec4 c = vec4(1.0, 1.0, 1.0, alpha_val);\n" //
+			+ "   vec4 c = vec4(0.6, 0.6, 0.6, alpha_val);\n" //
 			+ "   float LdotN = dot(vec3(0.0, -0.5, -0.5), normal);\n" //
 			+ "   if ( LdotN < 0.0 ) {\n" //
 			+ "      LdotN = -LdotN;\n" //

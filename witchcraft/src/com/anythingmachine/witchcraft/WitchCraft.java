@@ -1,5 +1,6 @@
 package com.anythingmachine.witchcraft;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.anythingmachine.tiledMaps.Camera;
@@ -10,9 +11,11 @@ import com.anythingmachine.witchcraft.GameStates.StartMenu;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -68,7 +71,7 @@ public class WitchCraft implements ApplicationListener {
 		if (ON_ANDROID) {
 			screenWidth = VIRTUAL_WIDTH;
 			screenHeight = VIRTUAL_HEIGHT;
-			dt = 1f / 30f;
+			dt = 1f / 60f;
 		} else {
 			screenWidth = Gdx.app.getGraphics().getWidth();
 			screenHeight = Gdx.app.getGraphics().getHeight();
@@ -80,6 +83,7 @@ public class WitchCraft implements ApplicationListener {
 		cam = new Camera(screenWidth, screenHeight);
 
 		WitchCraft.assetManager = new AssetManager();
+		
 		loadPlayAssets();
 
 		screens = new HashMap<String, Screen>();
@@ -238,18 +242,9 @@ public class WitchCraft implements ApplicationListener {
 	public void loadPlayAssets() {
 		assetManager.load("data/spine/characters.atlas", TextureAtlas.class);
 		assetManager.load("data/world/otherart.atlas", TextureAtlas.class);
-
-		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
-				new InternalFileHandleResolver()));
-		WitchCraft.assetManager.load("data/world/level1/level1.tmx",
-				TiledMap.class);
-		WitchCraft.assetManager.load("data/world/level1/level2.tmx",
-				TiledMap.class);
-		WitchCraft.assetManager.load("data/world/level1/level3.tmx",
-				TiledMap.class);
-		WitchCraft.assetManager.load("data/world/level1/level4.tmx",
-				TiledMap.class);
-
+		assetManager.load("data/sounds/crickets.ogg", Sound.class);
+		assetManager.load("data/sounds/wind.wav", Sound.class);
+		
 		assetManager.finishLoading();
 	}
 
