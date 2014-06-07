@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.States.NPC;
 import com.anythingmachine.aiengine.Action;
 import com.anythingmachine.aiengine.NPCStateMachine;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -44,6 +45,11 @@ public class InOtherLevel extends NPCState {
 			System.out.println(sm.me.level+" switch level to current");
 			sm.setState(childState.name);
 		}
+	}
+	
+	@Override
+	public ActionEnum[] getPossibleActions() {
+		return childState.getPossibleActions();
 	}
 
 	@Override

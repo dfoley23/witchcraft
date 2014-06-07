@@ -12,8 +12,7 @@ public class TorchMobbing extends Mobbing {
 	public TorchMobbing(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
 		mixAnim = "torch";
-//		mixAnimTime = sm.animate.getAnim(mixAnim).getDuration();
-		holdTime = mixAnimTime*0.5f;
+		mixAnimTime = 0f;//sm.animate.getAnim(mixAnim).getDuration();
 		time = 0;
 	}
 	
@@ -40,11 +39,12 @@ public class TorchMobbing extends Mobbing {
 		float delta = Gdx.graphics.getDeltaTime();
 
 		sm.animate.applyTotalTime(true, delta);
-		time += delta;
-		if ( time > holdTime ) {
-			sm.animate.mix(mixAnim, mixAnimTime, time/mixAnimTime);
-		} else {
-			sm.animate.mix(mixAnim, mixAnimTime, 0.5f);
+//		time += delta;
+//		if ( time > holdTime ) {
+//			sm.animate.mix(mixAnim, mixAnimTime, time/mixAnimTime);
+//		} else 
+		{
+			sm.animate.mix(mixAnim, 1f, 1f);
 		}
 		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
 
@@ -59,5 +59,9 @@ public class TorchMobbing extends Mobbing {
 	@Override
 	public void transistionIn() {
 		time = 0;
+		sm.animate.setCurrent("torch", true);
+		if ( childState == null || childState == this) {
+			childState = sm.getState(NPCStateEnum.IDLE);
+		}
 	}
 }

@@ -57,6 +57,12 @@ public enum PlayerStateEnum {
 			return new Dead(sm, this);
 		}
 	},
+	CINEMATIC {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new Cinematic(sm, this);
+		}
+	},
 	ARROWDEAD {
 		@Override
 		public PlayerState constructState(PlayerStateMachine sm) {

@@ -11,11 +11,11 @@ import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.witchcraft.States.NPC.NPCState;
 import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
 import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -37,7 +37,7 @@ public class NonPlayer extends Entity {
 	protected NPCStateMachine sm;
 	protected Fixture feetFixture;
 	protected Fixture hitRadius;
-	protected String datafile;
+	public String datafile;
 	public int level;
 	public NPCType npctype;
 
@@ -132,16 +132,28 @@ public class NonPlayer extends Entity {
 
 		setupStates(fileContent);
 
-		String initState = fileContent[4].split(",")[1];
+		String[] statechain = fileContent[4].split(",");
+		String initState = statechain[1];
 		for (NPCStateEnum state : NPCStateEnum.DEAD.values()) {
 			if (state.getName().equals(initState)) {
 				if (this.level != GamePlayManager.currentlevel) {
 					sm.setInitialState(state);
+					if ( statechain.length >2 && statechain[2].equals("CINEMATIC")){
+						NPCState temp = sm.state;
+						sm.setState(NPCStateEnum.CINEMATIC);
+						sm.state.setParent(temp);
+					}
+					NPCState temp = sm.state;
 					sm.setState(NPCStateEnum.INOTHERLEVEL);
-					sm.state.setParent(sm.getState(state));
+					sm.state.setParent(temp);
 					break;
 				} else {
 					sm.setInitialState(state);
+					if ( statechain.length >2 && statechain[2].equals("CINEMATIC")){
+						NPCState temp = sm.state;
+						sm.setState(NPCStateEnum.CINEMATIC);
+						sm.state.setParent(temp);
+					}
 					break;
 				}
 			}

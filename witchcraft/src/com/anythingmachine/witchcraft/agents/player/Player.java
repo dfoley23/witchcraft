@@ -9,10 +9,10 @@ import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.ParticleEngine.Arrow;
 import com.anythingmachine.witchcraft.States.Player.ArrowDead;
 import com.anythingmachine.witchcraft.States.Player.Attacking;
 import com.anythingmachine.witchcraft.States.Player.CastSpell;
+import com.anythingmachine.witchcraft.States.Player.Cinematic;
 import com.anythingmachine.witchcraft.States.Player.Dead;
 import com.anythingmachine.witchcraft.States.Player.DupeSkin;
 import com.anythingmachine.witchcraft.States.Player.DupeSkinPower;
@@ -29,13 +29,9 @@ import com.anythingmachine.witchcraft.States.Player.Running;
 import com.anythingmachine.witchcraft.States.Player.ShapeCrow;
 import com.anythingmachine.witchcraft.States.Player.ShapeShiftIntermediate;
 import com.anythingmachine.witchcraft.States.Player.Walking;
-import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
-import com.anythingmachine.witchcraft.ground.LevelWall;
-import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.controllers.Controllers;
@@ -198,6 +194,8 @@ public class Player extends Entity {
 				PlayerStateEnum.ATTACKING));
 		state.addState(PlayerStateEnum.DEAD, new Dead(state,
 				PlayerStateEnum.DEAD));
+		state.addState(PlayerStateEnum.CINEMATIC, new Cinematic(state,
+				PlayerStateEnum.CINEMATIC));
 		state.addState(PlayerStateEnum.ARROWDEAD, new ArrowDead(state,
 				PlayerStateEnum.ARROWDEAD));
 		state.addState(PlayerStateEnum.CASTSPELL, new CastSpell(state,

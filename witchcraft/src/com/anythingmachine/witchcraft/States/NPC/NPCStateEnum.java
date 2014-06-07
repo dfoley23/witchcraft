@@ -382,6 +382,22 @@ public enum NPCStateEnum {
 			return new ArcherAttack(sm, NPCStateEnum.ARCHERATTACK);
 		}
 	},
+	TORCHMOBBIN {
+		@Override
+		public NPCStateEnum[] getFollowUpStates() {
+			return new NPCStateEnum[] { ATTACKING, GOINGTOEAT };
+		}
+		@Override
+		public NPCState constructState(NPCStateMachine sm) {
+			return new TorchMobbing(sm, this);
+		}
+	},
+	CINEMATIC {
+		@Override
+		public NPCState constructState(NPCStateMachine sm) {
+			return new Cinematic(sm, this);
+		}
+	},
 	INACTIVE {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {

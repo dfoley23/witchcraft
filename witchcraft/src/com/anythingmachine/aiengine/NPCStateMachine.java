@@ -47,17 +47,18 @@ public class NPCStateMachine extends StateMachine {
 	}
 
 	public void setInitialState(NPCStateEnum name) {
+		System.out.println(me.datafile+" initial state:"+name);		
 		this.state = states.get(name);
 		this.state.setParent(getState(NPCStateEnum.IDLE));
 	}
 
 	public void setState(NPCStateEnum name) {
 		if (state.transistionOut()) {
-			System.out.println(me.npctype+" set state:"+name);
+			System.out.println(me.datafile+" set state:"+name);
 			this.state = states.get(name);
 			state.transistionIn();
 		} else {
-			System.out.println("transistion state:"+name);
+			System.out.println(me.datafile+"transistion state:"+name);
 			states.get(name).transistionIn();
 		}
 	}

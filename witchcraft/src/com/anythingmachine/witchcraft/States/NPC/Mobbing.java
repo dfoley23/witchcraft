@@ -5,7 +5,7 @@ import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 
 public class Mobbing extends NPCState {
-	private NPCState childState;
+	protected NPCState childState;
 	
 	public Mobbing(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);

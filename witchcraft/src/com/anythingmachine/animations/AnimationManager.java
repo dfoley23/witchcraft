@@ -31,7 +31,8 @@ public class AnimationManager {
 	private boolean loop;
 	private boolean isFlipped = false;
 	private Array<Event> events;
-	
+	private float deltaTime = 0f;
+
 	public AnimationManager(String name, Vector3 pos, Vector2 scl,
 			boolean flip, SkeletonData sd) {
 		this.scale = scl;
@@ -53,7 +54,6 @@ public class AnimationManager {
 	}
 
 	public void update(float delta) {
-		totalTime += delta;
 		// if ( animation != null ) {
 		// if ( totalTime > animation.getDuration() ) {//&& !inAir && !moveLeft
 		// && !moveRight) {
@@ -64,30 +64,33 @@ public class AnimationManager {
 		// root.setScaleX(0.6f);
 		// root.setScaleY(0.7f);
 		// } else
-		{
-//			System.out.println(currentAnim);
+		// {
+		// System.out.println(currentAnim);
 
-			animations.get(currentAnim).apply(skel, totalTime-delta, totalTime, loop, events);
-		}
-		// }
+		if (delta > WitchCraft.dt * 30) {
+			totalTime += delta;
+			animations.get(currentAnim).apply(skel,
+					totalTime - WitchCraft.dt * 30, totalTime, loop, events);
+			 }
+			skel.updateWorldTransform();
+			skel.update(delta);
+	}
+
+	public void updateSkel(float delta) {
+		totalTime += WitchCraft.dt;
 		skel.updateWorldTransform();
 		skel.update(delta);
 	}
 
-	public void updateSkel(float delta) {
-		totalTime += delta;
-		skel.updateWorldTransform();
-		skel.update(delta);		
-	}
-	
 	public boolean isSkin(String skinname) {
 		return getSkin().getName().equals(skinname);
 	}
 
 	public void applyTotalTime(boolean val, float delta) {
-		animations.get(currentAnim).apply(skel, totalTime, totalTime+delta, val, events);
+		animations.get(currentAnim).apply(skel, totalTime, totalTime + delta,
+				val, events);
 	}
-	
+
 	public void mix(String anim, float time, float alpha) {
 		animations.get(anim).mix(skel, time, time, false, events, alpha);
 	}
@@ -96,19 +99,22 @@ public class AnimationManager {
 		return animations.get(anim);
 	}
 
-	public void setRegion(String slot, String attach, String set, boolean updatesize, float width, float height) {
-		RegionAttachment ra = ((RegionAttachment)skel.getAttachment(slot, slot));
-		if ( updatesize ) {
+	public void setRegion(String slot, String attach, String set,
+			boolean updatesize, float width, float height) {
+		RegionAttachment ra = ((RegionAttachment) skel
+				.getAttachment(slot, slot));
+		if (updatesize) {
 			ra.setWidth(width);
 			ra.setHeight(height);
 		}
-		ra.setRegion(WitchCraft.assetManager.get("data/spine/characters.atlas", TextureAtlas.class).findRegion(set));
+		ra.setRegion(WitchCraft.assetManager.get("data/spine/characters.atlas",
+				TextureAtlas.class).findRegion(set));
 	}
-	
+
 	public void draw(Batch batch) {
 		renderer.draw(batch, skel);
 	}
-	
+
 	public void addAnimation(String id, Animation anim) {
 		animations.put(id, anim);
 	}
@@ -116,7 +122,7 @@ public class AnimationManager {
 	public boolean isFlipped() {
 		return isFlipped;
 	}
-	
+
 	public void rotate(float r) {
 		float x = hip.getX();
 		float y = hip.getY();
@@ -126,6 +132,7 @@ public class AnimationManager {
 		hip.setX(x);
 		hip.setY(y);
 	}
+
 	public void setCurrent(String id, boolean val) {
 		currentAnim = id;
 		loop = val;
@@ -139,22 +146,22 @@ public class AnimationManager {
 	}
 
 	public boolean isTimeOverAQuarter(float delta) {
-		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.25f;
+		return totalTime + delta > animations.get(currentAnim).getDuration() * 0.25f;
 	}
 
 	public boolean isTimeOverAThird(float delta) {
-		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.33f;
+		return totalTime + delta > animations.get(currentAnim).getDuration() * 0.33f;
 	}
 
 	public boolean isTimeOverAHalf(float delta) {
-		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.5f;
+		return totalTime + delta > animations.get(currentAnim).getDuration() * 0.5f;
 	}
 
 	public boolean isTImeOverThreeQuarters(float delta) {
-		return totalTime+delta > animations.get(currentAnim).getDuration() * 0.75f;
+		return totalTime + delta > animations.get(currentAnim).getDuration() * 0.75f;
 	}
-	
-	public void setFlipX(boolean val){
+
+	public void setFlipX(boolean val) {
 		float x = skel.getX();
 		skel.setX(0);
 		skel.setFlipX(val);
@@ -162,7 +169,7 @@ public class AnimationManager {
 		isFlipped = val;
 	}
 
-	public void setFlipY(boolean val){
+	public void setFlipY(boolean val) {
 		float x = skel.getY();
 		skel.setY(0);
 		skel.setFlipY(val);
@@ -174,27 +181,28 @@ public class AnimationManager {
 	}
 
 	public Skin getSkin() {
-		return 	skel.getSkin();
+		return skel.getSkin();
 	}
-	
+
 	public void switchSkin(String skin) {
 		skel.setSkin(skin);
 	}
-	
+
 	public void setSkin(Skin skin) {
 		skel.setSkin(skin);
 	}
-	
+
 	public Bone getRoot() {
 		return root;
 	}
-	
+
 	public Vector2 getScale() {
 		return new Vector2(root.getScaleX(), root.getScaleY());
 	}
 
 	/**
 	 * gets the duration of the current animation
+	 * 
 	 * @return
 	 */
 	public float getCurrentAnimTime() {
@@ -205,27 +213,28 @@ public class AnimationManager {
 		root.setX(pos.x + dx);
 		root.setY(pos.y + dy);
 	}
-	
+
 	/**
 	 * return the total time so far for this animations
+	 * 
 	 * @return
 	 */
 	public float getTime() {
 		return totalTime;
 	}
-	
+
 	public boolean testUnderTime(float delta, float test) {
-		return totalTime+delta < test;
+		return totalTime + delta < test;
 	}
-	
+
 	public boolean testOverTime(float delta, float test) {
-		return totalTime+delta > test;
+		return totalTime + delta > test;
 	}
 
 	public Bone findBone(String name) {
 		return skel.findBone(name);
 	}
-	
+
 	public Slot findSlot(String name) {
 		return skel.findSlot("right hand");
 	}

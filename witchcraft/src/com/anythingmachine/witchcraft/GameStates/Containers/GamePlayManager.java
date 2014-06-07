@@ -121,11 +121,11 @@ public class GamePlayManager extends Screen {
 				new Vector2(0.6f, 0.7f), "data/npcdata/other/joearcher",
 				NPCType.ARCHER));
 
-		npcs.add(new NonPlayer("civmalebrown", new Vector2(300.0f, 3.0f),
+		npcs.add(new NonPlayer("civmalebrown", new Vector2(3800.0f, 3.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
 				NPCType.CIV));
 		npcs.add(new NonPlayer("civfemaleblack-hood",
-				new Vector2(300.0f, 3.0f), new Vector2(0.6f, 0.7f),
+				new Vector2(5500.0f, 3.0f), new Vector2(0.6f, 0.7f),
 				"data/npcdata/civs/saraciv", NPCType.CIV));
 		shackled = new NPCStaticAnimation("shackledmale1", new Vector3(1696,
 				118, 0), new Vector2(0.75f, 0.8f),
