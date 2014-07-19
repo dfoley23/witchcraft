@@ -1,5 +1,6 @@
 package com.anythingmachine.witchcraft.GameStates;
 
+import com.anythingmachine.cinematics.CinematicTrigger;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -29,6 +30,10 @@ public class Screen {
 	}
 	
 	public void loadLevel(String name) {
+		
+	}
+	
+	public void setCinematic(CinematicTrigger c) {
 		
 	}
 	

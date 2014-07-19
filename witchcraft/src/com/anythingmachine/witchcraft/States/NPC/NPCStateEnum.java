@@ -396,7 +396,12 @@ public enum NPCStateEnum {
 		@Override
 		public NPCState constructState(NPCStateMachine sm) {
 			return new Cinematic(sm, this);
+		}		
+		@Override
+		public boolean isGlobal() {
+			return true;
 		}
+
 	},
 	INACTIVE {
 		@Override

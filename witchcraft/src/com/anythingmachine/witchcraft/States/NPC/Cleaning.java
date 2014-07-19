@@ -2,10 +2,10 @@ package com.anythingmachine.witchcraft.States.NPC;
 
 import com.anythingmachine.aiengine.NPCStateMachine;
 
-public class Cleaning extends NPCState {
+public class Cleaning extends SharedState {
 	
 	public Cleaning(NPCStateMachine sm, NPCStateEnum name) {
-		super(sm, name);
+		super(sm, name);		
 	}
 	
 	@Override

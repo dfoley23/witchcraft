@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.ground;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class Platform extends Entity {
 	protected float posx;
@@ -37,8 +38,9 @@ public class Platform extends Entity {
 		return posy+height;
 	}
 	
-	public Vector2 getPos() {
-		return new Vector2(posx, posy);
+	@Override
+	public Vector3 getPos() {
+		return new Vector3(posx, posy, 0);
 	}
 	
 	public String getName() {

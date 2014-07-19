@@ -23,6 +23,10 @@ public class Cinematic extends PlayerState {
 	}
 		
 	public void transistionIn() {
+		if ( parent.name != this.name )
+			this.parent = sm.state;
+		else
+			parent = sm.getState(PlayerStateEnum.IDLE);
 		sm.facingleft = false;
 		sm.phyState.body.stop();
 		sm.animate.bindPose();

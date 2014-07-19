@@ -2,7 +2,8 @@ package com.anythingmachine.witchcraft;
 
 import java.util.HashMap;
 
-import com.anythingmachine.tiledMaps.Camera;
+import com.anythingmachine.cinematics.Camera;
+import com.anythingmachine.cinematics.CinematicTrigger;
 import com.anythingmachine.witchcraft.GameStates.Loading;
 import com.anythingmachine.witchcraft.GameStates.PauseMenu;
 import com.anythingmachine.witchcraft.GameStates.Screen;
@@ -60,6 +61,10 @@ public class WitchCraft implements ApplicationListener {
 		super();
 	}
 
+	public static void setCinematic(CinematicTrigger c) {
+		currentScreen.setCinematic(c);
+	}
+	
 	@Override
 	public void create() {
 		ON_ANDROID = Gdx.app.getType() == ApplicationType.Android;

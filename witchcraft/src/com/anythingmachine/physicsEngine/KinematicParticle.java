@@ -16,39 +16,6 @@ public class KinematicParticle extends Particle {
 	public void draw(Batch batch) {
 		
 	}
-		
-	public void setGravityVal(float val) {
-		externalForce.y = val;
-	}
-	
-	public void setVel(float x, float y, float z) {
-		this.vel.x = x;
-		this.vel.y = y;
-		this.vel.z = z;
-	}
-	
-	public void setYVel(float y) {
-		vel.y = y;
-	}
-	
-	public void setXVel(float x) {
-		vel.x = x;
-	}
-	
-	public void setX(float x) {
-		this.pos.x = x;
-	}
-	
-	public void addVel(float x, float y, float z) {
-		this.vel.x += x;
-		this.vel.y += y;
-		this.vel.z += z;
-	}
-	
-	public void addPos(float x, float y) {
-		this.pos.x += x;
-		this.pos.y += y;
-	}
 	
 	@Override
 	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {

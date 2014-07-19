@@ -81,8 +81,23 @@ public class Player extends Entity {
 		state.state.draw(batch);
 	}
 
+	@Override
+	public void setStateByValue(String strvalue) {
+		state.setState(PlayerStateEnum.valueOf(strvalue));
+	}
+	
 	public void setState(PlayerStateEnum name) {
 		state.setState(name);
+	}
+	
+	@Override
+	public void setParentState() {
+		state.state.transistionToParent();
+	}
+	
+	@Override
+	public void setAnimation(String anim, boolean val) {
+		state.animate.setCurrent(anim, val);
 	}
 	
 	public PlayerStateEnum getState() {
@@ -108,6 +123,26 @@ public class Player extends Entity {
 		return state.phyState.body.getX();
 	}
 
+	@Override
+	public void stop() {
+		state.state.setIdle();
+	}
+
+	@Override
+	public void stopOnX() {		
+		state.state.setIdle();
+	}
+
+	@Override
+	public void stopOnY() {
+		state.state.setIdle();
+	}
+
+	@Override
+	public void addPos(float x, float y) {
+		state.phyState.body.addPos(x, y);
+	}
+	
 	public void switchLevel() {
 		state.hitleftwall = false;
 		state.hitrightwall = false;
@@ -132,6 +167,7 @@ public class Player extends Entity {
 		}
 	}
 
+	@Override
 	public void setX(float x) {
 		state.phyState.body.setX(x);
 	}

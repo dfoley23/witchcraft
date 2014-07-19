@@ -55,6 +55,8 @@ public class NonPlayer extends Entity {
 		setupAnimations(skinname, pos, bodyScale, fileContent);
 
 		setupAI(fileContent);
+		
+		
 	}
 
 	public void update(float dT) {
@@ -65,14 +67,64 @@ public class NonPlayer extends Entity {
 		sm.state.checkInLevel();
 	}
 
+	@Override
 	public void setTalking(NonPlayer npc) {
 		sm.state.setTalking(npc);
 	}
 
+	public void setCinematic() {
+		sm.state.setCinematic();
+	}
+	
+	@Override
+	public void setParentState() {
+		sm.state.transistionToParent();
+	}
+	
+	@Override
+	public void setStateByValue(String strvalue) {
+		sm.setState(NPCStateEnum.valueOf(strvalue));
+	}
+	
+	@Override
+	public void setParentByValue(String strvalue) {
+		sm.state.setParent(sm.getState(NPCStateEnum.valueOf(strvalue)));
+	}
+	
+	@Override
+	public void setAnimation(String anim, boolean val) {
+		sm.animate.setCurrent(anim, val);
+	}
+	
 	public void draw(Batch batch) {
 		sm.state.draw(batch);
 	}
+	@Override
+	public void stop() {
+		sm.state.setIdle();
+	}
 
+	@Override
+	public void stopOnX() {		
+		sm.state.setIdle();
+	}
+
+	@Override
+	public void stopOnY() {
+		sm.state.setIdle();
+	}
+
+	@Override
+	public void addPos(float x, float y) {
+		sm.phyState.body.addPos(x, y);
+	}
+	
+	@Override
+	public void faceLeft(boolean val) {
+		sm.facingleft = val;
+	}
+
+	@Override
 	public void switchBloodSword() {
 		sm.animate.setRegion("right hand item", "sworda", "bloodysworda",
 				false, 1, 1);
@@ -138,22 +190,12 @@ public class NonPlayer extends Entity {
 			if (state.getName().equals(initState)) {
 				if (this.level != GamePlayManager.currentlevel) {
 					sm.setInitialState(state);
-					if ( statechain.length >2 && statechain[2].equals("CINEMATIC")){
-						NPCState temp = sm.state;
-						sm.setState(NPCStateEnum.CINEMATIC);
-						sm.state.setParent(temp);
-					}
 					NPCState temp = sm.state;
 					sm.setState(NPCStateEnum.INOTHERLEVEL);
 					sm.state.setParent(temp);
 					break;
 				} else {
 					sm.setInitialState(state);
-					if ( statechain.length >2 && statechain[2].equals("CINEMATIC")){
-						NPCState temp = sm.state;
-						sm.setState(NPCStateEnum.CINEMATIC);
-						sm.state.setParent(temp);
-					}
 					break;
 				}
 			}
@@ -226,7 +268,7 @@ public class NonPlayer extends Entity {
 			line = filecontent[l];
 		}
 	}
-
+	
 	protected void buildPhysics(KinematicParticle body) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;

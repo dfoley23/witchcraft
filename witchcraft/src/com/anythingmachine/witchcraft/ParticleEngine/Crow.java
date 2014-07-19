@@ -157,7 +157,7 @@ public class Crow extends KinematicParticle {
 		fixture.shape = shape;
 		fixture.isSensor = true;
 		fixture.density = 1f;
-		fixture.filter.categoryBits = Util.CATEGORY_ANIMALS;
+		fixture.filter.categoryBits = Util.CATEGORY_TRIGGERS;
 		fixture.filter.maskBits = Util.CATEGORY_ENVIRONMENT | Util.CATEGORY_ITEMS | Util.CATEGORY_PARTICLES;
 		collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);

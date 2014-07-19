@@ -6,10 +6,16 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import com.anythingmachine.LuaEngine.LoadScript;
+import com.anythingmachine.cinematics.Camera;
+import com.anythingmachine.cinematics.CameraState;
+import com.anythingmachine.cinematics.CinematicObject;
+import com.anythingmachine.cinematics.CinematicTrigger;
+import com.anythingmachine.cinematics.actions.AnimateTimed;
+import com.anythingmachine.cinematics.actions.FaceLeft;
+import com.anythingmachine.cinematics.actions.Lerp;
 import com.anythingmachine.collisionEngine.MyContactListener;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
-import com.anythingmachine.tiledMaps.Camera;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Screen;
@@ -52,13 +58,15 @@ public class GamePlayManager extends Screen {
 	public static boolean initworld = true;
 	public static Sound currentsound;
 	public static long currentsoundid;
+	private static ArrayList<CinematicTrigger> triggers;
+	public CinematicTrigger cinema;
 
 	private CloudEmitter cloudE;
 	private CrowEmitter crowE;
 
 	// test fields
 	private Box2DDebugRenderer debugRenderer;
-	private ArrayList<NonPlayer> npcs;
+	private static ArrayList<NonPlayer> npcs;
 	private NPCStaticAnimation shackled;
 	private NPCStaticAnimation tied;
 
@@ -106,6 +114,8 @@ public class GamePlayManager extends Screen {
 			levels.add(Float.parseFloat(s));
 		}
 
+		triggers = new ArrayList<CinematicTrigger>();
+
 		player = new Player(rk4);
 		npcs = new ArrayList<NonPlayer>();
 		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 3.0f),
@@ -121,7 +131,7 @@ public class GamePlayManager extends Screen {
 				new Vector2(0.6f, 0.7f), "data/npcdata/other/joearcher",
 				NPCType.ARCHER));
 
-		npcs.add(new NonPlayer("civmalebrown", new Vector2(3800.0f, 3.0f),
+		npcs.add(new NonPlayer("civmalebrown", new Vector2(3100.0f, 3.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
 				NPCType.CIV));
 		npcs.add(new NonPlayer("civfemaleblack-hood",
@@ -138,6 +148,18 @@ public class GamePlayManager extends Screen {
 
 		currentsound = WitchCraft.assetManager.get("data/sounds/crickets.ogg");
 		currentsoundid = currentsound.loop(0.25f);
+		
+		level1();
+	}
+
+	@Override
+	public void setCinematic(CinematicTrigger c) {
+		player.setState(PlayerStateEnum.CINEMATIC);
+		for (NonPlayer npc : npcs) {
+			npc.setCinematic();
+		}
+		WitchCraft.cam.setState(CameraState.CINEMATIC);
+		cinema = c;
 	}
 
 	@Override
@@ -145,20 +167,31 @@ public class GamePlayManager extends Screen {
 		world.step(dt, 1, 1);
 
 		rk4.step();
+		
+		if (cinema != null && !cinema.isEnded()) 
+			cinema.update(dt);
+		else if ( WitchCraft.cam.state == CameraState.CINEMATIC ) {
+			WitchCraft.cam.state = CameraState.FOLLOWPLAYER;
+			player.setParentState();
+			for (NonPlayer npc : npcs) {
+				npc.setParentState();
+			}
+		}
 
 		player.update(dt);
+
 		for (NonPlayer npc : npcs)
 			npc.update(dt);
-		// npc2.update(dt);
-		// npc3.update(dt);
-		// npc4.update(dt);
-		// npc5.update(dt);
+
 		shackled.update(dt);
 		tied.update(dt);
 
 		cloudE.update(dt);
 		crowE.update(dt);
 
+		// if level is a new level number
+		// if its negative its the same level
+		// only run this when switching levels
 		if (level > 0) {
 			float diff = 0;
 			if (level < currentlevel + 1) {
@@ -167,7 +200,6 @@ public class GamePlayManager extends Screen {
 			} else {
 				diff -= levels.get(currentlevel) - WitchCraft.screenWidth
 						* 0.5f;
-				;
 				player.setX(64);
 			}
 			cloudE.moveByX(diff);
@@ -176,16 +208,14 @@ public class GamePlayManager extends Screen {
 			switchLevel(level);
 			currentlevel = level - 1;
 			level = -1;
-
 			for (NonPlayer npc : npcs) {
 				npc.checkInLevel();
 			}
 		}
 		Vector3 playerPos = player.getPosPixels();
-		xGrid = Camera.camera.position.x = Math.min(playerPos.x,
-				levels.get(currentlevel)
-						- (WitchCraft.screenWidth * WitchCraft.scale));
-		float yGrid = Camera.camera.position.y = playerPos.y;
+		Camera.updateState(playerPos, levels.get(currentlevel));
+		xGrid = Camera.camera.position.x;
+		float yGrid = Camera.camera.position.y;
 		if (xGrid < WitchCraft.screenWidth * (WitchCraft.scale)) {
 			xGrid = Camera.camera.position.x = WitchCraft.screenWidth
 					* (WitchCraft.scale);
@@ -226,8 +256,12 @@ public class GamePlayManager extends Screen {
 		shackled.draw(batch);
 		tied.draw(batch);
 
-		for (NonPlayer npc : npcs)
+		for (NonPlayer npc : npcs) {
 			npc.draw(batch);
+			if ( npc.getPosPixels().y < 0 ) {
+				System.out.println(npc.toString()+npc.npctype);
+			}
+		}
 		// npc2.draw(batch);
 		// npc3.draw(batch);
 		// npc4.draw(batch);
@@ -261,8 +295,8 @@ public class GamePlayManager extends Screen {
 					new InternalFileHandleResolver()));
 			WitchCraft.assetManager.unload("data/world/level1/level"
 					+ (oldlevel + 1) + ".tmx");
-			WitchCraft.assetManager.load("data/world/level1/level"
-					+ (level) + ".tmx", TiledMap.class);
+			WitchCraft.assetManager.load("data/world/level1/level" + (level)
+					+ ".tmx", TiledMap.class);
 			WitchCraft.assetManager.finishLoading();
 
 			String levelstr = "level" + l;
@@ -270,6 +304,20 @@ public class GamePlayManager extends Screen {
 			tiledMapHelper.loadMap(levelstr);
 			tiledMapHelper.loadCollisions("data/collisions.txt", world,
 					Util.PIXELS_PER_METER, l);
+			switch(l) {
+			case 1:
+				level1();
+				break;
+			case 2:
+				level2();
+				break;
+			case 3:
+				level3();
+				break;
+			case 4:
+				level4();
+				break;
+			}
 		} else {
 			level = l;
 		}
@@ -300,9 +348,68 @@ public class GamePlayManager extends Screen {
 			update(WitchCraft.dt);
 		}
 	}
-	
+
 	@Override
 	public void transistionOut() {
-		
+
+	}
+
+	public static void level1() {
+		triggers.clear();
+		triggers.add(
+				new CinematicTrigger().addComponent(
+				new CinematicObject().addAction(
+				new Lerp(WitchCraft.cam, 0.0f,	0.005f, new Vector3(2000+WitchCraft.screenWidth * 0.5f, 0, 0))
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new FaceLeft(npcs.get(4), 0.0f, true)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new AnimateTimed("WALKING", 6.3f, npcs.get(4), 3.0f)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new AnimateTimed("CLEANING", 10.0f, npcs.get(4), 8.0f)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new FaceLeft(npcs.get(4), 11.5f, false)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new AnimateTimed("WALKING", 14.7f, npcs.get(4), 12.0f)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new FaceLeft(npcs.get(4), 14.9f, true)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new FaceLeft(npcs.get(4), 18.7f, false)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new AnimateTimed("WALKING", 24.0f, npcs.get(4), 19.0f)
+				)
+				).addComponent(
+				new CinematicObject().addAction(
+				new Lerp(WitchCraft.cam, 22.0f,	0.003f, player.getPosPixels())
+				)
+				).buildBody(1700, 200, 8, 70)
+				);
+	}
+
+	public static void level2() {
+		triggers.clear();
+	}
+
+	public static void level3() {
+		triggers.clear();
+	}
+
+	public static void level4() {
+		triggers.clear();
 	}
 }

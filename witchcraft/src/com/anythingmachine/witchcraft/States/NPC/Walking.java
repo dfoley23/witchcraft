@@ -22,4 +22,5 @@ public class Walking extends SharedState {
 	public void setWalk() {
 		
 	}
+	
 }

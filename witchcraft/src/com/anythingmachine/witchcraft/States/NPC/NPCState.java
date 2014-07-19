@@ -66,6 +66,10 @@ public class NPCState {
 		}
 	}
 
+	public void setCinematic() {
+		sm.setState(NPCStateEnum.CINEMATIC);
+	}
+	
 	public void setGoingTo(float dt) {
 
 	}
@@ -179,6 +183,14 @@ public class NPCState {
 		}
 	}
 
+	public void transistionToParent() {
+		if ( this.parent != null ) {
+			this.sm.setState(parent.name);
+		} else {
+			sm.setState(NPCStateEnum.IDLE);
+		}
+	}
+	
 	public void setIdle() {
 		sm.setState(NPCStateEnum.IDLE);
 	}
@@ -193,7 +205,7 @@ public class NPCState {
 			sm.setState(action.getAIState());
 		}
 	}
-
+	
 	public void setWalk() {
 		sm.getState(NPCStateEnum.WALKING).transistionIn();
 		// sm.state.setParent(this);

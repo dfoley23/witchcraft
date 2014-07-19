@@ -44,7 +44,7 @@ public class PlayerStateMachine extends StateMachine {
 		super(name, pos, scl, flip, sd);
 		neck = animate.findBone("neck");
 		dupeSkin = "";
-		power = PlayerStateEnum.JUMPING;
+		power = PlayerStateEnum.MINDCONTROLPOWER;
 		uiFadein = -5;
 
 		rand = new Random();

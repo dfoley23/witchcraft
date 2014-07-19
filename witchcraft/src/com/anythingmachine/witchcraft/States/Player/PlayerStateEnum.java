@@ -73,7 +73,7 @@ public enum PlayerStateEnum {
 		@Override
 		public int getNextPower() {
 			// TODO link more powers later
-			return PlayerStateEnum.JUMPING.getID();
+			return PlayerStateEnum.MINDCONTROLPOWER.getID();
 		}
 
 		@Override
@@ -172,7 +172,7 @@ public enum PlayerStateEnum {
 	INTANGIBLEPOWER {
 		@Override
 		public int getNextPower() {
-			return PlayerStateEnum.JUMPING.getID();
+			return PlayerStateEnum.MINDCONTROLPOWER.getID();
 		}
 
 		@Override
@@ -197,7 +197,7 @@ public enum PlayerStateEnum {
 	}
 
 	public int getNextPower() {
-		return PlayerStateEnum.JUMPING.getID();
+		return PlayerStateEnum.MINDCONTROLPOWER.getID();
 	}
 
 	public int getPowerIndex() {

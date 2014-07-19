@@ -8,31 +8,38 @@ public class SharedState extends NPCState {
 
 	public SharedState(NPCStateMachine sm, NPCStateEnum name) {
 		super(sm, name);
+		parent = sm.getState(NPCStateEnum.IDLE);
 	}
 	
 	@Override
 	public void update(float dt) {
-		parent.update(dt);
+		if ( parent.name != this.name ) 
+			parent.update(dt);
 	}
 	
 	@Override
 	public void takeAction(Action action) {
-		parent.takeAction(action);
+		if ( parent.name != this.name ) 
+			parent.takeAction(action);
 	}
 	
 	@Override
 	public ActionEnum[] getPossibleActions() {
-		return parent.getPossibleActions();
+		if ( parent.name != this.name ) 
+			return parent.getPossibleActions();
+		return new ActionEnum[] { };
 	}
 	
 	@Override
 	public void setAttack() {
-		parent.setAttack();
+		if ( parent.name != this.name ) 
+			parent.setAttack();
 	}
 
 	@Override
 	public void takeAction(float dt) {
-		parent.takeAction(dt);
+		if ( parent.name != this.name ) 
+			parent.takeAction(dt);
 	}
 
 	@Override

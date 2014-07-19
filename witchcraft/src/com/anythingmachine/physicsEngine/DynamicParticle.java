@@ -14,24 +14,6 @@ public class DynamicParticle extends Particle {
 	public void draw(Batch batch) {
 		
 	}
-		
-	public void setVel(float x, float y, float z) {
-		this.vel.x = x;
-		this.vel.y = y;
-		this.vel.z = z;
-	}
-	
-	public void addVel(float x, float y, float z) {
-		this.vel.x += x;
-		this.vel.y += y;
-		this.vel.z += z;
-	}
-	
-	public void addPos(float x, float y) {
-		this.pos.x += x;
-		this.pos.y += y;
-	}
-
 	
 	@Override
 	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {

@@ -1,5 +1,9 @@
 package com.anythingmachine.witchcraft.States.Player;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.SourceDataLine;
+
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
@@ -19,7 +23,11 @@ public class Flying extends Jumping {
 	private float rotation;
 	private float hitrooftimeout = 1f;
 	private float time = 0f;
-
+	private AudioFormat af;
+	private SourceDataLine sdl;
+	private SourceDataLine tempsdl;
+	byte[] buf;
+	
 	public Flying(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 	}
@@ -31,19 +39,41 @@ public class Flying extends Jumping {
 
 	@Override
 	public void transistionIn() {
-		GamePlayManager.currentsound.stop();
-		GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/wind.wav");
-		GamePlayManager.currentsound.loop(1);
+//		GamePlayManager.currentsound.stop();
+//		GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/wind.wav");
+//		GamePlayManager.currentsound.loop(1);
+	    af = new AudioFormat( (float )44100, 8, 1, true, false );
+	    try { 
+	    sdl = AudioSystem.getSourceDataLine( af );
+	    sdl.open( af );
+	    sdl.start();
+	    buf = new byte[ (int)(1000 * (float )44100 / 1000) ];;
+	    for( int i = 0; i < 1000 * (float )44100 / 1000; i++ ) {
+	        double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
+	        buf[ i ] = (byte )( Math.sin( angle ) * 100 );
+	    }
+        sdl.write( buf, 0, 1 );
+	    } catch(Exception e) {
+	    	
+	    }
+
 	}
 
 	@Override
 	public void transistionOut() {
-		GamePlayManager.currentsound.stop();
-		GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/crickets.ogg");
+//		GamePlayManager.currentsound.stop();
+//		GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/crickets.ogg");
+	    sdl.drain();
+	    sdl.stop();
+	    sdl.close();
+
 	}
 
 	@Override
 	public void update(float dt) {
+	    sdl.drain();
+//        sdl.write( buf, 0, 1 );
+
 		checkGround();
 
 		setInputSpeed();
