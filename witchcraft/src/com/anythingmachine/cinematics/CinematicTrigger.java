@@ -3,9 +3,9 @@ package com.anythingmachine.cinematics;
 import java.util.ArrayList;
 
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,45 +15,52 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class CinematicTrigger extends Entity {
-	private ArrayList<CinematicObject> components;
+	private ArrayList<CinematicAction> actions;
 	private Body collisionBody;
 	private boolean destroybody = false;
 	private boolean hasEnded = false;
 
 	public CinematicTrigger() {
-		components = new ArrayList<CinematicObject>();
+		actions = new ArrayList<CinematicAction>();
 	}
-
-	public CinematicTrigger addComponent(CinematicObject c) {
-		components.add(c);
+	
+	public CinematicTrigger addAction(CinematicAction action) {
+		actions.add(action);
 		return this;
 	}
-
+	
 	public void update(float dt) {
 		if ( destroybody) 
 			collisionBody.getWorld().destroyBody(collisionBody);
 		destroybody = false;
 		hasEnded = true;
-		for (CinematicObject c : components) {
-			if (c.hasActions()) {
-				c.update(dt);
+		for(CinematicAction a: actions) {
+			if( !a.isEnded() ) {
+				if( a.isStarted(dt) ) {
+					a.update(dt);
+					System.out.println(a.toString()+" has begun");
+				} else {
+				System.out.println(a.toString()+" has not begun");
+				}
 				hasEnded = false;
+			} else {
+				System.out.println(a.toString()+" has ended");				
 			}
 		}
-	}
-
-	public boolean isEnded() {
 		if ( hasEnded ) {
-			components.clear();
+			actions.clear();
+			GamePlayManager.sleepCinematic();
 		}
+	}
+	
+	public boolean isEnded() {
 		return hasEnded;
 	}
 
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		destroybody = true;
-		System.out.println("hello trigger");
-		WitchCraft.setCinematic(this);
+		GamePlayManager.setCinematic(this);
 	}
 
 	public CinematicTrigger buildBody(float x, float y, float width, float height) {
@@ -74,6 +81,10 @@ public class CinematicTrigger extends Entity {
 		shape.dispose();
 
 		return this;
+	}
+	
+	public void transistionOut() {
+		
 	}
 
 }

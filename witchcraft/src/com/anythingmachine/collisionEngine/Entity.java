@@ -2,6 +2,7 @@ package com.anythingmachine.collisionEngine;
 
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -71,6 +72,12 @@ public class Entity extends Object {
 		return Vector3.Zero;
 	}
 	public void start() {
+	}
+	public void update(float dt) {
+		
+	}
+	public void draw(Batch batch) {
+		
 	}
 	
 	/**

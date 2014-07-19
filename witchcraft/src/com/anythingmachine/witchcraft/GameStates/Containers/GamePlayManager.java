@@ -8,11 +8,13 @@ import java.util.GregorianCalendar;
 import com.anythingmachine.LuaEngine.LoadScript;
 import com.anythingmachine.cinematics.Camera;
 import com.anythingmachine.cinematics.CameraState;
-import com.anythingmachine.cinematics.CinematicObject;
+import com.anythingmachine.cinematics.CinematicSleeper;
 import com.anythingmachine.cinematics.CinematicTrigger;
 import com.anythingmachine.cinematics.actions.AnimateTimed;
 import com.anythingmachine.cinematics.actions.FaceLeft;
 import com.anythingmachine.cinematics.actions.Lerp;
+import com.anythingmachine.cinematics.actions.ParticleToGamePlay;
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.collisionEngine.MyContactListener;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
@@ -21,6 +23,7 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Screen;
 import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
 import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
+import com.anythingmachine.witchcraft.ParticleEngine.FireEmitter;
 import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.npcs.NPCStaticAnimation;
@@ -59,7 +62,9 @@ public class GamePlayManager extends Screen {
 	public static Sound currentsound;
 	public static long currentsoundid;
 	private static ArrayList<CinematicTrigger> triggers;
-	public CinematicTrigger cinema;
+	private static CinematicTrigger cinema;
+	private static CinematicTrigger sleepCinematic;
+	private static StorySegment storySegment = StorySegment.BEGINNING;
 
 	private CloudEmitter cloudE;
 	private CrowEmitter crowE;
@@ -67,8 +72,13 @@ public class GamePlayManager extends Screen {
 	// test fields
 	private Box2DDebugRenderer debugRenderer;
 	private static ArrayList<NonPlayer> npcs;
+	private static ArrayList<Entity> entities;
 	private NPCStaticAnimation shackled;
 	private NPCStaticAnimation tied;
+
+	public enum StorySegment {
+		BEGINNING, POSTINTRODUCTION,
+	}
 
 	public GamePlayManager() {
 		Date date = new Date();
@@ -115,7 +125,10 @@ public class GamePlayManager extends Screen {
 		}
 
 		triggers = new ArrayList<CinematicTrigger>();
+		sleepCinematic = new CinematicSleeper();
+		cinema = sleepCinematic;
 
+		entities = new ArrayList<Entity>();
 		player = new Player(rk4);
 		npcs = new ArrayList<NonPlayer>();
 		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 3.0f),
@@ -131,7 +144,7 @@ public class GamePlayManager extends Screen {
 				new Vector2(0.6f, 0.7f), "data/npcdata/other/joearcher",
 				NPCType.ARCHER));
 
-		npcs.add(new NonPlayer("civmalebrown", new Vector2(3100.0f, 3.0f),
+		npcs.add(new NonPlayer("civmalebrown", new Vector2(4250.0f, 3.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
 				NPCType.CIV));
 		npcs.add(new NonPlayer("civfemaleblack-hood",
@@ -146,14 +159,15 @@ public class GamePlayManager extends Screen {
 		cloudE = new CloudEmitter(25);
 		crowE = new CrowEmitter(1);
 
-		currentsound = WitchCraft.assetManager.get("data/sounds/crickets.ogg");
-		currentsoundid = currentsound.loop(0.25f);
-		
+		// currentsound =
+		// WitchCraft.assetManager.get("data/sounds/crickets.ogg");
+		// currentsoundid = currentsound.loop(0.25f);
+
 		level1();
 	}
 
-	@Override
-	public void setCinematic(CinematicTrigger c) {
+	public static void setCinematic(CinematicTrigger c) {
+		cinema.transistionOut();
 		player.setState(PlayerStateEnum.CINEMATIC);
 		for (NonPlayer npc : npcs) {
 			npc.setCinematic();
@@ -162,23 +176,31 @@ public class GamePlayManager extends Screen {
 		cinema = c;
 	}
 
+	public static void sleepCinematic() {
+		WitchCraft.cam.state = CameraState.FOLLOWPLAYER;
+		player.setParentState();
+		for (NonPlayer npc : npcs) {
+			npc.setParentState();
+		}
+		cinema = sleepCinematic;
+	}
+
+	public static void addEntity(Entity e) {
+		entities.add(e);
+	}
+
 	@Override
 	public void update(float dt) {
 		world.step(dt, 1, 1);
 
 		rk4.step();
-		
-		if (cinema != null && !cinema.isEnded()) 
-			cinema.update(dt);
-		else if ( WitchCraft.cam.state == CameraState.CINEMATIC ) {
-			WitchCraft.cam.state = CameraState.FOLLOWPLAYER;
-			player.setParentState();
-			for (NonPlayer npc : npcs) {
-				npc.setParentState();
-			}
-		}
+
+		cinema.update(dt);
 
 		player.update(dt);
+
+		for (Entity e : entities)
+			e.update(dt);
 
 		for (NonPlayer npc : npcs)
 			npc.update(dt);
@@ -256,10 +278,14 @@ public class GamePlayManager extends Screen {
 		shackled.draw(batch);
 		tied.draw(batch);
 
+		for (Entity e : entities) {
+			e.draw(batch);
+		}
+
 		for (NonPlayer npc : npcs) {
 			npc.draw(batch);
-			if ( npc.getPosPixels().y < 0 ) {
-				System.out.println(npc.toString()+npc.npctype);
+			if (npc.getPosPixels().y < 0) {
+				System.out.println(npc.toString() + npc.npctype);
 			}
 		}
 		// npc2.draw(batch);
@@ -304,7 +330,7 @@ public class GamePlayManager extends Screen {
 			tiledMapHelper.loadMap(levelstr);
 			tiledMapHelper.loadCollisions("data/collisions.txt", world,
 					Util.PIXELS_PER_METER, l);
-			switch(l) {
+			switch (l) {
 			case 1:
 				level1();
 				break;
@@ -356,49 +382,6 @@ public class GamePlayManager extends Screen {
 
 	public static void level1() {
 		triggers.clear();
-		triggers.add(
-				new CinematicTrigger().addComponent(
-				new CinematicObject().addAction(
-				new Lerp(WitchCraft.cam, 0.0f,	0.005f, new Vector3(2000+WitchCraft.screenWidth * 0.5f, 0, 0))
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new FaceLeft(npcs.get(4), 0.0f, true)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new AnimateTimed("WALKING", 6.3f, npcs.get(4), 3.0f)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new AnimateTimed("CLEANING", 10.0f, npcs.get(4), 8.0f)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new FaceLeft(npcs.get(4), 11.5f, false)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new AnimateTimed("WALKING", 14.7f, npcs.get(4), 12.0f)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new FaceLeft(npcs.get(4), 14.9f, true)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new FaceLeft(npcs.get(4), 18.7f, false)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new AnimateTimed("WALKING", 24.0f, npcs.get(4), 19.0f)
-				)
-				).addComponent(
-				new CinematicObject().addAction(
-				new Lerp(WitchCraft.cam, 22.0f,	0.003f, player.getPosPixels())
-				)
-				).buildBody(1700, 200, 8, 70)
-				);
 	}
 
 	public static void level2() {
@@ -407,6 +390,43 @@ public class GamePlayManager extends Screen {
 
 	public static void level3() {
 		triggers.clear();
+		switch (storySegment) {
+		case BEGINNING:
+			triggers.add(new CinematicTrigger()
+					.addAction(
+							new Lerp(WitchCraft.cam, 0.0f, 0.005f, new Vector3(
+									3150 + WitchCraft.screenWidth * 0.5f, 0, 0)))
+					.addAction(new FaceLeft(npcs.get(4), 0.0f, true))
+					.addAction(
+							new AnimateTimed("WALKING", 6.3f, npcs.get(4), 3.0f))
+					.addAction(
+							new AnimateTimed("CLEANING", 10.0f, npcs.get(4),
+									8.0f))
+					.addAction(
+							new ParticleToGamePlay(
+									10.0f,
+									new FireEmitter(
+											new Vector3(
+													2650 + WitchCraft.screenWidth * 0.5f,
+													30, 0), 50, 3.0f, 60.0f,
+											0.5f, 0.7f)))
+					.addAction(new FaceLeft(npcs.get(4), 11.5f, false))
+					.addAction(
+							new AnimateTimed("WALKING", 14.7f, npcs.get(4),
+									12.0f))
+					.addAction(new FaceLeft(npcs.get(4), 14.9f, true))
+					.addAction(new FaceLeft(npcs.get(4), 18.7f, false))
+					.addAction(
+							new AnimateTimed("WALKING", 24.0f, npcs.get(4),
+									19.0f))
+					.addAction(
+							new Lerp(WitchCraft.cam, 22.0f, 0.003f,
+									new Vector3(2800,
+											0, 0))).buildBody(2850, 200, 8, 70));
+			break;
+		case POSTINTRODUCTION:
+			break;
+		}
 	}
 
 	public static void level4() {

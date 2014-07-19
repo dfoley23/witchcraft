@@ -2,6 +2,7 @@ package com.anythingmachine.cinematics.actions;
 
 import com.anythingmachine.cinematics.CinematicAction;
 import com.anythingmachine.collisionEngine.Entity;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class StartAction implements CinematicAction {
 	private float endDT;
@@ -17,12 +18,13 @@ public class StartAction implements CinematicAction {
 	}
 	
 	public void update(float dt) {
-		if( cineTime >= startDT ) 
-			component.start();
+		component.update(dt);
 	}
 	
 	public boolean isStarted(float dt) {
 		cineTime += dt;
+		if( cineTime >= startDT)
+			component.start();
 		return cineTime >= startDT;
 	}
 	

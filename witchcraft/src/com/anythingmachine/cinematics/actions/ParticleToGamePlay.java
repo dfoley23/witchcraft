@@ -2,36 +2,35 @@ package com.anythingmachine.cinematics.actions;
 
 import com.anythingmachine.cinematics.CinematicAction;
 import com.anythingmachine.collisionEngine.Entity;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class FaceLeft implements CinematicAction {
+public class ParticleToGamePlay implements CinematicAction {
 	protected Entity component;
 	protected float cineTime = 0.0f;
 	protected float startDT;
-	private boolean hasended = false;
-	private boolean faceleft;
+	private boolean hasStarted = false;
 	
-	public FaceLeft(Entity e, float startDT, boolean val) {
+	
+	public ParticleToGamePlay(float startDT, Entity e) {
+		this.component = e;		
 		this.startDT = startDT;
-		this.component = e;
-		this.faceleft = val;
 	}
 	
 	public void update(float dt) {
-		if( cineTime >= startDT ) {
-			component.faceLeft(faceleft);
-			hasended = true;
-		}
 	}
-
+		
 	public boolean isStarted(float dt) {
 		cineTime += dt;
+		if( cineTime >= startDT && !hasStarted) {
+			GamePlayManager.addEntity(component);
+			hasStarted = true;
+			
+		}
 		return cineTime >= startDT;
 	}
-
+	
 	public boolean isEnded() {
-		System.out.println("face left "+hasended);
-		return hasended;
+		return hasStarted;
 	}
-
 }

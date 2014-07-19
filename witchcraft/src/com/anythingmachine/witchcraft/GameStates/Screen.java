@@ -32,11 +32,7 @@ public class Screen {
 	public void loadLevel(String name) {
 		
 	}
-	
-	public void setCinematic(CinematicTrigger c) {
 		
-	}
-	
 	public void loadMenuAssets() {
 	}
 

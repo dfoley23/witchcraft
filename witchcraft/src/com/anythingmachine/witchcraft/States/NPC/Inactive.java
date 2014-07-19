@@ -118,7 +118,11 @@ public class Inactive extends NPCState {
 	
 	@Override
 	public ActionEnum[] getPossibleActions() {
-		return childState.getPossibleActions();
+		if ( childState.name != this.name ) {
+			return childState.getPossibleActions();
+		}else {
+			return new ActionEnum[] { };
+		}
 	}
 	
 	@Override
@@ -130,7 +134,7 @@ public class Inactive extends NPCState {
 	@Override	
 	public void transistionIn() {
 		sm.onscreen = false;
-		if ( childState == null || childState == this) {
+		if ( childState == null || childState.name == this.name) {
 			childState = sm.getState(NPCStateEnum.IDLE);
 		}
 	}

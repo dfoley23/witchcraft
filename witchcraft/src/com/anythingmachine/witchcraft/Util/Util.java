@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Util {
 
-	public static final boolean DEV_MODE = true;
+	public static final boolean DEV_MODE = false;
 	
 	private Util() {
 		throw new AssertionError();
@@ -112,8 +112,9 @@ public class Util {
 	public static final float MIN_VALUE = 0x0.000002P-126f; // 1.4e-45f
 
 	public static final int GRAVITY = -70;
+	public static final int FIRESPEED = 40;
 	public static final float PLAYERWALKSPEED = 105f;
-	public static final float PLAYERRUNSPEED = 280f;
+	public static final float PLAYERRUNSPEED = 200f;
 	public static final float PLAYERFLYSPEED = 500f;
 
 	/**
