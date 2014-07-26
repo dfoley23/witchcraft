@@ -9,26 +9,26 @@ import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.States.Player.ArrowDead;
-import com.anythingmachine.witchcraft.States.Player.Attacking;
-import com.anythingmachine.witchcraft.States.Player.CastSpell;
-import com.anythingmachine.witchcraft.States.Player.Cinematic;
-import com.anythingmachine.witchcraft.States.Player.Dead;
-import com.anythingmachine.witchcraft.States.Player.DupeSkin;
-import com.anythingmachine.witchcraft.States.Player.DupeSkinPower;
-import com.anythingmachine.witchcraft.States.Player.Falling;
-import com.anythingmachine.witchcraft.States.Player.Flying;
-import com.anythingmachine.witchcraft.States.Player.Idle;
-import com.anythingmachine.witchcraft.States.Player.Invisible;
-import com.anythingmachine.witchcraft.States.Player.Jumping;
-import com.anythingmachine.witchcraft.States.Player.Landing;
-import com.anythingmachine.witchcraft.States.Player.LoadingState;
-import com.anythingmachine.witchcraft.States.Player.MindControlPower;
-import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
-import com.anythingmachine.witchcraft.States.Player.Running;
-import com.anythingmachine.witchcraft.States.Player.ShapeCrow;
-import com.anythingmachine.witchcraft.States.Player.ShapeShiftIntermediate;
-import com.anythingmachine.witchcraft.States.Player.Walking;
+import com.anythingmachine.witchcraft.agents.States.Player.ArrowDead;
+import com.anythingmachine.witchcraft.agents.States.Player.Attacking;
+import com.anythingmachine.witchcraft.agents.States.Player.CastSpell;
+import com.anythingmachine.witchcraft.agents.States.Player.Cinematic;
+import com.anythingmachine.witchcraft.agents.States.Player.Dead;
+import com.anythingmachine.witchcraft.agents.States.Player.DupeSkin;
+import com.anythingmachine.witchcraft.agents.States.Player.DupeSkinPower;
+import com.anythingmachine.witchcraft.agents.States.Player.Falling;
+import com.anythingmachine.witchcraft.agents.States.Player.Flying;
+import com.anythingmachine.witchcraft.agents.States.Player.Idle;
+import com.anythingmachine.witchcraft.agents.States.Player.Invisible;
+import com.anythingmachine.witchcraft.agents.States.Player.Jumping;
+import com.anythingmachine.witchcraft.agents.States.Player.Landing;
+import com.anythingmachine.witchcraft.agents.States.Player.LoadingState;
+import com.anythingmachine.witchcraft.agents.States.Player.MindControlPower;
+import com.anythingmachine.witchcraft.agents.States.Player.PlayerStateEnum;
+import com.anythingmachine.witchcraft.agents.States.Player.Running;
+import com.anythingmachine.witchcraft.agents.States.Player.ShapeCrow;
+import com.anythingmachine.witchcraft.agents.States.Player.ShapeShiftIntermediate;
+import com.anythingmachine.witchcraft.agents.States.Player.Walking;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
@@ -319,6 +319,7 @@ public class Player extends Entity {
 
 		KinematicParticle body = new KinematicParticle(new Vector3(256f, 128f,
 				0f), Util.GRAVITY * 3);
+//		body.useEuler(false);
 
 		state = new PlayerStateMachine(name, body.getPos(), new Vector2(0.53f,
 				0.53f), false, sd);

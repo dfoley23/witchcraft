@@ -17,15 +17,15 @@ import com.anythingmachine.cinematics.actions.ParticleToGamePlay;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.collisionEngine.MyContactListener;
 import com.anythingmachine.physicsEngine.RK4Integrator;
+import com.anythingmachine.physicsEngine.particleEngine.CloudEmitter;
+import com.anythingmachine.physicsEngine.particleEngine.CrowEmitter;
+import com.anythingmachine.physicsEngine.particleEngine.FireEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Screen;
-import com.anythingmachine.witchcraft.ParticleEngine.CloudEmitter;
-import com.anythingmachine.witchcraft.ParticleEngine.CrowEmitter;
-import com.anythingmachine.witchcraft.ParticleEngine.FireEmitter;
-import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.agents.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.agents.npcs.NPCStaticAnimation;
 import com.anythingmachine.witchcraft.agents.npcs.NPCType;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
@@ -86,9 +86,9 @@ public class GamePlayManager extends Screen {
 		cal.setTime(date);
 
 		if (WitchCraft.ON_ANDROID)
-			rk4 = new RK4Integrator(1f / 15f);
+			rk4 = new RK4Integrator(WitchCraft.dt);
 		else
-			rk4 = new RK4Integrator(1f / 30f);
+			rk4 = new RK4Integrator(WitchCraft.dt);
 		rk4System = new ParticleSystem(rk4);
 
 		contactListener = new MyContactListener();
@@ -144,10 +144,10 @@ public class GamePlayManager extends Screen {
 				new Vector2(0.6f, 0.7f), "data/npcdata/other/joearcher",
 				NPCType.ARCHER));
 
-		npcs.add(new NonPlayer("civmalebrown", new Vector2(4250.0f, 3.0f),
+		npcs.add(new NonPlayer("civ_male", new Vector2(4250.0f, 3.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
 				NPCType.CIV));
-		npcs.add(new NonPlayer("civfemaleblack-hood",
+		npcs.add(new NonPlayer("civ_female",
 				new Vector2(5500.0f, 3.0f), new Vector2(0.6f, 0.7f),
 				"data/npcdata/civs/saraciv", NPCType.CIV));
 		shackled = new NPCStaticAnimation("shackledmale1", new Vector3(1696,
@@ -191,7 +191,7 @@ public class GamePlayManager extends Screen {
 
 	@Override
 	public void update(float dt) {
-		world.step(dt, 1, 1);
+		world.step(WitchCraft.dt, 1, 1);
 
 		rk4.step();
 
@@ -408,7 +408,7 @@ public class GamePlayManager extends Screen {
 									new FireEmitter(
 											new Vector3(
 													2650 + WitchCraft.screenWidth * 0.5f,
-													30, 0), 50, 3.0f, 60.0f,
+													30, 0), 30, 3.0f, 60.0f,
 											0.5f, 0.7f)))
 					.addAction(new FaceLeft(npcs.get(4), 11.5f, false))
 					.addAction(

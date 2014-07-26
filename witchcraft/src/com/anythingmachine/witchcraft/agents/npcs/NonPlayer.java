@@ -11,11 +11,11 @@ import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.States.NPC.NPCState;
-import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
-import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.anythingmachine.witchcraft.agents.States.NPC.NPCState;
+import com.anythingmachine.witchcraft.agents.States.NPC.NPCStateEnum;
+import com.anythingmachine.witchcraft.agents.States.Transistions.ActionEnum;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -166,7 +166,9 @@ public class NonPlayer extends Entity {
 
 		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, 128f,
 				0f), -50f);
+//		body.useEuler(false);
 
+		
 		sm = new NPCStateMachine(skinname, body.getPos(), scale, false, sd,
 				this);
 

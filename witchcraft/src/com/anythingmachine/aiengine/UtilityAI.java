@@ -3,8 +3,8 @@ package com.anythingmachine.aiengine;
 import java.util.ArrayList;
 
 import com.anythingmachine.LuaEngine.LoadScript;
-import com.anythingmachine.witchcraft.States.NPC.NPCState;
-import com.anythingmachine.witchcraft.States.Transistions.ActionEnum;
+import com.anythingmachine.witchcraft.agents.States.NPC.NPCState;
+import com.anythingmachine.witchcraft.agents.States.Transistions.ActionEnum;
 import com.badlogic.gdx.Gdx;
 
 public class UtilityAI {

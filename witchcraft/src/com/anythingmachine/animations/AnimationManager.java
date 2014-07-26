@@ -77,7 +77,7 @@ public class AnimationManager {
 	}
 
 	public void updateSkel(float delta) {
-		totalTime += WitchCraft.dt;
+		totalTime += delta;
 		skel.updateWorldTransform();
 		skel.update(delta);
 	}

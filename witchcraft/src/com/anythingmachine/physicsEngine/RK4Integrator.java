@@ -49,9 +49,14 @@ public class RK4Integrator {
 			p.integratePos(dpdt, dt);
 			p.integrateVel(dvdt, dt);
 		} else {
-			Derivative a = evaluateEuler(p, t, dt);
-			p.integratePos(a.dp, dt);
-			p.integrateVel(a.dv, dt);
+//			Derivative a = evaluateEuler(p, t, dt);
+//			p.integratePos(a.dp, dt);
+//			p.integrateVel(a.dv, dt);
+			p.pos.x += p.vel.x*dt;
+			p.pos.y += p.vel.y*dt;
+			Vector3 vel = p.accel(p.getPos(), p.vel, t + dt);
+			p.vel.x += vel.x*dt;
+			p.vel.y += vel.y*dt;
 		}
 	}
 

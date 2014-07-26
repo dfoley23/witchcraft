@@ -6,8 +6,8 @@ import java.util.Random;
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.States.Player.PlayerState;
-import com.anythingmachine.witchcraft.States.Player.PlayerStateEnum;
+import com.anythingmachine.witchcraft.agents.States.Player.PlayerState;
+import com.anythingmachine.witchcraft.agents.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.ground.Curve;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
@@ -59,12 +59,11 @@ public class PlayerStateMachine extends StateMachine {
 
 		state.update(dt);
 		
-		float delta = Gdx.graphics.getDeltaTime();
 		if (state.canAnimate())
-			animate.applyTotalTime(true, delta);
+			animate.applyTotalTime(true, dt);
 
 		animate.setPos(phyState.body.getPos(), -8f, 0f);
-		animate.updateSkel(delta);
+		animate.updateSkel(dt);
 
 	}
 

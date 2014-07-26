@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.States.NPC.NPCState;
-import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
+import com.anythingmachine.witchcraft.agents.States.NPC.NPCState;
+import com.anythingmachine.witchcraft.agents.States.NPC.NPCStateEnum;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;

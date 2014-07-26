@@ -97,7 +97,7 @@ public class InputManager {
 			float val = controller.getAxis(0);
 			float absval = Math.abs(val);
 			if (absval > 0.25) {
-				if (absval > 0.95) {
+				if (absval > 0.99) {
 					return (int) Math.signum(val) * 2;
 				} else {
 					return (int) Math.signum(val);

@@ -103,6 +103,10 @@ public class Particle extends Entity {
 	public void integrateVel(Vector3 dvdp, float dt) {
 
 	}
+	
+	public void useEuler(boolean val) {
+		this.useEuler = val;
+	}
 
 	@Override
 	public void setGravityVal(float val) {

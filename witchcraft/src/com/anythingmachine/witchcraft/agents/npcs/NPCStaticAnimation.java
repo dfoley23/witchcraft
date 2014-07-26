@@ -35,9 +35,9 @@ public class NPCStaticAnimation {
 	public void update(float dT) {
 		onscreen = checkInBounds();
 		if ( onscreen) {
-		float delta = Gdx.graphics.getDeltaTime();
+//		float delta = Gdx.graphics.getDeltaTime();
 
-		animate.applyTotalTime(true, delta);
+		animate.applyTotalTime(true, dT);
 
 		animate.updateSkel(dT);
 		}

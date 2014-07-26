@@ -113,8 +113,8 @@ public class Util {
 
 	public static final int GRAVITY = -70;
 	public static final int FIRESPEED = 40;
-	public static final float PLAYERWALKSPEED = 105f;
-	public static final float PLAYERRUNSPEED = 200f;
+	public static final float PLAYERWALKSPEED = 215f;
+	public static final float PLAYERRUNSPEED = 350f;
 	public static final float PLAYERFLYSPEED = 500f;
 
 	/**

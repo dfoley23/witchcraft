@@ -3,7 +3,6 @@ package com.anythingmachine.witchcraft;
 import java.util.HashMap;
 
 import com.anythingmachine.cinematics.Camera;
-import com.anythingmachine.cinematics.CinematicTrigger;
 import com.anythingmachine.witchcraft.GameStates.Loading;
 import com.anythingmachine.witchcraft.GameStates.PauseMenu;
 import com.anythingmachine.witchcraft.GameStates.Screen;
@@ -27,6 +26,7 @@ public class WitchCraft implements ApplicationListener {
 	public static int VIRTUAL_WIDTH = 1366;
 	public static int VIRTUAL_HEIGHT = 768;
 	public static float dt = 1f / 60f;
+	public static float targetFrameTime = 1f / 60f;
 	public static float ASPECT_RATIO = (float) VIRTUAL_WIDTH
 			/ (float) VIRTUAL_HEIGHT;
 	public static int screenWidth;
@@ -67,7 +67,7 @@ public class WitchCraft implements ApplicationListener {
 		if (ON_ANDROID) {
 			screenWidth = VIRTUAL_WIDTH;
 			screenHeight = VIRTUAL_HEIGHT;
-			dt = 1f / 60f;
+			targetFrameTime = 1f / 60f;
 		} else {
 			screenWidth = Gdx.app.getGraphics().getWidth();
 			screenHeight = Gdx.app.getGraphics().getHeight();
@@ -121,19 +121,24 @@ public class WitchCraft implements ApplicationListener {
 
 	@Override
 	public void render() {
-		float dT = Gdx.graphics.getDeltaTime();
-		accum += dT;
-//		if (ON_ANDROID || true) {
-//			 Gdx.app.log("***************************frames per sec: ", ""
-//			 + Gdx.app.getGraphics().getFramesPerSecond());
-//		}
+		float actualDT = Gdx.graphics.getDeltaTime();
+		accum += actualDT;
+		if (ON_ANDROID ) {
+			 Gdx.app.log("***************************frames per sec: ", ""
+			 + Gdx.app.getGraphics().getFramesPerSecond());
+		}
 
 		Gdx.gl.glViewport((int) WitchCraft.viewport.x,
 				(int) WitchCraft.viewport.y, (int) WitchCraft.viewport.width,
 				(int) WitchCraft.viewport.height);
-		if (accum >= dt) {
-			currentScreen.update(dT);
-			accum = accum - dt;
+		if( accum >= targetFrameTime) {
+//			if ( accum > dt || ON_ANDROID ) {
+//			currentScreen.update(accum);
+//			accum = accum - targetFrameTime;
+//			} else {
+				currentScreen.update(dt);
+				accum = targetFrameTime;
+//			}
 		}
 		
 

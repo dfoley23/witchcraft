@@ -1,6 +1,6 @@
 package com.anythingmachine.witchcraft.agents.npcs;
 
-import com.anythingmachine.witchcraft.States.NPC.NPCStateEnum;
+import com.anythingmachine.witchcraft.agents.States.NPC.NPCStateEnum;
 
 public enum NPCType {
 	CIV{
