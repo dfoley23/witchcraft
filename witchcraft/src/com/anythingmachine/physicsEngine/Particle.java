@@ -67,14 +67,18 @@ public class Particle extends Entity {
 	}
 	
 	@Override
-	public void setPos(float x, float y, float z) {
+	public void setPos(float x, float y) {
 		pos.x = x;
 		pos.y = y;
-		pos.z = z;
 	}
-
+	
 	@Override
 	public void setPos(Vector2 target) {
+		pos.x = target.x;
+		pos.y = target.y;
+	}
+	
+	public void set3DPos(Vector3 target) {
 		pos.x = target.x;
 		pos.y = target.y;
 	}
@@ -156,6 +160,10 @@ public class Particle extends Entity {
 		return vel;
 	}
 
+	public void flipXVel() {
+		vel.x = -vel.x;
+	}
+	
 	public float getX() {
 		return pos.x;
 	}

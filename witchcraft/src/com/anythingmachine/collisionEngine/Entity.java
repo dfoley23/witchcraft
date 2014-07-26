@@ -45,7 +45,7 @@ public class Entity extends Object {
 	public void setY(float y) {
 	}
 
-	public void setPos(float x, float y, float z) {
+	public void setPos(float x, float y) {
 	}
 
 	public void setPos(Vector2 target) {

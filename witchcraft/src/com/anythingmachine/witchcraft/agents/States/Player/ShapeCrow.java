@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.agents.States.Player;
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Crow;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -20,18 +21,25 @@ public class ShapeCrow extends PlayerState {
 	@Override
 	public void transistionIn() {
 		Vector3 pos = sm.phyState.body.getPos();
-		sm.phyState.body.setPos(pos.x, pos.y + 128, 0);
+		sm.phyState.body.setPos(pos.x-16, pos.y + 32);
 		sm.phyState.body.setGravityVal(0);
-		crow.setPos(pos);
+		crow.setVel(sm.facingleft ? -Util.PLAYERFLYSPEED
+				: Util.PLAYERFLYSPEED, 0, 0);
+		sm.hitplatform = false;
+		sm.elevatedSegment = null;
+		sm.animate.updateSkel(0);
+		crow.set3DPos(pos);
 		crow.setStandTime(-1);
 		crow.setFlipX(!sm.facingleft);
+		sm.grounded = false;
+		sm.hitroof = false;
 	}
 
 	@Override
 	public boolean canAnimate() {
 		return false;
 	}
-	
+
 	@Override
 	public void update(float dt) {
 		checkGround();
@@ -40,21 +48,20 @@ public class ShapeCrow extends PlayerState {
 
 		crow.update(dt);
 
-		crow.setFlipX(!sm.facingleft);
-
-		sm.phyState.correctCBody(-8, 128, 0);
+		sm.phyState.body.set3DPos(crow.getPos());
+		
+		sm.phyState.correctCBody(32, 70, 0);
 
 		time += dt;
 		if (time > timeout) {
 			time = 0;
 			sm.setState(PlayerStateEnum.FALLING);
-			sm.state.setParent(sm.getState(PlayerStateEnum.IDLE));
 		}
 	}
 
 	@Override
 	public void draw(Batch batch) {
-		crow.setPos(sm.phyState.body.getPos());
+//		crow.set3DPos(sm.phyState.body.getPos());
 		crow.draw(batch);
 	}
 
@@ -64,44 +71,41 @@ public class ShapeCrow extends PlayerState {
 
 	@Override
 	public void setInputSpeed() {
-		Vector3 vel = sm.phyState.body.getVel();
-		if (sm.input.right() && !sm.hitrightwall) {
-			sm.facingleft = sm.hitleftwall = false;
-			if (sm.input.up() && !sm.hitroof) {
-				sm.phyState.body.setVel(Util.PLAYERRUNSPEED,
-						Util.PLAYERWALKSPEED, 0);
-				sm.grounded = false;
-				crow.setStandTime(-1);
-			} else if (sm.input.down() && !sm.grounded) {
-				sm.hitroof = false;
-				sm.phyState.body.setVel(Util.PLAYERRUNSPEED,
-						-Util.PLAYERWALKSPEED, 0);
-			} else {
-				sm.phyState.body.setVel(Util.PLAYERRUNSPEED, vel.y, 0);
-			}
-		} else if (sm.input.left() && !sm.hitleftwall) {
-			sm.facingleft = true;
-			sm.hitrightwall = false;
-			if (sm.input.up() && !sm.hitroof) {
-				sm.grounded = false;
-				sm.phyState.body.setVel(-Util.PLAYERRUNSPEED,
-						Util.PLAYERWALKSPEED, 0);
-			} else if (sm.input.down() && !sm.grounded) {
-				sm.hitroof = false;
-				sm.phyState.body.setVel(-Util.PLAYERRUNSPEED,
-						-Util.PLAYERWALKSPEED, 0);
-			} else {
-				sm.phyState.body.setVel(-Util.PLAYERRUNSPEED, vel.y, 0);
-			}
-		} else {
-			sm.phyState.body.stop();
+		if ((!sm.facingleft && sm.input.left())
+				|| (sm.facingleft && sm.input.right())) {
+			crow.flipXVel();
+			sm.facingleft = !sm.facingleft;
+			crow.setFlipX(!sm.facingleft);
+		}
+		if (sm.input.up() && !sm.hitroof) {
+			crow.setVel(sm.facingleft ? -Util.PLAYERFLYSPEED : Util.PLAYERFLYSPEED, Util.PLAYERWALKSPEED, 0);
+			sm.grounded = false;
+			crow.setStand(false);
+		} else if (sm.input.down() && !sm.grounded) {
+			sm.hitroof = false;
+			crow.setYVel(-Util.PLAYERWALKSPEED);
 		}
 	}
 
 	@Override
 	public void land() {
-		sm.phyState.body.stop();
-		crow.setStandTime(6);
+//		crow.addPos(0, 8);
+		sm.grounded = true;
+		crow.setStand(true);
+	}
+
+	@Override
+	protected void hitPlatform(Platform plat) {
+//		if (plat.isBetween(sm.facingleft, sm.phyState.body.getX())) {
+			if (plat.getHeight() - 64 < crow.getY()) {
+				sm.hitplatform = true;
+				sm.elevatedSegment = plat;
+				land();
+			} else {
+				crow.stopOnY();
+				sm.hitroof = true;
+			}
+//		}
 	}
 
 	@Override
@@ -110,28 +114,37 @@ public class ShapeCrow extends PlayerState {
 
 	@Override
 	public void nextPower() {
-		
+
 	}
 
 	@Override
 	public void setWalk() {
-		
+
 	}
-	
+
 	@Override
 	public void setRun() {
-		
+
 	}
-	
+
+	@Override
+	protected void hitWall(float sign) {
+		crow.flipXVel();
+		sm.facingleft = !sm.facingleft;
+		crow.setFlipX(!sm.facingleft);
+		sm.hitleftwall = sm.hitrightwall = false;
+	}
+
 	@Override
 	public void transistionOut() {
 		crow.setStandTime(-1);
-		sm.phyState.body.setGravityVal(Util.GRAVITY * 3);
+		sm.phyState.body.setYVel(0);
+		sm.phyState.body.setGravityVal(Util.GRAVITY * 4);
 	}
-	
+
 	@Override
 	public void checkGround() {
-		if ( crow.getStandTime() > 0 ) {
+		if (crow.getStandTime() > 0) {
 			land();
 		}
 	}

@@ -236,7 +236,7 @@ public class NPCState {
 		if (sm.elevatedSegment != null
 				&& sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
 			float groundPoint = sm.elevatedSegment.getHeight(pos.x);
-			sm.phyState.body.setPos(pos.x, groundPoint - 10, 0);
+			sm.phyState.body.setPos(pos.x, groundPoint - 10);
 			// sm.setTestVal("grounded", true);
 		}
 	}

@@ -21,7 +21,15 @@ public class Attacking extends PlayerState {
 
 		@Override
 		public void update(float dt) {
-			super.update(dt);
+			checkGround();
+			
+			setInputSpeed();
+			
+			parent.updatePower(dt);
+			
+			sm.phyState.correctCBody(-8, 64, 0);
+
+			sm.animate.setFlipX(sm.facingleft);
 			if (sm.animate.isSkin("archer")) {
 				if (!shotArrow && sm.animate.isTImeOverThreeQuarters(0f)) {
 					arrow.setPos(arrowBone.getWorldX() + (sm.facingleft ? -128 : 128),
@@ -30,9 +38,8 @@ public class Attacking extends PlayerState {
 					shotArrow = true;
 				}
 			}
-			parent.updatePower(dt);
-
 		}
+		
 		@Override
 		public void setIdle() {
 			if ( sm.animate.isTImeOverThreeQuarters(0)) {
@@ -58,22 +65,27 @@ public class Attacking extends PlayerState {
 		}
 		
 		@Override
-		public void setInputSpeed() {
-			setIdle();
-		}
-		
-		@Override
 		public void setAttack() {
 			
 		}
 		
 		@Override
 		public void setWalk() {
-			
+			parent.setWalk();			
 		}
 		
 		@Override
 		public void setRun() {
+			parent.setRun();
+		}
+		
+		@Override
+		public void transistionIn() {
+			
+		}
+		
+		@Override
+		public void transistionOut() {
 			
 		}
 

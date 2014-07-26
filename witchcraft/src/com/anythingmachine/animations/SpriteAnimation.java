@@ -63,9 +63,10 @@ public class SpriteAnimation {
 	}
 
 	
-	public void addFrame(String atlas, String region, float scale) {
+	public void addFrame(String atlas, String region, float scale, boolean flip) {
 		Sprite spr = WitchCraft.assetManager.get(atlas, TextureAtlas.class).createSprite(region);
 		spr.scale(scale);
+		spr.flip(flip, false);
 		sprites.add(spr);
 	}
 }

@@ -96,7 +96,7 @@ public class ArrowDead extends PlayerState {
 						String img = "morph" + i;
 						System.out.println(img);
 						bloodpool.addFrame("data/world/otherart.atlas", img,
-								-0.65f);
+								-0.65f, false);
 					}
 					bloodpool.setPos(Util.addVecs(sm.phyState.body.getPos(),
 							new Vector3(16, 7, 0)));

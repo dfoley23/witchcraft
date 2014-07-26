@@ -283,6 +283,24 @@ public class PlayerState {
 		}
 	}
 	
+	protected void hitWall(float sign) {
+		sm.phyState.body.stopOnX();
+		sm.phyState.body.setX(sm.phyState.body.getX() - (sign * 16));
+	}
+	
+	protected void hitPlatform(Platform plat) {
+		if (plat.isBetween(sm.facingleft, sm.phyState.body.getX())) {
+			if (plat.getHeight() - 35 < sm.phyState.body.getY()) {
+				sm.hitplatform = true;
+				sm.elevatedSegment = plat;
+				sm.state.land();
+			} else {
+				sm.phyState.body.stopOnY();
+				sm.hitroof = true;
+			}
+		}
+	}
+	
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
 		if (isFixture1) {
@@ -300,26 +318,16 @@ public class PlayerState {
 			break;
 		case WALL:
 			sign = Math.signum(vel.x);
-			sm.phyState.body.stopOnX();
 			if (sign == -1) {
 				sm.hitleftwall = true;
 			} else {
 				sm.hitrightwall = true;
 			}
-			sm.phyState.body.setX(sm.phyState.body.getX() - (sign * 16));
+			hitWall(sign);
 			break;
 		case PLATFORM:
 			Platform plat = (Platform) other;
-			if (plat.isBetween(sm.facingleft, pos.x)) {
-				if (plat.getHeight() - 35 < pos.y) {
-					sm.hitplatform = true;
-					sm.elevatedSegment = plat;
-					sm.state.land();
-				} else {
-					sm.phyState.body.stopOnY();
-					sm.hitroof = true;
-				}
-			}
+			hitPlatform(plat);
 			break;
 		case STAIRS:
 			plat = (Platform) other;

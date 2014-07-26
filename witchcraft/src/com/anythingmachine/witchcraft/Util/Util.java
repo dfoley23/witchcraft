@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Util {
 
-	public static final boolean DEV_MODE = false;
+	public static final boolean DEV_MODE = true;
 	
 	private Util() {
 		throw new AssertionError();
@@ -115,7 +115,7 @@ public class Util {
 	public static final int FIRESPEED = 40;
 	public static final float PLAYERWALKSPEED = 215f;
 	public static final float PLAYERRUNSPEED = 350f;
-	public static final float PLAYERFLYSPEED = 500f;
+	public static final float PLAYERFLYSPEED = 420f;
 
 	/**
 	 * Collision Categories and masks for every object that needs them

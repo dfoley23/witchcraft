@@ -27,10 +27,6 @@ public class CloudParticle extends KinematicParticle {
 		sprite.draw(batch);
 	}
 		
-	public void setPos(float x, float y ) {
-		setPos(x, y, 0);
-	}
-
 	public void setScale(float scale) {
 		sprite.scale(scale);
 	}

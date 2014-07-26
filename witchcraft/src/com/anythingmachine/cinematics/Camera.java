@@ -98,7 +98,7 @@ public class Camera extends Entity {
 	}
 
 	@Override
-	public void setPos(float x, float y, float z) {
+	public void setPos(float x, float y) {
 		Camera.camera.position.x = x;
 		Camera.camera.position.y = y;
 	}

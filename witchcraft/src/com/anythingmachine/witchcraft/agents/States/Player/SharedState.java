@@ -11,33 +11,43 @@ public class SharedState extends PlayerState {
 	
 	@Override
 	public void drawCape(Matrix4 cam) {
+		if ( parent.name == this.name) 
+			parent = sm.getState(PlayerStateEnum.IDLE);
 		parent.drawCape(cam);
 	}
 		
 	@Override
 	public void usePower() {
+		if ( parent.name == this.name) 
+			parent = sm.getState(PlayerStateEnum.IDLE);
 		parent.usePower();
 	}
 	
 	@Override
 	public void nextPower() {
-		parent.nextPower();
+		if ( parent.name == this.name) 
+			parent = sm.getState(PlayerStateEnum.IDLE);
+			parent.nextPower();
 	}
 
 	@Override
 	public void setIdle() {
+		if ( parent.name == this.name) 
+			parent = sm.getState(PlayerStateEnum.IDLE);
 		parent.setIdle();
 		sm.setState(parent.name);
 	}
 	
 	@Override
 	public void updatePower(float dt) {
+		if ( parent.name == this.name) 
+			parent = sm.getState(PlayerStateEnum.IDLE);
 		parent.updatePower(dt);
 	}
 	
 	@Override
 	public void transistionIn() {
-		if ( parent == null ) {
+		if ( parent == null || parent.name == this.name) {
 			parent = sm.getState(PlayerStateEnum.IDLE);
 		}
 	}

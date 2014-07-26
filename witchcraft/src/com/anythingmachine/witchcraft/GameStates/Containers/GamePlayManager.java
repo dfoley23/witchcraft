@@ -147,16 +147,16 @@ public class GamePlayManager extends Screen {
 		npcs.add(new NonPlayer("civ_male", new Vector2(4250.0f, 3.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
 				NPCType.CIV));
-		npcs.add(new NonPlayer("civ_female",
-				new Vector2(5500.0f, 3.0f), new Vector2(0.6f, 0.7f),
-				"data/npcdata/civs/saraciv", NPCType.CIV));
+		npcs.add(new NonPlayer("civ_female", new Vector2(5500.0f, 3.0f),
+				new Vector2(0.6f, 0.7f), "data/npcdata/civs/saraciv",
+				NPCType.CIV));
 		shackled = new NPCStaticAnimation("shackledmale1", new Vector3(1696,
 				118, 0), new Vector2(0.75f, 0.8f),
 				"data/npcdata/static/shackledfred");
 		tied = new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350, 0),
 				new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch");
 
-		cloudE = new CloudEmitter(25);
+		// cloudE = new CloudEmitter(25);
 		crowE = new CrowEmitter(1);
 
 		// currentsound =
@@ -208,7 +208,7 @@ public class GamePlayManager extends Screen {
 		shackled.update(dt);
 		tied.update(dt);
 
-		cloudE.update(dt);
+		// cloudE.update(dt);
 		crowE.update(dt);
 
 		// if level is a new level number
@@ -224,7 +224,7 @@ public class GamePlayManager extends Screen {
 						* 0.5f;
 				player.setX(64);
 			}
-			cloudE.moveByX(diff);
+			// cloudE.moveByX(diff);
 			player.switchLevel();
 			oldlevel = currentlevel;
 			switchLevel(level);
@@ -270,7 +270,7 @@ public class GamePlayManager extends Screen {
 	public void drawBackGround(Batch batch) {
 		// spriteBatch.setProjectionMatrix(Camera.camera.combined);
 		// spriteBatch.begin();
-		cloudE.draw(batch);
+		// cloudE.draw(batch);
 		// spriteBatch.end();
 	}
 
@@ -421,8 +421,8 @@ public class GamePlayManager extends Screen {
 									19.0f))
 					.addAction(
 							new Lerp(WitchCraft.cam, 22.0f, 0.003f,
-									new Vector3(2800,
-											0, 0))).buildBody(2850, 200, 8, 70));
+									new Vector3(2800, 0, 0)))
+					.buildBody(2850, 200, 8, 70));
 			break;
 		case POSTINTRODUCTION:
 			break;

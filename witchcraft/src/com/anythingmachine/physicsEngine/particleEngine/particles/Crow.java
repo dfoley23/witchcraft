@@ -27,6 +27,7 @@ public class Crow extends KinematicParticle {
 	private float standTime;
 	private int frame;
 	private Body collisionBody;
+	private boolean setStand = false;
 
 	public Crow(Vector3 pos, float speed) {
 		super(pos, 0f);
@@ -46,24 +47,26 @@ public class Crow extends KinematicParticle {
 		lasttime = 0;
 		frame = 0;
 		standTime = -1;
-		fly1.flip(speed > 0, false);
-		fly2.flip(speed > 0, false);
-		fly3.flip(speed > 0, false);
-		stand.flip(speed > 0, false);
 		buildCollisionBody();
 	}
 
 	public void update(float dt) {
-		if ( standTime < 0) {
+		if ( standTime < 0 && !setStand) {
 			pos.x += vel.x*dt;
+			pos.y += vel.y*dt;
 		}
 		collisionBody.setTransform((pos.x+32)*Util.PIXEL_TO_BOX, (pos.y+64)*Util.PIXEL_TO_BOX, 0);
 
+		if ( standTime >= 0 && !setStand) {
+			standTime -= dt;
+			lasttime = 0;
+		} else {
+			lasttime+=dt;
+		}
 	}
 
 	public void draw(Batch batch) {
-		float dt = Gdx.graphics.getDeltaTime();
-		if (standTime < 0) {
+		if (standTime < 0 && !setStand) {
 			if ( lasttime > 0.1f ){
 				frame = frame +1 > 2 ? 0 : frame + 1;
 				lasttime = 0;
@@ -80,11 +83,9 @@ public class Crow extends KinematicParticle {
 				fly3.setPosition(pos.x, pos.y);
 				fly3.draw(batch);
 			}
-			lasttime+=dt;
 		} else {
 			stand.setPosition(pos.x, pos.y);
 			stand.draw(batch);
-			standTime -= dt;
 			lasttime = 0;
 		}
 	}
@@ -93,40 +94,37 @@ public class Crow extends KinematicParticle {
 		standTime = val;
 	}
 	
+	public void setStand(boolean val) {
+		setStand = val;
+	}
+	
 	public float getStandTime() {
 		return standTime;
 	}
 	
+	public boolean isFlipX() {
+		return fly1.isFlipX();
+	}
+	
 	public void setFlipX(boolean val) {
-		if ( val ) {
-			fly1.setScale(-1,1);
-			fly2.setScale(-1,1);
-			fly3.setScale(-1,1);
-			stand.setScale(-1,1);
-		} else {
-			fly1.setScale(1,1);
-			fly2.setScale(1,1);
-			fly3.setScale(1,1);
-			stand.setScale(1,1);			
-		}
+//		if ( val ) {
+//			fly1.setScale(-1,1);
+//			fly2.setScale(-1,1);
+//			fly3.setScale(-1,1);
+//			stand.setScale(-1,1);
+//		} else {
+//			fly1.setScale(1,1);
+//			fly2.setScale(1,1);
+//			fly3.setScale(1,1);
+//			stand.setScale(1,1);			
+//		}
+		boolean flip = fly1.isFlipX() != val ? true : false;
+		fly1.flip(flip, false);
+		fly2.flip(flip, false);
+		fly3.flip(flip, false);
+		stand.flip(flip, false);
 	}
-	
-	public void setSpeed(float val) {
-		fly1.flip(val > 0, false);
-		fly2.flip(val > 0, false);
-		fly3.flip(val > 0, false);
-		stand.flip(val > 0, false);
-		setVel(val, 0, 0 );
-	}
-	
-	public void setPos(float x, float y ) {
-		setPos(x, y, 0);
-	}
-
-	public void setPos(Vector3 newpos) {
-		this.pos.set(newpos);
-	}
-	
+			
 	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		Entity other;
@@ -137,9 +135,13 @@ public class Crow extends KinematicParticle {
 		}
 		switch (other.type) {
 		case PLATFORM:
+			stop();
 			standTime = 6;
 		case STAIRS:
+			stop();
 			standTime = 6;
+			break;
+		default: 
 			break;
 		}
 

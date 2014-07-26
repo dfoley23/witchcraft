@@ -101,7 +101,7 @@ public class Dead extends PlayerState {
 				if (!headhitground) {
 					for (int i = 1; i < 13; i ++) {
 						String img = "morph" + i;
-						bloodpool.addFrame("data/world/otherart.atlas", img, -0.65f);
+						bloodpool.addFrame("data/world/otherart.atlas", img, -0.65f, false);
 					}
 					bloodpool.setPos(Util.addVecs(head.getPos(), new Vector3(36, 22, 0)));
 					headhitground = true;

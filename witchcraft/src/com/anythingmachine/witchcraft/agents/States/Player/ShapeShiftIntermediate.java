@@ -45,21 +45,21 @@ public class ShapeShiftIntermediate extends PlayerState {
 	
 	@Override
 	public void transistionIn() {
-		shift = new SpriteAnimation(10f / 60f, false);
+		shift = new SpriteAnimation(1f / 60f, false);
 		sm.phyState.body.setGravityVal(0);
 		if (end == PlayerStateEnum.SHAPECROWPOWER) {
-			shift.addFrame("data/world/otherart.atlas", "ss-1-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-2-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-3-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-4-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-5-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-6-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-7-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-8-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-9-crow", -0.4f);
-			shift.addFrame("data/world/otherart.atlas", "ss-10-crow", -0.4f);
+			shift.addFrame("data/world/otherart.atlas", "ss-1-crow", -0.4f, sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-2-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-3-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-4-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-5-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-6-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-7-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-8-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-9-crow", -0.4f,sm.facingleft);
+			shift.addFrame("data/world/otherart.atlas", "ss-10-crow", -0.4f,sm.facingleft);
 			shift.setPos(Util.addVecs(sm.phyState.body.getPos(), new Vector3(0, 48, 0)));
-			sm.phyState.body.setVel(sm.facingleft ? -20 : 20, 50, 0);
+			sm.phyState.body.setVel(sm.facingleft ? -20 : 20, 270, 0);
 		} else {
 
 		}

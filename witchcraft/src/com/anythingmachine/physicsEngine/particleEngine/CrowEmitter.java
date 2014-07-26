@@ -29,8 +29,9 @@ public class CrowEmitter {
 		Rectangle rect = WitchCraft.cam.getBounds();
 		rect.x -= 400;
 		rect.y += rect.height*0.5;
+		rect.y += 400;
 		rect.width += 400;
-		rect.height += 400;
+		rect.height += 200;
 		for (Crow c : crows) {
 			Vector3 pos = c.getPos();
 			if (pos.x < rect.x || pos.x > rect.width + rect.x || pos.y < rect.y
@@ -40,10 +41,10 @@ public class CrowEmitter {
 				float y;
 				if ( speed > 0 ) {
 					x = rect.x+8;
-					y = rect.y + rand.nextInt((int) rect.height-200);
+					y = rect.y + rand.nextInt((int) rect.height);
 				} else {
 					x = rect.x+rect.width-8;
-					y = rect.y + rand.nextInt((int) rect.height-200);
+					y = rect.y + rand.nextInt((int) rect.height);
 				}
 				c.setPos(x, y);
 			}

@@ -6,27 +6,27 @@ import com.badlogic.gdx.math.Matrix4;
 public class DupeSkin extends PlayerState {
 	private float timeout = 10;
 	private float time = 0;
-	
-	public DupeSkin (PlayerStateMachine sm , PlayerStateEnum name) {
-		super(sm,  name);
+
+	public DupeSkin(PlayerStateMachine sm, PlayerStateEnum name) {
+		super(sm, name);
 	}
-	
+
 	@Override
 	public void updatePower(float dt) {
 		time += dt;
-		if ( time > timeout ) {
+		if (time > timeout) {
 			sm.animate.switchSkin("player");
 			sm.setState(parent.name);
 		}
 	}
-	
+
 	public void update(float dt) {
 		checkGround();
-		
+
 		setInputSpeed();
-		
+
 		updatePower(dt);
-		
+
 		sm.phyState.correctCBody(-8, 64, 0);
 
 		setAttack();
@@ -41,7 +41,7 @@ public class DupeSkin extends PlayerState {
 			sm.animate.switchSkin("player");
 			sm.setState(PlayerStateEnum.IDLE);
 		} else {
-			parent = this;
+			parent = sm.getState(PlayerStateEnum.IDLE);
 			sm.animate.bindPose();
 			sm.animate.setCurrent("idle", true);
 			sm.phyState.body.stop();
@@ -50,48 +50,47 @@ public class DupeSkin extends PlayerState {
 
 	@Override
 	public void setDupeSkin() {
-		
+
 	}
-		
+
 	@Override
 	public void usePower() {
-		
+
 	}
-			
-	@Override 
+
+	@Override
 	public void drawCape(Matrix4 cam) {
-		
+
 	}
-	
+
 	@Override
 	public void nextPower() {
-		
+
 	}
 
 	@Override
 	public void transistionOut() {
-		sm.animate.switchSkin("player");
+		if (time > timeout) {
+			sm.animate.switchSkin("player");
+			time = 0;
+		}
 	}
 
 	@Override
 	public void setRun() {
-		if ( parent.name != PlayerStateEnum.RUNNING ) {
-			parent = sm.getState(PlayerStateEnum.RUNNING);
-			parent.transistionIn();
-		}
+		sm.setState(PlayerStateEnum.RUNNING);
+		sm.state.setParent(sm.getState(PlayerStateEnum.DUPESKIN));
 	}
-	
+
 	@Override
 	public void setWalk() {
-		if ( parent.name != PlayerStateEnum.WALKING ) {
-			parent = sm.getState(PlayerStateEnum.WALKING);
-			parent.transistionIn();
-		}
+		sm.setState(PlayerStateEnum.WALKING);
+		sm.state.setParent(sm.getState(PlayerStateEnum.DUPESKIN));
 	}
 
 	@Override
 	public void setAttack() {
-		if ( sm.input.is("attack") ) {
+		if (sm.input.is("attack")) {
 			if (sm.animate.isSkin("archer")) {
 				sm.setState(PlayerStateEnum.ATTACKING);
 				sm.state.setParent(this);
