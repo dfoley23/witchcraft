@@ -2,13 +2,12 @@ package com.anythingmachine.aiengine;
 
 import java.util.HashMap;
 
+import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.agents.States.NPC.NPCState;
 import com.anythingmachine.witchcraft.agents.States.NPC.NPCStateEnum;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
-import com.anythingmachine.witchcraft.ground.Platform;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonData;

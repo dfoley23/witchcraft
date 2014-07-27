@@ -33,14 +33,14 @@ import java.util.Iterator;
 
 import com.anythingmachine.cinematics.Camera;
 import com.anythingmachine.collisionEngine.Entity;
+import com.anythingmachine.collisionEngine.ground.LevelWall;
+import com.anythingmachine.collisionEngine.ground.Platform;
+import com.anythingmachine.collisionEngine.ground.Stairs;
 import com.anythingmachine.gdxwrapper.OrthoTileRenderer;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.anythingmachine.witchcraft.ground.LevelWall;
-import com.anythingmachine.witchcraft.ground.Platform;
-import com.anythingmachine.witchcraft.ground.Stairs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;

@@ -1,14 +1,14 @@
-package com.anythingmachine.witchcraft.ground;
+package com.anythingmachine.collisionEngine.ground;
 
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 
-public class LevelWall extends Entity {
+public class ActionWall extends Entity {
 	private int level;
 	
-	public LevelWall ( int level ) {
+	public ActionWall ( int level ) {
 		this.level = level;
-		this.type = EntityType.LEVELWALL;
+		this.type = EntityType.ACTIONWALL;
 	}
 	
 	public int getLevel(){

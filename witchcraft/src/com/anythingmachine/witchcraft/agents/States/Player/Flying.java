@@ -6,6 +6,8 @@ import javax.sound.sampled.SourceDataLine;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
+import com.anythingmachine.collisionEngine.ground.LevelWall;
+import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Arrow;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
@@ -13,8 +15,6 @@ import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
-import com.anythingmachine.witchcraft.ground.LevelWall;
-import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Contact;
 

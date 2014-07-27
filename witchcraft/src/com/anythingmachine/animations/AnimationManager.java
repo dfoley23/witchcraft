@@ -5,7 +5,6 @@ import java.util.HashMap;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -31,7 +30,6 @@ public class AnimationManager {
 	private boolean loop;
 	private boolean isFlipped = false;
 	private Array<Event> events;
-	private float deltaTime = 0f;
 
 	public AnimationManager(String name, Vector3 pos, Vector2 scl,
 			boolean flip, SkeletonData sd) {
@@ -200,6 +198,11 @@ public class AnimationManager {
 		return new Vector2(root.getScaleX(), root.getScaleY());
 	}
 
+	public void setScale(float x, float y) {
+		scale.x = x;
+		scale.y = y;
+	}
+		
 	/**
 	 * gets the duration of the current animation
 	 * 

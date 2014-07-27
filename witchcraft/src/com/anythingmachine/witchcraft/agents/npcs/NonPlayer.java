@@ -164,7 +164,7 @@ public class NonPlayer extends Entity {
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, 128f,
+		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, pos.y,
 				0f), -50f);
 //		body.useEuler(false);
 

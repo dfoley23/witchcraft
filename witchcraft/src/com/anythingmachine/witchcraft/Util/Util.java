@@ -116,6 +116,7 @@ public class Util {
 	public static final float PLAYERWALKSPEED = 215f;
 	public static final float PLAYERRUNSPEED = 350f;
 	public static final float PLAYERFLYSPEED = 420f;
+	public static final float DEBUGSPED = 850f;
 
 	/**
 	 * Collision Categories and masks for every object that needs them
@@ -144,7 +145,7 @@ public class Util {
 	public static final int VERTEX_SIZE = 2 + 1 + 2;
 
 	public enum EntityType {
-		PLATFORM, STAIRS, ENTITY, SWORD, ARROW, PLAYER, FIRE, PARTICLE,NONPLAYER, WALL,LEVELWALL,
+		PLATFORM, STAIRS, ENTITY, SWORD, ARROW, PLAYER, FIRE, PARTICLE,NONPLAYER, WALL,LEVELWALL,ACTIONWALL
 	}
 
 }

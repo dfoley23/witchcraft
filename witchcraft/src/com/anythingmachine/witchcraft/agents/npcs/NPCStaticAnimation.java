@@ -1,8 +1,8 @@
 package com.anythingmachine.witchcraft.agents.npcs;
 
 import com.anythingmachine.animations.AnimationManager;
+import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 
-public class NPCStaticAnimation {
+public class NPCStaticAnimation extends Entity {
 	private AnimationManager animate;
 	private String datafile;
 	public int level;
@@ -49,7 +49,7 @@ public class NPCStaticAnimation {
 	}
 
 	public boolean checkInBounds() {
-		return level == GamePlayManager.currentlevel && WitchCraft.cam.inscaledBounds(pos);
+		return WitchCraft.cam.inscaledBounds(pos);
 	}
 	
 	protected void setupAnimations(String skinname, Vector3 pos, Vector2 scale,

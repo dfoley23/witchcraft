@@ -1,15 +1,15 @@
-package com.anythingmachine.witchcraft.ground;
+package com.anythingmachine.collisionEngine.ground;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.anythingmachine.collisionEngine.ground.Ground.GroundElemType;
+import com.anythingmachine.collisionEngine.ground.Ground.GroundType;
 import com.anythingmachine.gdxwrapper.PolygonRegionWrap;
 import com.anythingmachine.gdxwrapper.PolygonSpriteBatchWrap;
 import com.anythingmachine.gdxwrapper.PolygonSpriteWrap;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Vector4;
-import com.anythingmachine.witchcraft.ground.Ground.GroundElemType;
-import com.anythingmachine.witchcraft.ground.Ground.GroundType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

@@ -1,4 +1,4 @@
-package com.anythingmachine.witchcraft.ground;
+package com.anythingmachine.collisionEngine.ground;
 
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.math.Vector2;

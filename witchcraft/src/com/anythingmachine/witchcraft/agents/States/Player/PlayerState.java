@@ -2,6 +2,9 @@ package com.anythingmachine.witchcraft.agents.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
+import com.anythingmachine.collisionEngine.ground.ActionWall;
+import com.anythingmachine.collisionEngine.ground.LevelWall;
+import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Arrow;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
@@ -9,8 +12,6 @@ import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
-import com.anythingmachine.witchcraft.ground.LevelWall;
-import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
@@ -184,8 +185,7 @@ public class PlayerState {
 	}
 
 	public void hitNPC(NonPlayer npc) {
-		if ( sm.power == PlayerStateEnum.DUPESKINPOWER )
-			sm.dupeSkin = npc.getSkin().getName();
+		sm.npc = npc;
 	}
 
 	public void land() {
@@ -222,7 +222,7 @@ public class PlayerState {
 				sm.hitleftwall = false;
 				if (axisVal > 1) {
 					setRun();
-					sm.phyState.body.setXVel(Util.PLAYERRUNSPEED);
+					sm.phyState.body.setXVel(Util.DEV_MODE ? Util.DEBUGSPED : Util.PLAYERRUNSPEED);
 				} else {
 					setWalk();
 					sm.phyState.body.setXVel(Util.PLAYERWALKSPEED);
@@ -234,7 +234,7 @@ public class PlayerState {
 				sm.hitrightwall = false;
 				if (axisVal < -1) {
 					setRun();
-					sm.phyState.body.setXVel(-Util.PLAYERRUNSPEED);
+					sm.phyState.body.setXVel(Util.DEV_MODE ? -Util.DEBUGSPED : -Util.PLAYERRUNSPEED);
 				} else {
 					setWalk();
 					sm.phyState.body.setXVel(-Util.PLAYERWALKSPEED);
@@ -348,7 +348,12 @@ public class PlayerState {
 			break;
 		case LEVELWALL:
 			LevelWall wall = (LevelWall) other;
-			GamePlayManager.switchLevel(wall.getLevel());
+			GamePlayManager.level = wall.getLevel();
+			break;
+		case ACTIONWALL:
+//			if( sm.input.is("ACTION") ) { }
+//			ActionWall door = (ActionWall) other;
+//			GamePlayManager.level = wall.getLevel();
 			break;
 		case SWORD:
 			npc = (NonPlayer) ((Pointer) other).obj;

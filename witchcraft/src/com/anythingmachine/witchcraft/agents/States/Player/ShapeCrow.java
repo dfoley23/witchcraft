@@ -1,9 +1,9 @@
 package com.anythingmachine.witchcraft.agents.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
+import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Crow;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.ground.Platform;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;

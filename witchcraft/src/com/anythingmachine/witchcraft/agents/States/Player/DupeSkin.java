@@ -6,16 +6,24 @@ import com.badlogic.gdx.math.Matrix4;
 public class DupeSkin extends PlayerState {
 	private float timeout = 10;
 	private float time = 0;
+	private float playerScaleX;
+	private float playerScaleY;
+
 
 	public DupeSkin(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
+		playerScaleX = sm.animate.getScale().x;
+		playerScaleY = sm.animate.getScale().y;
 	}
 
 	@Override
 	public void updatePower(float dt) {
 		time += dt;
 		if (time > timeout) {
+			time = 0;
 			sm.animate.switchSkin("player");
+			sm.animate.setScale(playerScaleX, playerScaleY);			
+			sm.dupeSkin = "";
 			sm.setState(parent.name);
 		}
 	}
@@ -39,6 +47,8 @@ public class DupeSkin extends PlayerState {
 		if ( time > timeout ) {
 			time = 0;
 			sm.animate.switchSkin("player");
+			sm.animate.setScale(playerScaleX, playerScaleY);
+			sm.dupeSkin = "";
 			sm.setState(PlayerStateEnum.IDLE);
 		} else {
 			parent = sm.getState(PlayerStateEnum.IDLE);
@@ -71,8 +81,10 @@ public class DupeSkin extends PlayerState {
 	@Override
 	public void transistionOut() {
 		if (time > timeout) {
-			sm.animate.switchSkin("player");
 			time = 0;
+			sm.animate.switchSkin("player");
+			sm.animate.setScale(playerScaleX, playerScaleY);
+			sm.dupeSkin = "";
 		}
 	}
 

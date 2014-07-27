@@ -3,14 +3,12 @@ package com.anythingmachine.aiengine;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.agents.States.Player.PlayerState;
 import com.anythingmachine.witchcraft.agents.States.Player.PlayerStateEnum;
-import com.anythingmachine.witchcraft.ground.Curve;
-import com.anythingmachine.witchcraft.ground.Platform;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -28,7 +26,6 @@ public class PlayerStateMachine extends StateMachine {
 	public PlayerStateEnum power;
 	public Bone neck;
 	public int curGroundSegment;
-	public Curve curCurve;
 	public Platform elevatedSegment;
 	public String dupeSkin;
 	public float windtimeout = 1.5f;

@@ -131,30 +131,18 @@ public class GamePlayManager extends Screen {
 		entities = new ArrayList<Entity>();
 		player = new Player(rk4);
 		npcs = new ArrayList<NonPlayer>();
-		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 3.0f),
+		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/knights/fredknight",
 				NPCType.KNIGHT));
-		npcs.add(new NonPlayer("knight1", new Vector2(800.0f, 3.0f),
+		npcs.add(new NonPlayer("knight1", new Vector2(800.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/knights/joeknight",
 				NPCType.KNIGHT));
-		npcs.add(new NonPlayer("archer", new Vector2(3000.0f, 3.0f),
+		npcs.add(new NonPlayer("archer", new Vector2(3000.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
 				NPCType.ARCHER));
-		npcs.add(new NonPlayer("archer", new Vector2(300.0f, 3.0f),
+		npcs.add(new NonPlayer("archer", new Vector2(300.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/other/joearcher",
 				NPCType.ARCHER));
-
-		npcs.add(new NonPlayer("civ_male", new Vector2(4250.0f, 3.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
-				NPCType.CIV));
-		npcs.add(new NonPlayer("civ_female", new Vector2(5500.0f, 3.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/civs/saraciv",
-				NPCType.CIV));
-		shackled = new NPCStaticAnimation("shackledmale1", new Vector3(1696,
-				118, 0), new Vector2(0.75f, 0.8f),
-				"data/npcdata/static/shackledfred");
-		tied = new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350, 0),
-				new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch");
 
 		// cloudE = new CloudEmitter(25);
 		crowE = new CrowEmitter(1);
@@ -191,6 +179,10 @@ public class GamePlayManager extends Screen {
 
 	@Override
 	public void update(float dt) {
+		if (level > 0) {
+			switchLevel(level);
+		}
+
 		world.step(WitchCraft.dt, 1, 1);
 
 		rk4.step();
@@ -205,35 +197,9 @@ public class GamePlayManager extends Screen {
 		for (NonPlayer npc : npcs)
 			npc.update(dt);
 
-		shackled.update(dt);
-		tied.update(dt);
-
 		// cloudE.update(dt);
 		crowE.update(dt);
 
-		// if level is a new level number
-		// if its negative its the same level
-		// only run this when switching levels
-		if (level > 0) {
-			float diff = 0;
-			if (level < currentlevel + 1) {
-				diff = levels.get(level - 1) - WitchCraft.screenWidth * 0.5f;
-				player.setX(diff - 64);
-			} else {
-				diff -= levels.get(currentlevel) - WitchCraft.screenWidth
-						* 0.5f;
-				player.setX(64);
-			}
-			// cloudE.moveByX(diff);
-			player.switchLevel();
-			oldlevel = currentlevel;
-			switchLevel(level);
-			currentlevel = level - 1;
-			level = -1;
-			for (NonPlayer npc : npcs) {
-				npc.checkInLevel();
-			}
-		}
 		Vector3 playerPos = player.getPosPixels();
 		Camera.updateState(playerPos, levels.get(currentlevel));
 		xGrid = Camera.camera.position.x;
@@ -275,8 +241,6 @@ public class GamePlayManager extends Screen {
 	}
 
 	public void drawPlayerLayer(Batch batch) {
-		shackled.draw(batch);
-		tied.draw(batch);
 
 		for (Entity e : entities) {
 			e.draw(batch);
@@ -316,37 +280,55 @@ public class GamePlayManager extends Screen {
 	}
 
 	public static void switchLevel(int l) {
-		if (!world.isLocked()) {
-			WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
-					new InternalFileHandleResolver()));
-			WitchCraft.assetManager.unload("data/world/level1/level"
-					+ (oldlevel + 1) + ".tmx");
-			WitchCraft.assetManager.load("data/world/level1/level" + (level)
-					+ ".tmx", TiledMap.class);
-			WitchCraft.assetManager.finishLoading();
+		oldlevel = currentlevel;
 
-			String levelstr = "level" + l;
-			tiledMapHelper.destroyMap();
-			tiledMapHelper.loadMap(levelstr);
-			tiledMapHelper.loadCollisions("data/collisions.txt", world,
-					Util.PIXELS_PER_METER, l);
-			switch (l) {
-			case 1:
-				level1();
-				break;
-			case 2:
-				level2();
-				break;
-			case 3:
-				level3();
-				break;
-			case 4:
-				level4();
-				break;
-			}
+		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
+				new InternalFileHandleResolver()));
+		WitchCraft.assetManager.unload("data/world/level1/level"
+				+ (oldlevel + 1) + ".tmx");
+		WitchCraft.assetManager.load("data/world/level1/level" + (l)
+				+ ".tmx", TiledMap.class);
+		WitchCraft.assetManager.finishLoading();
+
+		String levelstr = "level" + l;
+		tiledMapHelper.destroyMap();
+		tiledMapHelper.loadMap(levelstr);
+		tiledMapHelper.loadCollisions("data/collisions.txt", world,
+				Util.PIXELS_PER_METER, l);
+
+		// if level is a new level number
+		// if its negative its the same level
+		// only run this when switching levels
+		float diff = 0;
+		if (l < currentlevel + 1) {
+			diff = levels.get(l - 1) - 32;
+			player.setX(diff - 64);
 		} else {
-			level = l;
+//			diff -= levels.get(currentlevel) - WitchCraft.screenWidth * 0.5f;
+			player.setX(64);
 		}
+		// cloudE.moveByX(diff);
+		player.switchLevel();
+		for (NonPlayer npc : npcs) {
+			npc.checkInLevel();
+		}
+
+		switch (l) {
+		case 1:
+			level1();
+			break;
+		case 2:
+			level2();
+			break;
+		case 3:
+			level3();
+			break;
+		case 4:
+			level4();
+			break;
+		}
+		currentlevel = level - 1;
+		level = -1;
 	}
 
 	@Override
@@ -382,26 +364,44 @@ public class GamePlayManager extends Screen {
 
 	public static void level1() {
 		triggers.clear();
+		entities.clear();
 	}
 
 	public static void level2() {
 		triggers.clear();
+		entities.clear();
 	}
 
 	public static void level3() {
 		triggers.clear();
+		entities.clear();
+
+		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
+				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
+				NPCType.CIV));
+		entities.add(new NonPlayer("civ_female", new Vector2(5500.0f, 100.0f),
+				new Vector2(0.6f, 0.7f), "data/npcdata/civs/saraciv",
+				NPCType.CIV));
+
+		entities.add(new NPCStaticAnimation("shackledmale1", new Vector3(1696,
+				118, 0), new Vector2(0.75f, 0.8f),
+				"data/npcdata/static/shackledfred"));
+		entities.add(new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350,
+				0), new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch"));
+
 		switch (storySegment) {
 		case BEGINNING:
 			triggers.add(new CinematicTrigger()
 					.addAction(
 							new Lerp(WitchCraft.cam, 0.0f, 0.005f, new Vector3(
 									3150 + WitchCraft.screenWidth * 0.5f, 0, 0)))
-					.addAction(new FaceLeft(npcs.get(4), 0.0f, true))
+					.addAction(new FaceLeft(entities.get(0), 0.0f, true))
 					.addAction(
-							new AnimateTimed("WALKING", 6.3f, npcs.get(4), 3.0f))
+							new AnimateTimed("WALKING", 6.3f, entities.get(0),
+									3.0f))
 					.addAction(
-							new AnimateTimed("CLEANING", 10.0f, npcs.get(4),
-									8.0f))
+							new AnimateTimed("CLEANING", 10.0f,
+									entities.get(0), 8.0f))
 					.addAction(
 							new ParticleToGamePlay(
 									10.0f,
@@ -410,26 +410,54 @@ public class GamePlayManager extends Screen {
 													2650 + WitchCraft.screenWidth * 0.5f,
 													30, 0), 30, 3.0f, 60.0f,
 											0.5f, 0.7f)))
-					.addAction(new FaceLeft(npcs.get(4), 11.5f, false))
+					.addAction(new FaceLeft(entities.get(0), 11.5f, false))
 					.addAction(
-							new AnimateTimed("WALKING", 14.7f, npcs.get(4),
+							new AnimateTimed("WALKING", 14.7f, entities.get(0),
 									12.0f))
-					.addAction(new FaceLeft(npcs.get(4), 14.9f, true))
-					.addAction(new FaceLeft(npcs.get(4), 18.7f, false))
+					.addAction(new FaceLeft(entities.get(0), 14.9f, true))
+					.addAction(new FaceLeft(entities.get(0), 18.7f, false))
 					.addAction(
-							new AnimateTimed("WALKING", 24.0f, npcs.get(4),
+							new AnimateTimed("WALKING", 24.0f, entities.get(0),
 									19.0f))
 					.addAction(
 							new Lerp(WitchCraft.cam, 22.0f, 0.003f,
 									new Vector3(2800, 0, 0)))
-					.buildBody(2850, 200, 8, 70));
+					.buildBody(2850, 1000, 8, 3000));
 			break;
 		case POSTINTRODUCTION:
+			break;
+		default:
 			break;
 		}
 	}
 
 	public static void level4() {
 		triggers.clear();
+		entities.clear();
+		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
+				new Vector2(0.6f, 0.7f), "data/npcdata/civs/tempMale4",
+				NPCType.CIV));
+		entities.add(new NonPlayer("civ_female", new Vector2(5500.0f, 100.0f),
+				new Vector2(0.6f, 0.7f), "data/npcdata/civs/tempFemale4",
+				NPCType.CIV));
+		entities.add(new NonPlayer("knight1", new Vector2(354.0f, 100.0f),
+				new Vector2(0.8f, 0.9f), "data/npcdata/knights/fredknight",
+				NPCType.KNIGHT));
+		entities.add(new NonPlayer("knight1", new Vector2(800.0f, 100.0f),
+				new Vector2(0.7f, 0.7f), "data/npcdata/knights/joeknight",
+				NPCType.KNIGHT));
+		entities.add(new NonPlayer("archer", new Vector2(3000.0f, 100.0f),
+				new Vector2(0.6f, 0.6f), "data/npcdata/other/pimlyarcher",
+				NPCType.ARCHER));
+		entities.add(new NonPlayer("archer", new Vector2(300.0f, 100.0f),
+				new Vector2(0.64f, 0.9f), "data/npcdata/other/joearcher",
+				NPCType.ARCHER));
+		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
+				new Vector2(0.77f, 0.6f), "data/npcdata/civs/tempMale4",
+				NPCType.CIV));
+		entities.add(new NonPlayer("civ_female", new Vector2(6500.0f, 100.0f),
+				new Vector2(0.5f, 0.5f), "data/npcdata/civs/tempFemale4",
+				NPCType.CIV));
+
 	}
 }

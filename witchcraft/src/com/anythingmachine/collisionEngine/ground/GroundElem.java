@@ -1,6 +1,6 @@
-package com.anythingmachine.witchcraft.ground;
+package com.anythingmachine.collisionEngine.ground;
 
-import com.anythingmachine.witchcraft.ground.Ground.GroundElemType;
+import com.anythingmachine.collisionEngine.ground.Ground.GroundElemType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
