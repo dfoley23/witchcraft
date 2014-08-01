@@ -1,9 +1,10 @@
-package com.anythingmachine.physicsEngine;
+package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import java.util.ArrayList;
 
+import com.anythingmachine.physicsEngine.Rope;
+import com.anythingmachine.physicsEngine.Spring;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
 public class SpringParticle extends Particle {
@@ -13,22 +14,24 @@ public class SpringParticle extends Particle {
 		super(pos);		
 		springs = new ArrayList<Spring>();
 		this.stable = false;
+		this.externalForce = new Vector3(0,Util.GRAVITY,0);
 	}
 	
-	@Override
-	public void draw(Batch batch) {
-		
-	}
-
 	@Override
 	public void applyImpulse(Vector3 force ) {
 		this.externalForce = force;
 	}
 
-	public void addSpring(Particle p, float restLength, float k, float damper) {
+	public SpringParticle addSpring(Particle p, float restLength, float k, float damper) {
 		springs.add(new Spring(p, restLength, k, damper));
+		return this;
 	}
-	
+
+	public SpringParticle addRope(Particle p, float restLength, float k, float damper) {
+		springs.add(new Rope(p, restLength, k, damper));
+		return this;
+	}
+
 	@Override
 	public Vector3 accel(Vector3 pos, Vector3 vel, float t) {
 		Vector3 result =  new Vector3(0, 0, 0);

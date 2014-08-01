@@ -3,6 +3,7 @@ package com.anythingmachine.physicsEngine;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -65,11 +66,11 @@ public class Cloth implements PhysicsComponent {
 	
 	public void draw(Matrix4 cam, float alpha) {
 		model.idt();
+		model.setTranslation(trans);
 		if ( flip ) {
-			model.scl(-1);
+			model.scale(-1, 1, 1);
 		}
 //		model.rotate(new Vector3(0, 0, 1), rot);
-		model.trn(trans);
 		
 		mesh.setVertices(verts);
 		
@@ -88,7 +89,7 @@ public class Cloth implements PhysicsComponent {
 	}
 
 	public void addLink(Particle p) {
-		p.useEuler = false;
+		p.useEuler(false);
 		links.add(p);
 	}
 
@@ -103,9 +104,9 @@ public class Cloth implements PhysicsComponent {
 		Vector3 p3;
 
 		for (int i = 0; i < indicount; i += 3) {
-			p1 = links.get((int) (indices[i])).pos;
-			p2 = links.get((int) (indices[i + 1])).pos;
-			p3 = links.get((int) (indices[i + 2])).pos;
+			p1 = links.get((int) (indices[i])).getPos();
+			p2 = links.get((int) (indices[i + 1])).getPos();
+			p3 = links.get((int) (indices[i + 2])).getPos();
 
 			verts[(indices[i] * offset)] = p1.x;
 			verts[(indices[i] * offset) + 1] = p1.y;

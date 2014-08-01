@@ -11,16 +11,13 @@ import com.badlogic.gdx.math.Vector3;
 
 public class FireEmitter extends Entity {
 	private ArrayList<FireParticle> fires;
-	private int limit;
 	private Vector3 initPos;
 	private Random rand;
 	private float lifetime;
 	private float life;
-	private boolean hasStarted;
 
 	public FireEmitter(Vector3 pos, int limit, float particleLifetime,
 			float lifetime, float startScale, float endScale) {
-		this.limit = limit;
 		this.initPos = pos;
 		this.lifetime = lifetime;
 		fires = new ArrayList<FireParticle>();
@@ -44,9 +41,11 @@ public class FireEmitter extends Entity {
 					if (rand.nextBoolean()) {
 						xvel *= -1;
 					}
-					f.resetFire(initPos, xvel, (rand.nextFloat()+0.5f)*Util.FIRESPEED);
+					f.reset(initPos, xvel, (rand.nextFloat()+0.5f)*Util.FIRESPEED);
 				}
 			}
+			if ( this.life / this.lifetime > 0.95f )
+				f.setFade((1-this.life/this.lifetime));
 			f.update(dt);
 		}
 		life += dt;
@@ -59,7 +58,8 @@ public class FireEmitter extends Entity {
 		}
 	}
 
-	public boolean isDead() {
+	@Override
+	public boolean isEnded() {
 		return life >= lifetime;
 	}
 

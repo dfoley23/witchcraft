@@ -11,8 +11,11 @@ import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -37,6 +40,10 @@ public class WitchCraft implements ApplicationListener {
 	public static Screen currentScreen;
 	private float accum;
 	private Batch spriteBatch;
+	private Controller controller;
+
+	private boolean paused = false;
+	private float pressedPaused = 1.0f;
 
 	/**** miX test ****/
 	// SpriteBatch batch;
@@ -60,7 +67,7 @@ public class WitchCraft implements ApplicationListener {
 	public WitchCraft(int width, int height) {
 		super();
 	}
-	
+
 	@Override
 	public void create() {
 		ON_ANDROID = Gdx.app.getType() == ApplicationType.Android;
@@ -79,7 +86,7 @@ public class WitchCraft implements ApplicationListener {
 		cam = new Camera(screenWidth, screenHeight);
 
 		WitchCraft.assetManager = new AssetManager();
-		
+
 		loadPlayAssets();
 
 		screens = new HashMap<String, Screen>();
@@ -91,6 +98,10 @@ public class WitchCraft implements ApplicationListener {
 		// script = new LoadScript("helloworld.lua");
 
 		accum = 0;
+
+		if (Controllers.getControllers().size > 0) {
+			this.controller = Controllers.getControllers().get(0);
+		}
 
 		/******************************* MIX TEST *******************/
 		// batch = new SpriteBatch();
@@ -122,29 +133,41 @@ public class WitchCraft implements ApplicationListener {
 	@Override
 	public void render() {
 		float actualDT = Gdx.graphics.getDeltaTime();
-		accum += actualDT;
-		if (ON_ANDROID ) {
-			 Gdx.app.log("***************************frames per sec: ", ""
-			 + Gdx.app.getGraphics().getFramesPerSecond());
+		if (!ON_ANDROID && pressedPaused > 0.44f && Gdx.input.isKeyPressed(Keys.P)) {
+			paused = !paused;
+			System.out.println("paused");
+			pressedPaused = 0.0f;
+		} else if( ON_ANDROID && pressedPaused > 0.44f && controller.getButton(82)) {
+			paused = !paused;
+			System.out.println("paused");
+			pressedPaused = 0.0f;
 		}
+		pressedPaused = pressedPaused > 0.5f ? 1.0f : pressedPaused + actualDT;
+		if (!paused) {
+			accum += actualDT;
+			if (ON_ANDROID) {
+				Gdx.app.log("***************************frames per sec: ", ""
+						+ Gdx.app.getGraphics().getFramesPerSecond());
+			}
 
-		Gdx.gl.glViewport((int) WitchCraft.viewport.x,
-				(int) WitchCraft.viewport.y, (int) WitchCraft.viewport.width,
-				(int) WitchCraft.viewport.height);
-		if( accum >= targetFrameTime) {
-//			if ( accum > dt || ON_ANDROID ) {
-//			currentScreen.update(accum);
-//			accum = accum - targetFrameTime;
-//			} else {
+			Gdx.gl.glViewport((int) WitchCraft.viewport.x,
+					(int) WitchCraft.viewport.y,
+					(int) WitchCraft.viewport.width,
+					(int) WitchCraft.viewport.height);
+			if (accum >= targetFrameTime) {
+				// if ( accum > dt || ON_ANDROID ) {
+				// currentScreen.update(accum);
+				// accum = accum - targetFrameTime;
+				// } else {
 				currentScreen.update(dt);
 				accum = targetFrameTime;
-//			}
+				// }
+			}
+
+			WitchCraft.cam.update();
+			currentScreen.draw(spriteBatch);
+
 		}
-		
-
-		WitchCraft.cam.update();
-		currentScreen.draw(spriteBatch);
-
 		/* mix test */
 		// float delta = Gdx.graphics.getDeltaTime() * 0.25f; // Reduced to make
 		// mixing easier to see.
@@ -243,9 +266,9 @@ public class WitchCraft implements ApplicationListener {
 	public void loadPlayAssets() {
 		assetManager.load("data/spine/characters.atlas", TextureAtlas.class);
 		assetManager.load("data/world/otherart.atlas", TextureAtlas.class);
-//		assetManager.load("data/sounds/crickets.ogg", Sound.class);
+		// assetManager.load("data/sounds/crickets.ogg", Sound.class);
 		assetManager.load("data/sounds/wind.wav", Sound.class);
-		
+
 		assetManager.finishLoading();
 	}
 

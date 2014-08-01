@@ -3,9 +3,9 @@ package com.anythingmachine.witchcraft.agents.player.items;
 import java.util.ArrayList;
 
 import com.anythingmachine.physicsEngine.Cloth;
-import com.anythingmachine.physicsEngine.Particle;
 import com.anythingmachine.physicsEngine.RK4Integrator;
-import com.anythingmachine.physicsEngine.SpringParticle;
+import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
+import com.anythingmachine.physicsEngine.particleEngine.particles.SpringParticle;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -28,6 +28,10 @@ public class Cape {
 	public void updatePos( float x, float y ) {
 		cloth.trans(x, y);
 		//cloth.flip(flip);
+	}
+	
+	public void flip(boolean val) {
+		cloth.flip(val);
 	}
 	
 	public void addWindForce(float x, float y) {

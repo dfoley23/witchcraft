@@ -1,8 +1,8 @@
-package com.anythingmachine.witchcraft.agents.npcs;
+package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import com.anythingmachine.animations.AnimationManager;
-import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -12,14 +12,15 @@ import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonBinary;
 import com.esotericsoftware.spine.SkeletonData;
 
-public class NPCStaticAnimation extends Entity {
+public class AnimatedSpringParticle extends SpringParticle {
 	private AnimationManager animate;
 	public int level;
 	private Vector3 pos;
 	private boolean onscreen = true;
 
-	public NPCStaticAnimation(String skinname, Vector3 pos, Vector2 bodyScale,
-			String datafile) {
+	public AnimatedSpringParticle(String skinname, Vector3 pos,
+			Vector2 bodyScale, String datafile) {
+		super(pos);
 		this.pos = pos;
 		FileHandle handle = Gdx.files.internal(datafile);
 		String[] fileContent = handle.readString().split("\n");
@@ -27,29 +28,42 @@ public class NPCStaticAnimation extends Entity {
 		level = Integer.parseInt(fileContent[0].split(",")[1]) - 1;
 
 		setupAnimations(skinname, pos, bodyScale, fileContent);
-
+		this.externalForce.y = Util.GRAVITY;
 	}
 
+	@Override
 	public void update(float dT) {
+		// externalForce.x = GamePlayManager.windx/mass;
 		onscreen = checkInBounds();
-		if ( onscreen) {
-//		float delta = Gdx.graphics.getDeltaTime();
+		if (onscreen) {
+			if (!stable) {
+				pos.x += vel.x * dT;
+				pos.y += vel.y * dT;
+				Vector3 tempvel = accel(this.pos, this.vel, dT);
+				vel.x += tempvel.x * dT;
+				vel.y += tempvel.y * dT;
+			}
+			animate.setPos(pos, 0, 0);
+			// float delta = Gdx.graphics.getDeltaTime();
 
-		animate.applyTotalTime(true, dT);
+			animate.applyTotalTime(true, dT);
 
-		animate.updateSkel(dT);
+			animate.updateSkel(dT);
 		}
 	}
-	
+
+	@Override
 	public void draw(Batch batch) {
-		if ( onscreen )
+		if (onscreen)
 			animate.draw(batch);
+
 	}
 
+	@Override
 	public boolean checkInBounds() {
 		return WitchCraft.cam.inscaledBounds(pos);
 	}
-	
+
 	protected void setupAnimations(String skinname, Vector3 pos, Vector2 scale,
 			String[] fileContent) {
 		SkeletonBinary sb = new SkeletonBinary(
@@ -68,4 +82,5 @@ public class NPCStaticAnimation extends Entity {
 
 		animate.setPos(pos, 0, 0);
 	}
+
 }

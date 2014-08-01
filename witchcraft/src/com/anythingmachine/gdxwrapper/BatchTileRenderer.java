@@ -88,32 +88,17 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 		boolean drewPlayer = false;
 		beginRender();
 		for (MapLayer layer : map.getLayers()) {
+			if ( !drewBG && layer.getProperties().containsKey("bg") ) {
+				drewBG = true;
+				main.drawBackGround(spriteBatch);
+			}
 			if ( !drewPlayer && layer.getProperties().containsKey("player") ) {
-//				endRender();
-//				Gdx.gl.glDisable(GL10.GL_BLEND);
 				main.drawPlayerLayer(spriteBatch);
 				drewPlayer = true;
-//				beginRender();
-//				Gdx.gl.glEnable(GL10.GL_BLEND);
 			}
 			if (layer.isVisible()) {
-//				if (layer instanceof TiledMapTileLayer) {
-					//System.out.println("Render layer: " + layer.getName());
 					renderTileLayer((TiledMapTileLayer)layer);
-//				} else {
-//					for (MapObject object : layer.getObjects()) {
-//						renderObject(object);
-//					}
-//				}
 			}
-//			if ( !drewBG && layer.getProperties().containsKey("bg") ) {
-//				drewBG = true;
-////				endRender();
-////				Gdx.gl.glDisable(GL10.GL_BLEND);
-//				main.drawBackGround(spriteBatch);
-////				beginRender();
-////				Gdx.gl.glEnable(GL10.GL_BLEND);
-//			}
 		}
 		endRender();
 	}

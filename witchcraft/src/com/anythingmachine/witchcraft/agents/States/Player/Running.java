@@ -13,21 +13,13 @@ public class Running extends SharedState {
 	@Override
 	public void addWindToCape(float dt) {
 		Cape cape = GamePlayManager.player.cape;
-
-		int windx = 0;		
-		if ( sm.windtimeout > 0 ) {
-			windx = sm.rand.nextInt(1500);
-			if ( windx > 600 ) 
-				windx = 0;
-		} else if ( sm.windtimeout < -1 ) {
-			sm.windtimeout = 1.5f;
-		}
-		windx+=250;
-		sm.windtimeout-=dt;
+		float windx = GamePlayManager.windx+250;
 		
-		cape.addWindForce(sm.facingleft ? windx : -windx, -400);
+		cape.addWindForce(-windx, -400);
 
-		cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
+		cape.updatePos(sm.facingleft? sm.neck.getWorldX() -22 : sm.neck.getWorldX() + 22, sm.neck.getWorldY()-8);
+		
+		cape.flip(sm.facingleft);
 	}
 
 	@Override

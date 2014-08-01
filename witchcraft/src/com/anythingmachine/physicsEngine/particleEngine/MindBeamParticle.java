@@ -1,6 +1,6 @@
 package com.anythingmachine.physicsEngine.particleEngine;
 
-import com.anythingmachine.physicsEngine.TexturedBodyParticle;
+import com.anythingmachine.physicsEngine.particleEngine.particles.TexturedBodyParticle;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Batch;

@@ -2,6 +2,7 @@ package com.anythingmachine.physicsEngine;
 
 import java.util.ArrayList;
 
+import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Vector3;
 
@@ -31,7 +32,7 @@ public class RK4Integrator {
 	}
 
 	private void integrate(Particle p, float t, float dt) {
-		if (!p.useEuler) {
+		if (!p.isEuler()) {
 			Vector3 dpdt = new Vector3(0, 0, 0);
 			Vector3 dvdt = new Vector3(0, 0, 0);
 			Derivative a = evaluate(p, t, dt, new Derivative());
@@ -52,11 +53,10 @@ public class RK4Integrator {
 //			Derivative a = evaluateEuler(p, t, dt);
 //			p.integratePos(a.dp, dt);
 //			p.integrateVel(a.dv, dt);
-			p.pos.x += p.vel.x*dt;
-			p.pos.y += p.vel.y*dt;
-			Vector3 vel = p.accel(p.getPos(), p.vel, t + dt);
-			p.vel.x += vel.x*dt;
-			p.vel.y += vel.y*dt;
+			Vector3 vel = p.getVel();
+			p.setPos(vel.x*dt,vel.y*dt);
+			Vector3 newvel = p.accel(p.getPos(), vel, t + dt);
+			p.setVel(newvel.x*dt, newvel.y*dt, newvel.z*dt);
 		}
 	}
 

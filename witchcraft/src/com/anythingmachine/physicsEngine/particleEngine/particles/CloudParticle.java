@@ -1,6 +1,5 @@
 package com.anythingmachine.physicsEngine.particleEngine.particles;
 
-import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,25 +7,60 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 
 public class CloudParticle extends KinematicParticle {
-	private Sprite sprite;
+	protected Sprite sprite;
+	protected float lifetime;
+	protected float life;
+	protected float scale;
+	protected float startScale;
+	protected float dS;
 	
-	public CloudParticle(Vector3 pos, float scale, float rot, float speed) {
+	public CloudParticle (Vector3 pos, float lifetime, float beginScale, float endScale, float speedX, float speedY) {
 		super(pos, 0);
-		this.setVel(speed, 0, 0);
+		this.lifetime = lifetime;
+		this.life = 0;
+		this.startScale = beginScale;
+		this.setVel(speedX, speedY, 0);
 		sprite = new Sprite(WitchCraft.assetManager.get("data/world/otherart.atlas", TextureAtlas.class).findRegion("dust"));
-		sprite.setRotation(rot);
-		sprite.scale(scale);
-	}
-
-	public void update(float dt) {
-		pos.x += vel.x*dt;
+        sprite.setColor(0.7f, 0.1f, 0.1f, 0.9f);
+		sprite.setScale(beginScale*0.7f, beginScale);
+		this.dS = (endScale-beginScale)/lifetime;
+		sprite.setColor(0.4f, 0.4f, 0.4f, 0.8f);
+		this.scale = beginScale;
 	}
 	
-	public void draw(Batch batch) {
-		sprite.setPosition(pos.x, pos.y);
-		sprite.draw(batch);
+	@Override
+	public void draw(Batch batch) {		
+		if( life < lifetime ) {
+			sprite.setPosition(pos.x, pos.y);
+			sprite.draw(batch);
+		}
 	}
 		
+	@Override
+	public void update(float dt) {
+		life += dt;
+		this.pos.x += this.vel.x*dt;
+		this.pos.y += this.vel.y*dt;
+        scale += dS*dt;
+		sprite.setScale(scale, scale);
+	}
+	
+	public void reset(Vector3 pos, float speedX, float speedY) {
+		this.pos = new Vector3( pos.x, pos.y , pos.z);
+		this.setVel(speedX, speedY, 0);
+		scale = startScale;
+		life = 0;
+	}
+	
+	public boolean isDead() {
+		return life >= lifetime;
+	}
+		
+	public void setFade(float fade) {
+		this.sprite.setAlpha(fade);
+		
+	}
+
 	public void setScale(float scale) {
 		sprite.scale(scale);
 	}

@@ -1,13 +1,15 @@
 package com.anythingmachine.physicsEngine;
 
+import com.anythingmachine.collisionEngine.Entity;
+import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Vector3;
 
-public class Spring {
-	private Particle other;
-	private float restLength;
-	private float damper;
-	private float springK;
+public class Spring extends Entity {
+	protected Particle other;
+	protected float restLength;
+	protected float damper;
+	protected float springK;
 	
 	public Spring( Particle other, float restLength, float k, float damper) {
 		this.other = other;

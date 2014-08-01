@@ -1,7 +1,6 @@
 package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;

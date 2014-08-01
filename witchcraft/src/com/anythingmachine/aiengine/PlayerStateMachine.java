@@ -28,7 +28,6 @@ public class PlayerStateMachine extends StateMachine {
 	public int curGroundSegment;
 	public Platform elevatedSegment;
 	public String dupeSkin;
-	public float windtimeout = 1.5f;
 	public Random rand;	
 
 	public boolean hitplatform;

@@ -1,4 +1,4 @@
-package com.anythingmachine.physicsEngine;
+package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
@@ -14,6 +14,7 @@ public class Particle extends Entity {
 	protected ParticleSystem system;
 	protected boolean destroyed = false;
 	protected boolean useEuler = true;
+	protected float mass = 1f;
 
 	public Particle(Vector3 pos) {
 		// this.pos = pos;
@@ -27,6 +28,16 @@ public class Particle extends Entity {
 		destroyed = true;
 	}
 
+	public boolean isEuler() {
+		return useEuler;
+	}
+	
+	public Particle setMass(float m) {
+		mass = m;
+		this.externalForce.y *= m;
+		return this;
+	}
+	
 	public boolean isDestroyed() {
 		return destroyed;
 	}
@@ -145,6 +156,7 @@ public class Particle extends Entity {
 		return stable;
 	}
 
+	@Override
 	public void setStable(boolean val) {
 		stable = val;
 	}

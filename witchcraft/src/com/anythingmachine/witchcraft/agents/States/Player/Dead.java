@@ -2,7 +2,7 @@ package com.anythingmachine.witchcraft.agents.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.animations.SpriteAnimation;
-import com.anythingmachine.physicsEngine.TexturedParticle;
+import com.anythingmachine.physicsEngine.particleEngine.particles.TexturedParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;

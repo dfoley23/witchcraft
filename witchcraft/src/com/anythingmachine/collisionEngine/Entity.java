@@ -1,7 +1,9 @@
 package com.anythingmachine.collisionEngine;
 
+import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -80,6 +82,13 @@ public class Entity extends Object {
 		
 	}
 	
+	public boolean checkInBounds() {
+		return false;
+	}
+	public void setStable(boolean val) {
+		
+	}
+
 	/**
 	 * agent functions
 	 */
@@ -107,5 +116,12 @@ public class Entity extends Object {
 	public void setTalking(NonPlayer npc) {
 	}
 
+	/**
+	 * cinematic functions
+	 */
+	
+	public boolean isEnded() {
+		return true;
+	}
 
 }

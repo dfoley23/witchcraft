@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 import com.anythingmachine.LuaEngine.LoadScript;
 import com.anythingmachine.cinematics.Camera;
@@ -14,13 +15,16 @@ import com.anythingmachine.cinematics.actions.AnimateTimed;
 import com.anythingmachine.cinematics.actions.FaceLeft;
 import com.anythingmachine.cinematics.actions.Lerp;
 import com.anythingmachine.cinematics.actions.ParticleToGamePlay;
+import com.anythingmachine.cinematics.actions.StartParticle;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.collisionEngine.MyContactListener;
 import com.anythingmachine.physicsEngine.RK4Integrator;
-import com.anythingmachine.physicsEngine.particleEngine.CloudEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.CrowEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.FireEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
+import com.anythingmachine.physicsEngine.particleEngine.SmokeEmitter;
+import com.anythingmachine.physicsEngine.particleEngine.particles.AnimatedSpringParticle;
+import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Screen;
@@ -65,14 +69,19 @@ public class GamePlayManager extends Screen {
 	private static CinematicTrigger cinema;
 	private static CinematicTrigger sleepCinematic;
 	private static StorySegment storySegment = StorySegment.BEGINNING;
+	private Color dayColor;
+	public static float windx;
+	private float windtimeout = 1.5f;
+	private Random rand;
 
-	private CloudEmitter cloudE;
+	// private CloudEmitter cloudE;
 	private CrowEmitter crowE;
 
 	// test fields
 	private Box2DDebugRenderer debugRenderer;
 	private static ArrayList<NonPlayer> npcs;
 	private static ArrayList<Entity> entities;
+	private static ArrayList<Entity> bgentities;
 	private NPCStaticAnimation shackled;
 	private NPCStaticAnimation tied;
 
@@ -90,6 +99,8 @@ public class GamePlayManager extends Screen {
 		else
 			rk4 = new RK4Integrator(WitchCraft.dt);
 		rk4System = new ParticleSystem(rk4);
+
+		rand = new Random();
 
 		contactListener = new MyContactListener();
 		world = new World(new Vector2(0.0f, 0.0f), false);
@@ -129,6 +140,7 @@ public class GamePlayManager extends Screen {
 		cinema = sleepCinematic;
 
 		entities = new ArrayList<Entity>();
+		bgentities = new ArrayList<Entity>();
 		player = new Player(rk4);
 		npcs = new ArrayList<NonPlayer>();
 		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 100.0f),
@@ -146,7 +158,7 @@ public class GamePlayManager extends Screen {
 
 		// cloudE = new CloudEmitter(25);
 		crowE = new CrowEmitter(1);
-
+		windx = 0;
 		// currentsound =
 		// WitchCraft.assetManager.get("data/sounds/crickets.ogg");
 		// currentsoundid = currentsound.loop(0.25f);
@@ -173,12 +185,13 @@ public class GamePlayManager extends Screen {
 		cinema = sleepCinematic;
 	}
 
-	public static void addEntity(Entity e) {
-		entities.add(e);
+	public static void addEntity(Entity e, int index) {
+		entities.add(index, e);
 	}
 
 	@Override
 	public void update(float dt) {
+		updateEnvironment(dt);
 		if (level > 0) {
 			switchLevel(level);
 		}
@@ -193,6 +206,10 @@ public class GamePlayManager extends Screen {
 
 		for (Entity e : entities)
 			e.update(dt);
+
+		for (Entity e : bgentities) {
+			e.update(dt);
+		}
 
 		for (NonPlayer npc : npcs)
 			npc.update(dt);
@@ -215,11 +232,79 @@ public class GamePlayManager extends Screen {
 
 	}
 
+	public void updateEnvironment(float dt) {
+		dayColor = getTimeOfDay();
+		windx = 0;
+		if (windtimeout > 0) {
+			windx = rand.nextInt(1500);
+			if (windx > 720) {
+				// if ( windx > 1480 && soundtimeout < 1f) {
+				// // GamePlayManager.currentsound.stop();
+				// // GamePlayManager.currentsound = (Sound)
+				// WitchCraft.assetManager.get("data/sounds/wind.wav");
+				// // GamePlayManager.currentsound.play(0.5f);
+				// byte[] buf = new byte[ 1 ];;
+				// AudioFormat af = new AudioFormat( (float )44100, 8, 1, true,
+				// false );
+				// try {
+				// SourceDataLine sdl = AudioSystem.getSourceDataLine( af );
+				// sdl = AudioSystem.getSourceDataLine( af );
+				// sdl.open( af );
+				// sdl.start();
+				// for( int i = 0; i < 1000 * (float )44100 / 1000; i++ ) {
+				// double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
+				// buf[ 0 ] = (byte )( Math.sin( angle ) * 100 );
+				// sdl.write( buf, 0, 1 );
+				// }
+				// sdl.drain();
+				// sdl.stop();
+				// sdl.close();
+				// } catch(Exception e) {
+				//
+				// }
+				// }
+				// windx = 0;
+				// } else {
+				// if ( GamePlayManager.currentlevel < 2 && soundtimeout < 0) {
+				// // GamePlayManager.currentsound.stop();
+				// // GamePlayManager.currentsound = (Sound)
+				// WitchCraft.assetManager.get("data/sounds/crickets.ogg");
+				// // GamePlayManager.currentsound.play(0.5f);
+				// byte[] buf = new byte[ 1 ];;
+				// AudioFormat af = new AudioFormat( (float )44100, 8, 1, true,
+				// false );
+				// try {
+				// SourceDataLine sdl = AudioSystem.getSourceDataLine( af );
+				// sdl = AudioSystem.getSourceDataLine( af );
+				// sdl.open( af );
+				// sdl.start();
+				// for( int i = 0; i < 1000 * (float )44100 / 1000; i++ ) {
+				// double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
+				// buf[ 0 ] = (byte )( Math.sin( angle ) * 100 );
+				// sdl.write( buf, 0, 1 );
+				// }
+				// sdl.drain();
+				// sdl.stop();
+				// sdl.close();
+				// } catch(Exception e) {
+				//
+				// }
+				//
+				// soundtimeout = 2.5f;
+				// } else {
+				// soundtimeout-=dt;
+				// }
+			}
+		} else if (windtimeout < -1) {
+			windtimeout = 1.5f;
+		}
+		windtimeout -= dt;
+	}
+
 	@Override
 	public void draw(Batch batch) {
 		if (!initworld) {
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-			Color dayColor = getTimeOfDay();
 			Gdx.gl.glClearColor(dayColor.r, dayColor.g, dayColor.b, 1f);
 
 			tiledMapHelper.render(this);
@@ -238,6 +323,9 @@ public class GamePlayManager extends Screen {
 		// spriteBatch.begin();
 		// cloudE.draw(batch);
 		// spriteBatch.end();
+		for (Entity e : bgentities) {
+			e.draw(batch);
+		}
 	}
 
 	public void drawPlayerLayer(Batch batch) {
@@ -286,8 +374,8 @@ public class GamePlayManager extends Screen {
 				new InternalFileHandleResolver()));
 		WitchCraft.assetManager.unload("data/world/level1/level"
 				+ (oldlevel + 1) + ".tmx");
-		WitchCraft.assetManager.load("data/world/level1/level" + (l)
-				+ ".tmx", TiledMap.class);
+		WitchCraft.assetManager.load("data/world/level1/level" + (l) + ".tmx",
+				TiledMap.class);
 		WitchCraft.assetManager.finishLoading();
 
 		String levelstr = "level" + l;
@@ -304,7 +392,7 @@ public class GamePlayManager extends Screen {
 			diff = levels.get(l - 1) - 32;
 			player.setX(diff - 64);
 		} else {
-//			diff -= levels.get(currentlevel) - WitchCraft.screenWidth * 0.5f;
+			// diff -= levels.get(currentlevel) - WitchCraft.screenWidth * 0.5f;
 			player.setX(64);
 		}
 		// cloudE.moveByX(diff);
@@ -365,16 +453,37 @@ public class GamePlayManager extends Screen {
 	public static void level1() {
 		triggers.clear();
 		entities.clear();
+		bgentities.clear();
+
+		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(1772,
+				80, 0), new Vector2(1.2f, 0.95f),
+				"data/npcdata/static/treedweller1"));
+		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(4900,
+				80, 0), new Vector2(1.2f, 0.95f),
+				"data/npcdata/static/treedweller2"));
+
 	}
 
 	public static void level2() {
 		triggers.clear();
 		entities.clear();
+		bgentities.clear();
+
+		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(2772,
+				80, 0), new Vector2(1.2f, 0.95f),
+				"data/npcdata/static/treedweller1"));
+		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(3699,
+				50, 0), new Vector2(1.2f, 0.95f),
+				"data/npcdata/static/treedweller2"));
 	}
 
 	public static void level3() {
 		triggers.clear();
 		entities.clear();
+		bgentities.clear();
+
+		entities.add(new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350,
+				0), new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch"));
 
 		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
@@ -386,43 +495,77 @@ public class GamePlayManager extends Screen {
 		entities.add(new NPCStaticAnimation("shackledmale1", new Vector3(1696,
 				118, 0), new Vector2(0.75f, 0.8f),
 				"data/npcdata/static/shackledfred"));
-		entities.add(new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350,
-				0), new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch"));
+
+		bgentities.add(new Particle(new Vector3(4589, 570, 0)));
+		bgentities.add(new AnimatedSpringParticle("tiedwitch", new Vector3(
+				4607, 524, 0), new Vector2(0.75f, 0.8f),
+				"data/npcdata/static/hungwitch").addRope(
+				(Particle) bgentities.get(0), 300, 100, 1.9f).setMass(20));
+		bgentities.get(1).setStable(true);
 
 		switch (storySegment) {
 		case BEGINNING:
+			// burn witch
 			triggers.add(new CinematicTrigger()
 					.addAction(
 							new Lerp(WitchCraft.cam, 0.0f, 0.005f, new Vector3(
 									3150 + WitchCraft.screenWidth * 0.5f, 0, 0)))
-					.addAction(new FaceLeft(entities.get(0), 0.0f, true))
+					.addAction(new FaceLeft(entities.get(1), 0.0f, true))
 					.addAction(
-							new AnimateTimed("WALKING", 6.3f, entities.get(0),
+							new AnimateTimed("WALKING", 6.3f, entities.get(1),
 									3.0f))
 					.addAction(
 							new AnimateTimed("CLEANING", 10.0f,
-									entities.get(0), 8.0f))
+									entities.get(1), 8.0f))
 					.addAction(
 							new ParticleToGamePlay(
-									10.0f,
+									9.0f,
 									new FireEmitter(
 											new Vector3(
 													2650 + WitchCraft.screenWidth * 0.5f,
-													30, 0), 30, 3.0f, 60.0f,
-											0.5f, 0.7f)))
-					.addAction(new FaceLeft(entities.get(0), 11.5f, false))
+													50, 0), 20, 4.0f, 60.0f,
+											0.4f, 0.7f), 1))
+					.addAction(
+							new ParticleToGamePlay(
+									9.3f,
+									new FireEmitter(
+											new Vector3(
+													2597 + WitchCraft.screenWidth * 0.5f,
+													30, 0), 12, 1.7f, 60.0f,
+											0.6f, 0.66f), 1))
+					.addAction(
+							new ParticleToGamePlay(
+									9.3f,
+									new FireEmitter(
+											new Vector3(
+													2710 + WitchCraft.screenWidth * 0.5f,
+													30, 0), 12, 1.7f, 60.0f,
+											0.6f, 0.66f), 1))
+					.addAction(
+							new ParticleToGamePlay(
+									13.0f,
+									new SmokeEmitter(
+											new Vector3(
+													2660 + WitchCraft.screenWidth * 0.5f,
+													120, 0), 12, 6.5f, 56.0f,
+											0.7f, 0.84f), 1))
+					.addAction(new FaceLeft(entities.get(5), 11.5f, false))
 					.addAction(
 							new AnimateTimed("WALKING", 14.7f, entities.get(0),
 									12.0f))
-					.addAction(new FaceLeft(entities.get(0), 14.9f, true))
-					.addAction(new FaceLeft(entities.get(0), 18.7f, false))
+					.addAction(new FaceLeft(entities.get(5), 14.9f, true))
+					.addAction(new FaceLeft(entities.get(5), 18.7f, false))
 					.addAction(
-							new AnimateTimed("WALKING", 24.0f, entities.get(0),
+							new AnimateTimed("WALKING", 24.0f, entities.get(5),
 									19.0f))
 					.addAction(
-							new Lerp(WitchCraft.cam, 22.0f, 0.003f,
-									new Vector3(2800, 0, 0)))
-					.buildBody(2850, 1000, 8, 3000));
+							new Lerp(WitchCraft.cam, 22.0f, 0.01f, new Vector3(
+									2500, 0, 0))).buildBody(2850, 1100, 8, 1000));
+			// hang witch
+			triggers.add(new CinematicTrigger().addAction(
+					new StartParticle(0.0f, bgentities.get(1))).buildBody(4200,
+					1100, 8, 1000));
+
 			break;
 		case POSTINTRODUCTION:
 			break;
@@ -434,6 +577,7 @@ public class GamePlayManager extends Screen {
 	public static void level4() {
 		triggers.clear();
 		entities.clear();
+		bgentities.clear();
 		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/tempMale4",
 				NPCType.CIV));

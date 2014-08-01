@@ -2,7 +2,6 @@ package com.anythingmachine.witchcraft.agents.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.collisionEngine.ground.ActionWall;
 import com.anythingmachine.collisionEngine.ground.LevelWall;
 import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Arrow;
@@ -22,7 +21,6 @@ public class PlayerState {
 	protected PlayerStateMachine sm;
 	public PlayerStateEnum name;
 	public PlayerState parent;
-	public float soundtimeout = 2;
 
 	public PlayerState(PlayerStateMachine sm, PlayerStateEnum name) {
 		this.sm = sm;
@@ -74,72 +72,12 @@ public class PlayerState {
 
 	public void addWindToCape(float dt) {
 		Cape cape = GamePlayManager.player.cape;
-
-		int windx = 0;		
-		if ( sm.windtimeout > 0 ) {
-			windx = sm.rand.nextInt(1500);
-			if ( windx > 720 ) {
-//				if ( windx > 1480 && soundtimeout < 1f) {
-////					GamePlayManager.currentsound.stop();
-////					GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/wind.wav");
-////					GamePlayManager.currentsound.play(0.5f);
-//				    byte[] buf = new byte[ 1 ];;
-//				    AudioFormat af = new AudioFormat( (float )44100, 8, 1, true, false );
-//				    try { 
-//				    SourceDataLine sdl = AudioSystem.getSourceDataLine( af );
-//				    sdl = AudioSystem.getSourceDataLine( af );
-//				    sdl.open( af );
-//				    sdl.start();
-//				    for( int i = 0; i < 1000 * (float )44100 / 1000; i++ ) {
-//				        double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
-//				        buf[ 0 ] = (byte )( Math.sin( angle ) * 100 );
-//				        sdl.write( buf, 0, 1 );
-//				    }
-//				    sdl.drain();
-//				    sdl.stop();
-//				    sdl.close();
-//				    } catch(Exception e) {
-//				    	
-//				    }
-//				}
-//				windx = 0;
-//			} else {
-//				if ( GamePlayManager.currentlevel < 2 && soundtimeout < 0) {
-////					GamePlayManager.currentsound.stop();
-////					GamePlayManager.currentsound = (Sound) WitchCraft.assetManager.get("data/sounds/crickets.ogg");
-////					GamePlayManager.currentsound.play(0.5f);
-//				    byte[] buf = new byte[ 1 ];;
-//				    AudioFormat af = new AudioFormat( (float )44100, 8, 1, true, false );
-//				    try { 
-//				    SourceDataLine sdl = AudioSystem.getSourceDataLine( af );
-//				    sdl = AudioSystem.getSourceDataLine( af );
-//				    sdl.open( af );
-//				    sdl.start();
-//				    for( int i = 0; i < 1000 * (float )44100 / 1000; i++ ) {
-//				        double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
-//				        buf[ 0 ] = (byte )( Math.sin( angle ) * 100 );
-//				        sdl.write( buf, 0, 1 );
-//				    }
-//				    sdl.drain();
-//				    sdl.stop();
-//				    sdl.close();
-//				    } catch(Exception e) {
-//				    	
-//				    }
-//
-//					soundtimeout = 2.5f;
-//				} else {
-//					soundtimeout-=dt;
-//				}
-			}
-		} else if ( sm.windtimeout < -1 ) {
-			sm.windtimeout = 1.5f;
-		}
-		sm.windtimeout-=dt;
 		
-		cape.addWindForce(sm.facingleft ? windx : -windx, -400);
+		cape.addWindForce(-GamePlayManager.windx, -400);
 
-		cape.updatePos(sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
+		cape.updatePos(sm.facingleft? sm.neck.getWorldX() -12 : sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
+		
+		cape.flip(sm.facingleft);
 	}
 	
 	public void setAttack() {

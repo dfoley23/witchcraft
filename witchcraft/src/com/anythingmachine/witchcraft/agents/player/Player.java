@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.physicsEngine.KinematicParticle;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
+import com.anythingmachine.physicsEngine.particleEngine.particles.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.agents.States.Player.ArrowDead;

@@ -2,7 +2,6 @@ package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import java.util.ArrayList;
 
-import com.anythingmachine.physicsEngine.Particle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;

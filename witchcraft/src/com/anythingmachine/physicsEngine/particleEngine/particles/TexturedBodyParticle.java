@@ -1,4 +1,4 @@
-package com.anythingmachine.physicsEngine;
+package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;

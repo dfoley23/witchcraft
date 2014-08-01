@@ -3,9 +3,9 @@ package com.anythingmachine.physicsEngine.particleEngine;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.anythingmachine.physicsEngine.Particle;
 import com.anythingmachine.physicsEngine.PhysicsComponent;
 import com.anythingmachine.physicsEngine.RK4Integrator;
+import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class ParticleSystem implements PhysicsComponent {
