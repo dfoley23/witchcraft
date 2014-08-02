@@ -90,12 +90,7 @@ public class NonPlayer extends Entity {
 	public void setParentByValue(String strvalue) {
 		sm.state.setParent(sm.getState(NPCStateEnum.valueOf(strvalue)));
 	}
-	
-	@Override
-	public void setAnimation(String anim, boolean val) {
-		sm.animate.setCurrent(anim, val);
-	}
-	
+		
 	public void draw(Batch batch) {
 		sm.state.draw(batch);
 	}

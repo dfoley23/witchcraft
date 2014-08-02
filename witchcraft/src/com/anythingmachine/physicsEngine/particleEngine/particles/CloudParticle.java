@@ -17,15 +17,14 @@ public class CloudParticle extends KinematicParticle {
 	public CloudParticle (Vector3 pos, float lifetime, float beginScale, float endScale, float speedX, float speedY) {
 		super(pos, 0);
 		this.lifetime = lifetime;
-		this.life = 0;
+		this.life = 0.0f;
 		this.startScale = beginScale;
 		this.setVel(speedX, speedY, 0);
-		sprite = new Sprite(WitchCraft.assetManager.get("data/world/otherart.atlas", TextureAtlas.class).findRegion("dust"));
-        sprite.setColor(0.7f, 0.1f, 0.1f, 0.9f);
-		sprite.setScale(beginScale*0.7f, beginScale);
 		this.dS = (endScale-beginScale)/lifetime;
-		sprite.setColor(0.4f, 0.4f, 0.4f, 0.8f);
 		this.scale = beginScale;
+		sprite = new Sprite(WitchCraft.assetManager.get("data/world/otherart.atlas", TextureAtlas.class).findRegion("dust"));
+		sprite.setScale(beginScale, beginScale);
+		sprite.setColor(0.4f, 0.4f, 0.4f, 0.8f);
 	}
 	
 	@Override

@@ -7,8 +7,8 @@ public class FireParticle extends CloudParticle {
 	public FireParticle (Vector3 pos, float lifetime, float beginScale, float endScale, float speedX, float speedY) {
 		super(pos, lifetime,beginScale,endScale,speedX,speedY);
 		sprite.setScale(beginScale*0.7f, beginScale);
-		float colorRed = (float)Math.random();
-		sprite.setColor(0.5f+colorRed, 0.1f, 0.1f, 0.9f);
+//		float colorRed = (float)Math.random();
+		sprite.setColor(0.7f, 0.1f, 0.1f, 0.9f);
 	}
 	
 	@Override
@@ -22,7 +22,7 @@ public class FireParticle extends CloudParticle {
 			sprite.setColor(1f, 1.0f, 0.1f, 0.9f);
 		} else if ( lifetime*0.5 < life) {
 			sprite.setColor(0.7f, 0.7f, 0.1f, 0.9f);
-		} else if ( lifetime*0.25 < life) {
+		} else if ( lifetime*0.15 < life) {
 			sprite.setColor(0.7f, 0.1f, 0.1f, 0.9f);
 		}
         scale += dS*dt;

@@ -221,6 +221,14 @@ public class PlayerState {
 		}
 	}
 	
+	protected void setDead() {
+		sm.setState(PlayerStateEnum.DEAD);
+	}
+
+	protected void setState(PlayerStateEnum newstate) {
+		sm.setState(newstate);
+	}
+	
 	protected void hitWall(float sign) {
 		sm.phyState.body.stopOnX();
 		sm.phyState.body.setX(sm.phyState.body.getX() - (sign * 16));
@@ -231,7 +239,7 @@ public class PlayerState {
 			if (plat.getHeight() - 35 < sm.phyState.body.getY()) {
 				sm.hitplatform = true;
 				sm.elevatedSegment = plat;
-				sm.state.land();
+				land();
 			} else {
 				sm.phyState.body.stopOnY();
 				sm.hitroof = true;
@@ -297,14 +305,14 @@ public class PlayerState {
 			npc = (NonPlayer) ((Pointer) other).obj;
 			if (npc.isCritcalAttacking()) {
 				sm.killedbehind = npc.getX() < sm.phyState.body.getX();
-				sm.setState(PlayerStateEnum.DEAD);
+				setDead();
 				npc.switchBloodSword();
 			}
 			break;
 		case ARROW:
 			Arrow arrow = (Arrow) other;
 			sm.killedbehind = arrow.getVelX() < 0 == sm.facingleft;
-			sm.setState(PlayerStateEnum.ARROWDEAD);
+			setState(PlayerStateEnum.ARROWDEAD);
 			break;
 		}
 	}

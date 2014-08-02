@@ -11,18 +11,21 @@ public class AnimateTimed implements CinematicAction {
 	protected Entity component;
 	protected float cineTime = 0.0f;
 	protected float startDT;
+	protected boolean loop;
 
-	public AnimateTimed(String state, float endDT, Entity e, float startDT ) {
+	public AnimateTimed(String state, Entity e, float startDT,float endDT, boolean loop ) {
 		this.component = e;		
 		this.startDT = startDT;
 		this.endDT = endDT;
-		this.state = state;	
+		this.state = state;
+		this.loop = loop;
 		hasstarted = startDT == 0.0f;
 	}
 
 	public boolean isStarted(float dt) {
 		cineTime += dt;
 		if( !hasstarted && cineTime >= startDT ) {
+			component.setAnimation(state, loop);
 			component.setStateByValue(state);
 			component.setParentByValue("CINEMATIC");
 			hasstarted = true;

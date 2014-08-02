@@ -55,8 +55,8 @@ public class Player extends Entity {
 	public Cape cape;
 	private PlayerStateMachine state;
 
-	public Player(RK4Integrator rk4) {
-		setupState("player");
+	public Player(RK4Integrator rk4, Vector2 pos) {
+		setupState("player", pos);
 		setupInput();
 		setupPowers();
 
@@ -256,7 +256,7 @@ public class Player extends Entity {
 		// StateEnum.SHAPECATPOWER));
 		// state.addState(StateEnum.INTANGIBLEPOWER, new Intangible(state,
 		// StateEnum.INTANGIBLEPOWER));
-		state.setInitialState(PlayerStateEnum.IDLE);
+		state.setInitialState(PlayerStateEnum.LOADINGSTATE);
 		state.animate.bindPose();
 		state.animate.setCurrent("idle", true);
 	}
@@ -310,14 +310,14 @@ public class Player extends Entity {
 		// powers.put("death", new DeathPower());
 	}
 
-	private void setupState(String name) {
+	private void setupState(String name, Vector2 pos) {
 		TextureAtlas atlas = WitchCraft.assetManager
 				.get("data/spine/characters.atlas");
 		SkeletonBinary sb = new SkeletonBinary(atlas);
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
 				.internal("data/spine/characters.skel"));
 
-		KinematicParticle body = new KinematicParticle(new Vector3(256f, 128f,
+		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, pos.y,
 				0f), Util.GRAVITY * 3);
 //		body.useEuler(false);
 

@@ -62,8 +62,9 @@ public class NPCStaticAnimation extends Entity {
 
 		animate = new AnimationManager(skinname, pos, scale, false, sd);
 
-		animate.addAnimation(animations[1], sd.findAnimation(animations[1]));
-
+		for( String a: animations) {
+			animate.addAnimation(a, sd.findAnimation(a));
+		}
 		animate.setCurrent(animations[1], true);
 
 		animate.setPos(pos, 0, 0);

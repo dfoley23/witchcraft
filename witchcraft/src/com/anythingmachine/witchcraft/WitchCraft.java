@@ -143,7 +143,7 @@ public class WitchCraft implements ApplicationListener {
 			pressedPaused = 0.0f;
 		}
 		pressedPaused = pressedPaused > 0.5f ? 1.0f : pressedPaused + actualDT;
-		if (!paused) {
+		if (!paused || true) {
 			accum += actualDT;
 			if (ON_ANDROID) {
 				Gdx.app.log("***************************frames per sec: ", ""

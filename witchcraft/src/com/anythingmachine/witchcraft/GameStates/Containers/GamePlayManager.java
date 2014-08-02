@@ -82,8 +82,6 @@ public class GamePlayManager extends Screen {
 	private static ArrayList<NonPlayer> npcs;
 	private static ArrayList<Entity> entities;
 	private static ArrayList<Entity> bgentities;
-	private NPCStaticAnimation shackled;
-	private NPCStaticAnimation tied;
 
 	public enum StorySegment {
 		BEGINNING, POSTINTRODUCTION,
@@ -110,7 +108,10 @@ public class GamePlayManager extends Screen {
 		String[] fileContent = handle.readString().split("\n");
 
 		currentlevel = Integer.parseInt(fileContent[3]) - 1;
-
+		//debug set level
+		if( Util.DEV_MODE ) 
+			currentlevel = 2;
+		
 		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
 		WitchCraft.assetManager.load("data/world/level1/level"
@@ -141,7 +142,7 @@ public class GamePlayManager extends Screen {
 
 		entities = new ArrayList<Entity>();
 		bgentities = new ArrayList<Entity>();
-		player = new Player(rk4);
+		player = new Player(rk4, new Vector2(256f, 128f));
 		npcs = new ArrayList<NonPlayer>();
 		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/knights/fredknight",
@@ -163,7 +164,7 @@ public class GamePlayManager extends Screen {
 		// WitchCraft.assetManager.get("data/sounds/crickets.ogg");
 		// currentsoundid = currentsound.loop(0.25f);
 
-		level1();
+		level3();
 	}
 
 	public static void setCinematic(CinematicTrigger c) {
@@ -421,7 +422,6 @@ public class GamePlayManager extends Screen {
 
 	@Override
 	public void transistionIn() {
-		float accum = 0;
 		oldlevel = currentlevel + 1;
 		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
@@ -440,7 +440,7 @@ public class GamePlayManager extends Screen {
 				Util.PIXELS_PER_METER, currentlevel + 1);
 
 		player.setState(PlayerStateEnum.LOADINGSTATE);
-		while (player.getState() != PlayerStateEnum.LOADINGSTATE) {
+		while (initworld) {
 			update(WitchCraft.dt);
 		}
 	}
@@ -474,7 +474,7 @@ public class GamePlayManager extends Screen {
 				"data/npcdata/static/treedweller1"));
 		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(3699,
 				50, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller2"));
+				"data/npcdata/static/treedweller3"));
 	}
 
 	public static void level3() {
@@ -500,7 +500,7 @@ public class GamePlayManager extends Screen {
 		bgentities.add(new AnimatedSpringParticle("tiedwitch", new Vector3(
 				4607, 524, 0), new Vector2(0.75f, 0.8f),
 				"data/npcdata/static/hungwitch").addRope(
-				(Particle) bgentities.get(0), 300, 100, 1.9f).setMass(20));
+				(Particle) bgentities.get(0), 300, 100, 1.9f).setMass(20)); 
 		bgentities.get(1).setStable(true);
 
 		switch (storySegment) {
@@ -512,22 +512,46 @@ public class GamePlayManager extends Screen {
 									3150 + WitchCraft.screenWidth * 0.5f, 0, 0)))
 					.addAction(new FaceLeft(entities.get(1), 0.0f, true))
 					.addAction(
-							new AnimateTimed("WALKING", 6.3f, entities.get(1),
-									3.0f))
+							new AnimateTimed("WALKING", entities.get(1),
+									3.0f, 6.3f, true))
 					.addAction(
-							new AnimateTimed("CLEANING", 10.0f,
-									entities.get(1), 8.0f))
+							new AnimateTimed("CLEANING",
+									entities.get(1), 8.0f, 10.0f, true))					
 					.addAction(
 							new ParticleToGamePlay(
 									9.0f,
 									new FireEmitter(
 											new Vector3(
 													2650 + WitchCraft.screenWidth * 0.5f,
-													50, 0), 20, 4.0f, 60.0f,
+													-20, 0), 20, 3.1f, 3.1f,
+											0.01f, 0.7f), 1))
+					.addAction(
+							new ParticleToGamePlay(
+									9.5f,
+									new FireEmitter(
+											new Vector3(
+													2600 + WitchCraft.screenWidth * 0.5f,
+													-20, 0), 20, 2.6f, 2.6f,
+											0.15f, 0.7f), 1))
+					.addAction(
+							new ParticleToGamePlay(
+									9.5f,
+									new FireEmitter(
+											new Vector3(
+													2700 + WitchCraft.screenWidth * 0.5f,
+													-20, 0), 20, 2.6f, 2.6f,
+											0.15f, 0.7f), 1))
+					.addAction(
+							new ParticleToGamePlay(
+									10.0f,
+									new FireEmitter(
+											new Vector3(
+													2650 + WitchCraft.screenWidth * 0.5f,
+													30, 0), 30, 4.0f, 60.0f,
 											0.4f, 0.7f), 1))
 					.addAction(
 							new ParticleToGamePlay(
-									9.3f,
+									10.0f,
 									new FireEmitter(
 											new Vector3(
 													2597 + WitchCraft.screenWidth * 0.5f,
@@ -535,7 +559,7 @@ public class GamePlayManager extends Screen {
 											0.6f, 0.66f), 1))
 					.addAction(
 							new ParticleToGamePlay(
-									9.3f,
+								    10.0f,
 									new FireEmitter(
 											new Vector3(
 													2710 + WitchCraft.screenWidth * 0.5f,
@@ -547,25 +571,26 @@ public class GamePlayManager extends Screen {
 									new SmokeEmitter(
 											new Vector3(
 													2660 + WitchCraft.screenWidth * 0.5f,
-													120, 0), 12, 6.5f, 56.0f,
+													120, 0), 30, 7.5f, 56.0f,
 											0.7f, 0.84f), 1))
 					.addAction(new FaceLeft(entities.get(5), 11.5f, false))
 					.addAction(
-							new AnimateTimed("WALKING", 14.7f, entities.get(0),
-									12.0f))
+							new AnimateTimed("WALKING", entities.get(0),
+									12.0f, 14.7f, true))
 					.addAction(new FaceLeft(entities.get(5), 14.9f, true))
 					.addAction(new FaceLeft(entities.get(5), 18.7f, false))
 					.addAction(
-							new AnimateTimed("WALKING", 24.0f, entities.get(5),
-									19.0f))
+							new AnimateTimed("WALKING", entities.get(5),
+									19.0f, 24.0f, true))
 					.addAction(
 							new Lerp(WitchCraft.cam, 22.0f, 0.01f, new Vector3(
 									2500, 0, 0))).buildBody(2850, 1100, 8, 1000));
 			// hang witch
 			triggers.add(new CinematicTrigger().addAction(
-					new StartParticle(0.0f, bgentities.get(1))).buildBody(4200,
+					new StartParticle(0.0f, bgentities.get(1)))
+					.addAction(new AnimateTimed("tied", bgentities.get(1), 5.0f, 5.1f, false))
+					.buildBody(4200,
 					1100, 8, 1000));
-
 			break;
 		case POSTINTRODUCTION:
 			break;

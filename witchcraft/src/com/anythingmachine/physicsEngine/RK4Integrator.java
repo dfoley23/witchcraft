@@ -54,9 +54,9 @@ public class RK4Integrator {
 //			p.integratePos(a.dp, dt);
 //			p.integrateVel(a.dv, dt);
 			Vector3 vel = p.getVel();
-			p.setPos(vel.x*dt,vel.y*dt);
+			p.addPos(vel.x*dt,vel.y*dt);
 			Vector3 newvel = p.accel(p.getPos(), vel, t + dt);
-			p.setVel(newvel.x*dt, newvel.y*dt, newvel.z*dt);
+			p.addVel(newvel.x*dt, newvel.y*dt, newvel.z*dt);
 		}
 	}
 
