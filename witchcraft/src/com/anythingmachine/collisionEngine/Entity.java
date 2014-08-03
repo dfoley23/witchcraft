@@ -110,6 +110,10 @@ public class Entity extends Object {
 	public void setAnimation(String anim, boolean val) {
 	}
 
+	public boolean isAnimationEnded(float delta) {
+		return true;
+	}
+
 	public void switchBloodSword() {
 	}
 

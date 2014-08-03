@@ -158,6 +158,10 @@ public class AnimationManager {
 	public boolean isTImeOverThreeQuarters(float delta) {
 		return totalTime + delta > animations.get(currentAnim).getDuration() * 0.75f;
 	}
+	
+	public boolean isAnimationEnded(float delta) {
+		return totalTime+delta >= animations.get(currentAnim).getDuration()-delta*2;
+	}
 
 	public void setFlipX(boolean val) {
 		float x = skel.getX();

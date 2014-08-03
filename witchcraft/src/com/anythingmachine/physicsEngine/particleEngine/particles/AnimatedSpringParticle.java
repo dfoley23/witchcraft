@@ -56,6 +56,11 @@ public class AnimatedSpringParticle extends SpringParticle {
 	public void setAnimation(String anim, boolean val) {
 		animate.setCurrent(anim, val);
 	}
+	
+	@Override
+	public boolean isAnimationEnded(float delta) {
+		return animate.isAnimationEnded(delta);
+	}
 
 	@Override
 	public void draw(Batch batch) {
@@ -82,7 +87,8 @@ public class AnimatedSpringParticle extends SpringParticle {
 		animate = new AnimationManager(skinname, pos, scale, false, sd);
 
 		for( String a: animations) {
-			animate.addAnimation(a, sd.findAnimation(a));
+			if ( !a.contains("ANIM"))
+				animate.addAnimation(a, sd.findAnimation(a));
 		}
 		animate.setCurrent(animations[1], true);
 

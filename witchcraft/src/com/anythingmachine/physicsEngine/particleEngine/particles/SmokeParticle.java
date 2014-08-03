@@ -6,7 +6,9 @@ public class SmokeParticle extends CloudParticle {
 	
 	public SmokeParticle (Vector3 pos, float lifetime, float beginScale, float endScale, float speedX, float speedY) {
 		super(pos, lifetime,beginScale,endScale,speedX,speedY);
-		sprite.setColor(0.4f, 0.4f, 0.4f, 0.8f);
+//		sprite = new Sprite(WitchCraft.assetManager.get("data/world/otherart.atlas", TextureAtlas.class).findRegion("fireTex"));
+		sprite.setScale(beginScale*0.7f, beginScale);
+		sprite.setColor(0.6f, 0.6f, 0.6f, 0.7f);
 	}
 		
 	@Override

@@ -15,33 +15,51 @@ public class FireEmitter extends Entity {
 	private Random rand;
 	private float lifetime;
 	private float life;
-
+	private int limit;
+	private float beginScale;
+	private float endScale;
+	private float particleLifetime;
+	private boolean addParticle = true;
+	
 	public FireEmitter(Vector3 pos, int limit, float particleLifetime,
 			float lifetime, float startScale, float endScale) {
+		this.particleLifetime = particleLifetime;
+		this.beginScale = startScale;
+		this.endScale = endScale;
+		this.limit = limit;
 		this.initPos = pos;
 		this.lifetime = lifetime;
 		fires = new ArrayList<FireParticle>();
 		rand = new Random();
-		for (int i = 0; i < limit; i++) {
-			int xvel = rand.nextInt(3) + 1;
-			if (rand.nextBoolean()) {
-				xvel *= -1;
-			}
-			fires.add(new FireParticle(initPos, (rand.nextFloat()+0.5f)*particleLifetime, startScale,
-					endScale, xvel, (rand.nextFloat()+0.5f)*Util.FIRESPEED));
+		int xvel = rand.nextInt(10) + 1;
+		if (rand.nextBoolean()) {
+			xvel *= -1;
 		}
+		fires.add(new FireParticle(initPos, (Math.max(0.56f, rand.nextFloat()))*particleLifetime, startScale,
+					endScale, xvel, Util.FIRESPEED));
 	}
 
 	@Override
 	public void update(float dt) {
+		if ( addParticle && fires.size() < limit ) {
+			int xvel = rand.nextInt(10) + 1;
+			if (rand.nextBoolean()) {
+				xvel *= -1;
+			}
+			fires.add(new FireParticle(initPos, (Math.max(0.56f, rand.nextFloat()))*particleLifetime, beginScale,
+					endScale, xvel, Util.FIRESPEED));
+			addParticle = false;
+		} else {
+			addParticle = true;
+		}
 		for (FireParticle f : fires) {
 			if (f.isDead()) {
 				if (life < lifetime) {
-					int xvel = rand.nextInt(3) + 1;
+					int xvel = rand.nextInt(10) + 1;
 					if (rand.nextBoolean()) {
 						xvel *= -1;
 					}
-					f.reset(initPos, xvel, (rand.nextFloat()+0.5f)*Util.FIRESPEED);
+					f.reset(initPos, xvel, Util.FIRESPEED);
 				}
 			}
 			if ( this.life / this.lifetime > 0.95f )

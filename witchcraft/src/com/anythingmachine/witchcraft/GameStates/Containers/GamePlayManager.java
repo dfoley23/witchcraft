@@ -519,63 +519,55 @@ public class GamePlayManager extends Screen {
 									entities.get(1), 8.0f, 10.0f, true))					
 					.addAction(
 							new ParticleToGamePlay(
-									9.0f,
+									8.7f,
 									new FireEmitter(
 											new Vector3(
-													2650 + WitchCraft.screenWidth * 0.5f,
-													-20, 0), 20, 3.1f, 3.1f,
-											0.01f, 0.7f), 1))
+													2770 + WitchCraft.screenWidth * 0.5f,
+													170, 0), 15, 0.7f, 4.1f,
+											1.4f, 2.1f), 1))
 					.addAction(
 							new ParticleToGamePlay(
-									9.5f,
+									9.7f,
 									new FireEmitter(
 											new Vector3(
-													2600 + WitchCraft.screenWidth * 0.5f,
-													-20, 0), 20, 2.6f, 2.6f,
-											0.15f, 0.7f), 1))
+													2787 + WitchCraft.screenWidth * 0.5f,
+													170, 0), 15, 2.2f, 4.0f,
+											3.6f, 2.6f), 1))
 					.addAction(
 							new ParticleToGamePlay(
-									9.5f,
+									10.7f,
 									new FireEmitter(
 											new Vector3(
-													2700 + WitchCraft.screenWidth * 0.5f,
-													-20, 0), 20, 2.6f, 2.6f,
-											0.15f, 0.7f), 1))
+													2787 + WitchCraft.screenWidth * 0.5f,
+													257, 0), 100, 3.7f, 60.0f,
+											6.4f, 1.3f), 1))
 					.addAction(
 							new ParticleToGamePlay(
-									10.0f,
+									10.9f,
 									new FireEmitter(
 											new Vector3(
-													2650 + WitchCraft.screenWidth * 0.5f,
-													30, 0), 30, 4.0f, 60.0f,
-											0.4f, 0.7f), 1))
+													2714 + WitchCraft.screenWidth * 0.5f,
+													205, 0), 20, 1.7f, 60.0f,
+											4.4f, 2.3f), 0))
 					.addAction(
 							new ParticleToGamePlay(
-									10.0f,
+									10.9f,
 									new FireEmitter(
 											new Vector3(
-													2597 + WitchCraft.screenWidth * 0.5f,
-													30, 0), 12, 1.7f, 60.0f,
-											0.6f, 0.66f), 1))
-					.addAction(
-							new ParticleToGamePlay(
-								    10.0f,
-									new FireEmitter(
-											new Vector3(
-													2710 + WitchCraft.screenWidth * 0.5f,
-													30, 0), 12, 1.7f, 60.0f,
-											0.6f, 0.66f), 1))
-					.addAction(
-							new ParticleToGamePlay(
-									13.0f,
-									new SmokeEmitter(
-											new Vector3(
-													2660 + WitchCraft.screenWidth * 0.5f,
-													120, 0), 30, 7.5f, 56.0f,
-											0.7f, 0.84f), 1))
+													2857 + WitchCraft.screenWidth * 0.5f,
+													205, 0), 20, 1.7f, 60.0f,
+											4.4f, 2.3f), 0))
+//					.addAction(
+//							new ParticleToGamePlay(
+//									13.7f,
+//									new SmokeEmitter(
+//											new Vector3(
+//													2770 + WitchCraft.screenWidth * 0.5f,
+//													500, 0), 20, 4.5f, 56.0f,
+//											5f, 3f), 1))
 					.addAction(new FaceLeft(entities.get(5), 11.5f, false))
 					.addAction(
-							new AnimateTimed("WALKING", entities.get(0),
+							new AnimateTimed("WALKING", entities.get(5),
 									12.0f, 14.7f, true))
 					.addAction(new FaceLeft(entities.get(5), 14.9f, true))
 					.addAction(new FaceLeft(entities.get(5), 18.7f, false))
@@ -588,7 +580,8 @@ public class GamePlayManager extends Screen {
 			// hang witch
 			triggers.add(new CinematicTrigger().addAction(
 					new StartParticle(0.0f, bgentities.get(1)))
-					.addAction(new AnimateTimed("tied", bgentities.get(1), 5.0f, 5.1f, false))
+					.addAction(new AnimateTimed("swing2", bgentities.get(1), 5.0f, 5.7f, true))
+					.addAction(new AnimateTimed("blink", bgentities.get(1), 7.0f, 7.7f, false))
 					.buildBody(4200,
 					1100, 8, 1000));
 			break;

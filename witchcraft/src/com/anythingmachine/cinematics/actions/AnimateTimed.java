@@ -2,7 +2,6 @@ package com.anythingmachine.cinematics.actions;
 
 import com.anythingmachine.cinematics.CinematicAction;
 import com.anythingmachine.collisionEngine.Entity;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class AnimateTimed implements CinematicAction {
 	private float endDT;
@@ -25,10 +24,12 @@ public class AnimateTimed implements CinematicAction {
 	public boolean isStarted(float dt) {
 		cineTime += dt;
 		if( !hasstarted && cineTime >= startDT ) {
-			component.setAnimation(state, loop);
-			component.setStateByValue(state);
-			component.setParentByValue("CINEMATIC");
-			hasstarted = true;
+			if ( component.isAnimationEnded(dt) ) {
+				component.setAnimation(state, loop);
+				component.setStateByValue(state);
+				component.setParentByValue("CINEMATIC");
+				hasstarted = true;
+			}
 		}
 		return hasstarted;
 	}

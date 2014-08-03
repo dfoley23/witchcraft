@@ -4,57 +4,57 @@ filter: Linear,Linear
 repeat: none
 morph9
   rotate: false
-  xy: 284, 496
-  size: 113, 66
+  xy: 398, 506
+  size: 111, 64
   orig: 113, 66
-  offset: 0, 0
+  offset: 2, 2
   index: -1
 crowstand
   rotate: false
-  xy: 948, 100
-  size: 64, 80
+  xy: 955, 529
+  size: 64, 46
   orig: 64, 80
-  offset: 0, 0
+  offset: 0, 34
   index: -1
 INVISIBIL
   rotate: false
-  xy: 381, 978
+  xy: 485, 978
   size: 331, 41
   orig: 331, 41
   offset: 0, 0
   index: -1
 ANIMIMPERI
   rotate: false
-  xy: 714, 2
+  xy: 533, 2
   size: 277, 41
   orig: 277, 41
   offset: 0, 0
   index: -1
 crow3fly
   rotate: false
-  xy: 948, 264
-  size: 64, 80
+  xy: 956, 417
+  size: 64, 56
   orig: 64, 80
-  offset: 0, 0
+  offset: 0, 24
   index: -1
 MUTATIO
   rotate: false
-  xy: 316, 185
+  xy: 818, 2
   size: 200, 41
   orig: 200, 41
   offset: 0, 0
   index: -1
 ss-10-crow
   rotate: false
-  xy: 316, 271
+  xy: 818, 599
   size: 121, 69
   orig: 121, 69
   offset: 0, 0
   index: -1
 crow2fly
   rotate: false
-  xy: 938, 346
-  size: 64, 80
+  xy: 955, 475
+  size: 64, 52
   orig: 64, 80
   offset: 0, 0
   index: -1
@@ -74,16 +74,23 @@ ss-6-crow
   index: -1
 morph2
   rotate: false
-  xy: 507, 622
-  size: 104, 46
+  xy: 276, 978
+  size: 104, 44
   orig: 104, 46
-  offset: 0, 0
+  offset: 0, 2
   index: -1
 morph6
   rotate: false
-  xy: 397, 567
-  size: 108, 58
+  xy: 397, 670
+  size: 108, 56
   orig: 108, 58
+  offset: 0, 2
+  index: -1
+fireTex
+  rotate: false
+  xy: 767, 88
+  size: 48, 64
+  orig: 48, 64
   offset: 0, 0
   index: -1
 ss-3-crow
@@ -95,56 +102,56 @@ ss-3-crow
   index: -1
 ss-8-crow
   rotate: false
-  xy: 533, 2
+  xy: 818, 241
   size: 174, 131
   orig: 174, 131
   offset: 0, 0
   index: -1
 ss-9-crow
   rotate: false
-  xy: 533, 374
+  xy: 818, 460
   size: 135, 94
   orig: 135, 94
   offset: 0, 0
   index: -1
 MORS
   rotate: false
-  xy: 533, 288
+  xy: 818, 374
   size: 143, 41
   orig: 143, 41
   offset: 0, 0
   index: -1
 crow4fly
   rotate: false
-  xy: 948, 182
-  size: 64, 80
+  xy: 954, 577
+  size: 64, 28
   orig: 64, 80
-  offset: 0, 0
+  offset: 0, 21
   index: -1
 morph10
   rotate: false
-  xy: 399, 496
-  size: 112, 69
+  xy: 284, 506
+  size: 112, 67
   orig: 112, 69
-  offset: 0, 0
+  offset: 0, 2
   index: -1
 morph3
   rotate: false
-  xy: 513, 513
+  xy: 510, 572
   size: 105, 48
   orig: 105, 48
   offset: 0, 0
   index: -1
 morph7
   rotate: false
-  xy: 284, 630
-  size: 111, 60
+  xy: 284, 670
+  size: 111, 58
   orig: 111, 60
-  offset: 0, 0
+  offset: 0, 2
   index: -1
 GELO
   rotate: false
-  xy: 533, 331
+  xy: 818, 417
   size: 136, 41
   orig: 136, 41
   offset: 0, 0
@@ -165,91 +172,91 @@ dust
   index: -1
 FUGE
   rotate: false
-  xy: 533, 470
+  xy: 818, 556
   size: 134, 41
   orig: 134, 41
   offset: 0, 0
   index: -1
 morph11
   rotate: false
-  xy: 316, 420
-  size: 115, 74
+  xy: 617, 506
+  size: 115, 72
   orig: 115, 74
-  offset: 0, 0
+  offset: 0, 2
   index: -1
 EFFINGO
   rotate: false
-  xy: 316, 228
+  xy: 818, 45
   size: 193, 41
   orig: 193, 41
   offset: 0, 0
   index: -1
 morph4
   rotate: false
-  xy: 507, 567
-  size: 107, 53
+  xy: 284, 448
+  size: 107, 51
   orig: 107, 53
-  offset: 0, 0
+  offset: 0, 2
   index: -1
 morph8
   rotate: false
-  xy: 284, 564
-  size: 111, 64
+  xy: 399, 580
+  size: 109, 62
   orig: 111, 64
-  offset: 0, 0
+  offset: 2, 2
   index: -1
 ss-4-crow
   rotate: false
-  xy: 714, 88
+  xy: 533, 88
   size: 232, 216
   orig: 232, 216
   offset: 0, 0
   index: -1
 ss-5-crow
   rotate: false
-  xy: 714, 306
+  xy: 533, 306
   size: 222, 198
   orig: 222, 198
   offset: 0, 0
   index: -1
 mindbeam
   rotate: false
-  xy: 993, 2
+  xy: 994, 241
   size: 21, 96
   orig: 21, 96
   offset: 0, 0
   index: -1
 morph12
   rotate: false
-  xy: 316, 342
-  size: 115, 76
+  xy: 284, 580
+  size: 113, 74
   orig: 115, 76
-  offset: 0, 0
+  offset: 2, 2
   index: -1
 morph1
   rotate: false
-  xy: 276, 978
-  size: 103, 43
+  xy: 382, 978
+  size: 101, 43
   orig: 103, 43
-  offset: 0, 0
+  offset: 2, 0
   index: -1
 INTACTILUS
   rotate: false
-  xy: 714, 45
+  xy: 533, 45
   size: 243, 41
   orig: 243, 41
   offset: 0, 0
   index: -1
 morph5
   rotate: false
-  xy: 397, 627
-  size: 108, 55
+  xy: 507, 670
+  size: 108, 53
   orig: 108, 55
-  offset: 0, 0
+  offset: 0, 2
   index: -1
 ss-7-crow
   rotate: false
-  xy: 525, 135
+  xy: 818, 88
   size: 184, 151
   orig: 184, 151
   offset: 0, 0
