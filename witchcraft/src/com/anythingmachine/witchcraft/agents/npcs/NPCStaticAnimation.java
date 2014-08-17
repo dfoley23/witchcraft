@@ -47,7 +47,7 @@ public class NPCStaticAnimation extends Entity {
 	}
 
 	public boolean checkInBounds() {
-		return WitchCraft.cam.inscaledBounds(pos);
+		return WitchCraft.cam.inBigBounds(pos);
 	}
 	
 	protected void setupAnimations(String skinname, Vector3 pos, Vector2 scale,

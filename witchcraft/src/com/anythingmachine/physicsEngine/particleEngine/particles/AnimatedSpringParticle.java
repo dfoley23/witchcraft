@@ -1,12 +1,16 @@
 package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import com.anythingmachine.animations.AnimationManager;
+import com.anythingmachine.cinematics.Camera;
+import com.anythingmachine.physicsEngine.Spring;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonBinary;
@@ -56,7 +60,7 @@ public class AnimatedSpringParticle extends SpringParticle {
 	public void setAnimation(String anim, boolean val) {
 		animate.setCurrent(anim, val);
 	}
-	
+
 	@Override
 	public boolean isAnimationEnded(float delta) {
 		return animate.isAnimationEnded(delta);
@@ -64,9 +68,19 @@ public class AnimatedSpringParticle extends SpringParticle {
 
 	@Override
 	public void draw(Batch batch) {
-		if (onscreen)
+		if (onscreen) {
+			batch.end();
+			GamePlayManager.shapeRenderer.setProjectionMatrix(Camera.camera.combined);
+			GamePlayManager.shapeRenderer.setColor(0.46f, 0.3f, 0.1f, 1f);
+			GamePlayManager.shapeRenderer.begin(ShapeType.Filled);
+			Vector2 temppos = new Vector2(pos.x, pos.y+75);
+			for (Spring s : springs) {
+				s.draw(temppos);
+			}
+			GamePlayManager.shapeRenderer.end();
+			batch.begin();
 			animate.draw(batch);
-
+		}
 	}
 
 	@Override
@@ -86,8 +100,8 @@ public class AnimatedSpringParticle extends SpringParticle {
 
 		animate = new AnimationManager(skinname, pos, scale, false, sd);
 
-		for( String a: animations) {
-			if ( !a.contains("ANIM"))
+		for (String a : animations) {
+			if (!a.contains("ANIM"))
 				animate.addAnimation(a, sd.findAnimation(a));
 		}
 		animate.setCurrent(animations[1], true);

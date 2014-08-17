@@ -13,11 +13,13 @@ public class Running extends SharedState {
 	@Override
 	public void addWindToCape(float dt) {
 		Cape cape = GamePlayManager.player.cape;
-		float windx = GamePlayManager.windx+250;
+		float windx = GamePlayManager.windx+150;
 		
 		cape.addWindForce(-windx, -400);
 
-		cape.updatePos(sm.facingleft? sm.neck.getWorldX() -22 : sm.neck.getWorldX() + 22, sm.neck.getWorldY()-8);
+		cape.rotate(sm.facingleft ? 16 : -16);
+
+		cape.updatePos(sm.facingleft? sm.neck.getWorldX() -13 : sm.neck.getWorldX() + 13, sm.neck.getWorldY()-9);
 		
 		cape.flip(sm.facingleft);
 	}
@@ -29,11 +31,19 @@ public class Running extends SharedState {
 	}
 	
 	@Override
+	public void transistionOut() {
+		Cape cape = GamePlayManager.player.cape;
+		cape.rotate(0);
+	}
+	
+	@Override
 	public void setRun() {
 	}
 	
 	@Override
 	public void setWalk() {
+		Cape cape = GamePlayManager.player.cape;
+		cape.rotate(0);
 		sm.setState(PlayerStateEnum.WALKING);
 		sm.state.setParent(this.parent);
 	}

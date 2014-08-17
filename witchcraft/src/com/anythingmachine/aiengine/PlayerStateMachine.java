@@ -1,8 +1,8 @@
 package com.anythingmachine.aiengine;
 
-import java.util.ArrayList;
 import java.util.Random;
 
+import com.anythingmachine.GamePlayUI;
 import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.PhysicsState;
@@ -10,7 +10,6 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.agents.States.Player.PlayerState;
 import com.anythingmachine.witchcraft.agents.States.Player.PlayerStateEnum;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.Bone;
@@ -21,9 +20,10 @@ public class PlayerStateMachine extends StateMachine {
 	public InputManager input;
 	protected PlayerState[] states;
 	public PhysicsState phyState;
-	public ArrayList<Sprite> powerUi;
-	public float uiFadein;
 	public PlayerStateEnum power;
+	public GamePlayUI playerInterface;
+	public float uiFadein;
+
 	public Bone neck;
 	public int curGroundSegment;
 	public Platform elevatedSegment;
@@ -38,10 +38,10 @@ public class PlayerStateMachine extends StateMachine {
 	public PlayerStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd) {
 		super(name, pos, scl, flip, sd);
+		playerInterface = new GamePlayUI();
 		neck = animate.findBone("neck");
 		dupeSkin = "";
 		power = PlayerStateEnum.MINDCONTROLPOWER;
-		uiFadein = -5;
 
 		rand = new Random();
 
@@ -61,16 +61,20 @@ public class PlayerStateMachine extends StateMachine {
 		animate.setPos(phyState.body.getPos(), -8f, 0f);
 		animate.updateSkel(dt);
 
+		if( playerInterface.isStacked() ) {
+			playerInterface.update(dt);
+		}
 	}
 
 	public void drawUI(Batch batch) {
+		playerInterface.draw(batch);
 		if (uiFadein >= 0f) {
-			powerUi.get(power.getPowerIndex()).draw(batch, uiFadein);
+			playerInterface.uiByIndex.get(power.getPowerIndex()).draw(batch, uiFadein);
 			uiFadein += WitchCraft.dt * 0.5f;
 			if (uiFadein >= 1f)
 				uiFadein = -2f;
 		} else if (uiFadein < 0 && uiFadein > -4) {
-			powerUi.get(power.getPowerIndex()).draw(batch, -(uiFadein + 1));
+			playerInterface.uiByIndex.get(power.getPowerIndex()).draw(batch, -(uiFadein + 1));
 			uiFadein += WitchCraft.dt * 0.5f;
 			if (uiFadein >= -1)
 				uiFadein = -5f;

@@ -9,7 +9,6 @@ public class DupeSkin extends PlayerState {
 	private float playerScaleX;
 	private float playerScaleY;
 
-
 	public DupeSkin(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
 		playerScaleX = sm.animate.getScale().x;
@@ -22,7 +21,7 @@ public class DupeSkin extends PlayerState {
 		if (time > timeout) {
 			time = 0;
 			sm.animate.switchSkin("player");
-			sm.animate.setScale(playerScaleX, playerScaleY);			
+			sm.animate.setScale(playerScaleX, playerScaleY);
 			sm.dupeSkin = "";
 			sm.setState(parent.name);
 		}
@@ -44,7 +43,7 @@ public class DupeSkin extends PlayerState {
 
 	@Override
 	public void setIdle() {
-		if ( time > timeout ) {
+		if (time > timeout) {
 			time = 0;
 			sm.animate.switchSkin("player");
 			sm.animate.setScale(playerScaleX, playerScaleY);
@@ -74,13 +73,22 @@ public class DupeSkin extends PlayerState {
 	}
 
 	@Override
+	protected void setDead() {
+		time = 0;
+		sm.animate.switchSkin("player");
+		sm.animate.setScale(playerScaleX, playerScaleY);
+		sm.dupeSkin = "";
+		sm.setState(PlayerStateEnum.DEAD);
+	}
+
+	@Override
 	public void nextPower() {
 
 	}
 
 	@Override
 	public void transistionOut() {
-		if (time > timeout) {
+		if ( time > timeout ) {
 			time = 0;
 			sm.animate.switchSkin("player");
 			sm.animate.setScale(playerScaleX, playerScaleY);

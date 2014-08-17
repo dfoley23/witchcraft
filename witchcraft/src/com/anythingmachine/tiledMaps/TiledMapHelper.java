@@ -45,6 +45,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile.BlendMode;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
@@ -130,7 +131,7 @@ public class TiledMapHelper {
 			it.remove();
 		}
 	}
-
+	
 	/**
 	 * Reads a file describing the collision boundaries that should be set
 	 * per-tile and adds static bodies to the boxd world.

@@ -31,6 +31,7 @@ public class NPCStateMachine extends StateMachine {
 		inlevel = me.level == GamePlayManager.currentlevel;
 		canseeplayer = false;
 		states = new HashMap<NPCStateEnum, NPCState>();
+		onscreen = false;
 	}
 
 	public void update(float dt) {

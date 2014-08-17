@@ -32,8 +32,8 @@ public class NPCState {
 
 		if (sm.me.npctype.canAttack())
 			checkAttack();
-		else
-			checkInBounds();
+
+		checkInBounds();
 
 		takeAction(dt);
 
@@ -56,8 +56,9 @@ public class NPCState {
 	}
 
 	public void checkInBounds() {
-		if (sm.inlevel
-				&& !WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
+		sm.onscreen = true;
+		if (!WitchCraft.cam.inscaledBounds(sm.phyState.body.getPos())) {
+			sm.onscreen = false;
 			NPCState temp = sm.state;
 			sm.setState(NPCStateEnum.INACTIVE);
 			sm.state.setParent(temp);
@@ -67,7 +68,7 @@ public class NPCState {
 	public void setCinematic() {
 		sm.setState(NPCStateEnum.CINEMATIC);
 	}
-	
+
 	public void setGoingTo(float dt) {
 
 	}
@@ -118,10 +119,8 @@ public class NPCState {
 		sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
 				.getX();
 		if (sm.canseeplayer) {
-			if (GamePlayManager.player.inHighAlert()) {
-				sm.state.setAttack();
-			} else if (GamePlayManager.player.inAlert()) {
-				sm.state.setAlert();
+			if (GamePlayManager.player.inAlert()) {
+				setAttack();
 			}
 		}
 	}
@@ -133,9 +132,12 @@ public class NPCState {
 	public void switchLevel(int level) {
 		if (level - 1 > sm.me.level) {
 			sm.phyState.body.setX(64);
+			// sm.animate.updateSkel(0);
 		} else {
 			sm.phyState.body.setX(GamePlayManager.levels.get(level - 1) - 64);
 		}
+		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+		sm.animate.updateSkel(0);
 		sm.me.level = level - 1;
 		if (sm.me.level != GamePlayManager.currentlevel) {
 			sm.setState(NPCStateEnum.INOTHERLEVEL);
@@ -182,13 +184,13 @@ public class NPCState {
 	}
 
 	public void transistionToParent() {
-		if ( this.parent != null ) {
+		if (this.parent != null) {
 			this.sm.setState(parent.name);
 		} else {
 			sm.setState(NPCStateEnum.IDLE);
 		}
 	}
-	
+
 	public void setIdle() {
 		sm.setState(NPCStateEnum.IDLE);
 	}
@@ -203,7 +205,7 @@ public class NPCState {
 			sm.setState(action.getAIState());
 		}
 	}
-	
+
 	public void setWalk() {
 		sm.getState(NPCStateEnum.WALKING).transistionIn();
 		// sm.state.setParent(this);

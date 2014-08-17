@@ -75,6 +75,8 @@ public class PlayerState {
 		
 		cape.addWindForce(-GamePlayManager.windx, -400);
 
+		cape.rotate(0);
+
 		cape.updatePos(sm.facingleft? sm.neck.getWorldX() -12 : sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
 		
 		cape.flip(sm.facingleft);
@@ -245,6 +247,13 @@ public class PlayerState {
 				sm.hitroof = true;
 			}
 		}
+	}
+	
+	public void switchLevel(float x) {
+		sm.hitleftwall = false;
+		sm.hitrightwall = false;
+		sm.phyState.body.setX(x);
+		sm.phyState.correctCBody(-8, 64, 0);
 	}
 	
 	public void handleContact(Contact contact, boolean isFixture1) {

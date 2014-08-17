@@ -22,7 +22,6 @@ import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.CrowEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.FireEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
-import com.anythingmachine.physicsEngine.particleEngine.SmokeEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.particles.AnimatedSpringParticle;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
@@ -41,6 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
@@ -63,8 +63,7 @@ public class GamePlayManager extends Screen {
 	public static int oldlevel;
 	public static ArrayList<Float> levels;
 	public static boolean initworld = true;
-	public static Sound currentsound;
-	public static long currentsoundid;
+	public static ShapeRenderer shapeRenderer;
 	private static ArrayList<CinematicTrigger> triggers;
 	private static CinematicTrigger cinema;
 	private static CinematicTrigger sleepCinematic;
@@ -100,6 +99,8 @@ public class GamePlayManager extends Screen {
 
 		rand = new Random();
 
+		shapeRenderer = new ShapeRenderer();
+			
 		contactListener = new MyContactListener();
 		world = new World(new Vector2(0.0f, 0.0f), false);
 		world.setContactListener(contactListener);
@@ -109,8 +110,9 @@ public class GamePlayManager extends Screen {
 
 		currentlevel = Integer.parseInt(fileContent[3]) - 1;
 		//debug set level
-		if( Util.DEV_MODE ) 
-			currentlevel = 2;
+//		if( Util.DEV_MODE ) 
+		currentlevel = 2;
+		level = currentlevel;
 		
 		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
@@ -164,7 +166,6 @@ public class GamePlayManager extends Screen {
 		// WitchCraft.assetManager.get("data/sounds/crickets.ogg");
 		// currentsoundid = currentsound.loop(0.25f);
 
-		level3();
 	}
 
 	public static void setCinematic(CinematicTrigger c) {
@@ -238,12 +239,17 @@ public class GamePlayManager extends Screen {
 		windx = 0;
 		if (windtimeout > 0) {
 			windx = rand.nextInt(1500);
-			if (windx > 720) {
+			if ( windx < 1100 ) {
+				windx = 0;
+			}
+//			if (windx > 720) 
+			{
 				// if ( windx > 1480 && soundtimeout < 1f) {
 				// // GamePlayManager.currentsound.stop();
 				// // GamePlayManager.currentsound = (Sound)
 				// WitchCraft.assetManager.get("data/sounds/wind.wav");
 				// // GamePlayManager.currentsound.play(0.5f);
+//				WitchCraft.playSound("data/sounds/frogs.ogg");
 				// byte[] buf = new byte[ 1 ];;
 				// AudioFormat af = new AudioFormat( (float )44100, 8, 1, true,
 				// false );
@@ -391,13 +397,12 @@ public class GamePlayManager extends Screen {
 		float diff = 0;
 		if (l < currentlevel + 1) {
 			diff = levels.get(l - 1) - 32;
-			player.setX(diff - 64);
 		} else {
 			// diff -= levels.get(currentlevel) - WitchCraft.screenWidth * 0.5f;
-			player.setX(64);
+			diff = 64;
 		}
 		// cloudE.moveByX(diff);
-		player.switchLevel();
+		player.switchLevel(diff);
 		for (NonPlayer npc : npcs) {
 			npc.checkInLevel();
 		}
@@ -422,6 +427,7 @@ public class GamePlayManager extends Screen {
 
 	@Override
 	public void transistionIn() {
+
 		oldlevel = currentlevel + 1;
 		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
@@ -454,6 +460,7 @@ public class GamePlayManager extends Screen {
 		triggers.clear();
 		entities.clear();
 		bgentities.clear();
+		
 
 		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(1772,
 				80, 0), new Vector2(1.2f, 0.95f),
@@ -462,6 +469,8 @@ public class GamePlayManager extends Screen {
 				80, 0), new Vector2(1.2f, 0.95f),
 				"data/npcdata/static/treedweller2"));
 
+		WitchCraft.stopMusic();
+		WitchCraft.playMusic("data/sounds/frogs.ogg");
 	}
 
 	public static void level2() {
@@ -475,6 +484,8 @@ public class GamePlayManager extends Screen {
 		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(3699,
 				50, 0), new Vector2(1.2f, 0.95f),
 				"data/npcdata/static/treedweller3"));
+//		WitchCraft.stopMusic();
+//		WitchCraft.playMusic("data/sounds/ambient.ogg");
 	}
 
 	public static void level3() {
@@ -496,11 +507,11 @@ public class GamePlayManager extends Screen {
 				118, 0), new Vector2(0.75f, 0.8f),
 				"data/npcdata/static/shackledfred"));
 
-		bgentities.add(new Particle(new Vector3(4589, 570, 0)));
+		bgentities.add(new Particle(new Vector3(4604, 620, 0)));
 		bgentities.add(new AnimatedSpringParticle("tiedwitch", new Vector3(
 				4607, 524, 0), new Vector2(0.75f, 0.8f),
 				"data/npcdata/static/hungwitch").addRope(
-				(Particle) bgentities.get(0), 300, 100, 1.9f).setMass(20)); 
+				(Particle) bgentities.get(0), 400, 100, 1.9f).setMass(20)); 
 		bgentities.get(1).setStable(true);
 
 		switch (storySegment) {
@@ -590,6 +601,9 @@ public class GamePlayManager extends Screen {
 		default:
 			break;
 		}
+		WitchCraft.stopMusic();
+		WitchCraft.playMusic("data/sounds/ambient.ogg");
+
 	}
 
 	public static void level4() {
@@ -620,6 +634,9 @@ public class GamePlayManager extends Screen {
 		entities.add(new NonPlayer("civ_female", new Vector2(6500.0f, 100.0f),
 				new Vector2(0.5f, 0.5f), "data/npcdata/civs/tempFemale4",
 				NPCType.CIV));
+		WitchCraft.stopMusic();
+//		WitchCraft.playMusic("data/sounds/ambient.ogg");
 
 	}
+
 }

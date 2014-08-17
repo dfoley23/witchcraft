@@ -23,8 +23,8 @@ public class Inactive extends NPCState {
 		
 		if ( sm.me.npctype.canAttack() )
 			checkAttack();
-		else
-			checkInBounds();
+
+		checkInBounds();
 		
 		checkGround();
 
@@ -46,15 +46,15 @@ public class Inactive extends NPCState {
 	
 	@Override
 	public void checkAttack() {
-		if (WitchCraft.cam.inBigBounds(sm.phyState.body.getPos())) {
-			checkInBounds();
+		if (WitchCraft.cam.inBigBounds(sm.phyState.body.getPos())) 
+		{
 			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
 					.getX();
 			if (sm.canseeplayer) {
 				if (GamePlayManager.player.inHighAlert()) {
-					childState = sm.getState(NPCStateEnum.ATTACKING);
+					setAttack();
 				} else if (GamePlayManager.player.inAlert()) {
-					sm.state.setAlert();
+					setAlert();
 				}
 			}
 		}
@@ -69,12 +69,14 @@ public class Inactive extends NPCState {
 	
 	@Override
 	public void setAttack() {
-
+		childState = sm.getState(NPCStateEnum.ATTACKING);
+		childState.transistionIn();
 	}
 
 	@Override
 	public void setAlert() {
-
+		childState = sm.getState(NPCStateEnum.ALARMED);
+		childState.transistionIn();
 	}
 
 	@Override

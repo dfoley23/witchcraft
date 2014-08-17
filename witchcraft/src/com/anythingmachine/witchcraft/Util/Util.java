@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Util {
 
-	public static final boolean DEV_MODE = true;
+	public static boolean DEV_MODE = !true;
 	
 	private Util() {
 		throw new AssertionError();

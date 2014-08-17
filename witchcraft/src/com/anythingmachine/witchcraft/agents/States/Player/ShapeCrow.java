@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 public class ShapeCrow extends PlayerState {
 	private Crow crow;
 	private float time = 0;
-	private float timeout = 7f;
+	private float timeout = 14f;
 
 	public ShapeCrow(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
@@ -81,12 +81,29 @@ public class ShapeCrow extends PlayerState {
 			crow.setVel(sm.facingleft ? -Util.PLAYERFLYSPEED : Util.PLAYERFLYSPEED, Util.PLAYERWALKSPEED, 0);
 			sm.grounded = false;
 			crow.setStand(false);
+			sm.elevatedSegment = null;
+			sm.hitplatform = false;
 		} else if (sm.input.down() && !sm.grounded) {
 			sm.hitroof = false;
 			crow.setYVel(-Util.PLAYERWALKSPEED);
 		}
 	}
 
+	@Override
+	public void switchLevel(float x) {
+		sm.hitleftwall = false;
+		sm.hitrightwall = false;
+
+		if ( x < 1000 ) 
+			crow.setX(x);
+		else
+			crow.setX(x-128);
+		
+		sm.phyState.body.set3DPos(crow.getPos());		
+
+		sm.phyState.correctCBody(32, 70, 0);
+	}
+	
 	@Override
 	public void land() {
 //		crow.addPos(0, 8);

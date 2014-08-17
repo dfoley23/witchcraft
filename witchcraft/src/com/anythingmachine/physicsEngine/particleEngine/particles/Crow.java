@@ -75,11 +75,11 @@ public class Crow extends KinematicParticle {
 				fly1.draw(batch);
 			}
 			else if (frame == 1) {
-				fly2.setPosition(pos.x, pos.y);
+				fly2.setPosition(pos.x, pos.y+20);
 				fly2.draw(batch);
 			}
 			else if (frame == 2) {
-				fly3.setPosition(pos.x, pos.y);
+				fly3.setPosition(pos.x, pos.y+20);
 				fly3.draw(batch);
 			}
 		} else {

@@ -1,7 +1,9 @@
 package com.anythingmachine.physicsEngine;
 
 import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
+import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class Rope extends Spring {
@@ -35,4 +37,8 @@ public class Rope extends Spring {
 		return result;
 	}
 
+	@Override
+	public void draw(Vector2 pos) {
+		GamePlayManager.shapeRenderer.rectLine(pos, new Vector2(other.getX(), other.getY()), 5);
+	}
 }

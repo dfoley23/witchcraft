@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft;
 import java.util.HashMap;
 
 import com.anythingmachine.cinematics.Camera;
+import com.anythingmachine.soundEngine.SoundManager;
 import com.anythingmachine.witchcraft.GameStates.Loading;
 import com.anythingmachine.witchcraft.GameStates.PauseMenu;
 import com.anythingmachine.witchcraft.GameStates.Screen;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
@@ -41,6 +43,7 @@ public class WitchCraft implements ApplicationListener {
 	private float accum;
 	private Batch spriteBatch;
 	private Controller controller;
+	public static SoundManager soundManager;
 
 	private boolean paused = false;
 	private float pressedPaused = 1.0f;
@@ -87,8 +90,10 @@ public class WitchCraft implements ApplicationListener {
 
 		WitchCraft.assetManager = new AssetManager();
 
-		loadPlayAssets();
+		soundManager = new SoundManager();
 
+		loadPlayAssets();
+		
 		screens = new HashMap<String, Screen>();
 
 		addScreens();
@@ -130,6 +135,22 @@ public class WitchCraft implements ApplicationListener {
 	public void resume() {
 	}
 
+	public static void playSound(String name) {
+		soundManager.playSound(name);
+	}
+	
+	public static void stopSound() {
+		soundManager.stop();
+	}
+	
+	public static void playMusic(String name) {
+		soundManager.startMusic(name);
+	}
+	
+	public static void stopMusic() {
+		soundManager.stopMusic();
+	}
+	
 	@Override
 	public void render() {
 		float actualDT = Gdx.graphics.getDeltaTime();
@@ -154,6 +175,9 @@ public class WitchCraft implements ApplicationListener {
 					(int) WitchCraft.viewport.y,
 					(int) WitchCraft.viewport.width,
 					(int) WitchCraft.viewport.height);
+			
+			soundManager.update(actualDT);
+			
 			if (accum >= targetFrameTime) {
 				// if ( accum > dt || ON_ANDROID ) {
 				// currentScreen.update(accum);
@@ -266,10 +290,19 @@ public class WitchCraft implements ApplicationListener {
 	public void loadPlayAssets() {
 		assetManager.load("data/spine/characters.atlas", TextureAtlas.class);
 		assetManager.load("data/world/otherart.atlas", TextureAtlas.class);
-		// assetManager.load("data/sounds/crickets.ogg", Sound.class);
+		 assetManager.load("data/sounds/crickets.ogg", Sound.class);
 		assetManager.load("data/sounds/wind.wav", Sound.class);
+		assetManager.load("data/sounds/alert.ogg", Sound.class);		
+		assetManager.load("data/sounds/frogs.ogg", Music.class);		
+		assetManager.load("data/sounds/ambient.ogg", Music.class);
 
 		assetManager.finishLoading();
+		
+		soundManager.addSound("data/sounds/alert.ogg");
+		soundManager.addSound("data/sounds/wind.wav");
+		soundManager.addSound("data/sounds/crickets.ogg");
+		soundManager.addMusic("data/sounds/frogs.ogg");
+		soundManager.addMusic("data/sounds/ambient.ogg");
 	}
 
 }

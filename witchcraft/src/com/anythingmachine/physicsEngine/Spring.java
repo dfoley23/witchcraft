@@ -3,6 +3,7 @@ package com.anythingmachine.physicsEngine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class Spring extends Entity {
@@ -30,6 +31,10 @@ public class Spring extends Entity {
 	    result.y = (-springK * (mag-restLength)*Util.dot(unitDir, new Vector3(0f,1f,0f)))-vel.y*damper;
 		result.z = (-springK * (mag-restLength)*Util.dot(unitDir, new Vector3(0f,0f,1f)))-vel.z*damper;
 		return result;
+	}
+	
+	public void draw(Vector2 pos) {
+		
 	}
 	
 	public Particle getOther() {

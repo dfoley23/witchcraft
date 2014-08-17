@@ -3,6 +3,7 @@ package com.anythingmachine.witchcraft.agents.States.Player;
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 
 public class Invisible extends PlayerState {
@@ -52,6 +53,10 @@ public class Invisible extends PlayerState {
 	}
 
 	@Override
+	public void draw(Batch batch) {
+	}
+
+	@Override
 	public void drawCape(Matrix4 cam) {
 		GamePlayManager.player.cape.draw(cam, 0.5f);
 	}
@@ -97,9 +102,21 @@ public class Invisible extends PlayerState {
 
 	@Override
 	public void transistionOut() {
-		sm.animate.switchSkin("player");
+		if ( time > timeout ) {
+			time = 0;
+			sm.animate.switchSkin("player");
+			sm.dupeSkin = "";
+		}
 	}
 	
+	@Override
+	protected void setDead() {
+		time = 0;
+		sm.animate.switchSkin("player");
+		sm.dupeSkin = "";
+		sm.setState(PlayerStateEnum.DEAD);
+	}
+
 	@Override
 	public void setIdle() {
 		if (time > timeout) {

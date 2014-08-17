@@ -25,24 +25,43 @@ public class Cloth implements PhysicsComponent {
 	private Matrix4 model;
 	private Vector3 trans;
 	private boolean flip;
-	
-	public Cloth(int w, int h, RK4Integrator rk4) {
+	private float rotation;
+
+	public Cloth(int w, int h, RK4Integrator rk4, boolean buildMesh) {
 		links = new ArrayList<Particle>();
 		offset = 6;
 		shader = new ShaderProgram(this.vertexShader, this.fragShader);
-//		Gdx.app.log("shader compiled:", ""+shader.isCompiled());
-//		Gdx.app.log("shader log:", ""+shader.getLog());
-		indices = Util.triangulateRect((short) w, (short) h, (short) offset);
-		indicount = indices.length;
-		verts = new float[w * h * indicount];	  
-		mesh = new Mesh( false, verts.length, indicount, 
-			    new VertexAttribute( Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ),
-			    new VertexAttribute( Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE ) );
-		mesh.setIndices(indices);
+		// Gdx.app.log("shader compiled:", ""+shader.isCompiled());
+		// Gdx.app.log("shader log:", ""+shader.getLog());
+		if (buildMesh) {
+			indices = Util
+					.triangulateRect((short) w, (short) h, (short) offset);
+			indicount = indices.length;
+			verts = new float[w * h * indicount];
+			mesh = new Mesh(false, verts.length, indicount,
+					new VertexAttribute(Usage.Position, 3,
+							ShaderProgram.POSITION_ATTRIBUTE),
+					new VertexAttribute(Usage.Normal, 3,
+							ShaderProgram.NORMAL_ATTRIBUTE));
+			mesh.setIndices(indices);
+		}
 		rk4.addComponent(this);
 		model = new Matrix4();
 		flip = false;
 		trans = new Vector3(0, 0, 0);
+		rotation = 0;
+	}
+
+	public void setIndices(short[] newindices) {
+		indices = newindices;
+		indicount = indices.length;
+		verts = new float[6 * indicount];
+		mesh = new Mesh(false, verts.length, indicount,
+				new VertexAttribute(Usage.Position, 3,
+						ShaderProgram.POSITION_ATTRIBUTE),
+				new VertexAttribute(Usage.Normal, 3,
+						ShaderProgram.NORMAL_ATTRIBUTE));
+		mesh.setIndices(indices);
 	}
 
 	public Cloth() {
@@ -50,33 +69,38 @@ public class Cloth implements PhysicsComponent {
 	}
 
 	public void addForce(Vector3 force) {
-		for(Particle p: links) {
+		for (Particle p : links) {
 			p.applyImpulse(force);
 		}
 	}
-	
+
 	public void flip(boolean val) {
 		flip = val;
 	}
-	
+
 	public void trans(float x, float y) {
 		trans.x = x;
 		trans.y = y;
 	}
+
+	public void rotate(float deg) {
+		rotation = deg;
+	}
 	
 	public void draw(Matrix4 cam, float alpha) {
 		model.idt();
+		model.rotate(new Vector3(0, 0, 1), rotation);
 		model.setTranslation(trans);
-		if ( flip ) {
+		if (flip) {
 			model.scale(-1, 1, 1);
 		}
-//		model.rotate(new Vector3(0, 0, 1), rot);
-		
+		// model.rotate(new Vector3(0, 0, 1), rot);
+
 		mesh.setVertices(verts);
-		
+
 		updateVertsByIndex();
-		//Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		if ( alpha < 1 ) 
+		// Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (alpha < 1)
 			Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
 		shader.begin();
 		shader.setUniformMatrix("u_proj", cam);
@@ -84,7 +108,7 @@ public class Cloth implements PhysicsComponent {
 		shader.setUniformf("alpha_val", alpha);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
-		if ( alpha < 1 )
+		if (alpha < 1)
 			Gdx.graphics.getGL20().glDisable(GL20.GL_BLEND);
 	}
 
@@ -120,11 +144,11 @@ public class Cloth implements PhysicsComponent {
 			verts[(indices[i + 2] * offset) + 1] = p3.y;
 			verts[(indices[i + 2] * offset) + 2] = p3.z;
 
-			Vector3 normal = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z
-					- p1.z).nor();
+			Vector3 normal = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z)
+					.nor();
 
-			Vector3 tangent = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z
-					- p1.z).nor();
+			Vector3 tangent = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z)
+					.nor();
 
 			normal.crs(tangent);
 
@@ -142,7 +166,7 @@ public class Cloth implements PhysicsComponent {
 		}
 	}
 
-	private String vertexShader =  "#ifdef GL_ES\n" //
+	private String vertexShader = "#ifdef GL_ES\n" //
 			+ "precision highp float;\n" //
 			+ "#endif\n" //
 			+ "attribute vec3 a_position;\n" //
@@ -157,10 +181,10 @@ public class Cloth implements PhysicsComponent {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   vec3 normal = normalize(a_normal);\n" //
-			+ "   vec4 c = vec4(1.0, 1.0, 1.0, alpha_val);\n" //
+			+ "   vec4 c = vec4(0.6, 0.6, 0.6, alpha_val);\n" //
 			+ "   float LdotN = dot(vec3(0.0, -0.5, -0.5), normal);\n" //
-			+ "   if ( LdotN < 0.0 ) {\n" // 
-			+ "      LdotN = 0.0;\n" //
+			+ "   if ( LdotN < 0.0 ) {\n" //
+			+ "      LdotN = -LdotN;\n" //
 			+ "   }\n" //
 			+ "   vec4 color = c;\n" //
 			+ "   if ( LdotN > 0.35 ) {\n" //

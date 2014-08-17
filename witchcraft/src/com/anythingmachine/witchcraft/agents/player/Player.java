@@ -2,6 +2,7 @@ package com.anythingmachine.witchcraft.agents.player;
 
 import java.util.ArrayList;
 
+import com.anythingmachine.GamePlayUI.UILayout;
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.PhysicsState;
@@ -81,6 +82,14 @@ public class Player extends Entity {
 		state.state.draw(batch);
 	}
 
+	public void addAlarmToUI(UILayout screenpos) {
+		float x = WitchCraft.screenWidth-100;
+		if ( screenpos == UILayout.LEFT ) {
+			x = 7;
+		}
+	    state.playerInterface.addToStack(new Vector3(x, WitchCraft.screenHeight*0.5f, 0), screenpos, "ALARMSIGN", "data/world/otherart.atlas");
+	}
+	
 	@Override
 	public void setStateByValue(String strvalue) {
 		state.setState(PlayerStateEnum.valueOf(strvalue));
@@ -143,10 +152,8 @@ public class Player extends Entity {
 		state.phyState.body.addPos(x, y);
 	}
 	
-	public void switchLevel() {
-		state.hitleftwall = false;
-		state.hitrightwall = false;
-		state.phyState.correctCBody(-8, 64, 0);
+	public void switchLevel(float x) {
+		state.state.switchLevel(x);
 	}
 
 	@Override
@@ -264,14 +271,13 @@ public class Player extends Entity {
 	private void setupPowers() {
 		float width = WitchCraft.viewport.width / 2f;
 		float height = WitchCraft.viewport.height;
-		state.powerUi = new ArrayList<Sprite>();
 		Sprite sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas")).findRegion("FUGE"));
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		sprite.setPosition(width - sprite.getWidth() * 0.5f,
 				height - sprite.getHeight());
-		state.powerUi.add(sprite);
+		state.playerInterface.addSprite(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
@@ -279,7 +285,7 @@ public class Player extends Entity {
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		sprite.setPosition(width - sprite.getWidth() * 0.5f,
 				height - sprite.getHeight());
-		state.powerUi.add(sprite);
+		state.playerInterface.addSprite(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
@@ -287,7 +293,7 @@ public class Player extends Entity {
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		sprite.setPosition(width - sprite.getWidth() * 0.5f,
 				height - sprite.getHeight());
-		state.powerUi.add(sprite);
+		state.playerInterface.addSprite(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
@@ -295,7 +301,7 @@ public class Player extends Entity {
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		sprite.setPosition(width - sprite.getWidth() * 0.5f,
 				height - sprite.getHeight());
-		state.powerUi.add(sprite);
+		state.playerInterface.addSprite(sprite);
 		sprite = new Sprite(
 				((TextureAtlas) WitchCraft.assetManager
 						.get("data/world/otherart.atlas"))
@@ -303,7 +309,7 @@ public class Player extends Entity {
 		sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		sprite.setPosition(width - sprite.getWidth() * 0.5f,
 				height - sprite.getHeight());
-		state.powerUi.add(sprite);
+		state.playerInterface.addSprite(sprite);
 		// powers.put("intangible", new IntangibilityPower());
 		// powers.put("convert", new ConvertPower());
 		// powers.put("freeze", new FreezePower());

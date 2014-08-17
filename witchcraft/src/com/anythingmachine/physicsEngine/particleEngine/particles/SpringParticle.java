@@ -8,7 +8,7 @@ import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Vector3;
 
 public class SpringParticle extends Particle {
-	private ArrayList<Spring> springs;
+	protected ArrayList<Spring> springs;
 	
 	public SpringParticle (Vector3 pos) {
 		super(pos);		

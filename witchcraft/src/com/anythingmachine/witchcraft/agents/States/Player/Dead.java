@@ -7,6 +7,7 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -17,6 +18,7 @@ public class Dead extends PlayerState {
 	private TexturedParticle head;
 	private SpriteAnimation bloodpool;
 	private boolean headhitground;
+	private float caperotation;
 
 	public Dead(PlayerStateMachine sm, PlayerStateEnum name) {
 		super(sm, name);
@@ -28,17 +30,15 @@ public class Dead extends PlayerState {
 
 		bloodpool.update(dt);
 		checkGround();
-
 		if (sm.animate.testOverTime(0, .75f)) {
 			fadeout -= dt;
+		} else {
+			addWindToCape(dt);
 		}
-		GamePlayManager.player.cape.updatePos(sm.neck.getWorldX() + 12,
-				sm.neck.getWorldY() - 8);
 		if (fadeout < -3) {
 			super.setIdle();
 		}
 
-		addWindToCape(dt);
 	}
 
 	@Override
@@ -86,6 +86,22 @@ public class Dead extends PlayerState {
 	@Override
 	public void setIdle() {
 
+	}
+
+	@Override
+	public void addWindToCape(float dt) {
+		Cape cape = GamePlayManager.player.cape;
+		
+		cape.addWindForce(-GamePlayManager.windx, -400);
+		
+		caperotation = ( sm.animate.getTime() / sm.animate.getCurrentAnimTime() );
+		caperotation = sm.facingleft? caperotation*80: -caperotation*80;
+		
+		cape.rotate(caperotation);
+
+		cape.updatePos(sm.facingleft? sm.neck.getWorldX() : sm.neck.getWorldX() -24, sm.neck.getWorldY()-8);
+		
+		cape.flip(sm.facingleft);
 	}
 
 	@Override

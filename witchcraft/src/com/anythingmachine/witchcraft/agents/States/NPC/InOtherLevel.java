@@ -60,10 +60,13 @@ public class InOtherLevel extends NPCState {
 	@Override
 	public void switchLevel(int level) {
 		if ( level > sm.me.level ) {
-			sm.phyState.body.setX(128);
+			sm.phyState.body.setX(64);
 		} else if ( level < sm.me.level){
 			sm.phyState.body.setX(GamePlayManager.levels.get(level)-64);
 		}
+		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+		sm.animate.updateSkel(0);
+		
 		sm.me.level = level;
 	}
 
@@ -124,7 +127,7 @@ public class InOtherLevel extends NPCState {
 
 	@Override
 	public boolean transistionOut() {
-		if (sm.me.level == GamePlayManager.currentlevel) {
+		if (sm.me.level == GamePlayManager.currentlevel && !GamePlayManager.world.isLocked() ) {
 			sm.phyState.body.setGravityVal(Util.GRAVITY);
 			sm.phyState.collisionBody.setAwake(true);
 			sm.inlevel = true;
@@ -135,6 +138,12 @@ public class InOtherLevel extends NPCState {
 		return false;
 	}
 
+
+	@Override
+	public void checkAttack() {
+		
+	}
+	
 	@Override
 	public void immediateTransOut() {
 
