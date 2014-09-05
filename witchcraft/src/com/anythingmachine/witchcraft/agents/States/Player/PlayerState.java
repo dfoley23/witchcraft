@@ -9,6 +9,7 @@ import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.badlogic.gdx.Gdx;
@@ -187,7 +188,7 @@ public class PlayerState {
 
 	protected void checkGround() {
 		Vector3 pos = sm.phyState.body.getPos();
-		if (sm.hitplatform) {
+		if (sm.hitplatform || sm.hitstairs) {
 			// System.out.println(pos);
 //			if (pos.x > sm.curCurve.lastPointOnCurve().x
 //					&& sm.curGroundSegment + 1 < WitchCraft.ground
@@ -237,14 +238,17 @@ public class PlayerState {
 	}
 	
 	protected void hitPlatform(Platform plat) {
-		if (plat.isBetween(sm.facingleft, sm.phyState.body.getX())) {
-			if (plat.getHeight() - 35 < sm.phyState.body.getY()) {
-				sm.hitplatform = true;
-				sm.elevatedSegment = plat;
-				land();
-			} else {
-				sm.phyState.body.stopOnY();
-				sm.hitroof = true;
+		if( !sm.hitstairs || !sm.input.is("down") ) {
+			sm.hitstairs = false;
+			if (plat.isBetween(sm.facingleft, sm.phyState.body.getX())) {
+				if (plat.getHeight() - 35 < sm.phyState.body.getY()) {
+					sm.hitplatform = true;
+					sm.elevatedSegment = plat;
+					land();
+				} else {
+					sm.phyState.body.stopOnY();
+					sm.hitroof = true;
+				}
 			}
 		}
 	}
@@ -265,6 +269,7 @@ public class PlayerState {
 		}
 		Vector3 pos = sm.phyState.body.getPos();
 		Vector3 vel = sm.phyState.body.getVel();
+		Platform plat;
 		float sign;
 		switch (other.type) {
 		case NONPLAYER:
@@ -281,20 +286,19 @@ public class PlayerState {
 			hitWall(sign);
 			break;
 		case PLATFORM:
-			Platform plat = (Platform) other;
+			plat = (Platform) other;
 			hitPlatform(plat);
 			break;
 		case STAIRS:
 			plat = (Platform) other;
+			sm.hitstairs = false;
 			// System.out.println("hello staris");
-			if (sm.input.is("UP")
-					|| (plat.getHeight(pos.x) < (pos.y + 4) && plat
-							.getHeight(pos.x) > plat.getHeightLocal() * 0.35f
-							+ plat.getPos().y)) {
-				// System.out.println("up stairs");
+			if (sm.input.up() || (plat.getHeight() < (pos.y - 4)) ) {
+				//System.out.println("up stairs");
 				if (plat.isBetween(sm.facingleft, pos.x)) {
-					if (plat.getHeight(pos.x) - 35 < pos.y) {
-						sm.hitplatform = true;
+					//if (plat.getHeight(pos.x) - 35 < pos.y) 
+					{
+						sm.hitstairs = true;
 						sm.elevatedSegment = plat;
 						sm.state.checkGround();
 					}
@@ -326,5 +330,20 @@ public class PlayerState {
 		}
 	}
 
+	public void endContact(Contact contact, boolean isFixture1) {
+		Entity other;
+		if (isFixture1) {
+			other = (Entity) contact.getFixtureB().getBody().getUserData();
+		} else {
+			other = (Entity) contact.getFixtureA().getBody().getUserData();
+		}
+		switch (other.type) {
+		case STAIRS:
+			sm.hitstairs = false;
+			break;
+		default:
+			break;
+		}
+	}
 
 }

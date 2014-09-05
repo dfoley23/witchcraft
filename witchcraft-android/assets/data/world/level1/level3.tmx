@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="250" height="150" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="tiles32" tilewidth="32" tileheight="32">
-  <image source="level.png" width="1024" height="2048"/>
+  <image source="level.png" width="1024" height="256"/>
   <tile id="4">
    <properties>
     <property name="type" value="STAIRS"/>
@@ -28,10 +28,10 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="2049" name="tilesBG" tilewidth="128" tileheight="128">
+ <tileset firstgid="257" name="tilesBG" tilewidth="128" tileheight="128">
   <image source="level800.png" width="2048" height="2048"/>
  </tileset>
- <tileset firstgid="2305" name="tiles128" tilewidth="128" tileheight="128">
+ <tileset firstgid="513" name="tiles128" tilewidth="128" tileheight="128">
   <image source="level128.png" width="1024" height="2048"/>
  </tileset>
  <layer name="backbackground" width="250" height="150">
@@ -52,12 +52,12 @@
    <property name="128" value=""/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt1jEKwDAMA0CvXtM2yf9f2rmm0NWFu02gWSgCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAODbmc985XsPAAC6G+XLHr4t8COzbNYqeds0AAAAgPZujjAA0w==
+   eJzt1zEKwDAMA0DjJ6Rtkv+/tHNNoasLd5tAoxZFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8O/OZr3zvAQAAdDfKnzn8G35klr2ukrc9AwAAALR3A7OGAKI=
   </data>
  </layer>
  <layer name="uninteractable" width="250" height="150">
   <data encoding="base64" compression="zlib">
-   eJzt1ctKA0EQBdAhLtzpN/ifamoTxNc/O4EJZKQWJqGdmulz4BJS9KKb1CXDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA13kZ87z0JYCm9By2T89h+/Qctk/PoY1jt16XvsREz6ENPYftq9RzoI0KPY9k9pjM9mPe2l6FG32OeZ8+z/MxfbKMtfX8MNTuuj3Pf8/9f1+CmTX2vHrXI5n1tOeRzHp6f0Vr7Xnlrkcy62nPI5n19P6KKvT8e8zDrxyS2dcw73nVrkcy62nPI5n19P6Kluj5027+PZIzf/k/r9r1SGY97Xkks6rvz+5V9a5rc7+bdz2SM5f0vFrXI5n1tDuRzKq+X8/bOfb8vOuRnLm055W6Hsmsp92JZFb1/Xrezqnnp65HcuaanlfpeiQzuwOszZ2IiIiIiJTPD3fXVLY=
+   eJzt1ctKw1AUhtGAc31htWdSxNvMalsvVfui7kCKsR4kLY05DWvBT2ATIZOvVhUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOznInY+9EcAvdI5jJ/OYfx0DuOnc+hH3dbl0B/R0Dn0Q+cwfiV1DvSjhM5T5naWuU1iV/1+CozSsXU+rcpu/TZ23Tzbu2meMIRj7Lz01lPmNvnvj4CWY+285NZT5qZzhlRC5/ex061NM7e76mfnpbaeMrdDdf4Qm8UeY08d3511eJdxK6HzlLl1+X9eauspcztU5/PYIraMPTe3uue6+9nWc/PuovUuDCVlbrt03lfruTa79Jr2/LsuXmKvsbfYqrnNm9uy9VxUOqcsKXPbtfM+Wi+x8/fYR+wztt66bW/zm1B3vqpgWClz26fzQ7deYue7eK++m1///SrALydmZmZmZlb8vgAdnmlX
   </data>
  </layer>
  <layer name="platforms" width="250" height="150">
@@ -66,7 +66,7 @@
    <property name="collide" value=""/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt07kNgDAQRUFjOuFokZwG6II+IUREICHZZmekHzjyJi8lAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAVe1f6AgCe2l5sLXQjRDbmlObLhtt7Otfnb//UOtRJ6xCD1iEGrUMMWocYtA4xaB1i0DrEoPX2LGb2+wEAAPU7AN3tgI0=
+   eJzt07sJACAAQ0GntncBZ3YGwR/mDtKneaUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwWp9Yu/QROEvrkEHrkEHrkEHrkEHrkEHrkEHrkEHrkEHr+1Uz+34AAMD7BpFjfmE=
   </data>
  </layer>
  <layer name="walls" width="250" height="150">

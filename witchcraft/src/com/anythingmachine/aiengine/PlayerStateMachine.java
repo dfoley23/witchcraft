@@ -31,6 +31,7 @@ public class PlayerStateMachine extends StateMachine {
 	public Random rand;	
 
 	public boolean hitplatform;
+	public boolean hitstairs = false;
 	public boolean hitroof;
 	public boolean invi;
 	public boolean killedbehind = false;

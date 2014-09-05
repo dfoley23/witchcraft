@@ -29,13 +29,15 @@ public class MyContactListener implements ContactListener {
 	 */
 	@Override
 	public void endContact( Contact contact ) {
-//		final Fixture x1 = contact.getFixtureA( );
-//		final Fixture x2 = contact.getFixtureB( );
-//		Entity entityA = (Entity) x1.getBody( ).getUserData( );
-//		Entity entityB = (Entity)x2.getBody( ).getUserData( );
-//
-//		entityA.endContact(contact, true);
-//		entityB.endContact(contact, false);
+		final Fixture x1 = contact.getFixtureA( );
+		final Fixture x2 = contact.getFixtureB( );
+		if ( x1 != null && x2 != null ) {
+			Entity entityA = (Entity) x1.getBody( ).getUserData( );
+			Entity entityB = (Entity)x2.getBody( ).getUserData( );
+
+			entityA.endContact(contact, true);
+			entityB.endContact(contact, false);
+		}
 
 	}
 

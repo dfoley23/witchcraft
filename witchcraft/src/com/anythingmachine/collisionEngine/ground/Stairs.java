@@ -31,7 +31,7 @@ public class Stairs extends Platform {
 	
 	@Override
 	public float getHeight() {
-		return posy;
+		return end.y > posy ? posy : end.y;
 	}
 	
 	public float getUpPos() {

@@ -163,15 +163,7 @@ public class Player extends Entity {
 
 	@Override
 	public void endContact(Contact contact, boolean isFixture1) {
-		Entity other;
-		if (isFixture1) {
-			other = (Entity) contact.getFixtureB().getBody().getUserData();
-		} else {
-			other = (Entity) contact.getFixtureA().getBody().getUserData();
-		}
-		if (other.type == EntityType.WALL) {
-			state.hitleftwall = state.hitrightwall = false;
-		}
+		state.state.endContact(contact, isFixture1);
 	}
 
 	@Override

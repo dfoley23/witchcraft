@@ -19,14 +19,14 @@ public class NPCStaticAnimation extends Entity {
 	private boolean onscreen = true;
 
 	public NPCStaticAnimation(String skinname, Vector3 pos, Vector2 bodyScale,
-			String datafile) {
+			String datafile, String typePath) {
 		this.pos = pos;
 		FileHandle handle = Gdx.files.internal(datafile);
 		String[] fileContent = handle.readString().split("\n");
 
 		level = Integer.parseInt(fileContent[0].split(",")[1]) - 1;
 
-		setupAnimations(skinname, pos, bodyScale, fileContent);
+		setupAnimations(skinname, pos, bodyScale, fileContent, typePath);
 
 	}
 
@@ -51,12 +51,12 @@ public class NPCStaticAnimation extends Entity {
 	}
 	
 	protected void setupAnimations(String skinname, Vector3 pos, Vector2 scale,
-			String[] fileContent) {
+			String[] fileContent, String typePath) {
 		SkeletonBinary sb = new SkeletonBinary(
 				(TextureAtlas) WitchCraft.assetManager
-						.get("data/spine/characters.atlas"));
+						.get(typePath+".atlas"));
 		SkeletonData sd = sb.readSkeletonData(Gdx.files
-				.internal("data/spine/characters.skel"));
+				.internal(typePath+".skel"));
 
 		String[] animations = fileContent[1].split(",");
 

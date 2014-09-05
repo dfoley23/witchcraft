@@ -111,7 +111,7 @@ public class GamePlayManager extends Screen {
 		currentlevel = Integer.parseInt(fileContent[3]) - 1;
 		//debug set level
 //		if( Util.DEV_MODE ) 
-		currentlevel = 2;
+		currentlevel = 3;
 		level = currentlevel;
 		
 		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
@@ -464,10 +464,10 @@ public class GamePlayManager extends Screen {
 
 		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(1772,
 				80, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller1"));
+				"data/npcdata/static/treedweller1", "data/spine/characters"));
 		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(4900,
 				80, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller2"));
+				"data/npcdata/static/treedweller2", "data/spine/characters"));
 
 		WitchCraft.stopMusic();
 		WitchCraft.playMusic("data/sounds/frogs.ogg");
@@ -480,11 +480,16 @@ public class GamePlayManager extends Screen {
 
 		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(2772,
 				80, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller1"));
+				"data/npcdata/static/treedweller1", "data/spine/characters"));
 		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(3699,
 				50, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller3"));
-//		WitchCraft.stopMusic();
+				"data/npcdata/static/treedweller3", "data/spine/characters"));
+
+		entities.add(new NPCStaticAnimation("ox", new Vector3(5696,
+				212, 0), new Vector2(1.2f,1.2f),
+				"data/npcdata/static/idle_ox_1", "data/spine/animals"));
+
+		//		WitchCraft.stopMusic();
 //		WitchCraft.playMusic("data/sounds/ambient.ogg");
 	}
 
@@ -494,7 +499,7 @@ public class GamePlayManager extends Screen {
 		bgentities.clear();
 
 		entities.add(new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350,
-				0), new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch"));
+				0), new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch", "data/spine/characters"));
 
 		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
@@ -502,10 +507,10 @@ public class GamePlayManager extends Screen {
 		entities.add(new NonPlayer("civ_female", new Vector2(5500.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/saraciv",
 				NPCType.CIV));
-
+		
 		entities.add(new NPCStaticAnimation("shackledmale1", new Vector3(1696,
 				118, 0), new Vector2(0.75f, 0.8f),
-				"data/npcdata/static/shackledfred"));
+				"data/npcdata/static/shackledfred", "data/spine/characters"));
 
 		bgentities.add(new Particle(new Vector3(4604, 620, 0)));
 		bgentities.add(new AnimatedSpringParticle("tiedwitch", new Vector3(
@@ -610,6 +615,11 @@ public class GamePlayManager extends Screen {
 		triggers.clear();
 		entities.clear();
 		bgentities.clear();
+
+		entities.add(new NonPlayer("archer", new Vector2(920.0f, 500.0f),
+				new Vector2(0.6f, 0.7f), "data/npcdata/other/tower_archer1",
+				NPCType.ARCHER));
+		entities.get(0).faceLeft(true);
 		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
 				new Vector2(0.6f, 0.7f), "data/npcdata/civs/tempMale4",
 				NPCType.CIV));

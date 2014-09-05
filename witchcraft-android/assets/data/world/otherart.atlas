@@ -4,7 +4,7 @@ filter: Linear,Linear
 repeat: none
 morph10
   rotate: false
-  xy: 393, 335
+  xy: 818, 562
   size: 112, 67
   orig: 112, 69
   offset: 0, 2
@@ -18,21 +18,21 @@ INVISIBIL
   index: -1
 morph6
   rotate: false
-  xy: 397, 670
+  xy: 284, 448
   size: 108, 56
   orig: 108, 58
   offset: 0, 2
   index: -1
 crow3fly
   rotate: false
-  xy: 956, 417
+  xy: 316, 185
   size: 64, 56
   orig: 64, 80
   offset: 0, 24
   index: -1
 FUGE
   rotate: false
-  xy: 818, 556
+  xy: 394, 324
   size: 134, 41
   orig: 134, 41
   offset: 0, 0
@@ -53,7 +53,7 @@ morph1
   index: -1
 morph11
   rotate: false
-  xy: 393, 185
+  xy: 818, 488
   size: 115, 72
   orig: 115, 74
   offset: 0, 2
@@ -74,28 +74,28 @@ fireTex
   index: -1
 morph7
   rotate: false
-  xy: 284, 670
+  xy: 394, 443
   size: 111, 58
   orig: 111, 60
   offset: 0, 2
   index: -1
 ss-9-crow
   rotate: false
-  xy: 818, 460
+  xy: 394, 228
   size: 135, 94
   orig: 135, 94
   offset: 0, 0
   index: -1
 morph12
   rotate: false
-  xy: 393, 259
+  xy: 316, 367
   size: 113, 74
   orig: 115, 76
   offset: 2, 2
   index: -1
 morph4
   rotate: false
-  xy: 284, 448
+  xy: 818, 816
   size: 107, 51
   orig: 107, 53
   offset: 0, 2
@@ -109,7 +109,7 @@ ss-2-crow
   index: -1
 ALARMSIGN
   rotate: false
-  xy: 284, 506
+  xy: 932, 562
   size: 88, 104
   orig: 96, 106
   offset: 5, 2
@@ -123,7 +123,7 @@ ANIMIMPERI
   index: -1
 ss-10-crow
   rotate: false
-  xy: 818, 599
+  xy: 818, 417
   size: 121, 69
   orig: 121, 69
   offset: 0, 0
@@ -135,16 +135,23 @@ ss-6-crow
   orig: 207, 181
   offset: 0, 0
   index: -1
+boxtex
+  rotate: false
+  xy: 284, 506
+  size: 300, 200
+  orig: 300, 200
+  offset: 0, 0
+  index: -1
 morph5
   rotate: false
-  xy: 507, 670
+  xy: 818, 761
   size: 108, 53
   orig: 108, 55
   offset: 0, 2
   index: -1
 GELO
   rotate: false
-  xy: 818, 417
+  xy: 394, 185
   size: 136, 41
   orig: 136, 41
   offset: 0, 0
@@ -179,14 +186,14 @@ MUTATIO
   index: -1
 crow2fly
   rotate: false
-  xy: 955, 475
+  xy: 316, 243
   size: 64, 52
   orig: 64, 80
   offset: 0, 0
   index: -1
 crow4fly
   rotate: false
-  xy: 954, 577
+  xy: 431, 367
   size: 64, 28
   orig: 64, 80
   offset: 0, 21
@@ -214,14 +221,14 @@ EFFINGO
   index: -1
 morph8
   rotate: false
-  xy: 393, 470
+  xy: 818, 697
   size: 109, 62
   orig: 111, 64
   offset: 2, 2
   index: -1
 morph3
   rotate: false
-  xy: 284, 612
+  xy: 533, 869
   size: 105, 48
   orig: 105, 48
   offset: 0, 0
@@ -235,7 +242,7 @@ ss-4-crow
   index: -1
 crowstand
   rotate: false
-  xy: 955, 529
+  xy: 316, 297
   size: 64, 46
   orig: 64, 80
   offset: 0, 34
@@ -256,7 +263,7 @@ dust
   index: -1
 morph9
   rotate: false
-  xy: 393, 404
+  xy: 818, 631
   size: 111, 64
   orig: 113, 66
   offset: 2, 2

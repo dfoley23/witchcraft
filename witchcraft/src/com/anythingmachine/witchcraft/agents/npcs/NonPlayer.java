@@ -62,7 +62,7 @@ public class NonPlayer extends Entity {
 	public void update(float dT) {
 		sm.update(dT);
 	}
-
+	
 	public void checkInLevel() {
 		sm.state.checkInLevel();
 	}

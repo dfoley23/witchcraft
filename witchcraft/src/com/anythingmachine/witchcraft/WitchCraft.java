@@ -289,6 +289,7 @@ public class WitchCraft implements ApplicationListener {
 
 	public void loadPlayAssets() {
 		assetManager.load("data/spine/characters.atlas", TextureAtlas.class);
+		assetManager.load("data/spine/animals.atlas", TextureAtlas.class);
 		assetManager.load("data/world/otherart.atlas", TextureAtlas.class);
 		 assetManager.load("data/sounds/crickets.ogg", Sound.class);
 		assetManager.load("data/sounds/wind.wav", Sound.class);
