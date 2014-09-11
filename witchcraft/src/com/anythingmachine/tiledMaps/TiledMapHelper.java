@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.anythingmachine.aiengine.AINode;
 import com.anythingmachine.cinematics.Camera;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.collisionEngine.ground.LevelWall;
@@ -44,10 +45,14 @@ import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile.BlendMode;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -56,461 +61,500 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 public class TiledMapHelper {
-	private int[] layersList;
+    private int[] layersList;
 
-	/**
-	 * Renders the part of the map that should be visible to the user.
-	 */
-	public void render(GamePlayManager main) {
-		tileMapRenderer.setView(Camera.camera);// .getProjectionMatrix().set(Camera.camera.combined);
+    /**
+     * Renders the part of the map that should be visible to the user.
+     */
+    public void render(GamePlayManager main) {
+	tileMapRenderer.setView(Camera.camera);// .getProjectionMatrix().set(Camera.camera.combined);
 
-		// Vector3 tmp = new Vector3();
-		// tmp.set(0, 0, 0);
-		// Camera.camera.unproject(tmp);
+	// Vector3 tmp = new Vector3();
+	// tmp.set(0, 0, 0);
+	// Camera.camera.unproject(tmp);
 
-		tileMapRenderer.render(main);
+	tileMapRenderer.render(main);
+    }
+
+    /**
+     * Get the map, useful for iterating over the set of tiles found within
+     * 
+     * @return TiledMap
+     */
+    public TiledMap getMap() {
+	return map;
+    }
+
+    /**
+     * Calls dispose on all disposable resources held by this object.
+     */
+    public void dispose() {
+	// tileAtlas.dispose();
+	tileMapRenderer.dispose();
+    }
+
+    /**
+     * Loads the requested tmx map file in to the helper.
+     * 
+     * @param tmxFile
+     */
+    public void loadMap(String level) {
+
+	map = WitchCraft.assetManager
+		.get("data/world/level1/" + level + ".tmx");
+	// tileAtlas = new TileAtlas(map, packFileDirectory);
+
+	tileMapRenderer = new OrthoTileRenderer(map, 1);
+
+	int size = getMap().getLayers().getCount();
+	layersList = new int[size];
+	for (int i = 0; i < size; i++) {
+	    layersList[i] = i;
 	}
+    }
 
-	/**
-	 * Get the map, useful for iterating over the set of tiles found within
-	 * 
-	 * @return TiledMap
-	 */
-	public TiledMap getMap() {
-		return map;
-	}
-
-	/**
-	 * Calls dispose on all disposable resources held by this object.
-	 */
-	public void dispose() {
-		// tileAtlas.dispose();
-		tileMapRenderer.dispose();
-	}
-
-	/**
-	 * Loads the requested tmx map file in to the helper.
-	 * 
-	 * @param tmxFile
-	 */
-	public void loadMap(String level) {
-
-		map = WitchCraft.assetManager
-				.get("data/world/level1/" + level + ".tmx");
-		// tileAtlas = new TileAtlas(map, packFileDirectory);
-
-		tileMapRenderer = new OrthoTileRenderer(map, 1);
-
-		int size = getMap().getLayers().getCount();
-		layersList = new int[size];
-		for (int i = 0; i < size; i++) {
-			layersList[i] = i;
+    public void destroyMap() {
+	Array<Body> bodies = new Array<Body>();
+	GamePlayManager.world.getBodies(bodies);
+	Iterator it = bodies.iterator();
+	while (it.hasNext()) {
+	    Body b = (Body) it.next();
+	    Object dat = b.getUserData();
+	    if (dat != null && dat instanceof Entity) {
+		Entity e = (Entity) dat;
+		if (e.type == EntityType.PLATFORM || e.type == EntityType.WALL
+			|| e.type == EntityType.LEVELWALL
+			|| e.type == EntityType.STAIRS
+			|| e.type == EntityType.AINODE) {
+		    // System.out.println(e.type);
+		    GamePlayManager.world.destroyBody(b);
 		}
+	    }
+	    it.remove();
 	}
+    }
 
-	public void destroyMap() {
-		Array<Body> bodies = new Array<Body>();
-		GamePlayManager.world.getBodies(bodies);
-		Iterator it = bodies.iterator();
-		while (it.hasNext()) {
-			Body b = (Body) it.next();
-			Object dat = b.getUserData();
-			if (dat != null && dat instanceof Entity) {
-				Entity e = (Entity) dat;
-				if (e.type == EntityType.PLATFORM || e.type == EntityType.WALL
-						|| e.type == EntityType.LEVELWALL
-						|| e.type == EntityType.STAIRS) {
-					// System.out.println(e.type);
-					GamePlayManager.world.destroyBody(b);
-				}
-			}
-			it.remove();
-		}
-	}
-	
+    /**
+     * Reads a file describing the collision boundaries that should be set
+     * per-tile and adds static bodies to the boxd world.
+     * 
+     * @param collisionsFile
+     * @param world
+     * @param pixelsPerMeter
+     *            the pixels per meter scale used for this world
+     */
+    public void loadCollisions(String collisionsFile, World world,
+	    float pixelsPerMeter, int level) {
 	/**
-	 * Reads a file describing the collision boundaries that should be set
-	 * per-tile and adds static bodies to the boxd world.
+	 * Detect the tiles and dynamically create a representation of the map
+	 * layout, for collision detection. Each tile has its own collision
+	 * rules stored in an associated file.
 	 * 
-	 * @param collisionsFile
-	 * @param world
-	 * @param pixelsPerMeter
-	 *            the pixels per meter scale used for this world
+	 * The file contains lines in this format (one line per type of tile):
+	 * tileNumber XxY,XxY XxY,XxY
+	 * 
+	 * Ex:
+	 * 
+	 * 3 0x0,31x0 ... 4 0x0,29x0 29x0,29x31
+	 * 
+	 * For a 32x32 tileset, the above describes one line segment for tile #3
+	 * and two for tile #4. Tile #3 has a line segment across the top. Tile
+	 * #1 has a line segment across most of the top and a line segment from
+	 * the top to the bottom, 30 pixels in.
 	 */
-	public void loadCollisions(String collisionsFile, World world,
-			float pixelsPerMeter, int level) {
-		/**
-		 * Detect the tiles and dynamically create a representation of the map
-		 * layout, for collision detection. Each tile has its own collision
-		 * rules stored in an associated file.
-		 * 
-		 * The file contains lines in this format (one line per type of tile):
-		 * tileNumber XxY,XxY XxY,XxY
-		 * 
-		 * Ex:
-		 * 
-		 * 3 0x0,31x0 ... 4 0x0,29x0 29x0,29x31
-		 * 
-		 * For a 32x32 tileset, the above describes one line segment for tile #3
-		 * and two for tile #4. Tile #3 has a line segment across the top. Tile
-		 * #1 has a line segment across most of the top and a line segment from
-		 * the top to the bottom, 30 pixels in.
-		 */
 
-		FileHandle fh = Gdx.files.internal(collisionsFile);
-		String collisionFile = fh.readString();
-		String lines[] = collisionFile.split("\\r?\\n");
+	FileHandle fh = Gdx.files.internal(collisionsFile);
+	String collisionFile = fh.readString();
+	String lines[] = collisionFile.split("\\r?\\n");
 
-		HashMap<Integer, ArrayList<LineSegment>> tileCollisionJoints = new HashMap<Integer, ArrayList<LineSegment>>();
+	HashMap<Integer, ArrayList<LineSegment>> tileCollisionJoints = new HashMap<Integer, ArrayList<LineSegment>>();
 
-		/**
-		 * Some locations on the map (perhaps most locations) are "undefined",
-		 * empty space, and will have the tile type 0. This code adds an empty
-		 * list of line segments for this "default" tile.
-		 */
-		tileCollisionJoints.put(Integer.valueOf(0),
-				new ArrayList<LineSegment>());
+	/**
+	 * Some locations on the map (perhaps most locations) are "undefined",
+	 * empty space, and will have the tile type 0. This code adds an empty
+	 * list of line segments for this "default" tile.
+	 */
+	tileCollisionJoints.put(Integer.valueOf(0),
+		new ArrayList<LineSegment>());
 
-		for (int n = 0; n < lines.length; n++) {
-			String cols[] = lines[n].split(" ");
-			int tileNo = Integer.parseInt(cols[0]);
+	for (int n = 0; n < lines.length; n++) {
+	    String cols[] = lines[n].split(" ");
+	    int tileNo = Integer.parseInt(cols[0]);
 
-			ArrayList<LineSegment> tmp = new ArrayList<LineSegment>();
+	    ArrayList<LineSegment> tmp = new ArrayList<LineSegment>();
 
-			for (int m = 1; m < cols.length; m++) {
-				String coords[] = cols[m].split(",");
+	    for (int m = 1; m < cols.length; m++) {
+		String coords[] = cols[m].split(",");
 
-				String start[] = coords[0].split("x");
-				String end[] = coords[1].split("x");
+		String start[] = coords[0].split("x");
+		String end[] = coords[1].split("x");
 
-				tmp.add(new LineSegment(Integer.parseInt(start[0]), Integer
-						.parseInt(start[1]), Integer.parseInt(end[0]), Integer
-						.parseInt(end[1]), ""));
-			}
+		tmp.add(new LineSegment(Integer.parseInt(start[0]), Integer
+			.parseInt(start[1]), Integer.parseInt(end[0]), Integer
+			.parseInt(end[1]), ""));
+	    }
 
-			tileCollisionJoints.put(Integer.valueOf(tileNo), tmp);
-		}
+	    tileCollisionJoints.put(Integer.valueOf(tileNo), tmp);
+	}
 
-		ArrayList<LineSegment> collisionLineSegments = new ArrayList<LineSegment>();
+	ArrayList<LineSegment> collisionLineSegments = new ArrayList<LineSegment>();
 
-		for (int l = 0; l < getMap().getLayers().getCount(); l++) {
-			TiledMapTileLayer layer = (TiledMapTileLayer) getMap().getLayers()
-					.get(l);
-			if (layer.getProperties().containsKey("collide")) {
-				for (int y = 0; y < layer.getHeight(); y++) {
-					for (int x = 0; x < layer.getWidth(); x++) {
-						Cell tile = layer.getCell(x, y);
-						if (tile != null) {
-							int tileID = tile.getTile().getId();
+	for (int l = 0; l < getMap().getLayers().getCount(); l++) {
+	    MapLayer nextLayer = getMap().getLayers().get(l);
+	    if (!nextLayer.getName().equals("AINODEMAP")) {
+		TiledMapTileLayer layer = (TiledMapTileLayer) nextLayer;
+		if (layer.getProperties().containsKey("collide")) {
+		    for (int y = 0; y < layer.getHeight(); y++) {
+			for (int x = 0; x < layer.getWidth(); x++) {
+			    Cell tile = layer.getCell(x, y);
+			    if (tile != null) {
+				int tileID = tile.getTile().getId();
 
-							int start = 0;
-//							System.out.println(tileID);
-							if (tileCollisionJoints.containsKey(tileID)) {
-								int tileCollisionSegments = tileCollisionJoints
-										.get(tileID).size();
-								if (tileCollisionSegments != 0) {
-									String type = "";
-									if (tile.getTile().getProperties()
-											.containsKey("type")) {
-										type = (String) getMap().getTileSets()
-												.getTile(tileID)
-												.getProperties().get("type");
-									}
-									if (type == "") {
-										if (layer.getProperties().containsKey(
-												"WALLS")) {
-											type = "WALLS";
-											start = 1;
-										} else if (tileCollisionSegments > 1) {
-											tileCollisionSegments = 1;
-											type = "PLATFORMS";
-										}
-									}
-
-									for (int n = start; n < tileCollisionSegments; n++) {
-										LineSegment lineSeg = tileCollisionJoints
-												.get(tileID).get(n);
-
-										addOrExtendCollisionLineSegment(x * 32
-												+ lineSeg.start().x, y * 32
-												- lineSeg.start().y + 32, x
-												* 32 + lineSeg.end().x, y * 32
-												- lineSeg.end().y + 32,
-												collisionLineSegments, type);
-									}
-								}
-							}
-						}
+				int start = 0;
+				// System.out.println(tileID);
+				if (tileCollisionJoints.containsKey(tileID)) {
+				    int tileCollisionSegments = tileCollisionJoints
+					    .get(tileID).size();
+				    if (tileCollisionSegments != 0) {
+					String type = "";
+					if (tile.getTile().getProperties()
+						.containsKey("type")) {
+					    type = (String) getMap()
+						    .getTileSets()
+						    .getTile(tileID)
+						    .getProperties()
+						    .get("type");
 					}
-				}
-			}
-		}
-		int platnum = 0;
-		for (LineSegment lineSegment : collisionLineSegments) {
-			BodyDef groundBodyDef = new BodyDef();
-			groundBodyDef.type = BodyDef.BodyType.StaticBody;
-			groundBodyDef.position.set(0, 0);
-			Body groundBody = GamePlayManager.world.createBody(groundBodyDef);
-			if (lineSegment.type.equals("STAIRS")) {
-				groundBody.setUserData(new Stairs("stairs_"+level+"_"+platnum, lineSegment.start(),
-						lineSegment.end()));
-			} else if (lineSegment.type.equals("WALLS")) {
-				groundBody.setUserData(new Entity().setType(EntityType.WALL));
-			} else {
-				groundBody.setUserData(new Platform("plat_"+level+"_"+platnum, lineSegment.start(),
-						lineSegment.end()));
-			}
-			EdgeShape environmentShape = new EdgeShape();
+					if (type == "") {
+					    if (layer.getProperties()
+						    .containsKey("WALLS")) {
+						type = "WALLS";
+						start = 1;
+					    } else if (tileCollisionSegments > 1) {
+						tileCollisionSegments = 1;
+						type = "PLATFORMS";
+					    }
+					}
+					for (int n = start; n < tileCollisionSegments; n++) {
+					    LineSegment lineSeg = tileCollisionJoints
+						    .get(tileID).get(n);
 
-			environmentShape.set(lineSegment.start().scl(1 / pixelsPerMeter),
-					lineSegment.end().scl(1 / pixelsPerMeter));
+					    addOrExtendCollisionLineSegment(x
+						    * 32 + lineSeg.start().x, y
+						    * 32 - lineSeg.start().y
+						    + 32,
+						    x * 32 + lineSeg.end().x,
+						    y * 32 - lineSeg.end().y
+							    + 32,
+						    collisionLineSegments, type);
+					}
+				    }
+				}
+			    }
+			}
+		    }
+		}
+	    } else {
+		MapObjects objects = nextLayer.getObjects();
+		for (MapObject o : objects) {
+		    RectangleMapObject rect = (RectangleMapObject) o;
+		    if (rect.getProperties().containsKey("set")) {
+			Rectangle shape = rect.getRectangle();
+
+			BodyDef nodeBodyDef = new BodyDef();
+			nodeBodyDef.type = BodyDef.BodyType.StaticBody;
+			nodeBodyDef.position.set((shape.x+shape.width*0.5f)*Util.PIXEL_TO_BOX, (shape.y+shape.height*0.5f)*Util.PIXEL_TO_BOX);
+
+			Body nodeBody = GamePlayManager.world
+				.createBody(nodeBodyDef);
+			String set = (String) rect.getProperties().get("set");
+			nodeBody.setUserData(new AINode(Integer.parseInt(set)));
+
+			PolygonShape nodeShape = new PolygonShape();
+
+			nodeShape.setAsBox(shape.width * 0.5f * Util.PIXEL_TO_BOX,
+				shape.height * 0.5f * Util.PIXEL_TO_BOX );
 			FixtureDef fixture = new FixtureDef();
-			fixture.shape = environmentShape;
+			fixture.shape = nodeShape;
 			fixture.isSensor = true;
 			fixture.density = 0;
 			fixture.filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
-			fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
-			groundBody.createFixture(fixture);
-			environmentShape.dispose();
+			fixture.filter.maskBits = Util.CATEGORY_NPC
+				| Util.CATEGORY_PLAYER;
+			nodeBody.createFixture(fixture);
+			nodeShape.dispose();
+		    }
+
 		}
+	    }
+	}
+	int platnum = 0;
+	for (LineSegment lineSegment : collisionLineSegments) {
+	    BodyDef groundBodyDef = new BodyDef();
+	    groundBodyDef.type = BodyDef.BodyType.StaticBody;
+	    groundBodyDef.position.set(0, 0);
+	    Body groundBody = GamePlayManager.world.createBody(groundBodyDef);
+	    if (lineSegment.type.equals("STAIRS")) {
+		groundBody.setUserData(new Stairs("stairs_" + level + "_"
+			+ platnum, lineSegment.start(), lineSegment.end()));
+	    } else if (lineSegment.type.equals("WALLS")) {
+		groundBody.setUserData(new Entity().setType(EntityType.WALL));
+	    } else {
+		groundBody.setUserData(new Platform("plat_" + level + "_"
+			+ platnum, lineSegment.start(), lineSegment.end()));
+	    }
+	    EdgeShape environmentShape = new EdgeShape();
 
-		/**
-		 * Drawing a boundary around the entire map. We can't use a box because
-		 * then the world objects would be inside and the physics engine would
-		 * try to push them out.
-		 */
-
-		TiledMapTileLayer layer = (TiledMapTileLayer) getMap().getLayers().get(
-				3);
-
-		BodyDef bodydef = new BodyDef();
-		bodydef.type = BodyType.StaticBody;
-		bodydef.position.set(0, 0);
-		Body body = GamePlayManager.world.createBody(bodydef);
-
-		// left wall
-		EdgeShape mapBounds = new EdgeShape();
-		if (level == 1) {
-			mapBounds.set(new Vector2(0.0f, 0.0f),
-					new Vector2(0, layer.getHeight() * 32)
-							.scl(Util.PIXEL_TO_BOX));
-			body.setUserData(new Entity().setType(EntityType.WALL));
-			Fixture fixture = body.createFixture(mapBounds, 0);
-			Filter filter = new Filter();
-			filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
-			filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
-			fixture.setFilterData(filter);
-		} else {
-			mapBounds.set(new Vector2(0f * Util.PIXEL_TO_BOX, 0.0f),
-					new Vector2(0f, layer.getHeight() * 32)
-							.scl(Util.PIXEL_TO_BOX));
-			body.setUserData(new LevelWall(level - 1));
-			Fixture fixture = body.createFixture(mapBounds, 0);
-			Filter filter = new Filter();
-			filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
-			filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
-			fixture.setFilterData(filter);
-		}
-
-		// right wall
-		body = GamePlayManager.world.createBody(bodydef);
-		body.setUserData(new LevelWall(level + 1));
-		EdgeShape mapBounds2 = new EdgeShape();
-		mapBounds2.set(new Vector2((layer.getWidth() * 32), 0.0f)
-				.scl(Util.PIXEL_TO_BOX), new Vector2((layer.getWidth() * 32),
-				layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
-		Fixture fixture = body.createFixture(mapBounds2, 0);
-		Filter filter = new Filter();
-		filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
-		filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
-		fixture.setFilterData(filter);
-
-		// roof
-		body = GamePlayManager.world.createBody(bodydef);
-		body.setUserData(new Platform("roof_"+level,
-				new Vector2(0.0f, layer.getHeight() * 32), new Vector2(layer
-						.getWidth() * 32, layer.getHeight())));
-		EdgeShape mapBounds3 = new EdgeShape();
-		mapBounds3.set(new Vector2(0.0f, layer.getHeight() * 32)
-				.scl(Util.PIXEL_TO_BOX), new Vector2(layer.getWidth() * 32,
-				layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
-		fixture = body.createFixture(mapBounds3, 0);
-		fixture.setFilterData(filter);
-
-		mapBounds.dispose();
-		mapBounds2.dispose();
-		mapBounds3.dispose();
+	    environmentShape.set(lineSegment.start().scl(1 / pixelsPerMeter),
+		    lineSegment.end().scl(1 / pixelsPerMeter));
+	    FixtureDef fixture = new FixtureDef();
+	    fixture.shape = environmentShape;
+	    fixture.isSensor = true;
+	    fixture.density = 0;
+	    fixture.filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+	    fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER | Util.CATEGORY_PARTICLES;
+	    groundBody.createFixture(fixture);
+	    environmentShape.dispose();
 	}
 
 	/**
-	 * This is a helper function that makes calls that will attempt to extend
-	 * one of the line segments already tracked by TiledMapHelper, if possible.
-	 * The goal is to have as few line segments as possible.
-	 * 
-	 * Ex: If you have a line segment in the system that is from 1x1 to 3x3 and
-	 * this function is called for a line that is 4x4 to 9x9, rather than add a
-	 * whole new line segment to the list, the 1x1,3x3 line will be extended to
-	 * 1x1,9x9. See also: LineSegment.extendIfPossible.
-	 * 
-	 * @param lsx1
-	 *            starting x of the new line segment
-	 * @param lsy1
-	 *            starting y of the new line segment
-	 * @param lsx2
-	 *            ending x of the new line segment
-	 * @param lsy2
-	 *            ending y of the new line segment
-	 * @param collisionLineSegments
-	 *            the current list of line segments
+	 * Drawing a boundary around the entire map. We can't use a box because
+	 * then the world objects would be inside and the physics engine would
+	 * try to push them out.
 	 */
-	private void addOrExtendCollisionLineSegment(float lsx1, float lsy1,
-			float lsx2, float lsy2,
-			ArrayList<LineSegment> collisionLineSegments, String type) {
-		LineSegment line = new LineSegment(lsx1, lsy1, lsx2, lsy2, type);
 
-		boolean didextend = false;
+	TiledMapTileLayer layer = (TiledMapTileLayer) getMap().getLayers().get(
+		3);
 
-		for (LineSegment test : collisionLineSegments) {
-			if (test.extendIfPossible(line)) {
-				didextend = true;
-				break;
-			}
-		}
+	BodyDef bodydef = new BodyDef();
+	bodydef.type = BodyType.StaticBody;
+	bodydef.position.set(0, 0);
+	Body body = GamePlayManager.world.createBody(bodydef);
 
-		if (!didextend) {
-			collisionLineSegments.add(line);
-		}
+	// left wall
+	EdgeShape mapBounds = new EdgeShape();
+	if (level == 1) {
+	    mapBounds.set(new Vector2(0.0f, 0.0f),
+		    new Vector2(0, layer.getHeight() * 32)
+			    .scl(Util.PIXEL_TO_BOX));
+	    body.setUserData(new Entity().setType(EntityType.WALL));
+	    Fixture fixture = body.createFixture(mapBounds, 0);
+	    Filter filter = new Filter();
+	    filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+	    filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
+	    fixture.setFilterData(filter);
+	} else {
+	    mapBounds.set(new Vector2(0f * Util.PIXEL_TO_BOX, 0.0f),
+		    new Vector2(0f, layer.getHeight() * 32)
+			    .scl(Util.PIXEL_TO_BOX));
+	    body.setUserData(new LevelWall(level - 1));
+	    Fixture fixture = body.createFixture(mapBounds, 0);
+	    Filter filter = new Filter();
+	    filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+	    filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
+	    fixture.setFilterData(filter);
+	}
+
+	// right wall
+	body = GamePlayManager.world.createBody(bodydef);
+	body.setUserData(new LevelWall(level + 1));
+	EdgeShape mapBounds2 = new EdgeShape();
+	mapBounds2.set(new Vector2((layer.getWidth() * 32), 0.0f)
+		.scl(Util.PIXEL_TO_BOX), new Vector2((layer.getWidth() * 32),
+		layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
+	Fixture fixture = body.createFixture(mapBounds2, 0);
+	Filter filter = new Filter();
+	filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+	filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
+	fixture.setFilterData(filter);
+
+	// roof
+	body = GamePlayManager.world.createBody(bodydef);
+	body.setUserData(new Platform("roof_" + level, new Vector2(0.0f, layer
+		.getHeight() * 32), new Vector2(layer.getWidth() * 32, layer
+		.getHeight())));
+	EdgeShape mapBounds3 = new EdgeShape();
+	mapBounds3.set(new Vector2(0.0f, layer.getHeight() * 32)
+		.scl(Util.PIXEL_TO_BOX), new Vector2(layer.getWidth() * 32,
+		layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
+	fixture = body.createFixture(mapBounds3, 0);
+	fixture.setFilterData(filter);
+
+	mapBounds.dispose();
+	mapBounds2.dispose();
+	mapBounds3.dispose();
+    }
+
+    /**
+     * This is a helper function that makes calls that will attempt to extend
+     * one of the line segments already tracked by TiledMapHelper, if possible.
+     * The goal is to have as few line segments as possible.
+     * 
+     * Ex: If you have a line segment in the system that is from 1x1 to 3x3 and
+     * this function is called for a line that is 4x4 to 9x9, rather than add a
+     * whole new line segment to the list, the 1x1,3x3 line will be extended to
+     * 1x1,9x9. See also: LineSegment.extendIfPossible.
+     * 
+     * @param lsx1
+     *            starting x of the new line segment
+     * @param lsy1
+     *            starting y of the new line segment
+     * @param lsx2
+     *            ending x of the new line segment
+     * @param lsy2
+     *            ending y of the new line segment
+     * @param collisionLineSegments
+     *            the current list of line segments
+     */
+    private void addOrExtendCollisionLineSegment(float lsx1, float lsy1,
+	    float lsx2, float lsy2,
+	    ArrayList<LineSegment> collisionLineSegments, String type) {
+	LineSegment line = new LineSegment(lsx1, lsy1, lsx2, lsy2, type);
+
+	boolean didextend = false;
+
+	for (LineSegment test : collisionLineSegments) {
+	    if (test.extendIfPossible(line)) {
+		didextend = true;
+		break;
+	    }
+	}
+
+	if (!didextend) {
+	    collisionLineSegments.add(line);
+	}
+    }
+
+    /**
+     * Prepares the helper's camera object for use.
+     * 
+     * @param screenWidth
+     * @param screenHeight
+     */
+    public void prepareCamera(int screenWidth, int screenHeight) {
+	Camera.camera = new OrthographicCamera(screenWidth, screenHeight);
+	// if ( WitchCraft.ON_ANDROID )
+	// Camera.camera.zoom = 0.5f;
+	Camera.camera.position.set(screenWidth / 2.0f, screenHeight / 2.0f, 0);
+    }
+
+    /**
+     * Returns the camera object created for viewing the loaded map.
+     * 
+     * @return OrthographicCamera
+     */
+    public OrthographicCamera getCamera() {
+	if (Camera.camera == null) {
+	    throw new IllegalStateException(
+		    "getCamera() called out of sequence");
+	}
+	return Camera.camera;
+    }
+
+    /**
+     * Describes the start and end points of a line segment and contains a
+     * helper method useful for extending line segments.
+     */
+    private class LineSegment {
+	private Vector2 start = new Vector2();
+	private Vector2 end = new Vector2();
+	private String type;
+
+	/**
+	 * Construct a new LineSegment with the specified coordinates.
+	 * 
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 */
+	public LineSegment(float x1, float y1, float x2, float y2, String type) {
+	    start = new Vector2(x1, y1);
+	    end = new Vector2(x2, y2);
+	    this.type = type;
 	}
 
 	/**
-	 * Prepares the helper's camera object for use.
+	 * The "start" of the line. Start and end are misnomers, this is just
+	 * one end of the line.
 	 * 
-	 * @param screenWidth
-	 * @param screenHeight
+	 * @return Vector2
 	 */
-	public void prepareCamera(int screenWidth, int screenHeight) {
-		Camera.camera = new OrthographicCamera(screenWidth, screenHeight);
-		// if ( WitchCraft.ON_ANDROID )
-		// Camera.camera.zoom = 0.5f;
-		Camera.camera.position.set(screenWidth / 2.0f, screenHeight / 2.0f, 0);
+	public Vector2 start() {
+	    return start;
 	}
 
 	/**
-	 * Returns the camera object created for viewing the loaded map.
+	 * The "end" of the line. Start and end are misnomers, this is just one
+	 * end of the line.
 	 * 
-	 * @return OrthographicCamera
+	 * @return Vector2
 	 */
-	public OrthographicCamera getCamera() {
-		if (Camera.camera == null) {
-			throw new IllegalStateException(
-					"getCamera() called out of sequence");
-		}
-		return Camera.camera;
+	public Vector2 end() {
+	    return end;
 	}
 
 	/**
-	 * Describes the start and end points of a line segment and contains a
-	 * helper method useful for extending line segments.
+	 * Determine if the requested line could be tacked on to the end of this
+	 * line with no kinks or gaps. If it can, the current LineSegment will
+	 * be extended by the length of the passed LineSegment.
+	 * 
+	 * @param lineSegment
+	 * @return boolean true if line was extended, false if not.
 	 */
-	private class LineSegment {
-		private Vector2 start = new Vector2();
-		private Vector2 end = new Vector2();
-		private String type;
+	public boolean extendIfPossible(LineSegment lineSegment) {
+	    /**
+	     * First, let's see if the slopes of the two segments are the same.
+	     */
+	    double slope1 = Math.atan2(end.y - start.y, end.x - start.x);
+	    double slope2 = Math.atan2(lineSegment.end.y - lineSegment.start.y,
+		    lineSegment.end.x - lineSegment.start.x);
 
-		/**
-		 * Construct a new LineSegment with the specified coordinates.
-		 * 
-		 * @param x1
-		 * @param y1
-		 * @param x2
-		 * @param y2
-		 */
-		public LineSegment(float x1, float y1, float x2, float y2, String type) {
-			start = new Vector2(x1, y1);
-			end = new Vector2(x2, y2);
-			this.type = type;
-		}
+	    if (Math.abs(slope1 - slope2) > 0.1) {
+		return false;
+	    }
 
-		/**
-		 * The "start" of the line. Start and end are misnomers, this is just
-		 * one end of the line.
-		 * 
-		 * @return Vector2
-		 */
-		public Vector2 start() {
-			return start;
-		}
-
-		/**
-		 * The "end" of the line. Start and end are misnomers, this is just one
-		 * end of the line.
-		 * 
-		 * @return Vector2
-		 */
-		public Vector2 end() {
-			return end;
-		}
-
-		/**
-		 * Determine if the requested line could be tacked on to the end of this
-		 * line with no kinks or gaps. If it can, the current LineSegment will
-		 * be extended by the length of the passed LineSegment.
-		 * 
-		 * @param lineSegment
-		 * @return boolean true if line was extended, false if not.
-		 */
-		public boolean extendIfPossible(LineSegment lineSegment) {
-			/**
-			 * First, let's see if the slopes of the two segments are the same.
-			 */
-			double slope1 = Math.atan2(end.y - start.y, end.x - start.x);
-			double slope2 = Math.atan2(lineSegment.end.y - lineSegment.start.y,
-					lineSegment.end.x - lineSegment.start.x);
-
-			if (Math.abs(slope1 - slope2) > 0.1) {
-				return false;
-			}
-
-			/**
-			 * Second, check if either end of this line segment is adjacent to
-			 * the requested line segment. So, 1 pixel away up through sqrt(2)
-			 * away.
-			 * 
-			 * Whichever two points are within the right range will be "merged"
-			 * so that the two outer points will describe the line segment.
-			 */
-			if (start.dst(lineSegment.start) <= Math.sqrt(2) + 1e-9) {
-				start.set(lineSegment.end);
-				return true;
-			} else if (end.dst(lineSegment.start) <= Math.sqrt(2) + 1e-9) {
-				end.set(lineSegment.end);
-				return true;
-			} else if (end.dst(lineSegment.end) <= Math.sqrt(2) + 1e-9) {
-				end.set(lineSegment.start);
-				return true;
-			} else if (start.dst(lineSegment.end) <= Math.sqrt(2) + 1e-9) {
-				start.set(lineSegment.start);
-			}
-			return false;
-		}
-
-		/**
-		 * Returns a pretty description of the LineSegment.
-		 * 
-		 * @return String
-		 */
-		@Override
-		public String toString() {
-			return "[" + start.x + "x" + start.y + "] -> [" + end.x + "x"
-					+ end.y + "]";
-		}
+	    /**
+	     * Second, check if either end of this line segment is adjacent to
+	     * the requested line segment. So, 1 pixel away up through sqrt(2)
+	     * away.
+	     * 
+	     * Whichever two points are within the right range will be "merged"
+	     * so that the two outer points will describe the line segment.
+	     */
+	    if (start.dst(lineSegment.start) <= Math.sqrt(2) + 1e-9) {
+		start.set(lineSegment.end);
+		return true;
+	    } else if (end.dst(lineSegment.start) <= Math.sqrt(2) + 1e-9) {
+		end.set(lineSegment.end);
+		return true;
+	    } else if (end.dst(lineSegment.end) <= Math.sqrt(2) + 1e-9) {
+		end.set(lineSegment.start);
+		return true;
+	    } else if (start.dst(lineSegment.end) <= Math.sqrt(2) + 1e-9) {
+		start.set(lineSegment.start);
+	    }
+	    return false;
 	}
 
-	private OrthoTileRenderer tileMapRenderer;
+	/**
+	 * Returns a pretty description of the LineSegment.
+	 * 
+	 * @return String
+	 */
+	@Override
+	public String toString() {
+	    return "[" + start.x + "x" + start.y + "] -> [" + end.x + "x"
+		    + end.y + "]";
+	}
+    }
 
-	private TiledMap map;
+    private OrthoTileRenderer tileMapRenderer;
+
+    private TiledMap map;
 }

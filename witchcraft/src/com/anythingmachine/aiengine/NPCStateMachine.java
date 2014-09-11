@@ -22,6 +22,7 @@ public class NPCStateMachine extends StateMachine {
 	public boolean canseeplayer;
 	public boolean onscreen;
 	public boolean inlevel;
+	public AINode currentNode;
 
 	public NPCStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd, NonPlayer me) {
@@ -32,6 +33,8 @@ public class NPCStateMachine extends StateMachine {
 		canseeplayer = false;
 		states = new HashMap<NPCStateEnum, NPCState>();
 		onscreen = false;
+		currentNode = new AINode(1);
+
 	}
 
 	public void update(float dt) {

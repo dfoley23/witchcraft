@@ -49,7 +49,7 @@ public class Inactive extends NPCState {
 		if (WitchCraft.cam.inBigBounds(sm.phyState.body.getPos())) 
 		{
 			sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
-					.getX();
+					.getX() && sm.currentNode.getSet() == GamePlayManager.player.getAINode().getSet();
 			if (sm.canseeplayer) {
 				if (GamePlayManager.player.inHighAlert()) {
 					setAttack();

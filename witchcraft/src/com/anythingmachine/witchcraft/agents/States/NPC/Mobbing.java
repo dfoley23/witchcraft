@@ -11,10 +11,10 @@ public class Mobbing extends NPCState {
 		super(sm, name);
 	}
 	
-	@Override
-	public void update(float dt) {
-		childState.update(dt);
-	}
+//	@Override
+//	public void update(float dt) {
+//		childState.update(dt);
+//	}
 
 	@Override
 	public ActionEnum[] getPossibleActions() {
@@ -28,6 +28,8 @@ public class Mobbing extends NPCState {
 
 	@Override
 	public void transistionIn() {
-		
+		if ( childState == null || childState == this) {
+			childState = sm.getState(NPCStateEnum.IDLE);
+		}
 	}
 }

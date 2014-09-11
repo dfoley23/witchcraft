@@ -57,6 +57,10 @@ public class CinematicTrigger extends Entity {
 	}
 
 	@Override
+	public void destroyBody() {
+		GamePlayManager.world.destroyBody(this.collisionBody);
+	}
+	@Override
 	public void handleContact(Contact contact, boolean isFixture1) {
 		destroybody = true;
 		GamePlayManager.setCinematic(this);

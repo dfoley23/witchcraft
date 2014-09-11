@@ -42,6 +42,10 @@ public class DupeSkin extends PlayerState {
 	}
 
 	@Override
+	public void addWindToCape(float dt) {
+	}
+	
+	@Override
 	public void setIdle() {
 		if (time > timeout) {
 			time = 0;

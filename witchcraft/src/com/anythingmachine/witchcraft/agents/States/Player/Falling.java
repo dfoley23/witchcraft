@@ -51,6 +51,7 @@ public class Falling extends SharedState {
 			sm.phyState.body.setY(groundPoint);
 			sm.grounded = true;
 			sm.state.land();
+			transistionToParent();
 		}
 	}
 

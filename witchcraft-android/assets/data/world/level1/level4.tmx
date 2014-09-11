@@ -46,7 +46,7 @@
  </layer>
  <layer name="uninteractable" width="230" height="150">
   <data encoding="base64" compression="zlib">
-   eJzt211OwkAUgNFBXIPvEtfoSvx9w7hRO4HGEUtsnaG3wDnJ92JIbGbmBqg1JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDx7oqAZbjpWnfdpp8zqpggK+dyrfAg6+fyIcWfScFOnkszuZygF30WZS75LfosylzyW/RZlLlk932yFH0WZS6v3eFMZtFnUeaytXP6m/DQTGbRZ1HmsrVzeV7m2EymFH8WZS5b6+fyPsXv6Zj66yxFX5O+o425n2PbTHz9U9dz10vXa/HzUvRZ1PC+UCev55zPl06Zzbeu96Kh/Y8+ixreF+rk9Zz7ue+xs7nt+tj3Wfz88Pq1jGgnr+e5/T/G4fVrGdFOXs9WcznXM+SH169lRDt5PVvM5ZiZPHYfp2b/o8+ihveFOnk9a+dy7Pvksfs4NfsffRY1vC/UyetZM5dTPrtu0/B9nJr9jz6LGt4X6uT1dN9HrfflUj2esKm/J78nrhbSZsZ1kuas9NdrlzSTq/01lbMZvZa6rk6pfP5uTtf0eYfLFP1dQZIkSfpPX4aT7z4=
+   eJzt21tOwkAUgOFBXIPvEtfoSry+YdyonUDjiCW2ztBT4PuS/8VgaGbmhIs1JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDx7oqAZbjpWnfdpp8zqpggK+dyrfAg6+fyIcWfScFOnkszuZygF30WZS75LfosylzyW/RZlLlk93myFH0WZS6v3eFMZtFnUeaytXP6m/DQTGbRZ1HmsrVzuV/m2EymFH8WZS5b6+fyPs2zb7XP0/9+Kfos6jvamPs+ts3Exz91PXe9dL0WPy9Fn0UN7wt18nrOeX/plNl863ovGtr/6LOo4X2hTl7Pue/7Hjub266PfZ/Fzw+vX8uIdvJ6ntv/Yxxev5YR7eT1bDWXc91Dfnj9Wka0k9ezxVyOmclj3+PU7H/0WdTwvlAnr2ftXI59nTz2PU7N/kefRQ3vC3XyetbM5ZT3rts0/D1Ozf5Hn0UN7wt18nr63ket9+VSPZ6wqc+TXxNXC2kz4zpJc1b667FLmsnV/prK2YxeS11Xp1Tefzena3q/w2WK/qwgSZIk/acvKyTvXA==
   </data>
  </layer>
  <layer name="platforms" width="230" height="150">
@@ -73,4 +73,42 @@
    eJzt2jEOwgAMBMEIeAP/fyqpIgrX4I1mJPdX3HU+DgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALin99cBOzzOe573+ncQ4GKXsI9dwj52CfvYJexjl7CPXcI+dgn72CV3VP+XsUvuqN7ren6Y1Htdzw+Teq/r+WFS73U9P0zqva7nh0m91/X8MKn3up4fJvVe1/PDpN7ren6Y1Htdzw+Teq/r+QEAAH7pA3kBAaU=
   </data>
  </layer>
+ <objectgroup name="AINODEMAP" width="230" height="150">
+  <properties>
+   <property name="AINODES" value=""/>
+   <property name="collide" value=""/>
+  </properties>
+  <object name="AINODE" x="8" y="4451" width="3922" height="250">
+   <properties>
+    <property name="set" value="1"/>
+   </properties>
+  </object>
+  <object x="392" y="4636" height="4"/>
+  <object x="540" y="4612" width="16"/>
+  <object name="AINODE" x="1658" y="4324" width="536" height="85">
+   <properties>
+    <property name="set" value="2"/>
+   </properties>
+  </object>
+  <object name="AINODE" x="912" y="4012" width="1209" height="264">
+   <properties>
+    <property name="set" value="3"/>
+   </properties>
+  </object>
+  <object name="AINODE" x="2447" y="3689" width="3036" height="270">
+   <properties>
+    <property name="set" value="3"/>
+   </properties>
+  </object>
+  <object name="AINODE" x="2133" y="3882" width="294" height="391">
+   <properties>
+    <property name="set" value="3"/>
+   </properties>
+  </object>
+  <object name="AINODE" x="3963" y="4428" width="3370" height="265">
+   <properties>
+    <property name="set" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

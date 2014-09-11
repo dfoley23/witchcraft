@@ -197,6 +197,10 @@ public class AnimationManager {
 	public Bone getRoot() {
 		return root;
 	}
+	
+	public Bone getBone(String name) {
+		return skel.findBone(name);
+	}
 
 	public Vector2 getScale() {
 		return new Vector2(root.getScaleX(), root.getScaleY());

@@ -89,6 +89,9 @@ public class Entity extends Object {
 		
 	}
 
+	public void destroyBody() {
+		
+	}
 	/**
 	 * agent functions
 	 */

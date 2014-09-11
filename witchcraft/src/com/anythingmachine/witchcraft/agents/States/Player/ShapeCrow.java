@@ -52,11 +52,7 @@ public class ShapeCrow extends PlayerState {
 		
 		sm.phyState.correctCBody(32, 70, 0);
 
-		time += dt;
-		if (time > timeout) {
-			time = 0;
-			sm.setState(PlayerStateEnum.FALLING);
-		}
+		updatePower(dt);
 	}
 
 	@Override
@@ -129,6 +125,20 @@ public class ShapeCrow extends PlayerState {
 	public void usePower() {
 	}
 
+	@Override
+	public void setState(PlayerStateEnum newstate) {
+		sm.setState(newstate);
+	}
+
+	@Override
+	public void updatePower(float dt) {
+		time += dt;
+		if (time > timeout) {
+			time = 0;
+			sm.setState(PlayerStateEnum.FALLING);
+		}
+	}
+	
 	@Override
 	public void nextPower() {
 

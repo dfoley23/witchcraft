@@ -34,7 +34,7 @@ public class Attacking extends PlayerState {
 				if (!shotArrow && sm.animate.isTImeOverThreeQuarters(0f)) {
 					arrow.setPos(arrowBone.getWorldX() + (sm.facingleft ? -128 : 128),
 							arrowBone.getWorldY(), 0);
-					arrow.pointAtTarget(Util.addVecs(sm.phyState.body.getPos(), sm.facingleft ? -100 : 100, 0), 650);
+					arrow.pointAtTarget(Util.addVecs(sm.phyState.body.getPos(), sm.facingleft ? -100 : 100, 0), 650, 0);
 					shotArrow = true;
 				}
 			}

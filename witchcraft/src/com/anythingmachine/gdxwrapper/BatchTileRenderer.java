@@ -88,6 +88,7 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 		boolean drewPlayer = false;
 		beginRender();
 		for (MapLayer layer : map.getLayers()) {
+		    if ( !layer.getName().equals("AINODEMAP") ) {
 			if ( !drewBG && layer.getProperties().containsKey("bg") ) {
 				drewBG = true;
 				main.drawBackGround(spriteBatch);
@@ -99,6 +100,7 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 			if (layer.isVisible()) {
 					renderTileLayer((TiledMapTileLayer)layer);
 			}
+		    }
 		}
 		endRender();
 	}

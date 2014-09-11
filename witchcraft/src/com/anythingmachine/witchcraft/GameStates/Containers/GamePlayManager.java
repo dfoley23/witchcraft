@@ -18,6 +18,7 @@ import com.anythingmachine.cinematics.actions.ParticleToGamePlay;
 import com.anythingmachine.cinematics.actions.StartParticle;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.collisionEngine.MyContactListener;
+import com.anythingmachine.collisionEngine.ground.Stairs;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.CrowEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.FireEmitter;
@@ -28,6 +29,7 @@ import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Screen;
 import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.States.Player.PlayerStateEnum;
 import com.anythingmachine.witchcraft.agents.npcs.NPCStaticAnimation;
 import com.anythingmachine.witchcraft.agents.npcs.NPCType;
@@ -35,7 +37,6 @@ import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -45,8 +46,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 public class GamePlayManager extends Screen {
 	public static Player player;
@@ -67,7 +70,8 @@ public class GamePlayManager extends Screen {
 	private static ArrayList<CinematicTrigger> triggers;
 	private static CinematicTrigger cinema;
 	private static CinematicTrigger sleepCinematic;
-	private static StorySegment storySegment = StorySegment.BEGINNING;
+	private static StorySegment storySegment =
+	StorySegment.BEGINNING;
 	private Color dayColor;
 	public static float windx;
 	private float windtimeout = 1.5f;
@@ -78,8 +82,11 @@ public class GamePlayManager extends Screen {
 
 	// test fields
 	private Box2DDebugRenderer debugRenderer;
+	// npcs run throughout the game
 	private static ArrayList<NonPlayer> npcs;
+	//foreground entities are cleared each level
 	private static ArrayList<Entity> entities;
+	//background entities are cleared each level
 	private static ArrayList<Entity> bgentities;
 
 	public enum StorySegment {
@@ -100,33 +107,41 @@ public class GamePlayManager extends Screen {
 		rand = new Random();
 
 		shapeRenderer = new ShapeRenderer();
-			
+
 		contactListener = new MyContactListener();
 		world = new World(new Vector2(0.0f, 0.0f), false);
 		world.setContactListener(contactListener);
 
-		FileHandle handle = Gdx.files.internal("data/levelstate.txt");
-		String[] fileContent = handle.readString().split("\n");
+		FileHandle handle =
+		Gdx.files.internal("data/levelstate.txt");
+		String[] fileContent =
+		handle.readString().split("\n");
 
 		currentlevel = Integer.parseInt(fileContent[3]) - 1;
-		//debug set level
-//		if( Util.DEV_MODE ) 
+		// debug set level
+		// if( Util.DEV_MODE )
 		currentlevel = 3;
 		level = currentlevel;
-		
-		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
-				new InternalFileHandleResolver()));
-		WitchCraft.assetManager.load("data/world/level1/level"
-				+ (currentlevel + 1) + ".tmx", TiledMap.class);
+
+		WitchCraft.assetManager.setLoader(TiledMap.class,
+			new TmxMapLoader(
+			new InternalFileHandleResolver()));
+		WitchCraft.assetManager.load(
+			"data/world/level1/level"
+			+ (currentlevel + 1)
+			+ ".tmx", TiledMap.class);
 		WitchCraft.assetManager.finishLoading();
 
 		tiledMapHelper = new TiledMapHelper();
-		tiledMapHelper.loadMap("level" + (currentlevel + 1));
-		tiledMapHelper.prepareCamera(WitchCraft.screenWidth,
-				WitchCraft.screenHeight);
+		tiledMapHelper
+		.loadMap("level" + (currentlevel + 1));
+		tiledMapHelper
+		.prepareCamera(WitchCraft.screenWidth,
+			WitchCraft.screenHeight);
 
-		tiledMapHelper.loadCollisions("data/collisions.txt", world,
-				Util.PIXELS_PER_METER, currentlevel + 1);
+		tiledMapHelper.loadCollisions(
+			"data/collisions.txt", world,
+			Util.PIXELS_PER_METER, currentlevel + 1);
 
 		debugRenderer = new Box2DDebugRenderer();
 		// ground = new Ground(world);
@@ -146,18 +161,18 @@ public class GamePlayManager extends Screen {
 		bgentities = new ArrayList<Entity>();
 		player = new Player(rk4, new Vector2(256f, 128f));
 		npcs = new ArrayList<NonPlayer>();
-		npcs.add(new NonPlayer("knight1", new Vector2(354.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/knights/fredknight",
-				NPCType.KNIGHT));
-		npcs.add(new NonPlayer("knight1", new Vector2(800.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/knights/joeknight",
-				NPCType.KNIGHT));
-		npcs.add(new NonPlayer("archer", new Vector2(3000.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/other/pimlyarcher",
-				NPCType.ARCHER));
-		npcs.add(new NonPlayer("archer", new Vector2(300.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/other/joearcher",
-				NPCType.ARCHER));
+		npcs.add(new NonPlayer("knight1", new Vector2(
+		354.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/knights/fredknight", NPCType.KNIGHT));
+		npcs.add(new NonPlayer("knight1", new Vector2(
+		800.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/knights/joeknight", NPCType.KNIGHT));
+		npcs.add(new NonPlayer("archer", new Vector2(
+		3000.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/other/pimlyarcher", NPCType.ARCHER));
+		npcs.add(new NonPlayer("archer", new Vector2(
+		300.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/other/joearcher", NPCType.ARCHER));
 
 		// cloudE = new CloudEmitter(25);
 		crowE = new CrowEmitter(1);
@@ -220,16 +235,20 @@ public class GamePlayManager extends Screen {
 		crowE.update(dt);
 
 		Vector3 playerPos = player.getPosPixels();
-		Camera.updateState(playerPos, levels.get(currentlevel));
+		Camera.updateState(playerPos,
+			levels.get(currentlevel));
 		xGrid = Camera.camera.position.x;
 		float yGrid = Camera.camera.position.y;
-		if (xGrid < WitchCraft.screenWidth * (WitchCraft.scale)) {
-			xGrid = Camera.camera.position.x = WitchCraft.screenWidth
-					* (WitchCraft.scale);
+		if (xGrid < WitchCraft.screenWidth
+		* (WitchCraft.scale)) {
+			xGrid =
+			Camera.camera.position.x =
+			WitchCraft.screenWidth * (WitchCraft.scale);
 		}
-		if (yGrid < WitchCraft.screenHeight * (WitchCraft.scale)) {
-			Camera.camera.position.y = WitchCraft.screenHeight
-					* (WitchCraft.scale);
+		if (yGrid < WitchCraft.screenHeight
+		* (WitchCraft.scale)) {
+			Camera.camera.position.y =
+			WitchCraft.screenHeight * (WitchCraft.scale);
 		}
 
 	}
@@ -239,68 +258,8 @@ public class GamePlayManager extends Screen {
 		windx = 0;
 		if (windtimeout > 0) {
 			windx = rand.nextInt(1500);
-			if ( windx < 1100 ) {
+			if (windx < 1100) {
 				windx = 0;
-			}
-//			if (windx > 720) 
-			{
-				// if ( windx > 1480 && soundtimeout < 1f) {
-				// // GamePlayManager.currentsound.stop();
-				// // GamePlayManager.currentsound = (Sound)
-				// WitchCraft.assetManager.get("data/sounds/wind.wav");
-				// // GamePlayManager.currentsound.play(0.5f);
-//				WitchCraft.playSound("data/sounds/frogs.ogg");
-				// byte[] buf = new byte[ 1 ];;
-				// AudioFormat af = new AudioFormat( (float )44100, 8, 1, true,
-				// false );
-				// try {
-				// SourceDataLine sdl = AudioSystem.getSourceDataLine( af );
-				// sdl = AudioSystem.getSourceDataLine( af );
-				// sdl.open( af );
-				// sdl.start();
-				// for( int i = 0; i < 1000 * (float )44100 / 1000; i++ ) {
-				// double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
-				// buf[ 0 ] = (byte )( Math.sin( angle ) * 100 );
-				// sdl.write( buf, 0, 1 );
-				// }
-				// sdl.drain();
-				// sdl.stop();
-				// sdl.close();
-				// } catch(Exception e) {
-				//
-				// }
-				// }
-				// windx = 0;
-				// } else {
-				// if ( GamePlayManager.currentlevel < 2 && soundtimeout < 0) {
-				// // GamePlayManager.currentsound.stop();
-				// // GamePlayManager.currentsound = (Sound)
-				// WitchCraft.assetManager.get("data/sounds/crickets.ogg");
-				// // GamePlayManager.currentsound.play(0.5f);
-				// byte[] buf = new byte[ 1 ];;
-				// AudioFormat af = new AudioFormat( (float )44100, 8, 1, true,
-				// false );
-				// try {
-				// SourceDataLine sdl = AudioSystem.getSourceDataLine( af );
-				// sdl = AudioSystem.getSourceDataLine( af );
-				// sdl.open( af );
-				// sdl.start();
-				// for( int i = 0; i < 1000 * (float )44100 / 1000; i++ ) {
-				// double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
-				// buf[ 0 ] = (byte )( Math.sin( angle ) * 100 );
-				// sdl.write( buf, 0, 1 );
-				// }
-				// sdl.drain();
-				// sdl.stop();
-				// sdl.close();
-				// } catch(Exception e) {
-				//
-				// }
-				//
-				// soundtimeout = 2.5f;
-				// } else {
-				// soundtimeout-=dt;
-				// }
 			}
 		} else if (windtimeout < -1) {
 			windtimeout = 1.5f;
@@ -312,15 +271,18 @@ public class GamePlayManager extends Screen {
 	public void draw(Batch batch) {
 		if (!initworld) {
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-			Gdx.gl.glClearColor(dayColor.r, dayColor.g, dayColor.b, 1f);
+			Gdx.gl.glClearColor(dayColor.r, dayColor.g,
+				dayColor.b, 1f);
 
 			tiledMapHelper.render(this);
 			batch.begin();
 			player.drawUI(batch);
 			batch.end();
 			if (Util.DEV_MODE)
-				debugRenderer.render(world, Camera.camera.combined.scale(
-						Util.PIXELS_PER_METER, Util.PIXELS_PER_METER,
+				debugRenderer.render(world,
+					Camera.camera.combined.scale(
+						Util.PIXELS_PER_METER,
+						Util.PIXELS_PER_METER,
 						Util.PIXELS_PER_METER));
 		}
 	}
@@ -344,7 +306,8 @@ public class GamePlayManager extends Screen {
 		for (NonPlayer npc : npcs) {
 			npc.draw(batch);
 			if (npc.getPosPixels().y < 0) {
-				System.out.println(npc.toString() + npc.npctype);
+				System.out.println(npc.toString()
+				+ npc.npctype);
 			}
 		}
 		// npc2.draw(batch);
@@ -367,8 +330,10 @@ public class GamePlayManager extends Screen {
 
 	public Color getTimeOfDay() {
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		float val = Math.min(hour > 12 ? 1 - ((float) (hour - 12) / 8f)
-				: ((float) (hour - 4) / 8f), 0.9f);
+		float val =
+		Math.min(hour > 12
+		? 1 - ((float) (hour - 12) / 8f)
+		: ((float) (hour - 4) / 8f), 0.9f);
 		hour = hour > 19 || hour < 5 ? 0 : hour;
 		// System.out.println(hour+" : "+val);
 		return new Color(val, val, val, 1);
@@ -377,19 +342,24 @@ public class GamePlayManager extends Screen {
 	public static void switchLevel(int l) {
 		oldlevel = currentlevel;
 
-		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
-				new InternalFileHandleResolver()));
-		WitchCraft.assetManager.unload("data/world/level1/level"
-				+ (oldlevel + 1) + ".tmx");
-		WitchCraft.assetManager.load("data/world/level1/level" + (l) + ".tmx",
-				TiledMap.class);
+		WitchCraft.assetManager.setLoader(TiledMap.class,
+			new TmxMapLoader(
+			new InternalFileHandleResolver()));
+		WitchCraft.assetManager
+		.unload("data/world/level1/level"
+		+ (oldlevel + 1)
+		+ ".tmx");
+		WitchCraft.assetManager.load(
+			"data/world/level1/level" + (l) + ".tmx",
+			TiledMap.class);
 		WitchCraft.assetManager.finishLoading();
 
 		String levelstr = "level" + l;
 		tiledMapHelper.destroyMap();
 		tiledMapHelper.loadMap(levelstr);
-		tiledMapHelper.loadCollisions("data/collisions.txt", world,
-				Util.PIXELS_PER_METER, l);
+		tiledMapHelper.loadCollisions(
+			"data/collisions.txt", world,
+			Util.PIXELS_PER_METER, l);
 
 		// if level is a new level number
 		// if its negative its the same level
@@ -429,21 +399,27 @@ public class GamePlayManager extends Screen {
 	public void transistionIn() {
 
 		oldlevel = currentlevel + 1;
-		WitchCraft.assetManager.setLoader(TiledMap.class, new TmxMapLoader(
-				new InternalFileHandleResolver()));
-		WitchCraft.assetManager.load("data/world/level1/level"
-				+ (currentlevel + 1) + ".tmx", TiledMap.class);
+		WitchCraft.assetManager.setLoader(TiledMap.class,
+			new TmxMapLoader(
+			new InternalFileHandleResolver()));
+		WitchCraft.assetManager.load(
+			"data/world/level1/level"
+			+ (currentlevel + 1)
+			+ ".tmx", TiledMap.class);
 		WitchCraft.assetManager.finishLoading();
 
 		tiledMapHelper.destroyMap();
 
 		tiledMapHelper = new TiledMapHelper();
-		tiledMapHelper.loadMap("level" + (currentlevel + 1));
-		tiledMapHelper.prepareCamera(WitchCraft.screenWidth,
-				WitchCraft.screenHeight);
+		tiledMapHelper
+		.loadMap("level" + (currentlevel + 1));
+		tiledMapHelper
+		.prepareCamera(WitchCraft.screenWidth,
+			WitchCraft.screenHeight);
 
-		tiledMapHelper.loadCollisions("data/collisions.txt", world,
-				Util.PIXELS_PER_METER, currentlevel + 1);
+		tiledMapHelper.loadCollisions(
+			"data/collisions.txt", world,
+			Util.PIXELS_PER_METER, currentlevel + 1);
 
 		player.setState(PlayerStateEnum.LOADINGSTATE);
 		while (initworld) {
@@ -457,195 +433,271 @@ public class GamePlayManager extends Screen {
 	}
 
 	public static void level1() {
+		for (CinematicTrigger ct : triggers) {
+			ct.destroyBody();
+		}
+		for (Entity e : entities) {
+			e.destroyBody();
+		}
+		for (Entity e : bgentities) {
+			e.destroyBody();
+		}
 		triggers.clear();
 		entities.clear();
 		bgentities.clear();
-		
 
-		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(1772,
-				80, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller1", "data/spine/characters"));
-		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(4900,
-				80, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller2", "data/spine/characters"));
+		bgentities.add(new NPCStaticAnimation(
+		"treedweller", new Vector3(1772, 80, 0),
+		new Vector2(1.2f, 0.95f),
+		"data/npcdata/static/treedweller1",
+		"data/spine/characters"));
+		bgentities.add(new NPCStaticAnimation(
+		"treedweller", new Vector3(4900, 80, 0),
+		new Vector2(1.2f, 0.95f),
+		"data/npcdata/static/treedweller2",
+		"data/spine/characters"));
 
 		WitchCraft.stopMusic();
 		WitchCraft.playMusic("data/sounds/frogs.ogg");
 	}
 
 	public static void level2() {
+		for (CinematicTrigger ct : triggers) {
+			ct.destroyBody();
+		}
+		for (Entity e : entities) {
+			e.destroyBody();
+		}
+		for (Entity e : bgentities) {
+			e.destroyBody();
+		}
 		triggers.clear();
 		entities.clear();
 		bgentities.clear();
 
-		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(2772,
-				80, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller1", "data/spine/characters"));
-		bgentities.add(new NPCStaticAnimation("treedweller", new Vector3(3699,
-				50, 0), new Vector2(1.2f, 0.95f),
-				"data/npcdata/static/treedweller3", "data/spine/characters"));
+		bgentities.add(new NPCStaticAnimation(
+		"treedweller", new Vector3(2772, 80, 0),
+		new Vector2(1.2f, 0.95f),
+		"data/npcdata/static/treedweller1",
+		"data/spine/characters"));
+		bgentities.add(new NPCStaticAnimation(
+		"treedweller", new Vector3(3699, 50, 0),
+		new Vector2(1.2f, 0.95f),
+		"data/npcdata/static/treedweller3",
+		"data/spine/characters"));
 
-		entities.add(new NPCStaticAnimation("ox", new Vector3(5696,
-				212, 0), new Vector2(1.2f,1.2f),
-				"data/npcdata/static/idle_ox_1", "data/spine/animals"));
+		entities.add(new NPCStaticAnimation("ox",
+		new Vector3(5696, 212, 0), new Vector2(1.2f, 1.2f),
+		"data/npcdata/static/idle_ox_1",
+		"data/spine/animals"));
 
-		//		WitchCraft.stopMusic();
-//		WitchCraft.playMusic("data/sounds/ambient.ogg");
+		// WitchCraft.stopMusic();
+		// WitchCraft.playMusic("data/sounds/ambient.ogg");
 	}
 
 	public static void level3() {
+		for (CinematicTrigger ct : triggers) {
+			ct.destroyBody();
+		}
+		for (Entity e : entities) {
+			e.destroyBody();
+		}
+		for (Entity e : bgentities) {
+			e.destroyBody();
+		}
 		triggers.clear();
 		entities.clear();
 		bgentities.clear();
 
-		entities.add(new NPCStaticAnimation("tiedwitch", new Vector3(3489, 350,
-				0), new Vector2(0.75f, 0.8f), "data/npcdata/static/tiedwitch", "data/spine/characters"));
+		entities.add(new NPCStaticAnimation("tiedwitch",
+		new Vector3(3489, 350, 0),
+		new Vector2(0.75f, 0.8f),
+		"data/npcdata/static/tiedwitch",
+		"data/spine/characters"));
 
-		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/civs/billciv",
-				NPCType.CIV));
-		entities.add(new NonPlayer("civ_female", new Vector2(5500.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/civs/saraciv",
-				NPCType.CIV));
-		
-		entities.add(new NPCStaticAnimation("shackledmale1", new Vector3(1696,
-				118, 0), new Vector2(0.75f, 0.8f),
-				"data/npcdata/static/shackledfred", "data/spine/characters"));
+		entities.add(new NonPlayer("civ_male", new Vector2(
+		4250.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/civs/billciv", NPCType.CIV));
+		entities.add(new NonPlayer("civ_female",
+		new Vector2(5500.0f, 100.0f), new Vector2(0.6f,
+		0.7f), "data/npcdata/civs/saraciv", NPCType.CIV));
 
-		bgentities.add(new Particle(new Vector3(4604, 620, 0)));
-		bgentities.add(new AnimatedSpringParticle("tiedwitch", new Vector3(
-				4607, 524, 0), new Vector2(0.75f, 0.8f),
-				"data/npcdata/static/hungwitch").addRope(
-				(Particle) bgentities.get(0), 400, 100, 1.9f).setMass(20)); 
+		entities.add(new NPCStaticAnimation(
+		"shackledmale1", new Vector3(5824, 118, 0),
+		new Vector2(0.75f, 0.8f),
+		"data/npcdata/static/shackledfred",
+		"data/spine/characters"));
+
+		bgentities.add(new Particle(new Vector3(4604, 620,
+		0)));
+		bgentities.add(new AnimatedSpringParticle(
+		"tiedwitch", new Vector3(4607, 524, 0),
+		new Vector2(0.75f, 0.8f),
+		"data/npcdata/static/hungwitch")
+		.addRope((Particle) bgentities.get(0), 400, 300,
+			7f)
+		.setMass(20));
 		bgentities.get(1).setStable(true);
 
 		switch (storySegment) {
 		case BEGINNING:
 			// burn witch
-			triggers.add(new CinematicTrigger()
-					.addAction(
-							new Lerp(WitchCraft.cam, 0.0f, 0.005f, new Vector3(
-									3150 + WitchCraft.screenWidth * 0.5f, 0, 0)))
-					.addAction(new FaceLeft(entities.get(1), 0.0f, true))
-					.addAction(
-							new AnimateTimed("WALKING", entities.get(1),
-									3.0f, 6.3f, true))
-					.addAction(
-							new AnimateTimed("CLEANING",
-									entities.get(1), 8.0f, 10.0f, true))					
-					.addAction(
-							new ParticleToGamePlay(
-									8.7f,
-									new FireEmitter(
-											new Vector3(
-													2770 + WitchCraft.screenWidth * 0.5f,
-													170, 0), 15, 0.7f, 4.1f,
-											1.4f, 2.1f), 1))
-					.addAction(
-							new ParticleToGamePlay(
-									9.7f,
-									new FireEmitter(
-											new Vector3(
-													2787 + WitchCraft.screenWidth * 0.5f,
-													170, 0), 15, 2.2f, 4.0f,
-											3.6f, 2.6f), 1))
-					.addAction(
-							new ParticleToGamePlay(
-									10.7f,
-									new FireEmitter(
-											new Vector3(
-													2787 + WitchCraft.screenWidth * 0.5f,
-													257, 0), 100, 3.7f, 60.0f,
-											6.4f, 1.3f), 1))
-					.addAction(
-							new ParticleToGamePlay(
-									10.9f,
-									new FireEmitter(
-											new Vector3(
-													2714 + WitchCraft.screenWidth * 0.5f,
-													205, 0), 20, 1.7f, 60.0f,
-											4.4f, 2.3f), 0))
-					.addAction(
-							new ParticleToGamePlay(
-									10.9f,
-									new FireEmitter(
-											new Vector3(
-													2857 + WitchCraft.screenWidth * 0.5f,
-													205, 0), 20, 1.7f, 60.0f,
-											4.4f, 2.3f), 0))
-//					.addAction(
-//							new ParticleToGamePlay(
-//									13.7f,
-//									new SmokeEmitter(
-//											new Vector3(
-//													2770 + WitchCraft.screenWidth * 0.5f,
-//													500, 0), 20, 4.5f, 56.0f,
-//											5f, 3f), 1))
-					.addAction(new FaceLeft(entities.get(5), 11.5f, false))
-					.addAction(
-							new AnimateTimed("WALKING", entities.get(5),
-									12.0f, 14.7f, true))
-					.addAction(new FaceLeft(entities.get(5), 14.9f, true))
-					.addAction(new FaceLeft(entities.get(5), 18.7f, false))
-					.addAction(
-							new AnimateTimed("WALKING", entities.get(5),
-									19.0f, 24.0f, true))
-					.addAction(
-							new Lerp(WitchCraft.cam, 22.0f, 0.01f, new Vector3(
-									2500, 0, 0))).buildBody(2850, 1100, 8, 1000));
+			triggers
+			.add(new CinematicTrigger()
+			.addAction(
+				new Lerp(WitchCraft.cam, 0.0f, 0.005f,
+				new Vector3(
+				3150 + WitchCraft.screenWidth * 0.5f, 0, 0)))
+			.addAction(
+				new FaceLeft(entities.get(1), 0.0f, true))
+			.addAction(
+				new AnimateTimed("TORCHMOBBING", entities
+				.get(1), 3.0f, 6.3f, true))
+			.addAction(
+				new AnimateTimed("CLEANING", entities
+				.get(1), 8.0f, 10.0f, true))
+			.addAction(
+				new ParticleToGamePlay(8.7f,
+				new FireEmitter(new Vector3(
+				2770 + WitchCraft.screenWidth * 0.5f, 170,
+				0), 15, 0.7f, 4.1f, false, 1.4f, 2.1f, 10,
+				Util.FIRESPEED), 1))
+			.addAction(
+				new ParticleToGamePlay(9.7f,
+				new FireEmitter(new Vector3(
+				2787 + WitchCraft.screenWidth * 0.5f, 170,
+				0), 15, 2.2f, 4.0f, false, 3.6f, 2.6f, 10,
+				Util.FIRESPEED), 1))
+			.addAction(
+				new ParticleToGamePlay(10.7f,
+				new FireEmitter(new Vector3(
+				2787 + WitchCraft.screenWidth * 0.5f, 257,
+				0), 100, 3.7f, 60.0f, false, 6.4f, 1.3f,
+				10, Util.FIRESPEED), 1))
+			.addAction(
+				new ParticleToGamePlay(10.9f,
+				new FireEmitter(new Vector3(
+				2714 + WitchCraft.screenWidth * 0.5f, 205,
+				0), 20, 1.7f, 60.0f, false, 4.4f, 2.3f, 10,
+				Util.FIRESPEED), 0))
+			.addAction(
+				new ParticleToGamePlay(10.9f,
+				new FireEmitter(new Vector3(
+				2857 + WitchCraft.screenWidth * 0.5f, 205,
+				0), 20, 1.7f, 60.0f, false, 4.4f, 2.3f, 10,
+				Util.FIRESPEED), 0))
+			// .addAction(
+			// new ParticleToGamePlay(
+			// 13.7f,
+			// new SmokeEmitter(
+			// new Vector3(
+			// 2770 + WitchCraft.screenWidth * 0.5f,
+			// 500, 0), 20, 4.5f, 56.0f,
+			// 5f, 3f), 1))
+			.addAction(
+				new FaceLeft(entities.get(5), 11.5f, false))
+			.addAction(
+				new AnimateTimed("WALKING",
+				entities.get(5), 12.0f, 14.7f, true))
+			.addAction(
+				new FaceLeft(entities.get(5), 14.9f, true))
+			.addAction(
+				new FaceLeft(entities.get(5), 18.7f, false))
+			.addAction(
+				new AnimateTimed("WALKING",
+				entities.get(5), 19.0f, 24.0f, true))
+			.addAction(
+				new Lerp(WitchCraft.cam, 22.0f, 0.01f,
+				new Vector3(2500, 0, 0)))
+			.buildBody(2850, 1100, 8, 1000));
 			// hang witch
-			triggers.add(new CinematicTrigger().addAction(
-					new StartParticle(0.0f, bgentities.get(1)))
-					.addAction(new AnimateTimed("swing2", bgentities.get(1), 5.0f, 5.7f, true))
-					.addAction(new AnimateTimed("blink", bgentities.get(1), 7.0f, 7.7f, false))
-					.buildBody(4200,
-					1100, 8, 1000));
+			triggers.add(new CinematicTrigger()
+			.addAction(
+				new StartParticle(0.0f, bgentities.get(1)))
+			.addAction(
+				new AnimateTimed("swing2", bgentities
+				.get(1), 5.0f, 5.7f, true))
+			.addAction(
+				new AnimateTimed("blink",
+				bgentities.get(1), 7.0f, 7.7f, false))
+			.buildBody(4200, 1100, 8, 1000));
 			break;
 		case POSTINTRODUCTION:
 			break;
 		default:
 			break;
 		}
+		storySegment = StorySegment.POSTINTRODUCTION;
 		WitchCraft.stopMusic();
 		WitchCraft.playMusic("data/sounds/ambient.ogg");
 
 	}
 
 	public static void level4() {
+		for (CinematicTrigger ct : triggers) {
+			ct.destroyBody();
+		}
+		for (Entity e : entities) {
+			e.destroyBody();
+		}
+		for (Entity e : bgentities) {
+			e.destroyBody();
+		}
 		triggers.clear();
 		entities.clear();
 		bgentities.clear();
 
-		entities.add(new NonPlayer("archer", new Vector2(920.0f, 500.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/other/tower_archer1",
-				NPCType.ARCHER));
+		entities
+		.add(new NonPlayer("archer", new Vector2(920.0f,
+		500.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/other/tower_archer1", NPCType.ARCHER));
 		entities.get(0).faceLeft(true);
-		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/civs/tempMale4",
-				NPCType.CIV));
-		entities.add(new NonPlayer("civ_female", new Vector2(5500.0f, 100.0f),
-				new Vector2(0.6f, 0.7f), "data/npcdata/civs/tempFemale4",
-				NPCType.CIV));
-		entities.add(new NonPlayer("knight1", new Vector2(354.0f, 100.0f),
-				new Vector2(0.8f, 0.9f), "data/npcdata/knights/fredknight",
-				NPCType.KNIGHT));
-		entities.add(new NonPlayer("knight1", new Vector2(800.0f, 100.0f),
-				new Vector2(0.7f, 0.7f), "data/npcdata/knights/joeknight",
-				NPCType.KNIGHT));
-		entities.add(new NonPlayer("archer", new Vector2(3000.0f, 100.0f),
-				new Vector2(0.6f, 0.6f), "data/npcdata/other/pimlyarcher",
-				NPCType.ARCHER));
-		entities.add(new NonPlayer("archer", new Vector2(300.0f, 100.0f),
-				new Vector2(0.64f, 0.9f), "data/npcdata/other/joearcher",
-				NPCType.ARCHER));
-		entities.add(new NonPlayer("civ_male", new Vector2(4250.0f, 100.0f),
-				new Vector2(0.77f, 0.6f), "data/npcdata/civs/tempMale4",
-				NPCType.CIV));
-		entities.add(new NonPlayer("civ_female", new Vector2(6500.0f, 100.0f),
-				new Vector2(0.5f, 0.5f), "data/npcdata/civs/tempFemale4",
-				NPCType.CIV));
+		entities.add(new NonPlayer("civ_male", new Vector2(
+		4250.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/civs/tempMale4", NPCType.CIV));
+		entities
+		.add(new NonPlayer("civ_female", new Vector2(
+		5500.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/civs/tempFemale4", NPCType.CIV));
+		entities.add(new NonPlayer("knight1", new Vector2(
+		354.0f, 100.0f), new Vector2(0.8f, 0.9f),
+		"data/npcdata/knights/fredknight", NPCType.KNIGHT));
+		entities.add(new NonPlayer("knight1", new Vector2(
+		800.0f, 100.0f), new Vector2(0.7f, 0.7f),
+		"data/npcdata/knights/joeknight", NPCType.KNIGHT));
+		entities.add(new NonPlayer("archer", new Vector2(
+		3000.0f, 100.0f), new Vector2(0.6f, 0.6f),
+		"data/npcdata/other/pimlyarcher", NPCType.ARCHER));
+		entities.add(new NonPlayer("archer", new Vector2(
+		300.0f, 100.0f), new Vector2(0.64f, 0.9f),
+		"data/npcdata/other/joearcher", NPCType.ARCHER));
+		entities.add(new NonPlayer("civ_male", new Vector2(
+		4250.0f, 100.0f), new Vector2(0.77f, 0.6f),
+		"data/npcdata/civs/tempMale4", NPCType.CIV));
+		entities
+		.add(new NonPlayer("civ_female", new Vector2(
+		6500.0f, 100.0f), new Vector2(0.5f, 0.5f),
+		"data/npcdata/civs/tempFemale4", NPCType.CIV));
 		WitchCraft.stopMusic();
-//		WitchCraft.playMusic("data/sounds/ambient.ogg");
+		// WitchCraft.playMusic("data/sounds/ambient.ogg");
+		Array<Body> bodies = new Array<Body>();// [GamePlayManager.world.getBodyCount()];
+		GamePlayManager.world.getBodies(bodies);
+		for (Body b : bodies) {
+			if (b.getUserData() instanceof Entity) {
+				Entity e = (Entity) b.getUserData();
+				if (e.type == EntityType.STAIRS) {
+					float posx = e.getPos().x;
+					float posy = e.getPos().y;
+					if (posx > 1695
+					&& posx < 1697
+					&& posy > 511
+					&& posy < 513) {
+						Stairs stairs = (Stairs) e;
+						stairs.holdDownToWalkDown();
+					}
+				}
+			}
+		}
 
 	}
 

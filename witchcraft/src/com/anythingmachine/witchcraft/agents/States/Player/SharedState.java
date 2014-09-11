@@ -1,6 +1,7 @@
 package com.anythingmachine.witchcraft.agents.States.Player;
 
 import com.anythingmachine.aiengine.PlayerStateMachine;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 
 public class SharedState extends PlayerState {
@@ -15,7 +16,21 @@ public class SharedState extends PlayerState {
 			parent = sm.getState(PlayerStateEnum.IDLE);
 		parent.drawCape(cam);
 	}
-		
+
+	@Override
+	public void draw(Batch batch) {
+		if ( parent.name == this.name) 
+			parent = sm.getState(PlayerStateEnum.IDLE);
+		parent.draw(batch);
+	}
+
+	@Override
+	public void addWindToCape(float dt) {
+		if ( parent.name == this.name) 
+			parent = sm.getState(PlayerStateEnum.IDLE);
+		parent.addWindToCape(dt);		
+	}
+	
 	@Override
 	public void usePower() {
 		if ( parent.name == this.name) 

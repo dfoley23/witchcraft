@@ -21,7 +21,7 @@ public class Alarmed extends NPCState {
 	@Override
 	public void checkAttack() {
 		sm.canseeplayer = sm.facingleft == GamePlayManager.player.getX() < sm.phyState.body
-				.getX();
+				.getX() && sm.currentNode.getSet() == GamePlayManager.player.getAINode().getSet();
 		if (sm.canseeplayer) {
 			if (GamePlayManager.player.inAlert()) {
 				if (sm.onscreen) {

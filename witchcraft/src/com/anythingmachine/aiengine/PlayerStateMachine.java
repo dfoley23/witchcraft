@@ -23,6 +23,7 @@ public class PlayerStateMachine extends StateMachine {
 	public PlayerStateEnum power;
 	public GamePlayUI playerInterface;
 	public float uiFadein;
+	public AINode currentNode;
 
 	public Bone neck;
 	public int curGroundSegment;
@@ -43,6 +44,7 @@ public class PlayerStateMachine extends StateMachine {
 		neck = animate.findBone("neck");
 		dupeSkin = "";
 		power = PlayerStateEnum.MINDCONTROLPOWER;
+		currentNode = new AINode(1);
 
 		rand = new Random();
 

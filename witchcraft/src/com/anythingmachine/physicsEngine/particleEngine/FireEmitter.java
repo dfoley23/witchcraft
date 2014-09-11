@@ -19,35 +19,41 @@ public class FireEmitter extends Entity {
 	private float beginScale;
 	private float endScale;
 	private float particleLifetime;
+	private boolean loop;
 	private boolean addParticle = true;
+	private int xvelRange;
+	private float yvel;
 	
 	public FireEmitter(Vector3 pos, int limit, float particleLifetime,
-			float lifetime, float startScale, float endScale) {
+			float lifetime, boolean loop, float startScale, float endScale, int xvelRange, float yvel) {
 		this.particleLifetime = particleLifetime;
 		this.beginScale = startScale;
 		this.endScale = endScale;
 		this.limit = limit;
 		this.initPos = pos;
 		this.lifetime = lifetime;
+		this.loop = loop;
+		this.yvel = yvel;
+		this.xvelRange = xvelRange;
 		fires = new ArrayList<FireParticle>();
 		rand = new Random();
-		int xvel = rand.nextInt(10) + 1;
+		int xvel = rand.nextInt(xvelRange) + 1;
 		if (rand.nextBoolean()) {
 			xvel *= -1;
 		}
 		fires.add(new FireParticle(initPos, (Math.max(0.56f, rand.nextFloat()))*particleLifetime, startScale,
-					endScale, xvel, Util.FIRESPEED));
+					endScale, xvel, yvel));
 	}
 
 	@Override
 	public void update(float dt) {
 		if ( addParticle && fires.size() < limit ) {
-			int xvel = rand.nextInt(10) + 1;
+			int xvel = rand.nextInt(xvelRange) + 1;
 			if (rand.nextBoolean()) {
 				xvel *= -1;
 			}
 			fires.add(new FireParticle(initPos, (Math.max(0.56f, rand.nextFloat()))*particleLifetime, beginScale,
-					endScale, xvel, Util.FIRESPEED));
+					endScale, xvel, yvel));
 			addParticle = false;
 		} else {
 			addParticle = true;
@@ -55,11 +61,11 @@ public class FireEmitter extends Entity {
 		for (FireParticle f : fires) {
 			if (f.isDead()) {
 				if (life < lifetime) {
-					int xvel = rand.nextInt(10) + 1;
+					int xvel = rand.nextInt(xvelRange) + 1;
 					if (rand.nextBoolean()) {
 						xvel *= -1;
 					}
-					f.reset(initPos, xvel, Util.FIRESPEED);
+					f.reset(initPos, xvel, yvel);
 				}
 			}
 			if ( this.life / this.lifetime > 0.95f )
@@ -67,6 +73,13 @@ public class FireEmitter extends Entity {
 			f.update(dt);
 		}
 		life += dt;
+	}
+	
+	public void changeOrigin(Vector3 pos) {
+		initPos = pos;
+		for ( FireParticle f: fires) {
+			f.set3DPos(pos);
+		}
 	}
 
 	@Override
@@ -78,7 +91,7 @@ public class FireEmitter extends Entity {
 
 	@Override
 	public boolean isEnded() {
-		return life >= lifetime;
+		return life >= lifetime && !loop;
 	}
 
 }

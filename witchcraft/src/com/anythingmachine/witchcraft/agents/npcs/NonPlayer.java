@@ -63,6 +63,11 @@ public class NonPlayer extends Entity {
 		sm.update(dT);
 	}
 	
+	@Override
+	public void destroyBody() {
+		GamePlayManager.world.destroyBody(sm.phyState.collisionBody);
+	}
+	
 	public void checkInLevel() {
 		sm.state.checkInLevel();
 	}

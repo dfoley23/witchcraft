@@ -28,7 +28,7 @@ public class LoadingState extends PlayerState {
 	}
 
 	@Override
-	protected void setState(PlayerStateEnum newstate) {
+	public void setState(PlayerStateEnum newstate) {
 	}
 
 	@Override

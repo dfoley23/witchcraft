@@ -1,18 +1,18 @@
 package com.anythingmachine.witchcraft.agents.States.Player;
 
+import com.anythingmachine.aiengine.AINode;
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.collisionEngine.ground.LevelWall;
 import com.anythingmachine.collisionEngine.ground.Platform;
+import com.anythingmachine.collisionEngine.ground.Stairs;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Arrow;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -23,47 +23,48 @@ public class PlayerState {
 	public PlayerStateEnum name;
 	public PlayerState parent;
 
-	public PlayerState(PlayerStateMachine sm, PlayerStateEnum name) {
+	public PlayerState(PlayerStateMachine sm,
+	PlayerStateEnum name) {
 		this.sm = sm;
 		this.name = name;
 		parent = this;
 	}
-	
+
 	public void nextPower() {
 		sm.nextPower();
 	}
-	
+
 	public boolean isAlertState() {
 		return false;
 	}
-	
+
 	public boolean isHighAlertState() {
 		return false;
 	}
-	
+
 	public void setParent(PlayerState parent) {
 		this.parent = parent;
 	}
 
 	public void transistionToParent() {
-		if ( this.parent != null ) {
+		if (this.parent != null) {
 			this.sm.setState(parent.name);
 		} else {
 			sm.setState(PlayerStateEnum.IDLE);
 		}
 	}
-	
+
 	public void update(float dt) {
 		checkGround();
-		
+
 		setInputSpeed();
 
 		switchPower();
 
 		usePower();
-		
+
 		updatePower(dt);
-		
+
 		sm.phyState.correctCBody(-8, 64, 0);
 
 		sm.animate.setFlipX(sm.facingleft);
@@ -73,54 +74,59 @@ public class PlayerState {
 
 	public void addWindToCape(float dt) {
 		Cape cape = GamePlayManager.player.cape;
-		
+
 		cape.addWindForce(-GamePlayManager.windx, -400);
 
 		cape.rotate(0);
 
-		cape.updatePos(sm.facingleft? sm.neck.getWorldX() -12 : sm.neck.getWorldX() + 12, sm.neck.getWorldY()-8);
-		
+		cape
+		.updatePos(sm.facingleft
+		? sm.neck.getWorldX() - 12
+		: sm.neck.getWorldX() + 12, sm.neck.getWorldY() - 8);
+
 		cape.flip(sm.facingleft);
 	}
-	
+
 	public void setAttack() {
 	}
 
 	public void draw(Batch batch) {
 		sm.animate.draw(batch);
 	}
-	
+
 	public void drawCape(Matrix4 cam) {
 		GamePlayManager.player.cape.draw(cam, 1f);
 	}
-	
+
 	public void switchPower() {
-		if (sm.input.isNowNotThen("SwitchPower") 
-				|| (WitchCraft.ON_ANDROID && sm.input.isNowNotThen("SwitchPower1") )
-				|| (WitchCraft.ON_ANDROID && sm.input.isNowNotThen("SwitchPower2") ) ) {
+		if (sm.input.isNowNotThen("SwitchPower")
+		|| (WitchCraft.ON_ANDROID && sm.input
+		.isNowNotThen("SwitchPower1"))
+		|| (WitchCraft.ON_ANDROID && sm.input
+		.isNowNotThen("SwitchPower2"))) {
 			nextPower();
 			sm.uiFadein = 0f;
 		}
 	}
-	
+
 	public void usePower() {
 		if (sm.input.is("UsePower")) {
 			sm.usePower();
 			sm.state.setParent(this);
-		} 
+		}
 	}
-	
+
 	public void updatePower(float dt) {
-		
+
 	}
-	
+
 	public void setFlying() {
 	}
 
 	public boolean canAnimate() {
 		return true;
 	}
-	
+
 	public void setIdle() {
 		sm.setState(parent.name);
 	}
@@ -135,13 +141,13 @@ public class PlayerState {
 	}
 
 	public void transistionIn() {
-		
+
 	}
 
 	public void transistionOut() {
-		
+
 	}
-	
+
 	public void setDupeSkin() {
 	}
 
@@ -163,10 +169,13 @@ public class PlayerState {
 				sm.hitleftwall = false;
 				if (axisVal > 1) {
 					setRun();
-					sm.phyState.body.setXVel(Util.DEV_MODE ? Util.DEBUGSPED : Util.PLAYERRUNSPEED);
+					sm.phyState.body.setXVel(Util.DEV_MODE
+					? Util.DEBUGSPED
+					: Util.PLAYERRUNSPEED);
 				} else {
 					setWalk();
-					sm.phyState.body.setXVel(Util.PLAYERWALKSPEED);
+					sm.phyState.body
+					.setXVel(Util.PLAYERWALKSPEED);
 				}
 			}
 		} else if (axisVal < 0) {
@@ -175,10 +184,13 @@ public class PlayerState {
 				sm.hitrightwall = false;
 				if (axisVal < -1) {
 					setRun();
-					sm.phyState.body.setXVel(Util.DEV_MODE ? -Util.DEBUGSPED : -Util.PLAYERRUNSPEED);
+					sm.phyState.body.setXVel(Util.DEV_MODE
+					? -Util.DEBUGSPED
+					: -Util.PLAYERRUNSPEED);
 				} else {
 					setWalk();
-					sm.phyState.body.setXVel(-Util.PLAYERWALKSPEED);
+					sm.phyState.body
+					.setXVel(-Util.PLAYERWALKSPEED);
 				}
 			}
 		} else {
@@ -190,86 +202,112 @@ public class PlayerState {
 		Vector3 pos = sm.phyState.body.getPos();
 		if (sm.hitplatform || sm.hitstairs) {
 			// System.out.println(pos);
-//			if (pos.x > sm.curCurve.lastPointOnCurve().x
-//					&& sm.curGroundSegment + 1 < WitchCraft.ground
-//							.getNumCurves()) {
-//				sm.curGroundSegment++;
-//				sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
-//			} else if (pos.x < sm.curCurve.firstPointOnCurve().x
-//					&& sm.curGroundSegment - 1 >= 0) {
-//				sm.curGroundSegment--;
-//				sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
-//			}
-//			Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
-//					sm.curGroundSegment, pos.x);
-//			sm.setTestVal("grounded", false);
-////			if (pos.y <= groundPoint.y) {
-//				sm.phyState.correctHeight(groundPoint.y);
-//				sm.state.land();
-////			}
-//		} else {
+			// if (pos.x > sm.curCurve.lastPointOnCurve().x
+			// && sm.curGroundSegment + 1 < WitchCraft.ground
+			// .getNumCurves()) {
+			// sm.curGroundSegment++;
+			// sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
+			// } else if (pos.x < sm.curCurve.firstPointOnCurve().x
+			// && sm.curGroundSegment - 1 >= 0) {
+			// sm.curGroundSegment--;
+			// sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
+			// }
+			// Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
+			// sm.curGroundSegment, pos.x);
+			// sm.setTestVal("grounded", false);
+			// // if (pos.y <= groundPoint.y) {
+			// sm.phyState.correctHeight(groundPoint.y);
+			// sm.state.land();
+			// // }
+			// } else {
 			sm.grounded = false;
-			if (sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
-				float groundPoint = sm.elevatedSegment.getHeight(pos.x);
-//				if (pos.y < groundPoint) {
-					sm.phyState.body.setY(groundPoint);
-					sm.state.land();
-//				}
+			float groundPoint =
+			sm.elevatedSegment.getHeight(pos.x);
+			if (sm.elevatedSegment.isStairs()) {
+				sm.phyState.body.setX(sm.elevatedSegment
+				.getXPos(groundPoint));
+				sm.phyState.body.setY(groundPoint);
+				sm.state.land();
+			} else if (sm.elevatedSegment.isBetween(
+				sm.facingleft, pos.x)) {
+				sm.phyState.body.setY(groundPoint);
+				sm.state.land();
 			} else {
-				Gdx.app.log("falling off platform", ""+sm.elevatedSegment);
 				sm.hitplatform = false;
-				sm.setState(PlayerStateEnum.FALLING);
-				sm.state.setParent(sm.getState(PlayerStateEnum.IDLE));
+				sm.hitstairs = false;
+				setFalling();
 			}
 		}
 	}
-	
+
+	protected void setFalling() {
+		if (!sm.hitplatform && !sm.hitstairs) {
+			setState(PlayerStateEnum.FALLING);
+		}
+	}
+
 	protected void setDead() {
 		sm.setState(PlayerStateEnum.DEAD);
 	}
 
-	protected void setState(PlayerStateEnum newstate) {
+	public void setState(PlayerStateEnum newstate) {
 		sm.setState(newstate);
+		sm.state.setParent(this);
 	}
-	
+
 	protected void hitWall(float sign) {
 		sm.phyState.body.stopOnX();
-		sm.phyState.body.setX(sm.phyState.body.getX() - (sign * 16));
+		sm.phyState.body.setX(sm.phyState.body.getX()
+		- (sign * 16));
 	}
-	
+
 	protected void hitPlatform(Platform plat) {
-		if( !sm.hitstairs || !sm.input.is("down") ) {
-			sm.hitstairs = false;
-			if (plat.isBetween(sm.facingleft, sm.phyState.body.getX())) {
-				if (plat.getHeight() - 35 < sm.phyState.body.getY()) {
-					sm.hitplatform = true;
-					sm.elevatedSegment = plat;
-					land();
-				} else {
-					sm.phyState.body.stopOnY();
-					sm.hitroof = true;
-				}
+		float posx = sm.phyState.body.getX();
+		// if (sm.elevatedSegment == null || !sm.elevatedSegment.isStairs()
+		// || sm.elevatedSegment.slantRight() != sm.facingleft
+		// || sm.elevatedSegment.getUpPos() < posx != sm.facingleft
+		// || !sm.input.is("down"))
+		{
+			// if (plat.isBetween(sm.facingleft, posx)) {
+			if (plat.getHeight() - 16 < sm.phyState.body
+			.getY()) {
+				sm.hitstairs = false;
+				sm.hitplatform = true;
+				sm.elevatedSegment = plat;
+				land();
+			} else if (!sm.elevatedSegment.isStairs()) {
+				sm.phyState.body.stopOnY();
+				sm.hitroof = true;
 			}
 		}
+		// }
 	}
-	
+
 	public void switchLevel(float x) {
 		sm.hitleftwall = false;
 		sm.hitrightwall = false;
 		sm.phyState.body.setX(x);
 		sm.phyState.correctCBody(-8, 64, 0);
 	}
-	
-	public void handleContact(Contact contact, boolean isFixture1) {
+
+	public void handleContact(Contact contact,
+	boolean isFixture1) {
 		Entity other;
 		if (isFixture1) {
-			other = (Entity) contact.getFixtureB().getBody().getUserData();
+			other =
+			(Entity) contact
+			.getFixtureB()
+			.getBody()
+			.getUserData();
 		} else {
-			other = (Entity) contact.getFixtureA().getBody().getUserData();
+			other =
+			(Entity) contact
+			.getFixtureA()
+			.getBody()
+			.getUserData();
 		}
 		Vector3 pos = sm.phyState.body.getPos();
 		Vector3 vel = sm.phyState.body.getVel();
-		Platform plat;
 		float sign;
 		switch (other.type) {
 		case NONPLAYER:
@@ -286,64 +324,74 @@ public class PlayerState {
 			hitWall(sign);
 			break;
 		case PLATFORM:
-			plat = (Platform) other;
+			Platform plat = (Platform) other;
 			hitPlatform(plat);
 			break;
 		case STAIRS:
-			plat = (Platform) other;
-			sm.hitstairs = false;
-			// System.out.println("hello staris");
-			if (sm.input.up() || (plat.getHeight() < (pos.y - 4)) ) {
-				//System.out.println("up stairs");
-				if (plat.isBetween(sm.facingleft, pos.x)) {
-					//if (plat.getHeight(pos.x) - 35 < pos.y) 
-					{
-						sm.hitstairs = true;
-						sm.elevatedSegment = plat;
-						sm.state.checkGround();
-					}
-				}
+			Stairs stairs = (Stairs) other;
+			if ((sm.input.up()
+			&& stairs.getDownPos() < pos.x == sm.facingleft && (sm.facingleft == !stairs
+			.slantRight()))
+			|| ((stairs.getHeight() < pos.y)
+			&& stairs.slantRight() == sm.facingleft && (sm.input
+			.down() || stairs.walkDown()))) {
+				// System.out.println("up stairs");
+				// if (stairs.isBetween(sm.facingleft, pos.x)) {
+				// if (plat.getHeight(pos.x) - 35 < pos.y)
+				// {
+				sm.hitstairs = true;
+				sm.hitplatform = false;
+				sm.elevatedSegment = stairs;
+				// }
+				// }
 			}
 			break;
 		case LEVELWALL:
 			LevelWall wall = (LevelWall) other;
 			GamePlayManager.level = wall.getLevel();
 			break;
+		case AINODE:
+		    sm.currentNode = (AINode)other;
+		    break;
 		case ACTIONWALL:
-//			if( sm.input.is("ACTION") ) { }
-//			ActionWall door = (ActionWall) other;
-//			GamePlayManager.level = wall.getLevel();
+			// if( sm.input.is("ACTION") ) { }
+			// ActionWall door = (ActionWall) other;
+			// GamePlayManager.level = wall.getLevel();
 			break;
 		case SWORD:
 			npc = (NonPlayer) ((Pointer) other).obj;
 			if (npc.isCritcalAttacking()) {
-				sm.killedbehind = npc.getX() < sm.phyState.body.getX();
+				sm.killedbehind =
+				npc.getX() < sm.phyState.body.getX();
 				setDead();
 				npc.switchBloodSword();
 			}
 			break;
 		case ARROW:
 			Arrow arrow = (Arrow) other;
-			sm.killedbehind = arrow.getVelX() < 0 == sm.facingleft;
+			sm.killedbehind =
+			arrow.getVelX() < 0 == sm.facingleft;
 			setState(PlayerStateEnum.ARROWDEAD);
 			break;
 		}
 	}
 
-	public void endContact(Contact contact, boolean isFixture1) {
-		Entity other;
-		if (isFixture1) {
-			other = (Entity) contact.getFixtureB().getBody().getUserData();
-		} else {
-			other = (Entity) contact.getFixtureA().getBody().getUserData();
-		}
-		switch (other.type) {
-		case STAIRS:
-			sm.hitstairs = false;
-			break;
-		default:
-			break;
-		}
+	public void endContact(Contact contact,
+	boolean isFixture1) {
+		// Entity other;
+		// if (isFixture1) {
+		// other = (Entity) contact.getFixtureB().getBody().getUserData();
+		// } else {
+		// other = (Entity) contact.getFixtureA().getBody().getUserData();
+		// }
+		// switch (other.type) {
+		// case STAIRS:
+		// sm.hitstairs = false;
+		// setFalling();
+		// break;
+		// default:
+		// break;
+		// }
 	}
 
 }

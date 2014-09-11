@@ -1,8 +1,7 @@
 package com.anythingmachine.witchcraft.agents.player;
 
-import java.util.ArrayList;
-
 import com.anythingmachine.GamePlayUI.UILayout;
+import com.anythingmachine.aiengine.AINode;
 import com.anythingmachine.aiengine.PlayerStateMachine;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.PhysicsState;
@@ -10,6 +9,8 @@ import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.particles.KinematicParticle;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.States.Player.ArrowDead;
 import com.anythingmachine.witchcraft.agents.States.Player.Attacking;
 import com.anythingmachine.witchcraft.agents.States.Player.CastSpell;
@@ -30,8 +31,6 @@ import com.anythingmachine.witchcraft.agents.States.Player.Running;
 import com.anythingmachine.witchcraft.agents.States.Player.ShapeCrow;
 import com.anythingmachine.witchcraft.agents.States.Player.ShapeShiftIntermediate;
 import com.anythingmachine.witchcraft.agents.States.Player.Walking;
-import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -92,11 +91,12 @@ public class Player extends Entity {
 	
 	@Override
 	public void setStateByValue(String strvalue) {
-		state.setState(PlayerStateEnum.valueOf(strvalue));
+		state.state.setState(PlayerStateEnum.valueOf(strvalue));
 	}
 	
 	public void setState(PlayerStateEnum name) {
-		state.setState(name);
+		//state.setState(name);
+		state.state.setState(name);
 	}
 	
 	@Override
@@ -131,7 +131,15 @@ public class Player extends Entity {
 	public float getX() {
 		return state.phyState.body.getX();
 	}
+	
+	public float getY() {
+		return state.phyState.body.getY();
+	}
 
+	public AINode getAINode() {
+	    return state.currentNode;
+	}
+	
 	@Override
 	public void stop() {
 		state.state.setIdle();
@@ -362,11 +370,24 @@ public class Player extends Entity {
 		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
 		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
 		Fixture hitRadius = collisionBody.createFixture(fixture);
+
+		shape = new PolygonShape();
+		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
+				new Vector2(0, -64).scl(Util.PIXEL_TO_BOX), 0f);
+		fixture = new FixtureDef();
+		fixture.shape = shape;
+		fixture.isSensor = true;
+		fixture.density = 1f;
+		fixture.filter.categoryBits = Util.CATEGORY_PLAYER;
+		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
+		Fixture bottomFeetFix = collisionBody.createFixture(fixture);
+
 		collisionBody.setUserData(this);
 		shape.dispose();
 		GamePlayManager.rk4System.addParticle(body);
 
 		state.phyState = new PhysicsState(body, collisionBody);
+		state.phyState.addFixture(bottomFeetFix, "bottomfeet");
 		state.phyState.addFixture(feetFixture, "feet");
 		state.phyState.addFixture(hitRadius, "radius");
 
