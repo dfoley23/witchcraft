@@ -45,13 +45,39 @@ public class Falling extends SharedState {
 	@Override
 	public void checkGround() {
 		Vector3 pos = sm.phyState.body.getPos();
-		sm.grounded = false;
-		if (sm.hitplatform || sm.hitstairs) {
-			float groundPoint = sm.elevatedSegment.getHeight();
+		if (sm.hitplatform || sm.hitstairs && sm.elevatedSegment != null) {
+		    // System.out.println(pos);
+		    // if (pos.x > sm.curCurve.lastPointOnCurve().x
+		    // && sm.curGroundSegment + 1 < WitchCraft.ground
+		    // .getNumCurves()) {
+		    // sm.curGroundSegment++;
+		    // sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
+		    // } else if (pos.x < sm.curCurve.firstPointOnCurve().x
+		    // && sm.curGroundSegment - 1 >= 0) {
+		    // sm.curGroundSegment--;
+		    // sm.curCurve = WitchCraft.ground.getCurve(sm.curGroundSegment);
+		    // }
+		    // Vector2 groundPoint = WitchCraft.ground.findPointOnCurve(
+		    // sm.curGroundSegment, pos.x);
+		    // sm.setTestVal("grounded", false);
+		    // // if (pos.y <= groundPoint.y) {
+		    // sm.phyState.correctHeight(groundPoint.y);
+		    // sm.state.land();
+		    // // }
+		    // } else {
+		    sm.grounded = false;
+		    float groundPoint = sm.elevatedSegment.getHeight(pos.x);
+		    if (sm.hitstairs && sm.elevatedSegment.isStairs()) {
+			// sm.phyState.body.setX(sm.elevatedSegment
+			// .getXPos(groundPoint));
 			sm.phyState.body.setY(groundPoint);
-			sm.grounded = true;
 			sm.state.land();
 			transistionToParent();
+		    } else if (sm.hitplatform && sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
+			sm.phyState.body.setY(groundPoint);
+			sm.state.land();
+			transistionToParent();
+		    }
 		}
 	}
 

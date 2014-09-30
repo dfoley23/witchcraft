@@ -50,7 +50,7 @@ public class NPCState {
 
 	sm.animate.applyTotalTime(true, dt);
 
-	sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+	sm.animate.setPos(sm.phyState.body.getPos(), 0, -12f);
 	sm.animate.updateSkel(dt);
     }
 
@@ -96,20 +96,28 @@ public class NPCState {
 
     public void hitStairs(Stairs stairs) {
 	float ypos = sm.phyState.body.getY();
-	if (ypos < stairs.getHeight() + 4
-		&& stairs.slantRight() == !sm.facingleft) {
+	float xpos = sm.phyState.body.getX();
+	float downPos = stairs.getDownPosY();
+	//up the stairs
+	if (ypos < downPos + 16
+		&& ypos > downPos - 48
+		&& stairs.slantRight() == !sm.facingleft
+		&& (xpos > stairs.getDownPosX()) == sm.facingleft ) {
 	    Random rand = new Random();
 	    int choice = rand.nextInt(4);
 	    if (choice > 2) {
 		sm.elevatedSegment = stairs;
 	    }
-	} else if (ypos > stairs.getHeight() + 4
-		&& stairs.slantRight() == sm.facingleft) {
+	} 
+	//down the stairs
+	else if (ypos > stairs.getUpPosY() - 16
+		&& xpos > stairs.getUpPosX() == sm.facingleft) {
 	    if (!stairs.walkDown()) {
 		Random rand = new Random();
 		int choice = rand.nextInt(4);
 		if (choice > 2) {
 		    sm.elevatedSegment = stairs;
+		    sm.phyState.body.setGravityVal(0);
 		}
 	    } else {
 		sm.elevatedSegment = stairs;
@@ -126,9 +134,9 @@ public class NPCState {
 	    sm.phyState.body.setX(64);
 	    // sm.animate.updateSkel(0);
 	} else {
-	    sm.phyState.body.setX(GamePlayManager.levels.get(level - 1) - 64);
+	    sm.phyState.body.setX(GamePlayManager.levels.get(level - 1) - 72);
 	}
-	sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+	sm.animate.setPos(sm.phyState.body.getPos(), 0, -12f);
 	sm.animate.updateSkel(0);
 	sm.me.level = level - 1;
 	if (sm.me.level != GamePlayManager.currentlevel) {
@@ -138,9 +146,7 @@ public class NPCState {
     }
 
     public void fixCBody() {
-	sm.phyState.collisionBody.setTransform(
-		Util.addVecsToVec2(sm.phyState.body.getPos(), -8, 64).scl(
-			Util.PIXEL_TO_BOX), 0);
+	sm.phyState.correctCBody(0,64, 0);
     }
 
     public void setChildState(NPCStateEnum state) {
@@ -226,10 +232,16 @@ public class NPCState {
 
     public void checkGround() {
 	Vector3 pos = sm.phyState.body.getPos();
-	if (sm.elevatedSegment != null
-		&& sm.elevatedSegment.isBetween(sm.facingleft, pos.x)) {
+	if (!sm.phyState.body.isStable() && sm.elevatedSegment != null
+		&& (sm.elevatedSegment.isStairs() || sm.elevatedSegment.isBetween(sm.facingleft, pos.x))) {
 	    float groundPoint = sm.elevatedSegment.getHeight(pos.x);
-	    sm.phyState.body.setPos(pos.x, groundPoint - 10);
+	    if ( sm.phyState.body.getY() <= groundPoint+7) {
+		if ( groundPoint > Util.BASEGROUNDY ) {
+		    sm.phyState.body.setY(groundPoint);
+		} else {
+		    sm.phyState.body.setY(Util.BASEGROUNDY);		    
+		}
+	    }
 	    // sm.setTestVal("grounded", true);
 	}
     }

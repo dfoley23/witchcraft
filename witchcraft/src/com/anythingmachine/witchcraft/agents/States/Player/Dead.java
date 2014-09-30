@@ -26,7 +26,7 @@ public class Dead extends PlayerState {
 
 	@Override
 	public void update(float dt) {
-		sm.phyState.correctCBody(-8, 64, 0);
+		sm.phyState.correctCBody(0, 64, 0);
 
 		bloodpool.update(dt);
 		checkGround();

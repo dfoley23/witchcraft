@@ -11,6 +11,7 @@ public class Platform extends Entity {
 	protected float width;
 	protected float height;
 	protected String name;
+	protected boolean slantRight = false;;
 	
 	public Platform( String name, float x, float y, int w, int h) {
 		this.name = name;
@@ -38,12 +39,20 @@ public class Platform extends Entity {
 		return false;
 	}
 	
-	public float getUpPos() {
+	public float getUpPosX() {
 		return posy+height;
 	}
 
-	public float getDownPos() {
+	public float getDownPosX() {
 		return posy+height;
+	}
+
+	public float getUpPosY() {
+		return posy;
+	}
+
+	public float getDownPosY() {
+		return posy;	
 	}
 
 	public void holdDownToWalkDown() {
@@ -54,7 +63,7 @@ public class Platform extends Entity {
 	}
 
 	public boolean slantRight() {
-		return false;
+		return slantRight;
 	}
 	
 	public float getXPos(float y) {
@@ -83,7 +92,7 @@ public class Platform extends Entity {
 	}
 	
 	public boolean isBetween(boolean facingLeft, float x) {
-		return x > posx-7 && x < posx+width+12;			
+		return x > posx-8 && x < posx+width+2;
 	}
 
 }

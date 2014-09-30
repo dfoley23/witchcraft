@@ -32,11 +32,7 @@ public class Sleeping extends NPCState {
 		
 //		float delta = Gdx.graphics.getDeltaTime();
 
-		sm.animate.applyTotalTime(true, dt);
-
-		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
-		sm.animate.updateSkel(dt);
-
+		updateSkel(dt);
 	}
 	
 	@Override

@@ -50,7 +50,7 @@ public class ShapeCrow extends PlayerState {
 
 		sm.phyState.body.set3DPos(crow.getPos());
 		
-		sm.phyState.correctCBody(32, 70, 0);
+		sm.phyState.correctCBody(24, 70, 0);
 
 		updatePower(dt);
 	}

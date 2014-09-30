@@ -24,7 +24,7 @@ public class Invisible extends PlayerState {
 
 		updatePower(dt);
 
-		sm.phyState.correctCBody(-8, 64, 0);
+		sm.phyState.correctCBody(0, 64, 0);
 
 		sm.animate.setFlipX(sm.facingleft);
 

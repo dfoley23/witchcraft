@@ -165,7 +165,7 @@ public class NonPlayer extends Entity {
 				.internal("data/spine/characters.skel"));
 
 		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, pos.y,
-				0f), -50f);
+				0f), Util.GRAVITY*3);
 //		body.useEuler(false);
 
 		
@@ -182,7 +182,7 @@ public class NonPlayer extends Entity {
 
 		sm.animate.setCurrent(fileContent[2].split(",")[1], true);
 
-		buildPhysics(body);
+		buildPhysics(body,scale);
 
 		setupStates(fileContent);
 
@@ -222,9 +222,9 @@ public class NonPlayer extends Entity {
 											sm,
 											new Vector2(
 													Float.parseFloat(pos[1]),
-													pos[2].equals("Y") ? sm.phyState.body
+													!pos[2].equals("Y") ? sm.phyState.body
 															.getY() : Float
-															.parseFloat(pos[2])),
+															.parseFloat(pos[3])),
 											Integer.parseInt(pos[3])));
 						} else {
 							sm.addState(state, state.constructState(sm));
@@ -271,10 +271,10 @@ public class NonPlayer extends Entity {
 		}
 	}
 	
-	protected void buildPhysics(KinematicParticle body) {
+	protected void buildPhysics(KinematicParticle body, Vector2 scale) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
-		def.position.set(new Vector2(body.getX(), body.getY()));
+		def.position.set(new Vector2(body.getPos().x, body.getPos().y));
 		Body collisionBody = GamePlayManager.world.createBody(def);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(4 * Util.PIXEL_TO_BOX, 64 * Util.PIXEL_TO_BOX);
@@ -287,14 +287,14 @@ public class NonPlayer extends Entity {
 		feetFixture = collisionBody.createFixture(fixture);
 
 		shape = new PolygonShape();
-		shape.setAsBox(64 * Util.PIXEL_TO_BOX, 32 * Util.PIXEL_TO_BOX);
+		shape.setAsBox((64*scale.x) * Util.PIXEL_TO_BOX, (32*scale.y) * Util.PIXEL_TO_BOX);
 		fixture = new FixtureDef();
 		fixture.shape = shape;
 		fixture.isSensor = true;
 		fixture.density = 1f;
 		fixture.filter.categoryBits = Util.CATEGORY_NPC;
 		fixture.filter.maskBits = Util.CATEGORY_EVERYTHING;
-		feetFixture = collisionBody.createFixture(fixture);
+		hitRadius = collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();
 

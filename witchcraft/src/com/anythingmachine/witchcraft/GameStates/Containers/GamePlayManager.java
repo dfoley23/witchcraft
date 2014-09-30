@@ -25,6 +25,7 @@ import com.anythingmachine.physicsEngine.particleEngine.FireEmitter;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
 import com.anythingmachine.physicsEngine.particleEngine.particles.AnimatedSpringParticle;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
+import com.anythingmachine.physicsEngine.particleEngine.particles.TexturedParticle;
 import com.anythingmachine.tiledMaps.TiledMapHelper;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.anythingmachine.witchcraft.GameStates.Screen;
@@ -41,6 +42,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -366,7 +368,7 @@ public class GamePlayManager extends Screen {
 		// only run this when switching levels
 		float diff = 0;
 		if (l < currentlevel + 1) {
-			diff = levels.get(l - 1) - 32;
+			diff = levels.get(l - 1) - 48;
 		} else {
 			// diff -= levels.get(currentlevel) - WitchCraft.screenWidth * 0.5f;
 			diff = 64;
@@ -647,14 +649,20 @@ public class GamePlayManager extends Screen {
 		entities.clear();
 		bgentities.clear();
 
+
+		entities.add(new TexturedParticle(new Vector3(3100, 160, 0), EntityType.ENTITY, ((TextureAtlas) WitchCraft.assetManager
+			.get("data/world/otherart.atlas"))
+			.createSprite("anvil"), new Vector3(0,0,0)));
+		
+		entities.add(new NonPlayer("civ_male", new Vector2(
+		4250.0f, 100.0f), new Vector2(0.6f, 0.7f),
+		"data/npcdata/civs/tempMale4", NPCType.CIV));
+
 		entities
 		.add(new NonPlayer("archer", new Vector2(920.0f,
 		500.0f), new Vector2(0.6f, 0.7f),
 		"data/npcdata/other/tower_archer1", NPCType.ARCHER));
-		entities.get(0).faceLeft(true);
-		entities.add(new NonPlayer("civ_male", new Vector2(
-		4250.0f, 100.0f), new Vector2(0.6f, 0.7f),
-		"data/npcdata/civs/tempMale4", NPCType.CIV));
+		entities.get(2).faceLeft(true);
 		entities
 		.add(new NonPlayer("civ_female", new Vector2(
 		5500.0f, 100.0f), new Vector2(0.6f, 0.7f),
@@ -669,11 +677,11 @@ public class GamePlayManager extends Screen {
 		3000.0f, 100.0f), new Vector2(0.6f, 0.6f),
 		"data/npcdata/other/pimlyarcher", NPCType.ARCHER));
 		entities.add(new NonPlayer("archer", new Vector2(
-		300.0f, 100.0f), new Vector2(0.64f, 0.9f),
+		300.0f, 100.0f), new Vector2(0.64f, 0.8f),
 		"data/npcdata/other/joearcher", NPCType.ARCHER));
-		entities.add(new NonPlayer("civ_male", new Vector2(
-		4250.0f, 100.0f), new Vector2(0.77f, 0.6f),
-		"data/npcdata/civs/tempMale4", NPCType.CIV));
+//		entities.add(new NonPlayer("civ_male", new Vector2(
+//		4250.0f, 100.0f), new Vector2(0.77f, 0.6f),
+//		"data/npcdata/civs/tempMale4", NPCType.CIV));
 		entities
 		.add(new NonPlayer("civ_female", new Vector2(
 		6500.0f, 100.0f), new Vector2(0.5f, 0.5f),

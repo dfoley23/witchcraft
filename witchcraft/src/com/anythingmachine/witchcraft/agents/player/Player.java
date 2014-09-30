@@ -324,7 +324,7 @@ public class Player extends Entity {
 				.internal("data/spine/characters.skel"));
 
 		KinematicParticle body = new KinematicParticle(new Vector3(pos.x, pos.y,
-				0f), Util.GRAVITY * 3);
+				0f), Util.GRAVITY * 7);
 //		body.useEuler(false);
 
 		state = new PlayerStateMachine(name, body.getPos(), new Vector2(0.53f,
@@ -372,8 +372,8 @@ public class Player extends Entity {
 		Fixture hitRadius = collisionBody.createFixture(fixture);
 
 		shape = new PolygonShape();
-		shape.setAsBox(16 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
-				new Vector2(0, -64).scl(Util.PIXEL_TO_BOX), 0f);
+		shape.setAsBox(8 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
+				new Vector2(8, -64).scl(Util.PIXEL_TO_BOX), 0f);
 		fixture = new FixtureDef();
 		fixture.shape = shape;
 		fixture.isSensor = true;

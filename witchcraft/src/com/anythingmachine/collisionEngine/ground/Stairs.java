@@ -10,19 +10,16 @@ public class Stairs extends Platform {
 	public Stairs( String name, float x, float y, int w, int h) {
 		super(name, x, y, w, h);
 		type = EntityType.STAIRS;
+		slantRight = end.y > posy;
 	}
 
 	public Stairs( String name, Vector2 start, Vector2 end) {
 		super(name, start, end);
 		this.end = end.cpy();
+		slantRight = end.y > posy;
 		type = EntityType.STAIRS;
 	}
-	
-	@Override
-	public boolean slantRight() {
-		return end.y > posy;
-	}
-		
+			
 	@Override
 	public float getHeight() {
 		return end.y > posy ? posy : end.y;
@@ -48,9 +45,11 @@ public class Stairs extends Platform {
 		float percent = (x-posx)/(width);
 		//System.out.println(percent);
 		if ( slantRight() ) {
-			return posy+((percent)*height);			
+		    percent = percent>1f ? 1: percent;
+		    return posy+((percent)*height);
 		} 
-		return end.y+((1-percent)*height);
+		float newY = posy-((percent)*height);
+		return newY > posy ? posy : newY;
 	}
 
 	@Override
@@ -66,21 +65,37 @@ public class Stairs extends Platform {
 	}
 	
 	@Override
-	public float getUpPos() {
+	public float getUpPosX() {
 		if ( slantRight() ) {
-			return end.x-7;
+			return end.x-12;
 		} 
-		return posx+7;
+		return posx+12;
 	}
 
 	@Override
-	public float getDownPos() {
+	public float getDownPosX() {
 		if ( slantRight() ) {
-			return posx+7;
+			return posx+16;
 		} 
-		return end.x-7;	
+		return end.x-12;
 	}
-	
+
+	@Override
+	public float getUpPosY() {
+		if ( slantRight() ) {
+			return end.y;
+		} 
+		return posy;
+	}
+
+	@Override
+	public float getDownPosY() {
+		if ( slantRight() ) {
+			return posy;
+		} 
+		return end.y;	
+	}
+
 	@Override
 	public boolean isBetween(boolean facingLeft, float x) {
 		if ( facingLeft ) 

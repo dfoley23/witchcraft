@@ -64,7 +64,7 @@ public class InOtherLevel extends NPCState {
 		} else if ( level < sm.me.level){
 			sm.phyState.body.setX(GamePlayManager.levels.get(level)-64);
 		}
-		sm.animate.setPos(sm.phyState.body.getPos(), -8f, 0f);
+		sm.animate.setPos(sm.phyState.body.getPos(), 0, -12f);
 		sm.animate.updateSkel(0);
 		
 		sm.me.level = level;
