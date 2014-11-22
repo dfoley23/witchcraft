@@ -69,6 +69,12 @@ public enum PlayerStateEnum {
 			return new ArrowDead(sm, this);
 		}
 	},
+	ININVENTORY {
+		@Override
+		public PlayerState constructState(PlayerStateMachine sm) {
+			return new ArrowDead(sm, this);
+		}	    
+	},
 	SHAPESHIFTINTERCROW {
 		@Override
 		public int getNextPower() {

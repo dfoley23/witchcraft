@@ -35,12 +35,6 @@ public class TexturedBodyParticle extends TexturedParticle {
 		super.destroy();
 		GamePlayManager.world.destroyBody(collisionBody);
 	}
-
-	@Override
-	public TexturedBodyParticle copy(Vector3 pos, Vector3 ext) {		
-		return new TexturedBodyParticle(pos, this.type, new Sprite(sprite), ext);
-	}
-
 	private void buildCollisionBody(){
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;

@@ -30,7 +30,6 @@ public class MindBeamParticle extends TexturedBodyParticle {
 		}
 	}
 
-	@Override
 	public MindBeamParticle copy(Vector3 pos, Vector3 ext) {
 		return new MindBeamParticle(pos, new Sprite(sprite), ext);
 	}

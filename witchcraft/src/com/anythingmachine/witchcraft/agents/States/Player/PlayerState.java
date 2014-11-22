@@ -13,6 +13,7 @@ import com.anythingmachine.witchcraft.Util.Pointer;
 import com.anythingmachine.witchcraft.Util.Util;
 import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
+import com.anythingmachine.witchcraft.agents.player.items.InventoryObject;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -358,6 +359,9 @@ public class PlayerState {
 	    // if( sm.input.is("ACTION") ) { }
 	    // ActionWall door = (ActionWall) other;
 	    // GamePlayManager.level = wall.getLevel();
+	    break;
+	case INVENTORYOBJECT:
+	    GamePlayManager.player.addToInventory((InventoryObject)other);
 	    break;
 	case SWORD:
 	    npc = (NonPlayer) ((Pointer) other).obj;

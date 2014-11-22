@@ -1,5 +1,8 @@
 package com.anythingmachine.witchcraft.agents.player;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.anythingmachine.GamePlayUI.UILayout;
 import com.anythingmachine.aiengine.AINode;
 import com.anythingmachine.aiengine.PlayerStateMachine;
@@ -32,6 +35,7 @@ import com.anythingmachine.witchcraft.agents.States.Player.ShapeCrow;
 import com.anythingmachine.witchcraft.agents.States.Player.ShapeShiftIntermediate;
 import com.anythingmachine.witchcraft.agents.States.Player.Walking;
 import com.anythingmachine.witchcraft.agents.player.items.Cape;
+import com.anythingmachine.witchcraft.agents.player.items.InventoryObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.controllers.Controllers;
@@ -54,11 +58,13 @@ import com.esotericsoftware.spine.SkeletonData;
 public class Player extends Entity {
 	public Cape cape;
 	private PlayerStateMachine state;
+	public ArrayList<InventoryObject> inventory;
 
 	public Player(RK4Integrator rk4, Vector2 pos) {
 		setupState("player", pos);
 		setupInput();
 		setupPowers();
+		inventory = new ArrayList<InventoryObject>();
 
 		cape = new Cape(3, 5, rk4, state.phyState.body.getPos());
 		type = EntityType.PLAYER;
@@ -87,6 +93,20 @@ public class Player extends Entity {
 			x = 7;
 		}
 	    state.playerInterface.addToStack(new Vector3(x, WitchCraft.screenHeight*0.5f, 0), screenpos, "ALARMSIGN", "data/world/otherart.atlas");
+	}
+	
+	public void addToInventory(InventoryObject io) {
+	    inventory.add(io);
+	}
+	
+	public void refreshInventory() {
+	    Iterator<InventoryObject> it = inventory.iterator();
+	    while ( it.hasNext() ) {
+		InventoryObject io = (InventoryObject)it.next();
+		if ( io.isDestroyed() ) {
+		    it.remove();
+		}
+	    }
 	}
 	
 	@Override
