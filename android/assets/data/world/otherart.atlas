@@ -1,0 +1,284 @@
+otherart.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+morph10
+  rotate: false
+  xy: 107, 599
+  size: 112, 69
+  orig: 112, 69
+  offset: 0, 0
+  index: -1
+INVISIBIL
+  rotate: false
+  xy: 247, 110
+  size: 331, 41
+  orig: 331, 41
+  offset: 0, 0
+  index: -1
+morph6
+  rotate: false
+  xy: 887, 599
+  size: 108, 58
+  orig: 108, 58
+  offset: 0, 0
+  index: -1
+crow3fly
+  rotate: false
+  xy: 360, 153
+  size: 64, 80
+  orig: 64, 80
+  offset: 0, 0
+  index: -1
+FUGE
+  rotate: false
+  xy: 574, 2
+  size: 134, 41
+  orig: 134, 41
+  offset: 0, 0
+  index: -1
+ss-1-crow
+  rotate: false
+  xy: 343, 677
+  size: 280, 280
+  orig: 280, 280
+  offset: 0, 0
+  index: -1
+morph1
+  rotate: false
+  xy: 2, 599
+  size: 103, 43
+  orig: 103, 43
+  offset: 0, 0
+  index: -1
+morph11
+  rotate: false
+  xy: 221, 599
+  size: 115, 74
+  orig: 115, 74
+  offset: 0, 0
+  index: -1
+ss-5-crow
+  rotate: false
+  xy: 493, 959
+  size: 222, 198
+  orig: 222, 198
+  offset: 0, 0
+  index: -1
+fireTex
+  rotate: false
+  xy: 872, 153
+  size: 48, 64
+  orig: 48, 64
+  offset: 0, 0
+  index: -1
+morph7
+  rotate: false
+  xy: 2, 677
+  size: 111, 60
+  orig: 111, 60
+  offset: 0, 0
+  index: -1
+ss-9-crow
+  rotate: false
+  xy: 364, 1207
+  size: 135, 94
+  orig: 135, 94
+  offset: 0, 0
+  index: -1
+boxtex
+  rotate: false
+  xy: 164, 153
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+morph12
+  rotate: false
+  xy: 338, 599
+  size: 115, 76
+  orig: 115, 76
+  offset: 0, 0
+  index: -1
+morph4
+  rotate: false
+  xy: 668, 599
+  size: 107, 53
+  orig: 107, 53
+  offset: 0, 0
+  index: -1
+ss-2-crow
+  rotate: false
+  xy: 748, 677
+  size: 272, 264
+  orig: 272, 264
+  offset: 0, 0
+  index: -1
+ALARMSIGN
+  rotate: false
+  xy: 2, 2
+  size: 96, 106
+  orig: 96, 106
+  offset: 0, 0
+  index: -1
+ANIMIMPERI
+  rotate: false
+  xy: 100, 2
+  size: 277, 41
+  orig: 277, 41
+  offset: 0, 0
+  index: -1
+ss-10-crow
+  rotate: false
+  xy: 625, 677
+  size: 121, 69
+  orig: 121, 69
+  offset: 0, 0
+  index: -1
+ss-6-crow
+  rotate: false
+  xy: 717, 959
+  size: 207, 181
+  orig: 207, 181
+  offset: 0, 0
+  index: -1
+morph5
+  rotate: false
+  xy: 777, 599
+  size: 108, 55
+  orig: 108, 55
+  offset: 0, 0
+  index: -1
+GELO
+  rotate: false
+  xy: 710, 2
+  size: 136, 41
+  orig: 136, 41
+  offset: 0, 0
+  index: -1
+INTACTILUS
+  rotate: false
+  xy: 2, 110
+  size: 243, 41
+  orig: 243, 41
+  offset: 0, 0
+  index: -1
+ss-3-crow
+  rotate: false
+  xy: 2, 959
+  size: 255, 246
+  orig: 255, 246
+  offset: 0, 0
+  index: -1
+mindbeam
+  rotate: false
+  xy: 922, 153
+  size: 21, 96
+  orig: 21, 96
+  offset: 0, 0
+  index: -1
+MUTATIO
+  rotate: false
+  xy: 725, 110
+  size: 200, 41
+  orig: 200, 41
+  offset: 0, 0
+  index: -1
+crow2fly
+  rotate: false
+  xy: 294, 153
+  size: 64, 80
+  orig: 64, 80
+  offset: 0, 0
+  index: -1
+crow4fly
+  rotate: false
+  xy: 426, 153
+  size: 64, 80
+  orig: 64, 80
+  offset: 0, 0
+  index: -1
+ss-7-crow
+  rotate: false
+  xy: 2, 1207
+  size: 184, 151
+  orig: 184, 151
+  offset: 0, 0
+  index: -1
+morph2
+  rotate: false
+  xy: 455, 599
+  size: 104, 46
+  orig: 104, 46
+  offset: 0, 0
+  index: -1
+EFFINGO
+  rotate: false
+  xy: 379, 2
+  size: 193, 41
+  orig: 193, 41
+  offset: 0, 0
+  index: -1
+morph8
+  rotate: false
+  xy: 115, 677
+  size: 111, 64
+  orig: 111, 64
+  offset: 0, 0
+  index: -1
+morph3
+  rotate: false
+  xy: 561, 599
+  size: 105, 48
+  orig: 105, 48
+  offset: 0, 0
+  index: -1
+anvil
+  rotate: false
+  xy: 2, 153
+  size: 160, 74
+  orig: 160, 74
+  offset: 0, 0
+  index: -1
+ss-4-crow
+  rotate: false
+  xy: 259, 959
+  size: 232, 216
+  orig: 232, 216
+  offset: 0, 0
+  index: -1
+crowstand
+  rotate: false
+  xy: 492, 153
+  size: 64, 80
+  orig: 64, 80
+  offset: 0, 0
+  index: -1
+MORS
+  rotate: false
+  xy: 580, 110
+  size: 143, 41
+  orig: 143, 41
+  offset: 0, 0
+  index: -1
+dust
+  rotate: false
+  xy: 558, 153
+  size: 312, 444
+  orig: 312, 444
+  offset: 0, 0
+  index: -1
+morph9
+  rotate: false
+  xy: 228, 677
+  size: 113, 66
+  orig: 113, 66
+  offset: 0, 0
+  index: -1
+ss-8-crow
+  rotate: false
+  xy: 188, 1207
+  size: 174, 131
+  orig: 174, 131
+  offset: 0, 0
+  index: -1
