@@ -2,8 +2,8 @@ package com.anythingmachine.physicsEngine;
 
 import java.util.ArrayList;
 
+import com.anythingmachine.Util.Util;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
-import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Vector3;
 
 public class RK4Integrator {
@@ -20,8 +20,9 @@ public class RK4Integrator {
 	public void step() {
 		for (PhysicsComponent c : components) {
 			for (Particle p : c.getParticles()) {
-				if (!p.isStable())
+				if (!p.isStable()) {
 					integrate(p, t, dt);
+				}
 			}
 		}
 		t += dt;

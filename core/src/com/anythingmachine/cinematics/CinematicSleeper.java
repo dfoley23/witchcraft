@@ -1,6 +1,6 @@
 package com.anythingmachine.cinematics;
 
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.Contact;
 

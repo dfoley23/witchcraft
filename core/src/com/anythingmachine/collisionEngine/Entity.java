@@ -1,7 +1,7 @@
 package com.anythingmachine.collisionEngine;
 
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
-import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
+import com.anythingmachine.Util.Util.EntityType;
+import com.anythingmachine.agents.npcs.NonPlayer;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -56,7 +56,7 @@ public class Entity extends Object {
 
 	public void setGravityVal(float val) {
 	}
-
+	
 	public void setVel(float x, float y, float z) {
 	}
 

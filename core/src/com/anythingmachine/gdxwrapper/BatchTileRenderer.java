@@ -1,6 +1,6 @@
 package com.anythingmachine.gdxwrapper;
 
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -105,6 +105,18 @@ public abstract class BatchTileRenderer implements TileMapRenderer, Disposable {
 		endRender();
 	}
 
+
+	@Override
+	public void render () {
+		beginRender();
+		for (MapLayer layer : map.getLayers()) {
+			if (layer.isVisible()) {
+					renderTileLayer((TiledMapTileLayer)layer);
+		    }
+		}
+		endRender();
+	}
+	
 	@Override
 	public void render (int[] layers) {
 		beginRender();

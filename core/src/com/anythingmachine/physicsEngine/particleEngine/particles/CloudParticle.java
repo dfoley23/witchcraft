@@ -26,6 +26,17 @@ public class CloudParticle extends KinematicParticle {
 		sprite.setScale(beginScale, beginScale);
 		sprite.setColor(0.4f, 0.4f, 0.4f, 0.8f);
 	}
+
+	public CloudParticle(Vector3 pos, float beginScale, float rot, float speedx ) {
+		super(pos, 0);
+		this.startScale = beginScale;
+		this.setVel(speedx, 0, 0);
+		this.scale = beginScale;
+		this.dS = 0;
+		sprite = new Sprite(WitchCraft.assetManager.get("data/world/otherart.atlas", TextureAtlas.class).findRegion("dust"));
+		sprite.setScale(beginScale, beginScale);
+		sprite.setColor(0.4f, 0.4f, 0.4f, 0.8f);
+	}
 	
 	@Override
 	public void draw(Batch batch) {		

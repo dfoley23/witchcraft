@@ -3,8 +3,8 @@ package com.anythingmachine.aiengine;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.anythingmachine.witchcraft.agents.States.NPC.NPCStateEnum;
-import com.anythingmachine.witchcraft.agents.States.Transistions.ActionEnum;
+import com.anythingmachine.agents.States.NPC.NPCStateEnum;
+import com.anythingmachine.agents.States.Transistions.ActionEnum;
 
 public class Action {
 	private Map<String, Float> goalActionValues;

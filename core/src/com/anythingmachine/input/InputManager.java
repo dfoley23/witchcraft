@@ -150,14 +150,16 @@ public class InputManager {
 		return 0;
 	}
 	public boolean left() {
-		if (debugcontrols)
+		if (debugcontrols) {
 			return Gdx.input.isKeyPressed(keymap.get("Left"));
+		}
 		return controller.getButton(keymap.get("Left")) || axisRange2() < 0;
 	}
 
 	public boolean right() {
-		if (debugcontrols)
+		if (debugcontrols) {
 			return Gdx.input.isKeyPressed(keymap.get("Right"));
+		}
 		return controller.getButton(keymap.get("Right")) || axisRange2() > 0;
 	}
 

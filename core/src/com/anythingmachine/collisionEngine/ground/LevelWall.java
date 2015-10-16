@@ -1,7 +1,7 @@
 package com.anythingmachine.collisionEngine.ground;
 
+import com.anythingmachine.Util.Util.EntityType;
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 
 public class LevelWall extends Entity {
 	private int level;

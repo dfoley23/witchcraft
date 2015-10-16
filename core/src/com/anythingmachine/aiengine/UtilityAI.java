@@ -2,9 +2,8 @@ package com.anythingmachine.aiengine;
 
 import java.util.ArrayList;
 
-import com.anythingmachine.witchcraft.agents.States.NPC.NPCState;
-import com.anythingmachine.witchcraft.agents.States.Transistions.ActionEnum;
-import com.badlogic.gdx.Gdx;
+import com.anythingmachine.agents.States.NPC.NPCState;
+import com.anythingmachine.agents.States.Transistions.ActionEnum;
 
 public class UtilityAI {
 	private ArrayList<Goal> goals;
@@ -47,7 +46,7 @@ public class UtilityAI {
 	}
 
 	public void takeAction(Action action) {
-		Gdx.app.log("ai has chosen to " + action.name, " resulting state is: " + action.getAIState());
+//		Gdx.app.log("ai has chosen to " + action.name, " resulting state is: " + action.getAIState());
 		for (Goal g : goals) {
 			g.insistence += action.getGoalChange(g.name);
 		}

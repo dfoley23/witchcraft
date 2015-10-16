@@ -1,14 +1,15 @@
 package com.anythingmachine.physicsEngine.particleEngine;
 
+import com.anythingmachine.Util.Util;
+import com.anythingmachine.Util.Util.EntityType;
 import com.anythingmachine.physicsEngine.particleEngine.particles.TexturedBodyParticle;
-import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
 public class MindBeamParticle extends TexturedBodyParticle {
 	private float scale = 0.5f;
+	
 	
 	public MindBeamParticle(Vector3 pos, Sprite sprite, Vector3 ext) {
 		super(pos,EntityType.PARTICLE, sprite, ext);
@@ -18,10 +19,12 @@ public class MindBeamParticle extends TexturedBodyParticle {
 	@Override
 	public void draw(Batch batch) {
 		scale += 0.02f;
-		if ( scale < 2f ) {
+		if ( scale < 1.6f ) {
+			sprite.setScale(1f, scale);
+		} 
+		if ( scale < 3f ) {
 			collisionBody.setTransform(Util.sclVecTo2(getPos(), Util.PIXEL_TO_BOX),
 					collisionBody.getAngle());
-			sprite.setScale(1f, scale);
 			sprite.setPosition(pos.x, pos.y);
 			sprite.setRotation(collisionBody.getAngle()*Util.RAD_TO_DEG);
 			sprite.draw(batch);

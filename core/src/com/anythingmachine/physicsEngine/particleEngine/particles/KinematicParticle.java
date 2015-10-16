@@ -1,6 +1,6 @@
 package com.anythingmachine.physicsEngine.particleEngine.particles;
 
-import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.Util.Util;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 

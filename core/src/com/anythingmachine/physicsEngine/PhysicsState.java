@@ -2,8 +2,8 @@ package com.anythingmachine.physicsEngine;
 
 import java.util.HashMap;
 
+import com.anythingmachine.Util.Util;
 import com.anythingmachine.physicsEngine.particleEngine.particles.KinematicParticle;
-import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 

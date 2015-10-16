@@ -3,9 +3,9 @@ package com.anythingmachine.physicsEngine.particleEngine;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.anythingmachine.Util.Util;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.particleEngine.particles.FireParticle;
-import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 

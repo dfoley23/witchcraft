@@ -2,11 +2,11 @@ package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import java.util.ArrayList;
 
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.Util.Util;
+import com.anythingmachine.Util.Util.EntityType;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -200,7 +200,7 @@ public class Arrow extends Particle {
 		fixture.isSensor = true;
 		fixture.density = 1f;
 		fixture.filter.categoryBits = Util.CATEGORY_PARTICLES;
-		fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER | Util.CATEGORY_ENVIRONMENT;
+		fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER | Util.CATEGORY_PLATFORMS;
 		collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();

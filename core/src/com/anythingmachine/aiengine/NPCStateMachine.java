@@ -2,12 +2,14 @@ package com.anythingmachine.aiengine;
 
 import java.util.HashMap;
 
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.agents.States.NPC.NPCState;
+import com.anythingmachine.agents.States.NPC.NPCStateEnum;
+import com.anythingmachine.agents.npcs.NonPlayer;
+import com.anythingmachine.collisionEngine.ground.Door;
 import com.anythingmachine.collisionEngine.ground.Platform;
+import com.anythingmachine.collisionEngine.ground.Stairs;
 import com.anythingmachine.physicsEngine.PhysicsState;
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.agents.States.NPC.NPCState;
-import com.anythingmachine.witchcraft.agents.States.NPC.NPCStateEnum;
-import com.anythingmachine.witchcraft.agents.npcs.NonPlayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.spine.SkeletonData;
@@ -17,12 +19,15 @@ public class NPCStateMachine extends StateMachine {
 	protected HashMap<NPCStateEnum, NPCState> states;
 	public PhysicsState phyState;
 	public UtilityAI behavior;
-	public Platform elevatedSegment;
+	public Platform currentPlatform;
+	public Stairs currentStairs;
 	public NonPlayer me;
 	public boolean canseeplayer;
 	public boolean onscreen;
 	public boolean inlevel;
 	public AINode currentNode;
+	public boolean goingUpStairs = false;
+	public boolean goingDownStairs = false;
 
 	public NPCStateMachine(String name, Vector3 pos, Vector2 scl, boolean flip,
 			SkeletonData sd, NonPlayer me) {
@@ -57,11 +62,12 @@ public class NPCStateMachine extends StateMachine {
 
 	public void setState(NPCStateEnum name) {
 		if (state.transistionOut()) {
-			System.out.println(me.datafile+" set state:"+name);
+//			System.out.println(me.datafile+" set state:"+name);
 			this.state = states.get(name);
 			state.transistionIn();
 		} else {
-			System.out.println(me.datafile+"transistion state:"+name);
+//			System.out.println(me.datafile+"transistion state:"+name);
+			
 			states.get(name).transistionIn();
 		}
 	}

@@ -1,8 +1,8 @@
 package com.anythingmachine.cinematics.actions;
 
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.cinematics.CinematicAction;
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class ParticleToGamePlay extends Entity implements CinematicAction {

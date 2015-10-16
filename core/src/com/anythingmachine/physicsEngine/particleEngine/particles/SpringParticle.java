@@ -2,9 +2,9 @@ package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import java.util.ArrayList;
 
+import com.anythingmachine.Util.Util;
 import com.anythingmachine.physicsEngine.Rope;
 import com.anythingmachine.physicsEngine.Spring;
-import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Vector3;
 
 public class SpringParticle extends Particle {

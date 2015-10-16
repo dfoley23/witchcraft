@@ -1,6 +1,6 @@
 package com.anythingmachine.gdxwrapper;
 
-import com.anythingmachine.witchcraft.Util.Util;
+import com.anythingmachine.Util.Util;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;

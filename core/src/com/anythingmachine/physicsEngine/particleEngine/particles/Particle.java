@@ -1,6 +1,7 @@
 package com.anythingmachine.physicsEngine.particleEngine.particles;
 
 import com.anythingmachine.collisionEngine.Entity;
+import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.physicsEngine.particleEngine.ParticleSystem;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;

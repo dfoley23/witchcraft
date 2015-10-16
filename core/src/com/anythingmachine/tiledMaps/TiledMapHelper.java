@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.Util.Util;
+import com.anythingmachine.Util.Util.EntityType;
 import com.anythingmachine.aiengine.AINode;
 import com.anythingmachine.cinematics.Camera;
 import com.anythingmachine.collisionEngine.Entity;
@@ -40,9 +43,6 @@ import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.collisionEngine.ground.Stairs;
 import com.anythingmachine.gdxwrapper.OrthoTileRenderer;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -82,6 +82,11 @@ public class TiledMapHelper {
 		tileMapRenderer.render(main);
 	}
 
+	public void render() {
+		tileMapRenderer.setView(Camera.camera);// .getProjectionMatrix().set(Camera.camera.combined);
+		tileMapRenderer.render();
+	}
+
 	/**
 	 * Get the map, useful for iterating over the set of tiles found within
 	 * 
@@ -118,6 +123,20 @@ public class TiledMapHelper {
 		}
 	}
 
+	public void loadMenu(String level) {
+
+		map = WitchCraft.assetManager.get("data/world/level1/menu" + level + ".tmx");
+		// tileAtlas = new TileAtlas(map, packFileDirectory);
+
+		tileMapRenderer = new OrthoTileRenderer(map, 1);
+
+		int size = getMap().getLayers().getCount();
+		layersList = new int[size];
+		for (int i = 0; i < size; i++) {
+			layersList[i] = i;
+		}
+	}
+
 	public void destroyMap() {
 		Array<Body> bodies = new Array<Body>();
 		GamePlayManager.world.getBodies(bodies);
@@ -128,7 +147,7 @@ public class TiledMapHelper {
 			if (dat != null && dat instanceof Entity) {
 				Entity e = (Entity) dat;
 				if (e.type == EntityType.PLATFORM || e.type == EntityType.WALL || e.type == EntityType.LEVELWALL
-						|| e.type == EntityType.STAIRS || e.type == EntityType.AINODE) {
+						|| e.type == EntityType.STAIRS || e.type == EntityType.AINODE || e.type == EntityType.DOOR) {
 					// System.out.println(e.type);
 					GamePlayManager.world.destroyBody(b);
 				}
@@ -165,37 +184,40 @@ public class TiledMapHelper {
 		 * the top to the bottom, 30 pixels in.
 		 */
 
-		FileHandle fh = Gdx.files.internal(collisionsFile);
-		String collisionFile = fh.readString();
-		String lines[] = collisionFile.split("\\r?\\n");
+		// FileHandle fh = Gdx.files.internal(collisionsFile);
+		// String collisionFile = fh.readString();
+		// String lines[] = collisionFile.split("\\r?\\n");
 
-		HashMap<Integer, ArrayList<LineSegment>> tileCollisionJoints = new HashMap<Integer, ArrayList<LineSegment>>();
+		// HashMap<Integer, ArrayList<LineSegment>> tileCollisionJoints = new
+		// HashMap<Integer, ArrayList<LineSegment>>();
 
-		/**
-		 * Some locations on the map (perhaps most locations) are "undefined",
-		 * empty space, and will have the tile type 0. This code adds an empty
-		 * list of line segments for this "default" tile.
-		 */
-		tileCollisionJoints.put(Integer.valueOf(0), new ArrayList<LineSegment>());
+		// /**
+		// * Some locations on the map (perhaps most locations) are "undefined",
+		// * empty space, and will have the tile type 0. This code adds an empty
+		// * list of line segments for this "default" tile.
+		// */
+		// tileCollisionJoints.put(Integer.valueOf(0), new
+		// ArrayList<LineSegment>());
 
-		for (int n = 0; n < lines.length; n++) {
-			String cols[] = lines[n].split(" ");
-			int tileNo = Integer.parseInt(cols[0]);
-
-			ArrayList<LineSegment> tmp = new ArrayList<LineSegment>();
-
-			for (int m = 1; m < cols.length; m++) {
-				String coords[] = cols[m].split(",");
-
-				String start[] = coords[0].split("x");
-				String end[] = coords[1].split("x");
-
-				tmp.add(new LineSegment(Integer.parseInt(start[0]), Integer.parseInt(start[1]),
-						Integer.parseInt(end[0]), Integer.parseInt(end[1]), ""));
-			}
-
-			tileCollisionJoints.put(Integer.valueOf(tileNo), tmp);
-		}
+		// for (int n = 0; n < lines.length; n++) {
+		// String cols[] = lines[n].split(" ");
+		// int tileNo = Integer.parseInt(cols[0]);
+		//
+		// ArrayList<LineSegment> tmp = new ArrayList<LineSegment>();
+		//
+		// for (int m = 1; m < cols.length; m++) {
+		// String coords[] = cols[m].split(",");
+		//
+		// String start[] = coords[0].split("x");
+		// String end[] = coords[1].split("x");
+		//
+		// tmp.add(new LineSegment(Integer.parseInt(start[0]),
+		// Integer.parseInt(start[1]),
+		// Integer.parseInt(end[0]), Integer.parseInt(end[1]), ""));
+		// }
+		//
+		// tileCollisionJoints.put(Integer.valueOf(tileNo), tmp);
+		// }
 
 		ArrayList<LineSegment> collisionLineSegments = new ArrayList<LineSegment>();
 
@@ -211,38 +233,35 @@ public class TiledMapHelper {
 								int tileID = tile.getTile().getId();
 
 								int start = 0;
-								// System.out.println(tileID);
-								if (tileCollisionJoints.containsKey(tileID)) {
-									int tileCollisionSegments = tileCollisionJoints.get(tileID).size();
-									if (tileCollisionSegments != 0) {
-										String type = "";
-										if (tile.getTile().getProperties().containsKey("type")) {
-											type = (String) getMap().getTileSets().getTile(tileID).getProperties()
-													.get("type");
-										}
-										if (type == "") {
-											if (layer.getProperties().containsKey("WALLS")) {
-												type = "WALLS";
-												start = 1;
-											} else if (tileCollisionSegments > 1) {
-												tileCollisionSegments = 1;
-												type = "PLATFORMS";
-											}
-										}
-										for (int n = start; n < tileCollisionSegments; n++) {
-											LineSegment lineSeg = tileCollisionJoints.get(tileID).get(n);
-
-											addOrExtendCollisionLineSegment(x * 32 + lineSeg.start().x,
-													y * 32 - lineSeg.start().y + 32, x * 32 + lineSeg.end().x,
-													y * 32 - lineSeg.end().y + 32, collisionLineSegments, type);
-										}
+								String type = "";
+								if (tile.getTile().getProperties().containsKey("type")) {
+									type = (String) getMap().getTileSets().getTile(tileID).getProperties().get("type");
+								}
+								if (layer.getProperties().containsKey("WALLS")) {
+									type = "WALLS";
+									addOrExtendCollisionLineSegment(x * 32 + 16, y * 32, x * 32 + 16, y * 32 + 32,
+											collisionLineSegments, type);
+								} else if (layer.getProperties().containsKey("STAIRS")) {
+									if (!type.equals("LEFTSTAIRS")) {
+										type = "STAIRS";
+										addOrExtendCollisionLineSegment(x * 32, y * 32, x * 32 + 32, y * 32 + 32,
+												collisionLineSegments, type);
+									} else {
+										addOrExtendCollisionLineSegment(x * 32, y * 32 + 32, x * 32 + 32, y * 32,
+												collisionLineSegments, type);
 									}
+								} else if (layer.getProperties().containsKey("PLATFORMS")) {
+									type = "PLATFORMS";
+									addOrExtendCollisionLineSegment(x * 32, y * 32 + 32, x * 32 + 32, y * 32 + 32,
+											collisionLineSegments, type);
 								}
 							}
 						}
 					}
 				}
-			} else {
+			} else
+
+			{
 				MapObjects objects = nextLayer.getObjects();
 				for (MapObject o : objects) {
 					RectangleMapObject rect = (RectangleMapObject) o;
@@ -255,12 +274,21 @@ public class TiledMapHelper {
 								(shape.y + shape.height * 0.5f) * Util.PIXEL_TO_BOX);
 
 						Body nodeBody = GamePlayManager.world.createBody(nodeBodyDef);
-						String set = (String) rect.getProperties().get("set");
-						if ( !nextLayer.getName().equals("DOORS") ) {
+						if (!nextLayer.getName().equals("DOORS")) {
+							String set = (String) rect.getProperties().get("set");
 							nodeBody.setUserData(new AINode(Integer.parseInt(set)));
-						} else {						
-							set = (String) rect.getProperties().get("to_level");
-							nodeBody.setUserData(new Door(set));
+						} else {
+							if (rect.getProperties().containsKey("to_level")
+									&& rect.getProperties().containsKey("exitX")
+									&& rect.getProperties().containsKey("exitY")) {
+								String to_level = (String) rect.getProperties().get("to_level");
+								String xPos = (String) rect.getProperties().get("exitX");
+								String yPos = (String) rect.getProperties().get("exitY");
+								nodeBody.setUserData(new Door(to_level, xPos, yPos));
+							} else {
+								nodeBody.setUserData(new Door("9999", "1024", "256"));
+
+							}
 						}
 
 						PolygonShape nodeShape = new PolygonShape();
@@ -271,7 +299,7 @@ public class TiledMapHelper {
 						fixture.shape = nodeShape;
 						fixture.isSensor = true;
 						fixture.density = 0;
-						fixture.filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+						fixture.filter.categoryBits = Util.CATEGORY_PLATFORMS;
 						fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
 						nodeBody.createFixture(fixture);
 						nodeShape.dispose();
@@ -279,20 +307,27 @@ public class TiledMapHelper {
 				}
 			}
 		}
+
 		int platnum = 0;
-		for (LineSegment lineSegment : collisionLineSegments) {
+		for (LineSegment lineSegment : collisionLineSegments)
+
+		{
 			BodyDef groundBodyDef = new BodyDef();
 			groundBodyDef.type = BodyDef.BodyType.StaticBody;
 			groundBodyDef.position.set(0, 0);
 			Body groundBody = GamePlayManager.world.createBody(groundBodyDef);
-			if (lineSegment.type.equals("STAIRS")) {
+			if (lineSegment.type.equals("STAIRS") || lineSegment.type.equals("LEFTSTAIRS")) {
 				groundBody.setUserData(
 						new Stairs("stairs_" + level + "_" + platnum, lineSegment.start(), lineSegment.end()));
 			} else if (lineSegment.type.equals("WALLS")) {
 				groundBody.setUserData(new Entity().setType(EntityType.WALL));
 			} else {
-				groundBody.setUserData(
-						new Platform("plat_" + level + "_" + platnum, lineSegment.start(), lineSegment.end()));
+				Platform plat = new Platform("plat_" + level + "_" + platnum, lineSegment.start(), lineSegment.end());
+				groundBody.setUserData(plat);
+				if (GamePlayManager.lowestPlatInLevel == null
+						|| lineSegment.start().y < GamePlayManager.lowestPlatInLevel.getDownPosY()) {
+					GamePlayManager.lowestPlatInLevel = plat;
+				}
 			}
 			EdgeShape environmentShape = new EdgeShape();
 
@@ -301,8 +336,8 @@ public class TiledMapHelper {
 			FixtureDef fixture = new FixtureDef();
 			fixture.shape = environmentShape;
 			fixture.isSensor = true;
-			fixture.density = 0;
-			fixture.filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+			fixture.density = 1f;
+			fixture.filter.categoryBits = Util.CATEGORY_PLATFORMS;
 			fixture.filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER | Util.CATEGORY_PARTICLES;
 			groundBody.createFixture(fixture);
 			environmentShape.dispose();
@@ -323,21 +358,25 @@ public class TiledMapHelper {
 
 		// left wall
 		EdgeShape mapBounds = new EdgeShape();
-		if (level == 1) {
+		if (level == 1)
+
+		{
 			mapBounds.set(new Vector2(0.0f, 0.0f), new Vector2(0, layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new Entity().setType(EntityType.WALL));
 			Fixture fixture = body.createFixture(mapBounds, 0);
 			Filter filter = new Filter();
-			filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+			filter.categoryBits = Util.CATEGORY_PLATFORMS;
 			filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
 			fixture.setFilterData(filter);
-		} else {
+		} else
+
+		{
 			mapBounds.set(new Vector2(0f * Util.PIXEL_TO_BOX, 0.0f),
 					new Vector2(0f, layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
 			body.setUserData(new LevelWall(level - 1));
 			Fixture fixture = body.createFixture(mapBounds, 0);
 			Filter filter = new Filter();
-			filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+			filter.categoryBits = Util.CATEGORY_PLATFORMS;
 			filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
 			fixture.setFilterData(filter);
 		}
@@ -345,12 +384,13 @@ public class TiledMapHelper {
 		// right wall
 		body = GamePlayManager.world.createBody(bodydef);
 		body.setUserData(new LevelWall(level + 1));
+
 		EdgeShape mapBounds2 = new EdgeShape();
 		mapBounds2.set(new Vector2((layer.getWidth() * 32), 0.0f).scl(Util.PIXEL_TO_BOX),
 				new Vector2((layer.getWidth() * 32), layer.getHeight() * 32).scl(Util.PIXEL_TO_BOX));
 		Fixture fixture = body.createFixture(mapBounds2, 0);
 		Filter filter = new Filter();
-		filter.categoryBits = Util.CATEGORY_ENVIRONMENT;
+		filter.categoryBits = Util.CATEGORY_PLATFORMS;
 		filter.maskBits = Util.CATEGORY_NPC | Util.CATEGORY_PLAYER;
 		fixture.setFilterData(filter);
 
@@ -367,6 +407,7 @@ public class TiledMapHelper {
 		mapBounds.dispose();
 		mapBounds2.dispose();
 		mapBounds3.dispose();
+
 	}
 
 	/**
@@ -515,6 +556,7 @@ public class TiledMapHelper {
 				return true;
 			} else if (start.dst(lineSegment.end) <= Math.sqrt(2) + 1e-9) {
 				start.set(lineSegment.start);
+				return true;
 			}
 			return false;
 		}

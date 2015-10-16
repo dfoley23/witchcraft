@@ -23,7 +23,7 @@ public class CloudEmitter {
 			float speed = rand.nextInt(30) + 5;
 			float scale = Math.max(0.25f, rand.nextInt(3) * rand.nextFloat());
 			float rot = rand.nextInt(360);
-//			clouds.add(new CloudParticle(pos, scale, rot, -speed));
+			clouds.add(new CloudParticle(pos, scale, rot, -speed));
 		}
 	}
 

@@ -1,8 +1,8 @@
 package com.anythingmachine.physicsEngine;
 
+import com.anythingmachine.Util.Util;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.particleEngine.particles.Particle;
-import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 

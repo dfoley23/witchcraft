@@ -2,13 +2,13 @@ package com.anythingmachine.witchcraft;
 
 import java.util.HashMap;
 
+import com.anythingmachine.GameStates.Loading;
+import com.anythingmachine.GameStates.PauseMenu;
+import com.anythingmachine.GameStates.Screen;
+import com.anythingmachine.GameStates.StartMenu;
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.cinematics.Camera;
 import com.anythingmachine.soundEngine.SoundManager;
-import com.anythingmachine.witchcraft.GameStates.Loading;
-import com.anythingmachine.witchcraft.GameStates.PauseMenu;
-import com.anythingmachine.witchcraft.GameStates.Screen;
-import com.anythingmachine.witchcraft.GameStates.StartMenu;
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;

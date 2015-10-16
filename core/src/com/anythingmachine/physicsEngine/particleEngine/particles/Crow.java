@@ -1,9 +1,9 @@
 package com.anythingmachine.physicsEngine.particleEngine.particles;
 
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.Util.Util;
 import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.witchcraft.WitchCraft;
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.Util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -158,8 +158,8 @@ public class Crow extends KinematicParticle {
 		fixture.shape = shape;
 		fixture.isSensor = true;
 		fixture.density = 1f;
-		fixture.filter.categoryBits = Util.CATEGORY_TRIGGERS;
-		fixture.filter.maskBits = Util.CATEGORY_ENVIRONMENT | Util.CATEGORY_ITEMS | Util.CATEGORY_PARTICLES;
+		fixture.filter.categoryBits = Util.CATEGORY_PARTICLES;
+		fixture.filter.maskBits = Util.CATEGORY_PLATFORMS | Util.CATEGORY_ITEMS | Util.CATEGORY_PARTICLES;
 		collisionBody.createFixture(fixture);
 		collisionBody.setUserData(this);
 		shape.dispose();

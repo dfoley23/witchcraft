@@ -1,7 +1,7 @@
 package com.anythingmachine.collisionEngine.ground;
 
+import com.anythingmachine.Util.Util.EntityType;
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -58,7 +58,7 @@ public class Platform extends Entity {
 	public void holdDownToWalkDown() {
 	}
 	
-	public boolean walkDown() {
+	public boolean forceWalkDown() {
 		return true;
 	}
 

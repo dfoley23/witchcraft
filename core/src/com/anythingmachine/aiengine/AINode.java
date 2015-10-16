@@ -1,7 +1,7 @@
 package com.anythingmachine.aiengine;
 
+import com.anythingmachine.Util.Util.EntityType;
 import com.anythingmachine.collisionEngine.Entity;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
 
 public class AINode extends Entity {
     private int set;

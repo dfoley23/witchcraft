@@ -1,8 +1,8 @@
 package com.anythingmachine.physicsEngine.particleEngine.particles;
 
-import com.anythingmachine.witchcraft.GameStates.Containers.GamePlayManager;
-import com.anythingmachine.witchcraft.Util.Util;
-import com.anythingmachine.witchcraft.Util.Util.EntityType;
+import com.anythingmachine.GameStates.Containers.GamePlayManager;
+import com.anythingmachine.Util.Util;
+import com.anythingmachine.Util.Util.EntityType;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;

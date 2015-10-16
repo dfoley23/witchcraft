@@ -135,6 +135,10 @@ public class AnimationManager {
 		currentAnim = id;
 		loop = val;
 	}
+	
+	public String getCurrentAnim() {
+		return currentAnim;
+	}
 
 	public void bindPose() {
 		totalTime = 0;
