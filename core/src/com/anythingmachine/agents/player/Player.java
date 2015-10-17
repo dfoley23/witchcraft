@@ -3,7 +3,6 @@ package com.anythingmachine.agents.player;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.anythingmachine.GamePlayUI.UILayout;
 import com.anythingmachine.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.Util.Util;
 import com.anythingmachine.Util.Util.EntityType;
@@ -35,6 +34,7 @@ import com.anythingmachine.collisionEngine.Entity;
 import com.anythingmachine.physicsEngine.PhysicsState;
 import com.anythingmachine.physicsEngine.RK4Integrator;
 import com.anythingmachine.physicsEngine.particleEngine.particles.KinematicParticle;
+import com.anythingmachine.userinterface.GamePlayUI.UILayout;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -201,6 +201,18 @@ public class Player extends Entity {
 
 	public void drawUI(Batch batch) {
 		state.drawUI(batch);
+	}
+	
+	public void drawUIShapes() {
+		state.playerInterface.drawUIShapes();
+	}
+	
+	public void addTextoUi(CharSequence str){
+		state.playerInterface.addText(str, UILayout.RIGHT);
+	}
+	
+	public void clearTextUI(){
+		state.playerInterface.clearText();
 	}
 
 	/************ private functions ************/

@@ -39,7 +39,7 @@ public class Skeleton {
 	final Array<Slot> slots;
 	Array<Slot> drawOrder;
 	Skin skin;
-	final Color color;
+	public Color color;
 	float time;
 	boolean flipX, flipY;
 	float x, y;
@@ -250,6 +250,10 @@ public class Skeleton {
 
 	public Color getColor () {
 		return color;
+	}
+	
+	public void setColor(Color c) {
+		color = c;
 	}
 
 	public boolean getFlipX () {

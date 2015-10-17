@@ -3,6 +3,7 @@ package com.anythingmachine.animations;
 import java.util.HashMap;
 
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -121,6 +122,9 @@ public class AnimationManager {
 		return isFlipped;
 	}
 
+	public void setTint(Color c) {
+		this.skel.setColor(c);
+	}
 	public void rotate(float r) {
 		float x = hip.getX();
 		float y = hip.getY();

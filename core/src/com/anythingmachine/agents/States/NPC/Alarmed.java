@@ -1,8 +1,8 @@
 package com.anythingmachine.agents.States.NPC;
 
-import com.anythingmachine.GamePlayUI.UILayout;
 import com.anythingmachine.GameStates.Containers.GamePlayManager;
 import com.anythingmachine.aiengine.NPCStateMachine;
+import com.anythingmachine.userinterface.GamePlayUI.UILayout;
 import com.anythingmachine.witchcraft.WitchCraft;
 
 public class Alarmed extends NPCState {

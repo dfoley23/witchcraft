@@ -3,16 +3,21 @@ package com.anythingmachine.input;
 import java.util.HashMap;
 
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.math.Vector3;
 
-public class InputManager {
+public class InputManager implements ApplicationListener, InputProcessor {
 	private HashMap<String, Integer> keymap;
 	private HashMap<String, Float> deltamap;
 	private HashMap<String, Boolean> onoffmap;
 	private Controller controller;
 	private boolean debugcontrols = true;
+	private MouseInput mouseInput;
 
 	public InputManager() {
 		keymap = new HashMap<String, Integer>();
@@ -21,7 +26,9 @@ public class InputManager {
 		if (Controllers.getControllers().size > 0) {
 			this.controller = Controllers.getControllers().get(0);
 			debugcontrols = false;
-		}
+		} 			
+		mouseInput = new MouseInput();
+		Gdx.input.setInputProcessor(this);
 	}
 
 	public void update(float dT) {
@@ -174,10 +181,92 @@ public class InputManager {
 			return Gdx.input.isKeyPressed(keymap.get("down"));
 		return controller.getButton(keymap.get("down")) || axisRange2Y() > 0;
 	}
+	
+	public boolean rightClick() {
+		return Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+	}
+	
+	public boolean leftClick() {
+//        sprite.setPosition(Gdx.input.getX() - sprite.getWidth()/2,
+//                Gdx.graphics.getHeight() - Gdx.input.getY() - sprite.getHeight()/2);
+//    }
+//    if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
+//        sprite.setPosition(Gdx.graphics.getWidth()/2 -sprite.getWidth()/2, 
+//                Gdx.graphics.getHeight()/2 - sprite.getHeight()/2);		
+		return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+	}
 
 	public void addInputState(String state, Integer keyValue) {
 		keymap.put(state, keyValue);
 		deltamap.put(state, 10f);
 		onoffmap.put(state, false);
 	}
+	
+
+    @Override
+    public void create() {        
+        Gdx.input.setInputProcessor(this);
+    }
+
+    @Override
+    public void dispose() {
+    }
+
+    @Override
+    public void render() {        
+    }
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+    	Vector3 tmp = WitchCraft.cam.camera.unproject(new Vector3(screenX, screenY, 0));
+    	mouseInput.updateTarget(tmp.x, tmp.y);
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }

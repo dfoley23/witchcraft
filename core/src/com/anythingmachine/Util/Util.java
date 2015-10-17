@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Util {
 
-	public static boolean DEV_MODE = false;
+	public static boolean DEV_MODE = true;
 	
 	private Util() {
 		throw new AssertionError();
@@ -149,7 +149,7 @@ public class Util {
 	public static final int VERTEX_SIZE = 2 + 1 + 2;
 
 	public enum EntityType {
-		PLATFORM, STAIRS, STAIRUPTRIGGER, STAIRDOWNTRIGGER, DOOR, ENTITY, SWORD, ARROW, PLAYER, FIRE, PARTICLE,NONPLAYER, WALL,LEVELWALL,ACTIONWALL,AINODE,INVENTORYOBJECT
+		PLATFORM, STAIRS, STAIRUPTRIGGER, STAIRDOWNTRIGGER, DOOR, ENTITY, MOUSEINPUT, SWORD, ARROW, PLAYER, FIRE, PARTICLE,NONPLAYER, WALL,LEVELWALL,ACTIONWALL,AINODE,INVENTORYOBJECT
 	}
 
 }

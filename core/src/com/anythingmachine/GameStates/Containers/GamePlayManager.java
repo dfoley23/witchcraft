@@ -254,6 +254,7 @@ public class GamePlayManager extends Screen {
 			Gdx.gl.glClearColor(dayColor.r, dayColor.g, dayColor.b, 1f);
 
 			tiledMapHelper.render(this);
+			player.drawUIShapes();
 			batch.begin();
 			player.drawUI(batch);
 			batch.end();

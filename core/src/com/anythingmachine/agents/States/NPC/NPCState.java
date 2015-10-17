@@ -14,9 +14,11 @@ import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.collisionEngine.ground.StairTrigger;
 import com.anythingmachine.collisionEngine.ground.Stairs;
 import com.anythingmachine.witchcraft.WitchCraft;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Contact;
+
 
 public class NPCState {
 	protected NPCStateMachine sm;
@@ -76,7 +78,7 @@ public class NPCState {
 	public void setGoingTo(float dt) {
 
 	}
-
+	
 	public void handleNPCContact(NonPlayer npc) {
 		sm.hitnpc = true;
 		// sm.npc = (NonPlayer) other;

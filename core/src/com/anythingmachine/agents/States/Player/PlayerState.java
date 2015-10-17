@@ -59,7 +59,6 @@ public class PlayerState {
 	}
 
 	public void update(float dt) {
-		Gdx.app.log("PlayerState:", "" + sm.state.name);
 		if (!sm.hitstairs) {
 			sm.state.checkGround();
 

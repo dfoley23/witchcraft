@@ -2,7 +2,6 @@ package com.anythingmachine.aiengine;
 
 import java.util.Random;
 
-import com.anythingmachine.GamePlayUI;
 import com.anythingmachine.agents.States.Player.PlayerState;
 import com.anythingmachine.agents.States.Player.PlayerStateEnum;
 import com.anythingmachine.collisionEngine.ground.Door;
@@ -10,6 +9,7 @@ import com.anythingmachine.collisionEngine.ground.Platform;
 import com.anythingmachine.collisionEngine.ground.StairTrigger;
 import com.anythingmachine.input.InputManager;
 import com.anythingmachine.physicsEngine.PhysicsState;
+import com.anythingmachine.userinterface.GamePlayUI;
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;

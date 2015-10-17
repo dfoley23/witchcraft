@@ -18,6 +18,7 @@ import com.anythingmachine.physicsEngine.particleEngine.particles.KinematicParti
 import com.anythingmachine.witchcraft.WitchCraft;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -54,9 +55,7 @@ public class NonPlayer extends Entity {
 
 		setupAnimations(skinname, pos, bodyScale, fileContent);
 
-		setupAI(fileContent);
-		
-		
+		setupAI(fileContent);		
 	}
 
 	public void update(float dT) {
@@ -66,6 +65,21 @@ public class NonPlayer extends Entity {
 	@Override
 	public void destroyBody() {
 		GamePlayManager.world.destroyBody(sm.phyState.collisionBody);
+	}
+	
+
+	@Override
+	public void handleMouseContact() {
+		sm.animate.setTint(Color.LIME);
+		GamePlayManager.player.addTextoUi("Say Hi");
+		GamePlayManager.player.addTextoUi("Attack");
+		GamePlayManager.player.addTextoUi("Cast Mind Spell");
+	}
+
+	@Override
+	public void endMouseContact() {
+		sm.animate.setTint(new Color(1, 1, 1, 1));
+		GamePlayManager.player.clearTextUI();
 	}
 	
 	public void checkInLevel() {
@@ -287,7 +301,7 @@ public class NonPlayer extends Entity {
 		feetFixture = collisionBody.createFixture(fixture);
 
 		shape = new PolygonShape();
-		shape.setAsBox(35 * Util.PIXEL_TO_BOX, 4 * Util.PIXEL_TO_BOX,
+		shape.setAsBox(36 * Util.PIXEL_TO_BOX, 36 * Util.PIXEL_TO_BOX,
 				new Vector2(0, 16).scl(Util.PIXEL_TO_BOX), 0f);
 		fixture = new FixtureDef();
 		fixture.shape = shape;
