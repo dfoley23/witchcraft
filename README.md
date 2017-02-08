@@ -1,4 +1,4 @@
-<h2>Game Made in libgdx</h2>
+<h2>Game with witches and powers made with libgdx</h2>
 <h2>Multiple Tile Art credits:</h2>
 <ul>
 <li>Great Castle Tiles - http://opengameart.org/content/plattoon</li>
